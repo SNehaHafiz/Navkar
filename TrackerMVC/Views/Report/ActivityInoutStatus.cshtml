@@ -1,0 +1,228 @@
+﻿
+@{
+    ViewBag.Title = "ActivityInoutStatus";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h3>Activity In Out</h3>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Activity Master Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtactivityname" type="text" placeholder="Activity Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size OUT</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtSizeOUT" type="text" placeholder="Size OUT" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">OUT Status</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtOUTStatus" type="text" placeholder="OUT Status" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size IN</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtSIzeIN" type="text" placeholder="Size IN" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IN Status</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtINStatus" type="text" placeholder="IN Status" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return SaveActivity();">Save</button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List Of Activity Master</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />*@
+                                            <button class=" btn btn-primary" style="margin-top: auto" title="Show" id="btnSearch" onclick="ShowSSRSummary()" type="button">
+                                                <i class="fe fe-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" id="btnSearch" style="margin-top: auto" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                            @*@Html.ActionLink("Excel To Excel", "ExportActivityMasterReport", null, new { @class = "btn btn-primary btn-md" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+    function SaveActivity() {
+        var Activityname = $("#txtactivityname").val();
+        var SizeOUT = $("#txtSizeOUT").val();
+        var OUTStatus = $("#txtOUTStatus").val();
+        var SIzeIN = $("#txtSIzeIN").val();
+        var INStatus = $("#txtINStatus").val();
+
+           var data1 = {
+               'Activityname': Activityname, 'SizeOUT': SizeOUT, 'OUTStatus': OUTStatus, 'SIzeIN': SIzeIN, 'INStatus': INStatus
+            };
+            var data = JSON.stringify(data1);
+                          $.ajax({
+                              url: "/Report/SaveActivty",
+                            data: data,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                              success: function (data) {
+                                  alert("Record save successfully ");
+                                  document.location = '@Url.Action("ActivityInoutStatus", "Report")';
+                            },
+                            error: function (errormessage) {
+                                alert(errormessage.responseText);
+                            }
+                        });
+    }
+    function ShowSSRSummary() {
+
+
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/ActivityReport",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "ActivityReport", "ActivityReport")
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+</script>

@@ -1,0 +1,1476 @@
+﻿@model TrackerMVCEntities.BusinessEntities.DriverEntities
+@{
+    ViewBag.Title = "Driver Master";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    .tabs-menu ul li .active {
+        background-color: orange;
+    }
+
+    .custom-switch-input:checked ~ .custom-switch-indicator {
+        background: #64A5FE;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class="content-area overflow-hidden" id="divDriver">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Driver Master</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryDrivers();"><i class="fa fa-file-text"></i></button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="panel panel-primary">
+                            <div class="tab-menu-heading" style="background-color: #64A5FE">
+                                <div class="tabs-menu ">
+                                    <!-- Tabs -->
+                                    <ul class="nav panel-tabs">
+                                        <li class=""><a href="#transporter" class="active" style="border-radius:0px;color:white;" data-toggle="tab">Driver</a></li>
+                                        <li><a href="#bankdetails" style="border-radius:0px;color:white" data-toggle="tab">Bank Details</a></li>
+                                        <li><a href="#UploadFiles" style="border-radius:0px;color:white" data-toggle="tab">Upload Documents</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="panel-body tabs-menu-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane active " id="transporter">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Driver ID</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="DriverID" type="text" class="form-control" placeholder="New" readonly />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Driver Name</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="txtdrivername" placeholder="Enter Driver Name" type="text" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">DL No.</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="TxtDLNo" placeholder="Enter DL No." type="text" class="form-control" style="text-transform: uppercase;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">DL Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.DropDownList("ddlDltype", (IEnumerable<SelectListItem>)ViewBag.DLtype, "--Select-- ", new { @class = "form-control", @id = "ddlDltype", name = "ddlDltype", autocomplete = "off" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">DL Date</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("DlDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">DL Expiry Date</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("DlExpiryDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Equipment Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.DropDownList("ddlEquipment", (IEnumerable<SelectListItem>)ViewBag.Equipement, "--Select-- ", new { @class = "form-control", @id = "ddlEquipment", name = "ddlEquipment", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Contact No</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="TxtContactno" placeholder="Enter Contact No." type="text" class="form-control" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Driver Used Vehicle Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.DropDownList("ddlvehicletype", (IEnumerable<SelectListItem>)ViewBag.VehicleTypeList, "--Select-- ", new { @class = "form-control", @id = "ddlvehicletype", name = "ddlvehicletype", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Inusrance No.</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="TxtInsuranceno" placeholder="Enter Inusrance No." type="text" class="form-control" style="text-transform: uppercase;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Insurance Company</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.DropDownList("ddlinsurancecompany", (IEnumerable<SelectListItem>)ViewBag.InsuranceCompany, "--Select-- ", new { @class = "form-control", @id = "ddlinsurancecompany", name = "ddlinsurancecompany", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Reference By</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="TxtReferenceby" placeholder="Enter Reference By" type="text" class="form-control" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Reference Contact No.</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="TxtReferenceContactno" placeholder="Enter Reference Contact No." type="text" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Transpoter</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.DropDownList("ddlTranspoter", (IEnumerable<SelectListItem>)ViewBag.Transpoter, "--Select-- ", new { @class = "form-control", @id = "ddlTranspoter", name = "ddlTranspoter", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Employee Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+
+                                                            @Html.DropDownList("DDlEmployeeType", (IEnumerable<SelectListItem>)ViewBag.EmployeeType, "--Select-- ", new { @class = "form-control", @id = "DDlEmployeeType", name = "DDlEmployeeType", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Adhar Number</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+
+                                                            <input id="TxtAdharnumber" placeholder="Enter Adhar No." type="text" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">PAN No.</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+
+                                                            <input id="TxtPanNo" placeholder="Enter Pan No." type="text" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Driver Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+
+                                                            @Html.DropDownList("TxtddlDriverType", (IEnumerable<SelectListItem>)ViewBag.Driver, "--Select-- ", new { @class = "form-control", @id = "TxtddlDriverType", name = "TxtddlDriverType", autocomplete = "off" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">DOB Date</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("DlDOBDate", null, new { @class = "form-control datePickerPOD", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Current Address</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextArea("TxtCurrenctAddress", null, new { @class = "form-control", @id = "TxtCurrenctAddress", @name = "TxtCurrenctAddress", autocomplete = "off", @rows = "4" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">permanent Address</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextArea("TxtPeramentaddress", null, new { @class = "form-control", @id = "TxtPeramentaddress", @name = "TxtPeramentaddress", autocomplete = "off", @rows = "4" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-lg-2 col-xs-12">
+                                            <div class="form-group">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActive" value="true" checked class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is Active?</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 col-xs-12">
+                                            <div class="form-group">
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsBlackList" class="custom-switch-input" onchange="Getremakrs(this)">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is BlackListed?</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:none" id="divblackremakrs">
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Remakrs</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextArea("txtRemakrs", null, new { @class = "form-control", @id = "txtRemakrs", @name = "txtRemakrs", autocomplete = "off", @rows = "4" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="bankdetails">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Bank Name</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+
+                                                            @Html.DropDownListFor(model => model.BankID, (IEnumerable<SelectListItem>)ViewBag.BankList, "--Select--", new { @class = "form-control", @id = "ddlBankName", name = "ddlBankName", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Account Number</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="txtAccountNumber" placeholder="Enter Account Number" type="text" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">IFSC Code</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="txtIFSCCode" placeholder="Enter IFSC Code" type="text" class="form-control" style="text-transform: uppercase;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-sm-12" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Account Name</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="txtAccountName" placeholder="Enter Account Name" type="text" class="form-control" style="text-transform: uppercase;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Branch Name</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input id="txtBranchName" placeholder="Enter Branch Name" type="text" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Payment Mode</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.DropDownList("ddlpaymentmode", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                           new SelectListItem { Text = "NEFT", Value = "NEFT"},
+                                           new SelectListItem { Text = "DCR", Value = "DCR"},
+                                           }, new { @class = "form-control", autocomplete = "off" })
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="tab-pane" id="UploadFiles">
+
+                                        <div class="row">
+
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Document Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+
+                                                            @Html.DropDownList("ddlDrivertype", (IEnumerable<SelectListItem>)ViewBag.DocumentType, "--Select-- ", new { @class = "form-control", @id = "ddlDrivertype", name = "ddlDrivertype", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 col-sm-12" id="divAddDriverss">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Upload Files</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <div class="form-group" id="divFileUpload">
+                                                                <input type="file" id="fileJOAttachment" name="postedFile" />
+                                                                @*<input type="Button" id="btnUpload" value="Upload" class="btn btn-primary" />*@
+                                                            </div>
+
+
+                                                            @*<a href="#" onclick="Addattachments()">
+                            <i class="fa fa-paperclip fa-2x	" style="color:#6c4cbb" aria-hidden="true"></i>
+                            <span class="custom-switch-description" style="font-size:17px;color:#6c4cbb"></span>
+                        </a>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12" id="divAddDriverss">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <div class="form-group" id="divFileUpload">
+                                                                <input type="Button" id="btnUpload" value="Upload" class="btn btn-primary" />
+                                                            </div>
+
+
+                                                            @*<a href="#" onclick="Addattachments()">
+                            <i class="fa fa-paperclip fa-2x	" style="color:#6c4cbb" aria-hidden="true"></i>
+                            <span class="custom-switch-description" style="font-size:17px;color:#6c4cbb"></span>
+                        </a>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12" id="divshowDocs">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <div class="col">
+                                                            <button class="btn btn-primary btn-xs" id="btnviewDocs" onclick="ViewEditDriverDocs();">View Documents</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:20px">
+                        <div class="col-md-1 col-xs-4" id="divAddDriver">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="AddDriverDetails();">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-4" style="display:none" id="divEditDriver">
+
+
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="AddDriver();">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="txtDriverID" type="text" class="form-control" placeholder="New" style="visibility:hidden" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class=" content-area" id="divSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Driver Summary </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th class="wd-15p sorting">Driver Code</th>
+                                        <th class="wd-15p sorting">Driver Name</th>
+                                        <th class="wd-15p sorting">Transpoter</th>
+                                        <th class="wd-15p sorting">Account No</th>
+                                        <th class="wd-15p sorting">IFSC Code</th>s
+                                        <th class="wd-15p sorting">Bank Name</th>
+                                        <th class="wd-15p sorting">Branch Name</th>
+                                        <th class="wd-15p sorting">Payment Mode</th>
+                                        <th class="wd-15p sorting">DlNo</th>
+                                        <th class="wd-15p sorting">Dl Type</th>
+                                        <th class="wd-15p sorting">DOB Date</th>
+                                        <th class="wd-15p sorting">DlDate</th>
+                                        <th class="wd-15p sorting">DL Expity Date</th>
+                                        <th class="wd-15p sorting">Equipment Type</th>
+                                        <th class="wd-15p sorting">D Contact No</th>
+                                        <th class="wd-15p sorting">Insurance Company</th>
+                                        <th class="wd-15p sorting">Insurance no</th>
+                                        <th class="wd-15p sorting">Reference by</th>
+                                        <th class="wd-15p sorting">Reference Contact no</th>
+                                        <th class="wd-15p sorting">Current Address</th>
+                                        <th class="wd-15p sorting">Permanent Address</th>
+                                        <th class="wd-15p sorting">Vehicle type</th>
+                                        <th class="wd-15p sorting">Employe type</th>
+                                        <th class="wd-15p sorting">Adhar Number</th>
+                                        <th class="wd-15p sorting">Pan No.</th>
+                                        <th class="wd-15p sorting">Driver Type</th>
+                                        <th class="wd-15p sorting">IS Active</th>
+                                        <th class="wd-15p sorting">BlackList</th>
+                                        <th class="wd-15p sorting">BlackList Remakrs</th>
+                                        <th class="wd-15p sorting">Added by </th>
+                                        <th class="wd-15p sorting">Added Date</th>
+                                        <th class="wd-15p sorting">Modified By</th>
+                                        <th class="wd-15p sorting">Modified Date</th>
+
+
+
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContent'>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="myModal1" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContent1'>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+        $("#divshowDocs").hide();
+    })
+    function Getremakrs(element) {
+        if (element.checked == true) {
+            $("#divblackremakrs").show();
+        } else {
+            $("#divblackremakrs").hide();
+        }
+
+    }
+
+
+    function Addattachments() {
+        $.ajax({
+            type: "POST",
+            url: "/Driver/UploadedDriverattachment",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $('#myModal').modal('show');
+                $('#myModalContent').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+
+        });
+
+
+
+    });
+
+
+
+    function AddDriverDetails() {
+
+        var res = validateSaveFunction();
+        if (res == false) {
+            return false;
+        }
+        var DriverName = document.getElementById('txtdrivername').value;
+
+        var data1 = { 'DriverName': DriverName.replace(/'/g, "''").trim() };
+        var data = JSON.stringify(data1);
+
+        //alert(data);
+
+
+        $.ajax({
+            url: "/Driver/CheckDrivername",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response == 1) {
+                    alert("Driver name already exists!");
+                }
+                else {
+
+                    AddDriver();
+
+
+                }
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+
+    function AddDriver() {
+        var Driverid = $("#txtDriverID").val();
+
+        if (Driverid == "") {
+
+            var DlNo = $("#TxtDLNo").val();
+
+
+            $.ajax({
+                url: "/Driver/AjaxCheckLicenceNo",
+                data: '{DlNo: ' + JSON.stringify(DlNo) + '}',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+                    if (data == "Clear") {
+                        AddDriver1()
+                    } else {
+                        alert("Already Present this licence against this Driver Name " + data + "")
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        } if (Driverid != "") {
+            AddDriver1()
+        }
+    }
+    function AddDriver1() {
+
+        var txtDriverName = document.getElementById('txtdrivername').value;
+        var txtDriverID = $("#txtDriverID").val();
+        var TxtDlNo = $("#TxtDLNo").val();
+        var txtDlType = $("#ddlDltype option:selected").val();
+        var TxtDlDate = $("#DlDate").val();
+        var TxtDLExpityDate = $("#DlExpiryDate").val();
+        var TxtEquipmentType = $("#ddlEquipment option:selected").val();
+        var ContactNo = $("#TxtContactno").val();
+        var VehicleType = $("#ddlvehicletype option:selected").val();
+        var Insuranceno = $("#TxtInsuranceno").val();
+        var InsuranceCompany = $("#ddlinsurancecompany option:selected").val();
+        var Referenceby = $("#TxtReferenceby").val();
+        var ReferenceContactno = $("#TxtReferenceContactno").val();
+        var CurrentAddress = $("#TxtCurrenctAddress").val();
+        var PermanentAddress = $("#TxtPeramentaddress").val();
+        var Employetype = $("#DDlEmployeeType option:selected").val();
+        var AdharNumber = $("#TxtAdharnumber").val();
+        var PanNumber = $("#TxtPanNo").val();
+        var DOBDATE = $("#DlDOBDate").val();
+        var chkIsBlackList = document.getElementById("chkIsBlackList").checked;
+        if (chkIsBlackList == true) {
+            var res = validateRemakrsFunction();
+            if (res == false) {
+                return false;
+            }
+        }
+        var TxtRemakrs = $("#txtRemakrs").val();
+
+
+        var ddlBankName = $("#ddlBankName option:selected").text();
+        var ddlBankID = $("#ddlBankName option:selected").val();
+        var txtAccountNumber = $("#txtAccountNumber").val().replace(/'/g, "''").trim();
+        var txtIFSCCode = $("#txtIFSCCode").val().replace(/'/g, "''").trim();
+        var txtAccountName = $("#txtAccountName").val().replace(/'/g, "''").trim();
+        var txtBranchName = $("#txtBranchName").val();
+        var txtpaymentcode = $("#ddlpaymentmode").val();
+        var Drivertype = $("#TxtddlDriverType").val();
+        var txtTranporter = $("#ddlTranspoter option:selected").val();
+        var chkIsActive = document.getElementById("chkIsActive").checked;
+        var Driver = {};
+
+        Driver.DriverName = txtDriverName;
+
+        Driver.IsActive = chkIsActive;
+        Driver.DriverID = txtDriverID;
+        Driver.DlNo = TxtDlNo;
+        Driver.DlType = txtDlType;
+        Driver.DlDate = TxtDlDate;
+        Driver.DLExpityDate = TxtDLExpityDate;
+        Driver.EquipmentType = TxtEquipmentType;
+        Driver.DContactNo = ContactNo;
+        Driver.Insuranceno = Insuranceno;
+        Driver.InsuranceCompany = InsuranceCompany;
+        Driver.Referenceby = Referenceby;
+        Driver.ReferenceContactno = ReferenceContactno;
+        Driver.CurrentAddress = CurrentAddress;
+        Driver.PermanentAddress = PermanentAddress;
+        Driver.Employetype = Employetype;
+        Driver.chkIsBlackList = chkIsBlackList;
+        Driver.TxtRemakrs = TxtRemakrs;
+        Driver.Vehicletype = VehicleType;
+        Driver.TransporterID = txtTranporter;
+        Driver.BankName = ddlBankName;
+        Driver.BankID = ddlBankID;
+        Driver.AccountNo = txtAccountNumber;
+        Driver.IFSCCode = txtIFSCCode;
+        Driver.AccountName = txtAccountName;
+        Driver.BranchName = txtBranchName;
+        Driver.PaymentMode = txtpaymentcode;
+        Driver.AdharNumber = AdharNumber;
+        Driver.Pannumber = PanNumber;
+        Driver.Drivertype = Drivertype;
+        Driver.DOBDATE = DOBDATE;
+      
+        $.ajax({
+            url: "/Driver/ajaxDriverSaveDetails",
+            data: '{Driver: ' + JSON.stringify(Driver) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+               // alert("Record saved successfully!")
+                //addAttchmentINFolder(data)
+                document.getElementById('txtdrivername').value = "";
+                document.getElementById('txtDriverID').value = "";
+                document.getElementById('ddlBankName').value = "";
+                document.getElementById('ddlBankName').value = "";
+                document.getElementById('txtAccountNumber').value = "";
+                document.getElementById('txtIFSCCode').value = "";
+                document.getElementById('txtAccountName').value = "";
+                document.getElementById('txtBranchName').value = "";
+                document.getElementById('DriverID').value = "";
+                document.getElementById('ddlpaymentmode').value = "";
+                document.getElementById('ddlTranspoter').value = "";
+                document.getElementById('DriverID').value = "";
+                 alert("Record saved successfully!")
+                document.location = '@Url.Action("DriverSummary", "Driver")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+
+    $(document).ready(function () {
+        $('#btnUpload').click(function () {
+
+
+
+            var driverid = $("#DriverID").val();
+            if (driverid != 0) {
+                addAttchmentINFolder(driverid);
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Driver/GetMaxIDFromDriver",
+                    //data: data,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        $("#DriverID").val(data)
+                        addAttchmentINFolder(data);
+                    },
+                    failure: function (response) {
+                        alert(response);
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+
+                })
+            }
+
+
+        });
+
+
+    });
+
+
+    function addAttchmentINFolder(data) {
+
+        var MSNO = data;
+        var DocumenttypeID = $("#ddlDrivertype option:selected").val();
+        ///Attach
+        var fileUpload = $("#fileJOAttachment").get(0);
+        var files = fileUpload.files;
+
+        // Create FormData object
+        var fileData = new FormData();
+
+
+        if (files.length == 0) {
+            //alert("Please select File!!")
+            return false;
+        }
+        else {
+
+            var iSize = document.getElementById('fileJOAttachment').files[0].size / 1024
+            iSize = (Math.round((iSize / 1024) * 100) / 100)
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+
+                fileData.append(files[i].name, files[i]);
+
+            }
+
+            // Adding one more key to FormData object
+           // fileData.append('username', 'Manas');
+            fileData.append('MSNoFile', MSNO);
+            fileData.append('DocumenttypeID', DocumenttypeID);
+
+        }
+        //attach
+        $.ajax({
+            url: "/Driver/SaveAttachmentToDirectory",
+            type: "POST",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            data: fileData,
+            success: function (response) {
+
+                 $("#cute-loader").fadeOut("slow");
+
+                alert("Record saved successfully!")
+                @*document.location = '@Url.Action("DriverSummary", "Driver")';*@
+                },
+            error: function (errormessage) {
+                $("#cute-loader").fadeOut("slow");
+                alert("error");
+            }
+        })
+    }
+
+    function ViewSummaryDrivers() {
+        $("#divDriver").hide();
+        $("#divSummary").show();
+        $("#tracker-loader").fadeIn("slow");
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Driver/getDriver',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                //alert(JSON.stringify(data));
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "DriverID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-info" title="Edit" onclick="EditDeiverSummary(' + row.DriverID + ',\'' + row.DriverName.replace(/'/g, "\\'") + '\',\'' + row.AccountName.replace(/'/g, "\\'") + '\',\'' + row.AccountNo.replace(/'/g, "\\'") + '\',\'' + row.IFSCCode.replace(/'/g, "\\'") + '\',\'' + row.BankID.replace(/'/g, "\\'") + '\',\'' + row.BranchName.replace(/'/g, "\\'") + '\',\'' + row.BankName.replace(/'/g, "\\'") + '\',' + row.IsActive + ',\'' + row.TransporterName.replace(/'/g, "\\'") + '\',\'' + row.PaymentMode.replace(/'/g, "\\'") + '\',' + row.TransporterID + ',\'' + row.DlNo.replace(/'/g, "\\'") + '\',\'' + row.DlType.replace(/'/g, "\\'") + '\',\'' + row.DlDate.replace(/'/g, "\\'") + '\',\'' + row.DLExpityDate.replace(/'/g, "\\'") + '\',\'' + row.EquipmentType.replace(/'/g, "\\'") + '\',\'' + row.DContactNo.replace(/'/g, "\\'") + '\',\'' + row.InsuranceCompany.replace(/'/g, "\\'") + '\',\'' + row.Insuranceno.replace(/'/g, "\\'") + '\',\'' + row.Referenceby.replace(/'/g, "\\'") + '\',\'' + row.ReferenceContactno.replace(/'/g, "\\'") + '\',\'' + row.CurrentAddress.replace(/'/g, "\\'") + '\',\'' + row.PermanentAddress.replace(/'/g, "\\'") + '\',\'' + row.chkIsBlackList.replace(/'/g, "\\'") + '\',\'' + row.TxtRemakrs.replace(/'/g, "\\'") + '\',\'' + row.Vehicletype.replace(/'/g, "\\'") + '\',\'' + row.Employetype.replace(/'/g, "\\'") + '\', \'' + row.driver_vehicletypeID.replace(/'/g, "\\'") + '\',\'' + row.DLTypeID.replace(/'/g, "\\'") + '\',\'' + row.EquipmentTypeID.replace(/'/g, "\\'") + '\', \'' + row.Driver_vehicletypeID.replace(/'/g, "\\'") + '\',\'' + row.InsuranceCompanyID.replace(/'/g, "\\'") + '\',\'' + row.Employee_TypeID.replace(/'/g, "\\'") + '\',\'' + row.AdharNumber.replace(/'/g, "\\'") + '\',\'' + row.PanNo.replace(/'/g, "\\'") + '\',' + row.drivertypeid + ')"><i class="fa fa-edit"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        {
+                            "data": "DriverID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-primary" title="View" onclick="ViewDriverDocs(' + row.DriverID + ')">View Docs</a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "DriverID" },
+                        { "data": "DriverName" },
+                        { "data": "TransporterName" },
+                        { "data": "AccountNo" },
+                        { "data": "IFSCCode" },
+                         { "data": "BankName" },
+                        { "data": "BranchName" },
+                         { "data": "PaymentMode" },
+                        { "data": "DlNo" },
+                        { "data": "DlType" },
+                        { "data": "DOBDATE" },
+                        { "data": "DlDate" },
+                        { "data": "DLExpityDate" },
+                        { "data": "EquipmentType" },
+                        { "data": "DContactNo" },
+                        { "data": "InsuranceCompany" },
+                        { "data": "Insuranceno" },
+                        { "data": "Referenceby" },
+                        { "data": "ReferenceContactno" },
+                        { "data": "CurrentAddress" },
+                        { "data": "PermanentAddress" },
+                        { "data": "Vehicletype" },
+                        { "data": "Employetype" },
+                        { "data": "AdharNumber" },
+                        { "data": "PanNo" },
+                        { "data": "Drivertype" },
+                        { "data": "ActiveStatus" },
+                        { "data": "BlackListedStatus" },
+                        { "data": "TxtRemakrs" },
+                        { "data": "Addedby" },
+                        { "data": "Addedon" },
+                        { "data": "Modifiedby" },
+                        { "data": "Modifieddate" },
+
+
+                    ],
+                     "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'DriverDetails',
+                        "filename": 'DriverDetails_List'
+
+                    }
+                    ]
+
+                })
+
+
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+    function getBack() {
+        $("#divDriver").show();
+        $("#divSummary").hide();
+
+        $("#divEditDriver").hide();
+        $("#divAddDriver").show();
+    }
+
+
+   
+
+
+
+    function EditDeiverSummary(DriverID, DriverName, AccountName, AccountNo, IFSCCode, BankID, BranchName, BankName, IsActive, TransporterName,
+        PaymentMode, TransporterID, DlNo, DlType, DlDate, DLExpityDate, EquipmentType, DContactNo, InsuranceCompany, Insuranceno, Referenceby, ReferenceContactno
+        , CurrentAddress, PermanentAddress, chkIsBlackList, TxtRemakrs, Vehicletype, Employetype, driver_vehicletypeID, DLTypeID, EquipmentTypeID, Driver_vehicletypeID
+        , InsuranceCompanyID, Employee_TypeID, AdharNumber, PanNo, drivertypeid) {
+        debugger;
+        //For Buttons
+        $("#divEditDriver").show();
+        $("#divAddDriver").hide();
+        $("#divshowDocs").show();
+
+        
+        $("#divDriver").show();
+        $("#divSummary").hide();
+        document.getElementById('ddlpaymentmode').value = PaymentMode;
+        document.getElementById('ddlTranspoter').value = TransporterID;
+
+
+
+        document.getElementById('DriverID').value = DriverID;
+        document.getElementById('txtdrivername').value = DriverName;
+        document.getElementById('txtDriverID').value = DriverID;
+        document.getElementById('ddlBankName').value = BankID;
+
+        document.getElementById('txtAccountNumber').value = AccountNo;
+        document.getElementById('txtIFSCCode').value = IFSCCode;
+        document.getElementById('txtAccountName').value = AccountName;
+        document.getElementById('txtBranchName').value = BranchName;
+
+
+        document.getElementById('TxtDLNo').value = DlNo;
+        document.getElementById('ddlDltype').value = DLTypeID;
+        document.getElementById('DlDate').value = DlDate;
+        document.getElementById('DlExpiryDate').value = DLExpityDate;
+        document.getElementById('ddlEquipment').value = EquipmentTypeID;
+        document.getElementById('TxtContactno').value = DContactNo;
+        document.getElementById('ddlvehicletype').value = driver_vehicletypeID;
+        document.getElementById('TxtInsuranceno').value = Insuranceno;
+        document.getElementById('ddlinsurancecompany').value = InsuranceCompanyID;
+        document.getElementById('TxtReferenceby').value = Referenceby;
+        document.getElementById('TxtReferenceContactno').value = ReferenceContactno;
+        document.getElementById('TxtCurrenctAddress').value = CurrentAddress;
+        document.getElementById('TxtPeramentaddress').value = PermanentAddress;
+        document.getElementById('DDlEmployeeType').value = Employee_TypeID;
+        document.getElementById('TxtAdharnumber').value = AdharNumber;
+        document.getElementById('TxtPanNo').value = PanNo;
+        document.getElementById('TxtddlDriverType').value = drivertypeid;
+      
+      
+        if (chkIsBlackList == true) {
+            $("#divblackremakrs").show();
+            document.getElementById('chkIsBlackList').checked = true;
+            document.getElementById('txtRemakrs').value = TxtRemakrs;
+        } else {
+            $("#divblackremakrs").hide();
+            document.getElementById('txtRemakrs').value = "";
+        }
+        document.getElementById('chkIsBlackList').value = chkIsBlackList;
+        document.getElementById('chkIsActive').value = chkIsBlackList;
+        if (IsActive == true) {
+            document.getElementById('chkIsActive').checked = true;
+
+        } else {
+            document.getElementById('chkIsActive').checked = false;
+
+        }
+
+        document.getElementById("txtdrivername").style.borderColor = "gainsboro";
+        document.getElementById("ddlBankName").style.borderColor = "gainsboro";
+        document.getElementById("txtAccountNumber").style.borderColor = "gainsboro";
+        document.getElementById("txtIFSCCode").style.borderColor = "gainsboro";
+        document.getElementById("txtBranchName").style.borderColor = "gainsboro";
+        document.getElementById("ddlTranspoter").style.borderColor = "gainsboro";
+        document.getElementById("ddlpaymentmode").style.borderColor = "gainsboro";
+
+    }
+
+
+
+
+    function ViewDriverDocs(DriverID){
+
+        var data1 = { 'DriverID': DriverID };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/Driver/ShowDriverattachment",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $('#myModal1').modal('show');
+                $('#myModalContent1').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+
+
+    function ViewEditDriverDocs() {
+        var DriverID = $("#DriverID").val();
+        var data1 = { 'DriverID': DriverID };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/Driver/ShowDriverattachment",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $('#myModal1').modal('show');
+                $('#myModalContent1').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+
+</script>
+
+
+
+
+<script>
+    function validateSaveFunction() {
+
+        var txtdrivername = document.getElementById('txtdrivername').value;
+
+        var txtbankname = document.getElementById('ddlBankName').value;
+        var txtaccountno = document.getElementById('txtAccountNumber').value;
+        var txtifsccode = document.getElementById('txtIFSCCode').value;
+
+        var branchname = document.getElementById('txtBranchName').value;
+        var tranpoter = document.getElementById('ddlTranspoter').value;
+        var paymentmode = document.getElementById('ddlpaymentmode').value;
+        var Adharnumber = document.getElementById('TxtAdharnumber').value;
+
+
+
+        document.getElementById("txtdrivername").style.borderColor = "gainsboro";
+        document.getElementById("ddlBankName").style.borderColor = "gainsboro";
+        document.getElementById("txtAccountNumber").style.borderColor = "gainsboro";
+        document.getElementById("txtIFSCCode").style.borderColor = "gainsboro";
+        document.getElementById("txtBranchName").style.borderColor = "gainsboro";
+        document.getElementById("ddlTranspoter").style.borderColor = "gainsboro";
+        document.getElementById("ddlpaymentmode").style.borderColor = "gainsboro";
+        document.getElementById("TxtAdharnumber").style.borderColor = "gainsboro";
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (txtdrivername == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("txtdrivername").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+        //if (txtdriverid == "") {
+        //    document.getElementById("txtDriverID").style.borderColor = "red";s
+        //    blResult = blResult && false;
+        //}
+
+        if (txtbankname == "") {
+            document.getElementById("ddlBankName").style.borderColor = "red";
+
+            blResult = blResult && false;
+        }
+        if (txtaccountno == "") {
+            document.getElementById("txtAccountNumber").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (txtifsccode == "") {
+            document.getElementById("txtIFSCCode").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        //if (accountname == "") {
+        //    document.getElementById("txtAccountName").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        if (branchname == "") {
+            document.getElementById("txtBranchName").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (tranpoter == "") {
+            document.getElementById("ddlTranspoter").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (paymentmode == "") {
+            document.getElementById("ddlpaymentmode").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (Adharnumber == "") {
+            document.getElementById("TxtAdharnumber").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+<script>
+    function validateRemakrsFunction() {
+
+        var txtdrivername = document.getElementById('txtRemakrs').value;
+
+     
+
+
+
+        document.getElementById("txtRemakrs").style.borderColor = "gainsboro";
+      
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (txtdrivername == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("txtRemakrs").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+       
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+
+
+
+
+
+@*<script type="text/javascript">
+
+        function AddDriver() {
+
+            //var res = validateSaveFunction();
+            //if (res == false) {
+            //    return false;
+            //}
+
+            var txtDriverName = document.getElementById('txtdrivername').value;
+
+            var chkIsActive = document.getElementById("chkIsActive").checked;
+            var txtDriverID = $("#txtDriverID").val();
+
+            var ddlBankName = $("#ddlBankName option:selected").text();
+            var ddlBankID = $("#ddlBankName option:selected").val();
+            var txtAccountNumber = $("#txtAccountNumber").val().replace(/'/g, "''").trim();
+            var txtIFSCCode = $("#txtIFSCCode").val().replace(/'/g, "''").trim();
+            var txtAccountName = $("#txtAccountName").val().replace(/'/g, "''").trim();
+            var txtBranchName = $("#txtBranchName").val();
+            var txtpaymentcode = $("#ddlpaymentmode").val();
+            var txtTranporter = $("#ddlTranspoter option:selected").val();
+
+            var Driver = {};
+
+            Driver.DriverName = txtDriverName;
+
+            Driver.IsActive = chkIsActive;
+            Driver.DriverID = txtDriverID;
+            Driver.BankName = ddlBankName;
+            Driver.BankID = ddlBankID;
+            Driver.AccountNo = txtAccountNumber;
+            Driver.IFSCCode = txtIFSCCode;
+            Driver.AccountName = txtAccountName;
+            Driver.BranchName = txtBranchName;
+            Driver.PaymentMode = txtpaymentcode;
+            Driver.TransporterID = txtTranporter;
+
+
+            $.ajax({
+                url: "/Driver/ajaxDriverSaveDetails",
+                data: '{Driver: ' + JSON.stringify(Driver) + '}',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    alert(result);
+                    document.getElementById('txtdrivername').value = "";
+                    document.getElementById('txtDriverID').value = "";
+                    document.getElementById('ddlBankName').value = "";
+                    document.getElementById('ddlBankName').value = "";
+                    document.getElementById('txtAccountNumber').value = "";
+                    document.getElementById('txtIFSCCode').value = "";
+                    document.getElementById('txtAccountName').value = "";
+                    document.getElementById('txtBranchName').value = "";
+                    document.getElementById('DriverID').value = "";
+                    document.getElementById('ddlpaymentmode').value = "";
+                    document.getElementById('ddlTranspoter').value = "";
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+            document.location = '@Url.Action("DriverSummary", "Driver")';
+        }
+
+        function ViewSummaryDrivers() {
+
+
+            $("#divDriver").hide();
+            $("#divSummary").show();
+            $.ajax({
+                type: 'POST',
+                url: '/Driver/getDriver',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    $('#example1').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        //"bFilter": false,
+                        "paging": false,
+                        "aaData": data,
+                        "columns": [
+                             {
+                                 "data": "DriverID",
+                                 "render": function (data, type, row, meta) {
+                                     if (type === 'display') {
+
+                                         data = '<a   href="#" class="btn btn-sm btn-info" title="Edit" onclick="EditDeiverSummary(' + row.DriverID + ',\'' + row.DriverName.replace(/'/g, "\\'") + '\',\'' + row.AccountName.replace(/'/g, "\\'") + '\',\'' + row.AccountNo.replace(/'/g, "\\'") + '\',\'' + row.IFSCCode.replace(/'/g, "\\'") + '\',\'' + row.BankID.replace(/'/g, "\\'") + '\',\'' + row.BranchName.replace(/'/g, "\\'") + '\',\'' + row.BankName.replace(/'/g, "\\'") + '\',' + row.IsActive + ',\'' + row.TransporterName.replace(/'/g, "\\'") + '\',\'' + row.PaymentMode.replace(/'/g, "\\'") + '\',' + row.TransporterID + ')"><i class="fa fa-edit"></i></a>';
+                                     }
+
+                                     return data;
+                                 }
+
+
+                             },
+                            { "data": "DriverID" },
+                            { "data": "DriverName" },
+                              { "data": "TransporterName" },
+                            //{ "data": "AccountName" },
+                            { "data": "AccountNo" },
+                            { "data": "IFSCCode" },
+                            //{ "data": "BankID" },
+                             { "data": "BankName" },
+                            { "data": "BranchName" },
+
+                             { "data": "PaymentMode" },
+
+                        ],
+                         "dom": 'Bfrtip',
+
+                        "buttons": [{
+                            "extend": 'excel',
+                            "title": 'DriverDetails',
+                            "filename": 'DriverDetails_List'
+
+                        }
+                        ]
+
+                    })
+
+
+
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+
+        }
+
+        function getBack() {
+            $("#divDriver").show();
+            $("#divSummary").hide();
+
+            $("#divEditDriver").hide();
+            $("#divAddDriver").show();
+        }
+
+
+
+        function EditDeiverSummary(DriverID, DriverName, AccountName, AccountNo, IFSCCode, BankID, BranchName, BankName, IsActive, TransporterName , PaymentMode,TransporterID) {
+            //For Buttons
+            $("#divEditDriver").show();
+            $("#divAddDriver").hide();
+
+            //alert(TransporterName);
+            //alert(PaymentMode);
+
+            //For Div's
+            $("#divDriver").show();
+            $("#divSummary").hide();
+            document.getElementById('ddlpaymentmode').value = PaymentMode;
+            document.getElementById('ddlTranspoter').value = TransporterID;
+
+
+
+            document.getElementById('DriverID').value = DriverID;
+            document.getElementById('txtdrivername').value = DriverName;
+            document.getElementById('txtDriverID').value = DriverID;
+            document.getElementById('ddlBankName').value = BankID;
+
+            document.getElementById('txtAccountNumber').value = AccountNo;
+            document.getElementById('txtIFSCCode').value = IFSCCode;
+            document.getElementById('txtAccountName').value = AccountName;
+            document.getElementById('txtBranchName').value = BranchName;
+            document.getElementById("txtdrivername").style.borderColor = "gainsboro";
+            //document.getElementById("txtDriverID").style.borderColor = "gainsboro";
+            document.getElementById("ddlBankName").style.borderColor = "gainsboro";
+            document.getElementById("txtAccountNumber").style.borderColor = "gainsboro";
+            document.getElementById("txtIFSCCode").style.borderColor = "gainsboro";
+            //document.getElementById("txtAccountName").style.borderColor = "gainsboro";
+            document.getElementById("txtBranchName").style.borderColor = "gainsboro";
+            document.getElementById("ddlTranspoter").style.borderColor = "gainsboro";
+            document.getElementById("ddlpaymentmode").style.borderColor = "gainsboro";
+
+        }
+
+    </script>*@
+
+
+

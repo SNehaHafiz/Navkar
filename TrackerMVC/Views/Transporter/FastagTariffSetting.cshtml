@@ -1,0 +1,465 @@
+﻿
+@{
+    ViewBag.Title = "FastagTariffSetting";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+
+<div class="content-area overflow-hidden" id="divAddfastag">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Fastag Tariff Setting</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <button type="button" class="btn btn-danger" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-trash-o" style="font-size:24px;color:white"></i></button>
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryDetails();"><i class="fa fa-file-text"></i></button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Location</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlFromlocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlFromlocation", name = "ddlFromlocation", autocomplete = "off" })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Location</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlTOlocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlTOlocation", name = "ddlTOlocation", autocomplete = "off" })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Toll</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddltoll", (IEnumerable<SelectListItem>)ViewBag.TollLocation, "--Select--", new { @class = "form-control", @id = "ddltoll", name = "ddltoll", autocomplete = "off" })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Passing Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlpassing", new List<SelectListItem>
+                                          { new SelectListItem { Text = "--Select--", Value = ""},
+                                            new SelectListItem { Text = "MH", Value = "MH"},
+                                            new SelectListItem { Text = "GJ", Value = "GJ"},
+                                            }, new { @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                      
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.TextBox("TxtAmount", null, new { @class = "form-control", @id = "TxtAmount", @name = "TxtAmount", autocomplete = "off" })*@
+                                        <input id="TxtAmount" type="number" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-1 col-xs-4">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="SavetariffDetails();">Save</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class=" content-area" id="divEdit" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Edit Fastag Tariff Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="wd-15p sorting">Entry ID</th>
+                                        <th class="wd-15p sorting">Entry Date</th>
+                                        <th class="wd-15p sorting">From Location</th>
+                                        <th class="wd-15p sorting">To Location</th>
+                                        <th class="wd-15p sorting">Passing</th>
+                                        <th class="wd-15p sorting">Toll</th>
+                                        <th class="wd-15p sorting">Amount</th>
+                                        <th class="wd-15p sorting">Generated By</th>
+                                    </tr>
+                                   
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divView" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Fastag Tariff Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelFastag", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                <thead>
+                                    <tr></tr>
+
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+
+    function SavetariffDetails() {
+
+        var res = validateFunction();
+        if (res == false) {
+            return false;
+        }
+       var fromlocation =  $("#ddlFromlocation option:selected").val();
+        var Tolocation = $("#ddlTOlocation option:selected").val();
+        var Toll = $("#ddltoll option:selected").val();
+        var amount = $("#TxtAmount").val();
+        var Passing = $("#ddlpassing").val();
+        var data1 = { 'fromlocation': fromlocation, 'Tolocation': Tolocation, 'Toll': Toll, 'amount': amount, 'Passing': Passing};
+        var data = JSON.stringify(data1);
+       
+
+        $.ajax({
+            url: "/Transporter/CheckTariffexist",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+               if (data == 1) {
+                    alert("Record already exists in system!")
+                    $("#tracker-loader").fadeOut("slow");
+
+                } else {
+                    Save();
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Save() {
+       var fromlocation =  $("#ddlFromlocation option:selected").val();
+        var Tolocation = $("#ddlTOlocation option:selected").val();
+        var Toll = $("#ddltoll option:selected").val();
+        var amount = $("#TxtAmount").val();
+        var Passing = $("#ddlpassing").val();
+        var data1 = { 'fromlocation': fromlocation, 'Tolocation': Tolocation, 'Toll': Toll, 'amount': amount, 'Passing': Passing};
+        var data = JSON.stringify(data1);
+      
+
+        $.ajax({
+            url: "/Transporter/SaveFastagSetting",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert("record saved successfully!");
+                document.location = '@Url.Action("FastagTariffSetting", "Transporter")'
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+   
+
+    function getBack1() {
+        $("#divAddfastag").show();
+        $("#divEdit").hide();
+        $("#divView").hide();
+    }
+</script>
+
+
+<script>
+    function ViewSummary() {
+        $("#divAddfastag").hide();
+        $("#divEdit").show();
+        $("#divView").hide();
+        //$("#divEditfastag").hide();
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+
+            url: '/Transporter/GetFasttagtariffdetails',
+            type: 'Post',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#example').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "columns": [
+                        {
+                            "data": "entryid",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-danger" title="Cancel" onclick="CancelDetails(' + row.entryid + ')"><i class="fa fa-trash"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "entryid" },
+                        { "data": "Entrydate" },
+                        { "data": "Fromid" },
+                        { "data": "Toid" },
+                        { "data": "passing" },
+                        { "data": "toll" },
+                        { "data": "Amount" },
+                        { "data": "UserName" },
+                    ],
+                    "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'Fastag Summary',
+                        "filename": 'FastagSummary_List'
+
+                    }
+                    ]
+                });
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+
+    function CancelDetails(entryid) {
+        alert(entryid);
+        var data1 = { 'entryid': entryid };
+        var data = JSON.stringify(data1);
+
+         $.ajax({
+            url: "/Transporter/CancelDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert("record saved successfully!");
+                document.location = '@Url.Action("FastagTariffSetting", "Transporter")'
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function validateFunction() {
+
+        var Txtfromlocation = document.getElementById('ddlFromlocation').value;
+        var txtTolocation = document.getElementById('ddlTOlocation').value;
+        var TxtToll = document.getElementById('ddltoll').value;
+        var TxtAmount = document.getElementById('TxtAmount').value;
+
+
+
+
+
+        document.getElementById("ddlFromlocation").style.borderColor = "gainsboro";
+        document.getElementById("ddlTOlocation").style.borderColor = "gainsboro";
+        document.getElementById("ddltoll").style.borderColor = "gainsboro";
+        document.getElementById("TxtAmount").style.borderColor = "gainsboro";
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (Txtfromlocation == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("ddlFromlocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (txtTolocation == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("ddlTOlocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (TxtToll == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("ddltoll").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (TxtAmount == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("TxtAmount").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+
+<script>
+    function ViewSummaryDetails() {
+        $("#divAddfastag").hide();
+        $("#divEdit").hide();
+        $("#divView").show();
+       
+        $.ajax({
+            type: 'POST',
+            url: '/Transporter/GetfastagsummaryDetails1',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (jsonResult) {
+                $("#example1").empty();
+                RepTableDataJson($("#example1"), jsonResult, "Voucher Closed Details", "VoucherClosedDetails_List");
+                
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+               
+            }
+        });
+    }
+</script>
+
+
+
+<script>
+    $('#ddlpassing').change(function (e) {
+        var TollID = $("#ddltoll option:selected").val();
+        var Passing = $("#ddlpassing option:selected").val();
+        var data1 = { 'TollID': TollID, 'Passing': Passing };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Transporter/AjaxGetTollAmount",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#TxtAmount").val(data);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+
+
+    });
+</script>

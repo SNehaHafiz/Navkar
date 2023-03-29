@@ -1,0 +1,168 @@
+﻿
+<div>
+
+    @model IEnumerable<TrackerMVCEntities.BusinessEntities.TransportEntities>
+
+
+
+    <div class="page-header">
+        <h4 class="page-title">Transportor List</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();"><i class="fa fa-file-text"></i></button>*@
+                    <a onclick="window.location = '@Url.Action("Transporter", "Transporter")' " class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Add Trolley"></i> </a>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th style ="visibility:hidden"></th>
+                                            <th style="visibility:hidden"></th>
+                                            <th>Transportor Name</th>
+                                            <th>Registration Date</th>
+                                            
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                            <tr>
+                                                <td><a class="btn btn-sm btn-primary" href="#" data-toggle="tooltip" onclick="ViewData(@d.TransID)" data-original-title="View"><i class="fa fa-eye"></i> </a></td>
+                                                <td><a class="btn btn-sm btn-success" href="#" data-toggle="tooltip" onclick="EditData(@d.TransID)" data-original-title="Edit"><i class="fa fa-edit"></i> </a></td>
+                                                <td>@Html.DisplayFor(m => d.TRANSNAME)</td>
+                                                <td>@Html.DisplayFor(m => d.RegDateString)</td>                                              
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('#example2').DataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "bPaginate": false,
+                //"bFilter": false,
+                "paging": false,
+                "dom": 'Bfrtip',
+                "buttons": [{
+                    "extend": 'excel',
+                    "title": 'Transportor Master',
+                    "filename": 'Transportor_List'
+
+                }
+                ]
+            });
+
+
+
+        });
+</script>
+
+<script>
+
+    function EditData(id) {
+        // alert(id);
+
+        var data = JSON.stringify({
+            'ID': id
+        });
+
+        $.ajax({
+            url: "/Transporter/EditTransportorDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //  dataType: "json",
+            success: function (data) {
+             //   alert(JSON.stringify(data))
+                //  document.getElementById('txtTransID').val = data.TransportList.TransID;
+             //   alert(data.TransportList.TransID);
+                $("#txtTransID").val(data.TransportList.TransID);
+              //  alert($("#txtTransID").val());
+
+
+
+                $("#txtTransporterName").val(data.TransportList.TRANSNAME);
+                $("#txtRegDate").val(data.TransportList.RegDateString);
+                $("#txtAddress").val(data.TransportList.ADDRESS);
+                $("#txtContactPerson").val(data.TransportList.CONTACTPERSON)
+                $("#txtContactNo").val(data.TransportList.MOBILENO)
+                $("#txtEmailID").val(data.TransportList.EmailID)
+               
+
+                $('#banklist').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    /// "aaData": data,
+                    "aaData": data.Banklist,
+                    "columns": [
+                        { "data": "BankName" },
+                        { "data": "AccountNo" },
+                        { "data": "IFSCCode" },
+                        { "data": "AccountName" },
+                        { "data": "BranchName" },
+                        { "data": "EmailID" },
+
+                        {
+                            "data": "TempID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                                    // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        }
+                    ]
+                });
+
+                $("#divTransportor").show()
+                $('#divTransportorsummaryList').hide()
+                $('#divTransportorsummaryList').html(response);
+                //  $('#AGaID').addClass("form-control disabled");
+                // $('.code').attr("disabled", true);
+               // document.getElementById("custCode").readOnly = true;
+            }
+        });
+    }
+</script>
+
+
+
+
+

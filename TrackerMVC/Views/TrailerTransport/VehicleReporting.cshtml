@@ -1,0 +1,381 @@
+﻿
+@{
+    ViewBag.Title = "VehicleReporting";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area" id="DivAddVehicleReporting">
+    <div class="page-header">
+        <h4 class="page-title">Vehicle Reporting</h4>
+        <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ShowVehicleReporting();"><i class="fa fa-file-text"></i></button>
+
+
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Reporting ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.TextBox("txtissue", null, new { @class = "form-control", @id = "txtissue", name = "txtissue", autocomplete = "off", @maxlength = 500,  @readonly = "Readonly" })*@
+                                        @Html.TextBox("txtreproting", null, new { @class = "form-control", @readonly = "readonly", placeholder = "ReportingID_New" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Reporting Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.TextBox("txtissue", null, new { @class = "form-control", @id = "txtissue", name = "txtissue", autocomplete = "off", @maxlength = 500,  @readonly = "Readonly" })*@
+                                        @Html.TextBox("txtreportingdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm"), @readonly = "readonly" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No(Last 4 digits)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                            <label class="form-label">Trailer No </label>
+                            <select id="ddlTrailerNo" class="form-control">
+                                <option value="">--Select--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Driver Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtdrivername", null, new { @class = "form-control", @id = "txtdrivername", name = "txtdrivername", autocomplete = "off", @readonly = "readonly" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Contact No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContact", null, new { @class = "form-control", @id = "txtContact", name = "txtContact", autocomplete = "off"})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtRemarks", null, new { @class = "form-control", @id = "txtRemarks", name = "txtRemarks", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="btnSave" name="save" value="Save" class="btn btn-success" onclick="SaveReportingDetails()" />
+                                        <input type="text" id="driverid" style="visibility:hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- table-wrapper -->
+        </div>
+        <!-- section-wrapper -->
+    </div>
+</div>
+
+<div class=" content-area overflow-hidden" id="DivVehicleReporting" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Vehicle Reporting Summary : <label id="lblcount"></label>
+        </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th>Sr No</th>
+                                            <th>Trailer NO</th>
+                                            <th>Reporting on</th>
+                                            <th>DWell Hours</th>
+                                            <th>Driver Name</th>
+                                            <th>Driver Code</th>
+                                            <th>Contact no</th>
+                                            <th>Remarks</th>
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+
+    function SaveReportingDetails() {
+        var Reprtingdate = $("#txtreportingdate").val();
+        var Trailerno = $("#ddlTrailerNo option:selected").text();
+        var Driverid = $("#driverid").val();
+        var Contactno = $("#txtContact").val();
+        var Remakes = $("#txtRemarks").val();
+
+        var data1 = { 'Reprtingdate': Reprtingdate, 'Trailerno': Trailerno, 'Driverid': Driverid, 'Contactno': Contactno, 'Remakes': Remakes };
+        var data = JSON.stringify(data1);
+        alert(data);
+
+        $.ajax({
+            url: "/TrailerTransport/SaveVehicleReporting",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("VehicleReporting", "TrailerTransport")';
+    }
+</script>
+
+
+
+
+<script>
+    function ShowVehicleReporting() {
+        $("#DivAddVehicleReporting").hide();
+        $("#DivVehicleReporting").show();
+     
+        $.ajax({
+            url: "/TrailerTransport/AjaxVehicleReportingDetails",
+           // data: '{vehicletype: ' + JSON.stringify(vehicletype) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#lblcount').text(data.length);
+                $('#example1').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": true,
+                    "aaData": data,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "retrieve": false,
+                    "paging": false,
+                    "aaSorting": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0,1]
+                        },
+                        
+                    ],
+                   
+                    "columns": [
+                        {
+                            "data": "ReportingID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-info" title="Update" onclick="EditVehicleDetails()"><i class="fa fa-edit"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        {
+                            "data": "ReportingID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-danger" title="Cancel" onclick="CancleVehicleDetails(' + row.ReportingID +')"><i class="fa fa-trash"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "SrNo" },
+                        { "data": "TrailerNO" },
+                        { "data": "Reportingon" },
+                        { "data": "DWellHours" },
+                        { "data": "DriverName" },
+                        { "data": "Driverid" },
+                        { "data": "Contact" },
+                        { "data": "Remarks" },
+                       
+                    ],
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'VehicleReportingDetails',
+                        "filename": 'VehicleReportingDetails_List'
+
+                    }
+                    ]
+                });
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function getBack() {
+        $("#DivAddVehicleReporting").show();
+        $("#DivVehicleReporting").hide();
+    }
+
+
+
+    function CancleVehicleDetails() {
+
+    }
+   
+</script>
+
+<script>
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlTrailerNo");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+
+    $('#ddlTrailerNo').change(function (e) {
+        var trailername = $("#ddlTrailerNo option:selected").text();
+
+        $.ajax({
+            url: "/UpdateDischarge/Ajaxgetdriverbytrailer",
+            data: '{trailername: ' + JSON.stringify(trailername) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $("#txtdrivername").val(data.DriverName)
+                $("#driverid").val(data.DriverID)
+                $("#txtpermittype").val(data.Permit)
+                $("#txtpermitexpiry").val(data.PermitExpiry)
+                $("#txtContact").val(data.ContactNo)
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+
+</script>

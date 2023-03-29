@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "Ministry Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+
+    .eye {
+        text-align: left;
+    }
+</style>
+<div id="tracker-loader"></div>
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Ministry Report</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                           
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowCategoryWiseTDSDetails()" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <button class="btn btn-orange" id="btnKDMTeam" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileKDMTeam()"></i></button>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr>
+
+                                            @*<th class="wd-10p sorting">Sr No</th>
+                                                <th class="wd-10p sorting">Paid ID</th>*@
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+
+<script type="text/javascript">
+        function GetExcelFileKDMTeam() {
+
+        window.location = '@Url.Action("ExportToExcelSummaryMinistry", "Report")?';
+
+    }
+    function ShowCategoryWiseTDSDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+       
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate  };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/MinistryreportSummary',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

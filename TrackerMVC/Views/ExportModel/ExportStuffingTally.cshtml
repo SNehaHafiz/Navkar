@@ -1,0 +1,590 @@
+﻿
+@{
+    ViewBag.Title = "ExportStuffingTally";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    table#example1 th {
+        background-color: #8969eb;
+        text-align: center;
+        color: white;
+    }
+</style>
+<div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+    <div class="page-header">
+        <h5 class="page-title">Export Stuffing Tally</h5>
+
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("WorkOrder", "WorkOrder")" target="_blank" class="btn btn-info text-right" style="align-content:center;color:white"><i class="fa fa-reply-all" data-placement="bottom" title="Open Work Order"></i> </a>
+
+                <a href="@Url.Action("ExportStuffingReport", "Report")" target="_blank" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Summary"></i> </a>
+            </li>
+        </ol>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Stuffing Request ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtStuffingRequestID", null, new { @class = "form-control ", @id = "txtStuffingRequestID", autocomplete = "off", Placeholder = "", @Value = ViewBag.cartingid })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="OnAddContainer()"><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Stuffing ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtStuffingID", null, new { @class = "form-control ", @id = "txtStuffingID", autocomplete = "off", Placeholder = "NEW", @readonly = "true" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Stuffing Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtStuffingDate", null, new { @class = "form-control form_datetime1 ", @id = "txtStuffingDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00"), @readonly = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vessel Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtVesselName", null, new { @class = "form-control ", @id = "txtVesselName", Placeholder = "Vessel Name", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Shipping Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtShippingName", null, new { @class = "form-control ", @id = "txtShippingName", Placeholder = "Shipping" +
+                                       " Name", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vai No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtVaiNo", null, new { @class = "form-control ", @id = "txtVaiNo", Placeholder = "Vai No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">POD</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtPOD", null, new { @class = "form-control ", @id = "txtPOD", Placeholder = "POD", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vendor Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="ddlVendorName" />
+                                        <input type="hidden" class="form-control" id="hdnddlVendorID" />
+                                        @*@Html.DropDownList("ddlcha", (IEnumerable<SelectListItem>)ViewBag.CHAList, "--Select--", new { @class = "form-control", @id = "ddlcha", name = "ddlcha", autocomplete = "off" })*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Stuff Qty</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtStuffQty", null, new { @class = "form-control ", @id = "txtStuffQty", Placeholder = "Stuff Qty", @autocomplete = "off", @readonly = "true", Style = "font-weight: bold;text-align:right;background:#FFFFE0;color:black" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Stuff Wt</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtStuffWt", null, new { @class = "form-control ", @id = "txtStuffWt", Placeholder = "Stuff Wt", @autocomplete = "off", @readonly = "true", Style = "font-weight: bold;text-align:right;background:#FFFFE0;color:black" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                    <thead>
+                                        <tr>
+
+
+                                            <th class="wd-10p sorting">SB No</th>
+                                            <th class="wd-10p sorting">Container No</th>
+                                            <th class="wd-10p sorting">Size</th>
+                                            <th class="wd-10p sorting">ISO Code</th>
+                                            <th class="wd-10p sorting">Cargo Desc</th>
+                                            <th class="wd-10p sorting">Cargo Qty</th>
+                                            <th class="wd-10p sorting">Cargo Wieght</th>
+                                            <th class="wd-10p sorting">Stuffed Qty</th>
+                                            <th class="wd-10p sorting">BL Qty</th>
+                                            <th class="wd-10p sorting">Stuffed Wieght</th>
+                                            <th class="wd-10p sorting">BL Wieght</th>
+                                            <th class="wd-10p sorting">Tare Wieght</th>
+                                            <th class="wd-10p sorting">Agent Seal</th>
+                                            <th class="wd-10p sorting">Custome Seal</th>
+                                            <th class="hiderow" style="width:10px;color: white;text-align:center">lblContainerNo</th>
+                                            <th class="hiderow" style="width:10px;color: white;text-align:center">EntryID</th>
+
+                                            <th class="wd-10p sorting">QtyUnit</th>
+
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function OnAddContainer() {
+        
+        var StuffingRequestID = $("#txtStuffingRequestID").val();
+        
+        var data1 = { 'StuffingRequestID': StuffingRequestID };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExportModel/ExportStuffing',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        { "data": "SBNumber" },
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "ISOCode" },
+                        { "data": "CargoDesc" },
+                        { "data": "CargoQty" },
+                        { "data": "CargoWeight" },
+                        {
+                            "data": "StuffedQty",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtStuffedQty' + row.ContainerNo + '_' + row.SBNumber + '\" class=\"form-control\" id=\"txtStuffedQty' + row.ContainerNo + '_' + row.SBNumber + '\" onchange=\" ChkAmtValidate(this)\" style=\"width: 100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+                            }
+                        },
+                        { "data": "BLQty" },
+                        {
+                            "data": "StuffedWeight",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtStuffedWeight' + row.ContainerNo + '_' + row.SBNumber + '\" class=\"form-control\" id=\"txtStuffedWeight' + row.ContainerNo + '_' + row.SBNumber + '\" style=\"width:100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+                            }
+                        },
+                        { "data": "BLWeight" },
+                        { "data": "TareWeight" },
+                        {
+                            "data": "AgentSeal",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtAgentSeal' + row.ContainerNo + '_' + row.SBNumber + '\" class=\"form-control\" id=\"txtAgentSeal' + row.ContainerNo + '_' + row.SBNumber + '\" style=\"width:100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "CustomSeal",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtCustomSeal' + row.ContainerNo + '_' + row.SBNumber + '\" class=\"form-control\" id=\"txtCustomSeal' + row.ContainerNo + '_' + row.SBNumber + '\" style=\"width:100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+                            }
+                        },
+                        { "data": "SBEntryID", "className": "hiderow" },
+                        { "data": "EntryID", "className": "hiderow" },
+                        { "data": "QtyUnit" },
+                    ]
+                });
+
+                
+                    GetShowStuffing(StuffingRequestID);
+                
+                
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    function GetShowStuffing(StuffingRequestID) {
+        
+        
+
+            ///svar StuffingRequestID = $("#txtStuffingRequestID").val();
+
+            var data1 = { 'StuffingRequestID': StuffingRequestID };
+            var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExportModel/ExportStuffingName',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+
+
+                $("#txtVesselName").val(data.txtvessell);
+                $("#txtVaiNo").val(data.txtvia);
+                $("#txtPOD").val(data.txtpod);
+                $("#txtShippingName").val(data.txtshipper);
+
+                //$("#").val(IGM_BLNo);
+                //$("#").val(IGM_PackType);
+                //$("#").val(IGM_GrossVol);
+                //$("#").val(IGM_GrossWt);
+                //$("#").val(IGM_WtUnit);
+
+
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+
+                        { "data": "SBNumber" },
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "ISOCode" },
+                        { "data": "CargoDesc" },
+                        { "data": "CargoQty" },
+                        { "data": "CargoWeight" },
+                        {
+
+                            "data": "StuffedQty",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtStuffedQty' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" class=\"form-control\" id=\"txtStuffedQty' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" onchange=\" ChkAmtValidate(this)\" style=\"width: 100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+
+                        { "data": "BLQty" },
+                        {
+
+                            "data": "StuffedWeight",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtStuffedWeight' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" class=\"form-control\" id=\"txtStuffedWeight' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" style=\"width:100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+
+                        { "data": "BLWeight" },
+                        { "data": "TareWeight" },
+
+                        {
+
+                            "data": "AgentSeal",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtAgentSeal' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" class=\"form-control\" id=\"txtAgentSeal' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" style=\"width:100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+
+
+                        {
+
+                            "data": "CustomSeal",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtCustomSeal' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" class=\"form-control\" id=\"txtCustomSeal' + row.ContainerNo + '_' + row.SBNumber.replace(/\\|\//g, '') + '\" style=\"width:100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+
+                        { "data": "SBEntryID", "className": "hiderow" },
+                        { "data": "EntryID", "className": "hiderow" },
+                        { "data": "QtyUnit" },
+                    ]
+                });
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    
+
+    }
+
+
+</script>
+
+<script>
+    function ChkAmtValidate(id) {
+        var Currentindex = id.closest('tr').rowIndex;
+
+
+
+        var table = document.getElementById("example1");
+
+
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            if (i == Currentindex) {
+
+                row = table.rows[i];
+
+                EntryID = row.cells[0].innerText;
+                ContainerNo = row.cells[1].innerText;
+
+
+
+                
+                var CargoQty = row.cells[5].innerHTML;
+                var CargoWeight = row.cells[6].innerHTML;
+                DestuffQty = $("#txtStuffedQty" + ContainerNo + "_" + EntryID.replace(/\\|\//g, '') + " ").val();
+                
+
+              
+
+                if (DestuffQty != 0 && DestuffQty != "") {
+                    if (parseInt(CargoQty) >= parseInt(DestuffQty)) {
+                        var intvalue = Math.round((parseInt(CargoQty) - parseInt(DestuffQty)));
+                        row.cells[8].innerHTML = intvalue;
+                    }
+                    else {
+                        row.cells[8].innerHTML = 0;
+                    }
+                }
+                if (DestuffQty != 0 && DestuffQty != "") {
+                    if (parseInt(CargoQty) >= parseInt(DestuffQty) && parseInt(CargoWeight) > 0) {
+
+                        var intvalue11 = Math.round((parseInt(CargoWeight) / parseInt(CargoQty)) * parseInt(DestuffQty));
+                        row.cells[9].innerHTML = intvalue11;
+                    }
+                    else {
+
+                        row.cells[9].innerHTML = 0;
+                    }
+                }
+            }
+
+        }
+    }
+
+
+
+
+
+    function Save() {
+
+        var StuffingRequestID = $("#txtStuffingRequestID").val();
+
+        var data1 = {
+            'StuffingRequestID': StuffingRequestID
+        };
+        var data = JSON.stringify(data1);
+        
+        $.ajax({
+            url: "/ExportModel/CheckStuffingTallyDone",
+        data: data,
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            if (data != "") {
+                alert(data);
+                return false;
+            } else {
+                Save1();
+            }
+        },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+    });
+    }
+
+
+    function Save1() {
+         
+          var txtPOD = $("#txtPOD").val();
+          var txtStuffingRequestID = $("#txtStuffingRequestID").val();
+          var txtStuffingDate = $("#txtStuffingDate").val();
+          var hdnddlVendorID = $("#hdnddlVendorID").val();
+            var SelectedData = new Array();
+            var tablearray = new Array();
+           var table = document.getElementById("example1");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+                row = table.rows[i];
+                SBNumber = row.cells[0].innerText;
+                ContainerNo = row.cells[1].innerText;
+                Size = row.cells[2].innerText;
+                ISOCode = row.cells[3].innerText;
+                CargoDesc = row.cells[4].innerText;
+                CargoQty = row.cells[5].innerText;
+                CargoWeight = row.cells[6].innerText;
+                
+                StuffedQty = $("#txtStuffedQty" + ContainerNo + "_" + SBNumber.replace(/\\|\//g, '') + "").val();
+
+                if (StuffedQty == "" || StuffedQty == "0" || StuffedQty == "undefined") {
+                    alert("Please add the Stuffing Qty!");
+                    return false;
+                }
+
+                BLQty = row.cells[8].innerText;
+                StuffedWeight = row.cells[9].innerText;
+
+
+                if (StuffedWeight == "" || StuffedWeight == "0" || StuffedWeight == "undefined") {
+                    alert("Please add the Stuffing Weight!");
+                    return false;
+                }
+
+                BLWeight = row.cells[10].innerText;
+                TareWeight = row.cells[11].innerText;
+                AgentSeal = $("#txtAgentSeal" + ContainerNo + "_" + SBNumber.replace(/\\|\//g, '') + "").val();
+                CustomSeal = $("#txtCustomSeal" + ContainerNo + "_" + SBNumber.replace(/\\|\//g, '') + "").val();
+                SBEntryID = row.cells[14].innerText;
+                EntryID = row.cells[15].innerText;
+                QtyUnit = row.cells[16].innerText;
+                SelectedData.push({
+                    'SBNumber': SBNumber, 'ContainerNo': ContainerNo, 'Size': Size, 'ISOCode': ISOCode, 'CargoDesc': CargoDesc, 'CargoWeight': CargoWeight,
+                    'StuffedQty': StuffedQty, 'BLQty': BLQty, 'StuffedWeight': StuffedWeight, 'BLWeight': BLWeight, 'TareWeight': TareWeight, 'AgentSeal': AgentSeal,
+                    'CustomSeal': CustomSeal, 'SBEntryID': SBEntryID, 'EntryID': EntryID, 'QtyUnit': QtyUnit
+                })
+            }
+            var data1 = {
+                'Debitdata': SelectedData, 'txtStuffingRequestID': txtStuffingRequestID, 'txtStuffingDate': txtStuffingDate, 'txtPOD': txtPOD, 'hdnddlVendorID': hdnddlVendorID
+            };
+        var data = JSON.stringify(data1);
+
+  
+       
+
+                          $.ajax({
+                              url: "/ExportModel/ExportStuffingTallySave",
+                            data: data,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                              success: function (data) {
+                                  alert(data);
+                                  document.location = '@Url.Action("ExportStuffingTally", "exportModel")';
+                            },
+                              error: function (error) {
+                                  let str = error.responseText;
+                                  var a = str.indexOf("<title>") + 7;
+                                  var b = str.indexOf("</title>");
+                                  str = str.substring(a, b);
+                                  alert("Something went wrong: " + str);
+                              }
+                        });
+    }
+</script>

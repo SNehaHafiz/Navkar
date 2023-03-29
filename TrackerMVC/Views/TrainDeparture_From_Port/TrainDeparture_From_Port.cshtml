@@ -1,0 +1,525 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.ContainerDetails>
+@{
+    ViewBag.Title = "TrainDeparture_From_Port";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+<link href="~/css/DateTimePickerBL.css" rel="stylesheet" />
+<script src="~/js/DateTimePickerForBL.js"></script>
+
+<div class="page-header">
+    <h4 class="page-title">Train Planning</h4>
+
+    <div class="form-group">
+        <label class="form-label"></label>
+        <div class="row gutters-xs">
+            <div class="col">
+                @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                <button type="button" class="btn btn-icon btn-teal" onclick="window.location = '@Url.Action("TrainDeparture", "Train")' " name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="form-horizontal">
+
+                    <div class="row">
+
+                        <div class="col-lg-10 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label ">Port Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.TrainNO, new { htmlAttributes = new { @class = "form-control", @id = "trainNO", autocomplete = "on", maxlength = 100 } })*@
+
+                                        <div class="input-group-append ml-10">
+                                            @if (ViewBag.portList.Count > 0)
+                                            {
+
+                                                foreach (var d in ViewBag.portList)
+                                                {
+
+                                                    <button type="button" class="btn btn-outline-info" onclick="onPortClick(@d.PortID,@d.PortCode)" id="@d.PortCode"> @d.PortName</button>
+
+                                                }
+
+
+                                            }
+                                            @* <input type="text" id="portID" class="display_none" />*@
+                                            <label id="portID" class="display_none"></label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <button type="button" class="btn btn-instagram">Selected TEUS: <span id="selected_count"></span> </button>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                        <div class="mr-2 ml-0" >
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="selectAll" value="selectAll" onclick="selectAll(checked)">
+                                <span class="custom-control-label">Select all</span>
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="selectNone" value="selectNone" onclick="selectNone(checked)">
+                                <span class="custom-control-label">Select none</span>
+                            </label>
+                        </div>
+
+
+                        </div>*@
+                    <div>
+                        <div id="data_table"></div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label ">Train NO</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*@Html.EditorFor(model => model.TrainNO, new { htmlAttributes = new { @class = "form-control", @id = "trainNO", autocomplete = "on", maxlength = 100 } })*@
+                                    @Html.DropDownList("ddlTrainNo",
+                                            (IEnumerable<SelectListItem>)ViewBag.TrainNO,
+                                              new { @class = "form-control" })
+                                    <input type="text" id="trainNO" class="display_none" value="0" />
+                                    @*<label id="trainNO" class="display_none"></label>*@
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="submit" id="Save" onclick="saveTrainDeparture();" name="saveProfile" value="Save" class="btn btn-success" />
+                                    @*<input type="button" name="clearProfile" value="Clear" class="btn btn-gray" title="clear" id="clearValue" />*@
+                                    <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            var message = @Html.Raw(Json.Encode(ViewBag.Message))
+            alert(message);
+
+        };
+
+    </script>
+}
+
+
+
+
+<script>
+
+    var portList, containerList, trainNO;
+    portList =  @Html.Raw(Json.Encode(ViewBag.portList))
+    containerList = @Html.Raw(Json.Encode(ViewBag.containerList))
+    trainNO = @Html.Raw(Json.Encode(ViewBag.TrainNO))
+        function onPortClick(pID, pCode) {
+            for (var i = 0; i < portList.length; i++) {
+                if (pID == portList[i].PortID) {
+                    $(pCode).addClass("selected");
+                } else {
+                    $("button#" + portList[i].PortCode + ".btn.btn-outline-info").removeClass("selected");
+                }
+            }
+            // document.getElementById('portID').value = (pID);
+            document.getElementById("portID").value = pID;
+            $('#portID').val(pID);
+
+            //$("#selected_count").text(0);
+            $.ajax({
+                url: "/TrainDeparture_From_Port/GetContainerForPortTrainDeparture",
+                type: "POST",
+                dataType: "json",
+                data: { portID: pID },
+                success: function (data) {
+                    selectedContainerForPortDisplay(data);
+                }
+            });
+
+
+        }
+    function saveTrainDeparture() {
+        var PortID = $('selected').Text;
+        var trainNO = $('#trainNO').val();
+
+        
+        // alert("Only checked container with wagon no will be saved!")
+        /////////////for wagon validation
+
+        var TrainList = [];
+        var table = document.getElementById("container_table");
+        var row;
+        var checkboxarray = [];
+
+        $('input[type=checkbox]').each(function () {
+            console.log('input[type=checkbox]')
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+        //  alert(JSON.stringify(checkboxarray))
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+            //  alert(JSON.stringify(row));
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+                var x = row.cells[0].childNodes[1].value;
+                var y = row.cells[2].childNodes[1].value;
+
+                var z = row.cells[4].childNodes[1].value;
+
+                if (x == checkboxarray[k]) {
+                   // alert(z)
+                    if (z == "") {
+                        alert("Wagon number cannot be left blank for Container No.: " + y + "")
+                        return false;
+                    }
+                }
+
+
+            }
+        }
+
+
+        if ($("#selected_count").text() > 90)
+        {
+            alert("TEUS cannot be greater than 90")
+            return false;
+        }
+
+        //alert(JSON.stringify(TrainList));
+
+        if (trainNO != null && trainNO != undefined && trainNO != " " && trainNO != "") {
+
+            // document.getElementById("portID").value;
+            $.ajax({
+                url: "/TrainDeparture_From_Port/UpdateTrainNoForSelectedContainer",
+                type: "POST",
+                dataType: "json",
+                data: { trainNo: trainNO },
+                success: function (data) {
+                    if (data = 0) {
+                        alert("Data updation failed. Check the train no selected.");
+                    } else {
+                        alert("Data updated successfully");
+                        // document.getElementById('portID').value = (pID);
+
+                        var pID = $('#portID').val();
+
+
+                        //$("#selected_count").text(0);
+                        $.ajax({
+                            url: "/TrainDeparture_From_Port/GetContainerForPortTrainDeparture",
+                            type: "POST",
+                            dataType: "json",
+                            data: { portID: pID },
+                            success: function (data) {
+                                selectedContainerForPortDisplay(data);
+                                getCount();
+                            }
+                        });
+
+
+                    }
+                }
+            });
+        } else {
+            alert("Select a train number to proceed!")
+        }
+
+
+    }
+    function selectAll(checked) {
+
+        for (var i = 0; i < containerList.length; i++) {
+            if (checked == true) {
+                $("#" + containerList[i].ContainerNO).checked = true;
+
+            } else if (checked == false) {
+                $("#" + containerList[i].ContainerNO).checked = false;
+            }
+        }
+
+    }
+    function selectNone(checked) {
+        for (var i = 0; i < containerList.length; i++) {
+            if (checked == true) {
+                $("#" + containerList[i].ContainerNO).checked = false;
+
+            } else if (checked == false) {
+                $("#" + containerList[i].ContainerNO).checked = false;
+            }
+        }
+
+    }
+
+    function SaveWagaonNo(containerNo, wagaonNO) {
+        //  console.log(containerNo.id);
+        var wagonNo = $("#" + containerNo.id).val();
+        var cotainerno = containerNo.id;
+        //  console.log(wagonNo, cotainerno, containerNo)
+        $.ajax({
+            url: "/TrainDeparture_From_Port/UpdateWagonNoForSelectedContainer",
+            type: "POST",
+            dataType: "json",
+            data: { wagonNo: wagonNo, containerNo: cotainerno },
+            success: function (data) {
+            }
+        });
+    }
+
+    /////by durga
+    function SaveRemarks(jono, containerNo, RemarksID) {
+         
+        // console.log(containerNo.id);
+        var wagonNo = $("#" + containerNo.id).val();
+        var cotainerno = containerNo;
+        var jono = jono;
+        var remarks = $("#" + RemarksID).val();
+        console.log(remarks)
+        //  console.log(wagonNo, cotainerno, containerNo)
+        $.ajax({
+            url: "/TrainDeparture_From_Port/UpdateRemarksSelectedContainer",
+            type: "POST",
+            dataType: "json",
+            data: { Remarks: remarks, containerNo: cotainerno, jono: jono },
+            success: function (data) {
+            }
+        });
+    }
+    ///////end by durg
+
+    function selectedContainerForPortDisplay(data) {
+        //   alert(JSON.stringify(data))
+        var table_div = "<div class=\"card-body\">" +
+                                 "  <div class=\"table-responsive\">" +
+                                   "    <table id=\"container_table\" class=\"table table-striped table-bordered\" style=\"width:100%\">" +
+                                         "  <thead>" +
+                                             "  <tr>" +
+                                                  "<th style=\"visibility:hidden;width:20px\"></th>" +
+
+                                                 "  <th class=\"wd-15p sorting\" style=\"width:1px;\">Jo No.</th>" +
+                                                   "<th class=\"wd-10p sorting\">Container no</th>" +
+                                                "   <th class=\"wd-10p sorting\">Size</th>" +
+                                                "   <th class=\"wd-10p sorting\">Wagon no</th>" +
+                                                 "   <th class=\"wd-10p sorting\">Remarks</th>" +
+                                            " </tr>" +
+                                        "   </thead>"
+        "    <tbody style=\"box-sizing :border-box;\">"
+        var rows = "";
+        $.each(data, function (i, item) {  
+            var status = "";
+
+
+            var disabled = "disabled"
+            if (item.IsSelected) {
+                status = "checked";
+                disabled = "";
+            }
+
+            rows += " <tr> " +
+                      " <td> <input type='checkbox' id=\"" + item.JONO + item.ContainerNO + "\" value=" + item.ContainerNO + "   onclick='selectedContainer(" + item.JONO + ",\"" + item.ContainerNO + " \", checked, \"" + item.JONO + item.ContainerNO + "\")' name='" + item.ContainerNO + "' " + status + "  ></td> " + //checked=" + !item.IsSelected +"
+                       " <td> " + item.JONO + "</td>" +
+                      "<td>" + item.ContainerNO + " <input name=\"hdTrainName\"  type='hidden' value=" + item.ContainerNO + "></td>" +
+                      "<td>" + item.Size + " <input name=\"hdSize\"  type='hidden' value=" + item.TEUS + "></td>" +
+                      //"<td> <input type=\"text\" class=\"form-control\" name=\"example-disabled-input\" placeholder=\"Wagon No.\"" + disabled + " maxlength = 30 id=\"" + item.ContainerNO + "\" value=\"" + item.WagonNo + "\" onblur=\"SaveWagaonNo(" + item.ContainerNO + "," + item.WagonNo + ")\"> </td>"+
+                      "<td> <input type=\"text\" class=\"form-control\" name=\"example-disabled-input\" placeholder=\"Wagon No.\"" + disabled + " maxlength = 30 id=\"" + item.ContainerNO + "\" value=\"" + item.WagonNo + "\" onblur=\"SaveWagaonNo(" + item.ContainerNO + "," + item.WagonNo + ")\"> </td>" +
+
+            "<td> <input type=\"text\" class=\"form-control\" name=\"example-disabled-input\" placeholder=\"Remarks\"  id=\"" + i + "\" value=\"" + item.Remarks + "\" onblur=SaveRemarks(" + item.JONO + ",\"" + item.ContainerNO + "\"," + i + ")> </td></tr>"
+
+        });
+
+        table_div += rows += "    </tbody> </table>  </div> </div>";
+
+
+
+        $("#data_table").html(table_div);
+        $('#container_table').DataTable({
+            retrieve: true,
+            paging: false,
+            destroy: true,
+            binfo: false
+        });
+
+    }
+
+    function selectedContainer(joNo, containerID, checked, chechkBoxID) { 
+        //if (checked == true) {
+        //    var count = $("#selected_count").text();
+        //    var total = parseInt(count) + 1;
+        //    $("#selected_count").text(total);
+        //} else if (checked == false) {
+        //    var count = $("#selected_count").text();
+        //    var total = parseInt(count) - 1;
+        //    $("#selected_count").text(total);
+        //}
+
+        //by durga for count TEUS
+
+        var TrainList = [];
+        var table = document.getElementById("container_table");
+        var row;
+        var checkboxarray = [];
+
+        $('input[type=checkbox]').each(function () {
+            console.log('input[type=checkbox]')
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+        //  alert(JSON.stringify(checkboxarray))
+        var z = 0;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+            //  alert(JSON.stringify(row));
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+                var x = row.cells[0].childNodes[1].value;
+                var y = row.cells[3].childNodes[1].value;
+                
+                if (x == checkboxarray[k]) {
+                   // alert(y)
+                   // alert(z)
+                   
+                     z = Number(z) + Number(y);
+                }
+                
+                
+            }
+        }
+       
+        $("#selected_count").text(z);
+        //End by durga
+
+        $.ajax({
+            url: "/TrainDeparture_From_Port/UpdateSelectedContainer",
+            type: "POST",
+            dataType: "json",
+            data: { joNo: joNo, containerNo: containerID, isChecked: checked },
+            success: function (data) {
+                $('#' + chechkBoxID).attr('checked', checked);
+             //by durga   $("#selected_count").text(data);
+                if (checked == true) {
+                    $('#' + containerID).removeAttr("disabled");                   
+                } else {
+                    $('#' + containerID).attr("disabled", "disabled");
+                }
+
+            }
+        });
+    }
+    window.onload = function () {
+        $('#container_table').DataTable({
+            retrieve: true,
+            paging: false,
+            "bInfo": false,
+        });
+        if (portList.length != 0) {
+            $("button#" + portList[0].PortCode + ".btn.btn-outline-info").removeClass('selected');
+            $("button#" + portList[0].PortCode + ".btn.btn-outline-info").addClass("selected");
+            onPortClick(portList[0].PortID);
+
+        }
+        if (trainNO.length != 0) {
+            document.getElementById("trainNO").value = (trainNO[0].Text);
+            $('#trainNO').val(trainNO[0].Text);
+        }
+    //by durga    $("#selected_count").text(0);
+        $('#container_table').DataTable({
+            retrieve: true,
+            paging: false,
+            destroy: true,
+            binfo: false
+        });
+        getCount();
+    };
+
+    function getCount() {
+        $.ajax(
+               {
+                   url: '/TrainDeparture_From_Port/GetTotalCount',
+                   type: 'GET',
+                   data: "",
+                   contentType: 'application/json; charset=utf-8',
+                   success: function (data) {
+                //by durga       $("#selected_count").text(data);
+                   },
+                   error: function () {
+                       alert("error");
+                   }
+               });
+    }
+    $(document).ready(function () {
+        $("#FromDate").on("change", function () {
+            var date = document.getElementById("FromDate").value;
+            document.getElementById("txtDateTime").value = date;
+            document.getElementById("dateTime").value = date;
+        });
+
+
+
+        $("#ddlTrainNo").on("change", function () {
+
+            if (trainNO.length != 0) {
+                for (var i = 0; i < trainNO.length; i++) {
+                    if (trainNO[i].Text == $('#ddlTrainNo').val()) {
+                        document.getElementById("trainNO").value = (trainNO[i].Text);
+                        $('#trainNO').val(trainNO[i].Text);
+                    }
+                }
+            }
+
+        });
+
+
+
+        $("#clearValue").on("click", function () {
+            document.getElementById("vesselName").value = "";
+            document.getElementById("isActive").checked = true;
+            $("#trainNO").removeClass();
+
+            $("#trainNO").addClass("form-control");
+
+        });
+
+
+    });
+
+
+
+
+
+</script>
+
+
+
+

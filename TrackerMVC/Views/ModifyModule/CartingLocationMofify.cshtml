@@ -1,0 +1,361 @@
+﻿
+@{
+    ViewBag.Title = "Carting Location Modify";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+
+<style>
+    .hiderow {
+        display: none;
+    }
+</style>
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify Carting Location</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SB No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsbno", null, new { @class = "form-control", @id = "txtsbno", name = "txtIGMNo", autocomplete = "off", placeholder = "SB No" })
+                                            @*<select id="ddlContainerNo" class="form-control" onchange="GetTotalPkgsContainerWise()">
+                                                    <option value="">--Select--</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group" style="padding-top:25px">
+
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnSearch" name="Search" onclick="Fetch()">Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap mt-lg-5" id="example1" style="width:100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+
+                                                <th style="width:1px;color: white;text-align:center">Select</th>
+                                                <th style="width:1px;color: white;text-align:center">SR No</th>
+                                                <th style="width:80px;color: white;text-align:center">Carting ID</th>
+                                                <th style="width:80px;color: white;text-align:center">Carting Date</th>
+                                                <th style="width:80px;color: white;text-align:center">Location</th>
+                                                <th style="width:80px;color: white;text-align:center">Vehicle No</th>
+                                                <th style="width:80px;color: white;text-align:center">SB Number</th>
+                                                <th style="width:80px;color: white;text-align:center">PKGS</th>
+                                                <th style="width:80px;color: white;text-align:center">Cargo Weight</th>
+                                                <th style="width:80px;color: white;text-align:center">SB Entry ID</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+                                            <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+      var EquipmentL = [];
+
+    EquipmentLs = @Html.Raw(Json.Encode(@ViewBag.CartingLocation));
+    EquipmentL = JSON.parse(EquipmentLs);
+
+
+</script>
+
+
+<script type="text/javascript">
+    function Fetch() {
+        debugger;
+
+        var Search = $("#txtsbno").val();
+        var data1 = { 'Search': Search };
+
+        data = JSON.stringify(data1);
+        //  alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetCartingModLocDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": true,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    //Declare Entity Name
+                    "columns": [
+
+                        {
+
+                            "data": "CartingAllowID",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.CartingAllowID + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "SrNo" },
+                        { "data": "CartingAllowID" },
+                        { "data": "EntryDate" },
+                        //begin
+                        {
+                            "data": "Location",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<select  class="form-control" id="Equipment_' + row.SrNo + '"  style="width:180px">'
+                                for (j = 0; j < EquipmentL.length; j++) {
+                                    if (row.FromID == EquipmentL[j].Location) {
+                                        data += '<option value="' + EquipmentL[j].Location + '" selected> ' + EquipmentL[j].Location + '</option>'
+                                    }
+                                    else {
+                                        data += '<option value="' + EquipmentL[j].Location + '"> ' + EquipmentL[j].Location + '</option>'
+                                    }
+
+
+                                }
+
+                                data += '</selected>';
+                                return data;
+
+                            }
+
+                        },
+
+                        { "data": "VehicleNo" },
+                        { "data": "SBNo" },
+                        { "data": "DeclQty" },
+                        { "data": "Allowwt" },
+                        { "data": "SBEntryID" },
+
+                    ],
+
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
+
+
+
+<script>
+    function Update() {
+        debugger;
+
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+
+
+
+        var r = confirm("Are you sure want to cancel this stuffing ?");
+        if (r == true) {
+
+
+            var itemcount = checkItemcount();
+
+
+            if (itemcount == false) {
+                alert("No Record Found To Cancel");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+
+                        var CartingAllowID = row.cells[2].innerText;
+
+
+                        // insert with checked condition and declare all details
+                        if (CartingAllowID == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+
+                            row = table.rows[i];
+                            CartingAllowID = row.cells[2].innerText;
+                            VehicleNo = row.cells[5].innerText;
+                            SBNo = row.cells[6].innerText;
+                            SBEntryID = row.cells[9].innerText;
+
+                            Location = $("#Equipment_" + (k + 1)).val();
+                            tablearray.push({
+                                'CartingAllowID': CartingAllowID, 'Location': Location, 'VehicleNo': VehicleNo, 'SBNo': SBNo,'SBEntryID':SBEntryID
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+
+                var data1 = {
+                'Debitdata': tablearray, 'Remarks': Remarks
+                };
+
+                if (tablearray.length == 0) {
+                    alert("Please select record to proceed");
+                    return false;
+                }
+
+            var data = JSON.stringify(data1);
+           // alert(data);
+            $.ajax({
+                url: "/ModifyModule/UpdateCartingLocationDet",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("CancelStuffingDetails", "ModifyModule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+            }//else part end
+
+        }//end of main called function
+
+        //Check Checkbox selected count
+
+    }
+
+    function checkItemcount() {
+        var table = $('#example1').DataTable();
+        if (table.rows().count() == 0) {
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+        $("input:text").val("");
+    }
+</script>
+
+
+
+

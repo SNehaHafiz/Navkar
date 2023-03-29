@@ -1,0 +1,110 @@
+﻿<div class="row">
+    <div class="col-md-12 col-lg-12">
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example4" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Type</th>
+                        <th>Permit No</th>
+                        <th>From</th>
+
+                        <th>TO</th>
+                        <th>Amount</th>
+
+
+                    </tr>
+                </thead>
+                <tbody style="box-sizing :border-box;">
+                    @foreach (var item in (ViewBag.IssuesList)[0])
+                    {
+                        <tr>
+                            <td><input type="checkbox" name="checklist[]" class="checklist" id="checklist" value="@item"></td>
+                            <td>@item</td>
+                            @if (@item == "Tax Validity :")
+                            {
+                                <td>
+                                    @Html.DropDownList("ddlTaxype", (IEnumerable<SelectListItem>)ViewBag.TaxTYpe, "--Select--", new { @class = "form-control", @id = "ddlTaxype", name = "ddlTaxype", autocomplete = "off" })
+                                </td>
+                            }
+                            else if (@item == "Permit Validity")
+                            {
+                                <td>
+                                    @Html.DropDownList("ddlPermittype", (IEnumerable<SelectListItem>)ViewBag.PermitTypeList, "--Select--", new { @class = "form-control", @id = "ddlPermittype", name = "ddlPermittype", autocomplete = "off" })
+                                </td>
+                            }
+
+                            else
+                            {
+                                <td>
+                                    <input id="TxtAllow" placeholder="Enter Account" type="text" class="form-control" value="0" style="visibility:hidden" />
+                                </td>
+                            }
+
+                            @if (@item == "Permit Validity")
+                            {
+                                <td>
+                                    <input id="TxtPermitno" placeholder="Enter No." type="text" class="form-control" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input id="TxtAllow" placeholder="Enter Account" type="text" class="form-control" value="0" style="visibility:hidden" />
+                                </td>
+                            }
+
+                                <td>
+                                    @*<input type="Date" name="Fromdate" class=" form-control" id="Fromdate">*@
+                                    @Html.TextBox("Fromdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+
+                                </td>
+                                <td>
+                                    @*<input type="Date" name="TOdate" class=" form-control" id="TOdate">*@
+                                    @Html.TextBox("TOdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                </td>
+                            <td>
+                                <input id="txtAccountName" placeholder="Enter Account" type="text" class="form-control" value="" />
+                            </td>
+
+
+
+                        </tr>
+
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example4').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false,
+            "bSortable": false,
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0,1,2,3,4,5,6]
+                }
+
+            ]
+
+
+
+        });
+      
+
+       // LoadRtoDetails();
+    });
+</script>

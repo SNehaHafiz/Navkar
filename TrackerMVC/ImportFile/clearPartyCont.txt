@@ -1,0 +1,61 @@
+ public ActionResult ClearParty()
+        {
+         
+            //List<BE.PartyNameEntities> Partyname = new List<BE.PartyNameEntities>();
+
+            //Partyname = reportprovider.GetGstPartyName();
+       
+            //ViewBag.Partyname = new SelectList(Partyname, "Common_ID", "GSTName");
+           
+            return View();
+
+
+        }
+
+        public JsonResult getPartyNameReceipt(string prefixText, string Mode)
+        {
+            CD.DBOperations db = new CD.DBOperations();
+            DataTable dataTable = new DataTable();
+            List<BE.Customer> Customerlst = new List<BE.Customer>();
+            dataTable = db.sub_GetDatatable("USP_GetPartyNameReceipt '" + Mode + "','" + prefixText + "'");
+
+            if (dataTable != null)
+            {
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    BE.Customer customer = new BE.Customer();
+                    customer.AGID = Convert.ToInt32(row["GSTID"]);
+                    customer.AGName = Convert.ToString(row["GSTName"]);
+                    Customerlst.Add(customer);
+                }
+            }
+
+            var jsonResult = Json(Customerlst, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+
+            return jsonResult;
+        }
+
+        public JsonResult PartySeach(string search)
+        {
+            CD.DBOperations db = new CD.DBOperations();
+            DataTable dt = new DataTable();
+            dt = db.sub_GetDatatable("USP_GetPartyNameFIll '" + search + "'");
+            var summaryDet = JsonConvert.SerializeObject(dt);
+            var jsonResult = Json(summaryDet, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
+        }
+
+
+        public JsonResult SaveClear(string hdnPayFromId, string hdnReplaceId, string ddlReplacerName, string ddlCustomerName)
+        {
+            int i = 0;
+            int UserID = Convert.ToInt16(Session["Tracker_userID"]);
+            CD.DBOperations db = new CD.DBOperations();
+            //int retVal = 0;
+            db.sub_ExecuteNonQuery("USP_Clean_DUPLIcate_Master_Data '" + hdnPayFromId + "','" + hdnReplaceId + "','" + ddlReplacerName + "','" + ddlCustomerName + "','" + UserID + "'");
+            //Master();
+
+            return Json(i);
+        }

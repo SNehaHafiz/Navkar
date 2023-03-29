@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "Other Invoice Summary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+        align-content: center;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Other Invoice Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-22 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show('SHOW')" type="button">
+                                                SHOW
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelExportOtherInvoiceReport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+<script>
+
+
+    function Show() {
+        $("#tracker-loader").fadeIn("fast");
+        var fromdate = $("#FromDate").val();
+        var todate = $("#ToDate").val();
+        var data1 = { 'fromdate': fromdate, 'todate': todate };
+        var data = JSON.stringify(data1);
+       // alert(data);
+        try {
+            $.ajax({
+                url: '/Report/getExportOtherDetailsReport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == "" || data == "[]") {
+                        alert("No data found.");
+                    } else {
+                        RepTableDataJson($('#reportTable'), data, "ExportRep", "ExportRep");
+                    }
+
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+            });
+        }
+        catch (ex) {
+            $("#tracker-loader").fadeOut("slow");
+            alert(ex.message);
+            }
+    }
+</script>
+

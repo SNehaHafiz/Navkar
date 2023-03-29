@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewBag.Title = "Modify Transport Bill Prefix";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify Transport Bill Prefix</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Old Invoice No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtoldinvno", null, new { @class = "form-control ", @id = "txtoldinvno", Placeholder = "Old Invoice No", @autocomplete = "off", @maxlength = "20" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button id="btnSave" class="btn btn-primary btn-xs" onclick="return Fetch();">Show</button>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Old Invoice Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtolddate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtolddate", disabled = true })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">New Invoice No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtnewinv", null, new { @class = "form-control ", @id = "txtnewinv", Placeholder = "New Invoice No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">New Invoice Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtnewinvdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtnewinvdate" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Update</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="Clear();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function Fetch() {
+
+        debugger;
+        var InvoiceNo = $("#txtoldinvno").val().trim();
+
+        var data1 = { "InvoiceNo": InvoiceNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetTransPrefix',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    return;
+                }
+
+                $('#txtolddate').val(data[0].AssessDate);
+
+
+
+                // Size, containertype, AGName
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function Save() {
+        debugger;
+        //var NOC1 = $("#txthiddennoc").val();
+        //var NOC2 = $("#txtNocNo").val();
+
+
+
+        const Master = {};
+
+        Master.InvoiceNo = $("#txtoldinvno").val();
+        Master.NewInvoiceNo = $("#txtnewinv").val();
+        Master.AssessDate = $("#txtnewinvdate").val();
+
+
+
+        var isValid = true;
+        if (Master.InvoiceNo == 0 || Master.InvoiceNo == "") {
+            isValid = isValid && false;
+            $("#txtinvoiceno").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtinvoiceno").removeClass("is-invalid state-invalid");
+        }
+
+        if (Master.NewInvoiceNo == "") {
+            isValid = isValid && false;
+            $("#txtnewinv").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtnewinv").removeClass("is-invalid state-invalid");
+        }
+
+
+
+
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+        var data1 = { 'AM': Master };
+        var data = JSON.stringify(data1);
+          alert(data);
+        $.ajax({
+            url: "/ModifyModule/UpdateModifyTransportBillPrefix",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (item) {
+
+
+                if (item.Status == 1) {
+                    {
+                        swal.fire({
+                            title: "success",
+                            text: item.Message,
+                            icon: "success",
+                        }).then(function (isConfirm) {
+                            if (isConfirm) {
+                                Clear();
+                            }
+                        });
+                        return false;
+
+                    }
+                }
+                else if (response.Status == 0) {
+                    {
+                        swal.fire({
+                            title: "Error!",
+                            text: item.Message,
+                            icon: "error",
+                        }).then(function (isConfirm) {
+                            if (isConfirm) {
+                                Clear();
+                            }
+                        });
+                        return false;
+
+                    }
+                }
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: "Something went wrong " + str,
+                    icon: 'error'
+                });
+            }
+        });
+
+    }
+</script>
+
+<script>
+    function Clear() {
+    document.location = '@Url.Action("ModifyTransportBillPrefix", "ModifyModule")';
+    }
+</script>
+

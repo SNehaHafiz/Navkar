@@ -1,0 +1,3491 @@
+﻿@{
+    ViewBag.Title = "Searc hInvoice";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area" id="divSearchInvoic">
+    <div class=" content-area overflow-hidden">
+        <div class="page-header">
+            <h4 class="page-title">Search Invoice</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Viewsummary();"><i class="fa fa-file-text"></i></button>*@
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Search On</label>
+                                                @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                                               { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                   new SelectListItem { Text = "Container No", Value = "Container No"},
+                                                   new SelectListItem { Text = "IGM-Item No", Value = "IGM-Item No"},
+                                                 new SelectListItem { Text = "Invoice No", Value = "Invoice No"},
+                                                  new SelectListItem { Text = "Receipt No", Value = "Receipt No"},
+                                                   new SelectListItem { Text = "Cheque No", Value = "Cheque No"},
+                                                    new SelectListItem { Text = "SB No", Value = "SB No"},
+                                                     new SelectListItem { Text = "Bond No", Value = "Bond No"},
+                                                       new SelectListItem { Text = "BOE No", Value = "BOE No"},
+                                                         new SelectListItem { Text = "Grand Total", Value = "Grand Total"},
+                                                           new SelectListItem { Text = "NOC No", Value = "NOC No"},
+                                                           new SelectListItem { Text = "BL Number", Value = "BL Number"},
+                                                           new SelectListItem { Text = "ALL", Value = "ALL"},
+                                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="divConatiner">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Contrainer No</label>
+                                                @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="divigmno">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">IGM NO</label>
+                                                @Html.TextBox("txtIgmNo", null, new { @class = "form-control", @id = "txtIgmNo", name = "txtIgmNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="divitemno">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Item NO</label>
+                                                @Html.TextBox("txtItemNo", null, new { @class = "form-control", @id = "txtItemNo", name = "txtItemNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="divinvoiceNo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Invoice NO</label>
+                                                @Html.TextBox("txtinvoiceNo", null, new { @class = "form-control", @id = "txtinvoiceNo", name = "txtinvoiceNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviReceiptNo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Receipt No</label>
+                                                @Html.TextBox("txtReceiptNo", null, new { @class = "form-control", @id = "txtReceiptNo", name = "txtReceiptNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviChequeNo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Cheque No</label>
+                                                @Html.TextBox("txtChequeNo", null, new { @class = "form-control", @id = "txtChequeNo", name = "txtChequeNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviSBNo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">SB No</label>
+                                                @Html.TextBox("txtSBNo", null, new { @class = "form-control", @id = "txtSBNo", name = "txtSBNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviBondNo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Bond No</label>
+                                                @Html.TextBox("txtBondNo", null, new { @class = "form-control", @id = "txtBondNo", name = "txtBondNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviBOENo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">BOE No</label>
+                                                @Html.TextBox("txtBOENo", null, new { @class = "form-control", @id = "txtBOENo", name = "txtBOENo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviGrandTotal">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Grand Total</label>
+                                                @Html.TextBox("txtGrandTotal", null, new { @class = "form-control", @id = "txtGrandTotal", name = "txtGrandTotal", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviNOCNo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">NOC No</label>
+                                                @Html.TextBox("txtNOCNo", null, new { @class = "form-control", @id = "txtNOCNo", name = "txtNOCNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="diviBLNo">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">BL No</label>
+                                                @Html.TextBox("TxtBlNo", null, new { @class = "form-control", @id = "TxtBlNo", name = "TxtBlNo", autocomplete = "off", style = "text-align:right" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="divFromDate">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">From Date</label>
+                                                @Html.TextBox("FromDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy"), @id = "FromDate" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="divToDate">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">To Date</label>
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(1).ToString("dd MMM yyyy"), @id = "ToDate" })
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-2 col-lg-2" style="display:none" id="divddlCategory">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Category</label>
+                                                @Html.DropDownList("ddlCategory", (IEnumerable<SelectListItem>)ViewBag.Category, "--Select--", new { @class = "form-control", @id = "ddlCategory", name = "ddlCategory", autocomplete = "off" })
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-22 col-lg-2">
+                                            <div class="form-group label-floating" style="margin-top: 33px;">
+                                                <button class=" btn btn-primary" style="margin-top: -7px" title="Show" id="btnSearch" onclick="Show('SHOW')" type="button">
+                                                    <i class="fe fe-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <button class="btn btn-orange" id="btnExcel" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                        <button class="btn btn-orange" id="btnExcelOFCategory" title="Export To Excel" type="button" style="display:none"><i class="fa fa-file-excel-o" onclick="GetExcelFileWithCategory()"></i></button>
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                        <thead>
+                                            <tr></tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divIGMEntry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Import View Assessment Details</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToSearch();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Search"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtjono", null, new { @class = "form-control", @id = "txtjono", name = "txtjono", autocomplete = "off", placeholder = "Assessment No" })
+                                            @Html.TextBox("txtCategory", null, new { @class = "form-control", @id = "txtCategory", name = "txtCategory", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessment", null, new { @class = "form-control", @id = "txtAssessment", name = "txtAssessment", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Work Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWork", null, new { @class = "form-control", @id = "txtWork", name = "txtWork", autocomplete = "off", placeholder = "2019-20" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvoiceNo1", null, new { @class = "form-control", @id = "txtinvoiceNo1", name = "txtinvoiceNo1", autocomplete = "off", placeholder = "Invoice No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnPrintInvoice" value="Print Invoice" onclick="PrintInvoice();" class="btn btn-primary" />
+
+                                            <input type="button" id="btnPrintReceipt" value="Print Receipt" onclick="PrintReceipt();" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">AssessMent Date</label>
+                                    @Html.TextBox("txtAssesDate", null, new { @class = "form-control", @id = "txtAssesDate", name = "txtAssesDate", autocomplete = "off", placeholder = "Assessment Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">Valid UpTo</label>
+                                    @Html.TextBox("txtValidDate", null, new { @class = "form-control", @id = "txtValidDate", name = "txtValidDate", autocomplete = "off", placeholder = "Valid Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assess Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessType", null, new { @class = "form-control", @id = "txtAssessType", name = "txtAssessType", autocomplete = "off", placeholder = "Assess Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Delivery Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDeliveryType", null, new { @class = "form-control", @id = "txtDeliveryType", name = "txtDeliveryType", autocomplete = "off", placeholder = "Assess Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Birthing Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBirthingDate", null, new { @class = "form-control", @id = "txtBirthingDate", name = "txtBirthingDate", autocomplete = "off", placeholder = "Birting Date" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Igm No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIgmNo1", null, new { @class = "form-control", @id = "txtIgmNo1", name = "txtIgmNo1", autocomplete = "off", placeholder = "IGM NO" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Item No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtItemNo1", null, new { @class = "form-control", @id = "txtItemNo1", name = "txtItemNo1", autocomplete = "off", placeholder = "Item No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">BL Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBlNumber", null, new { @class = "form-control", @id = "txtBlNumber", name = "txtBlNumber", autocomplete = "off", placeholder = "BL Number" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff ID</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txttariffID", null, new { @class = "form-control", @id = "txttariffID", name = "txttariffID", autocomplete = "off", placeholder = "Tariff ID" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDes", null, new { @class = "form-control", @id = "txtDes", name = "txtDes", autocomplete = "off", placeholder = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Line Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtlineName", null, new { @class = "form-control", @id = "txtlineName", name = "txtlineName", autocomplete = "off", placeholder = "Line Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CHA Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchaName", null, new { @class = "form-control", @id = "txtchaName", name = "txtchaName", autocomplete = "off", placeholder = "CHA Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Consignee</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtConsignee", null, new { @class = "form-control", @id = "txtConsignee", name = "txtConsignee", autocomplete = "off", placeholder = "Consignee" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Waiver Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWaiverRemarks", null, new { @class = "form-control", @id = "txtWaiverRemarks", name = "txtWaiverRemarks", autocomplete = "off", placeholder = "Waiver Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Value</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtValue", null, new { @class = "form-control", @id = "txtValue", name = "txtValue", autocomplete = "off", placeholder = "Value" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Duty</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDuty", null, new { @class = "form-control", @id = "txtDuty", name = "txtDuty", autocomplete = "off", placeholder = "Duty" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tally Ledger</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTallyLedger", null, new { @class = "form-control", @id = "txtTallyLedger", name = "txtTallyLedger", autocomplete = "off", placeholder = "Tally Ledger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="tab_wrapper first_tab">
+                                <ul class="tab_list">
+                                    <li class="active" rel="tab_1_1" id="tabItems">List Of Containers and Its Charges:</li>
+
+                                    <li rel="tab_1_2" class="" id="tabLocation">Mode Of Payment:</li>
+
+                                    <li rel="tab_1_3" class="" id="tabLocation">Rabate Bill Details</li>
+                                    <li rel="tab_1_4" class="" id="tabLocation">Credit Note</li>
+
+                                    @*  <li rel="tab_1_4" class="">Tab 4</li>*@
+                                </ul>
+                                <div class="content_wrapper">
+                                    <div title="tab_1_1" class="accordian_header tab_1_1 active">Tab 1<span class="arrow"></span></div>
+                                    <div class="tab_content first tab_1_1 active" title="tab_1_1" style="display: block;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelImportSummary", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                                    <thead>
+                                                        <tr></tr>
+                                                    </thead>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div title="tab_1_3" class="accordian_header tab_1_2 undefined">Tab 2<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_2" title="tab_1_2" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div title="tab_1_3" class="accordian_header tab_1_3 undefined">Tab 3<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_3" title="tab_1_3" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example3">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div title="tab_1_4" class="accordian_header tab_1_4 undefined">Tab 4<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_4" title="tab_1_4" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example4">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentBy", null, new { @class = "form-control", @id = "txtAssessmentBy", name = "txtAssessmentBy", autocomplete = "off", placeholder = "Assessment By" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentOn", null, new { @class = "form-control", @id = "txtAssessmentOn", name = "txtAssessmentOn", autocomplete = "off", placeholder = "Assessment On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Receipt By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptBy", null, new { @class = "form-control", @id = "txtReceiptBy", name = "txtReceiptBy", autocomplete = "off", placeholder = "Receipt By" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Receipt On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptOn", null, new { @class = "form-control", @id = "txtReceiptOn", name = "txtReceiptOn", autocomplete = "off", placeholder = "Receipt On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtNetTotal", null, new { @class = "form-control", @id = "txtNetTotal", name = "txtNetTotal", autocomplete = "off", placeholder = "Net Total" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Discount Amt</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDiscountAmt", null, new { @class = "form-control", @id = "txtDiscountAmt", name = "txtDiscountAmt", autocomplete = "off", placeholder = "Discount Amt" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff Mapped By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTariffMapped", null, new { @class = "form-control", @id = "txtTariffMapped", name = "txtTariffMapped", autocomplete = "off", placeholder = "Tariff Mapped" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff Mapped On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTariffMappedon", null, new { @class = "form-control", @id = "txtTariffMappedon", name = "txtTariffMappedon", autocomplete = "off", placeholder = "Tariff Mapped On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Service Tax</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtServiceTax", null, new { @class = "form-control", @id = "txtServiceTax", name = "txtServiceTax", autocomplete = "off", placeholder = "Service Tax" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsgst", null, new { @class = "form-control", @id = "txtsgst", name = "txtsgst", autocomplete = "off", placeholder = "SGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Rebate Bill On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtRebateBillon", null, new { @class = "form-control", @id = "txtRebateBillon", name = "txtRebateBillon", autocomplete = "off", placeholder = "Rebate Bill On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Port Charges Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPortChargesInvoice", null, new { @class = "form-control", @id = "txtPortChargesInvoice", name = "txtPortChargesInvoice", autocomplete = "off", placeholder = "Port Charges Invoice No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtCGST", null, new { @class = "form-control", @id = "txtCGST", name = "txtCGST", autocomplete = "off", placeholder = "CGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIGST", null, new { @class = "form-control", @id = "txtIGST", name = "txtIGST", autocomplete = "off", placeholder = "IGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">GSTIN Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtgstinnumber", null, new { @class = "form-control", @id = "txtgstinnumber", name = "txtgstinnumber", autocomplete = "off", placeholder = "GSTIN NUMBER" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Party Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPartyName", null, new { @class = "form-control", @id = "txtPartyName", name = "txtPartyName", autocomplete = "off", placeholder = "Party Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Grand Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtGrandTotal1", null, new { @class = "form-control", @id = "txtGrandTotal1", name = "txtGrandTotal1", autocomplete = "off", placeholder = "Grand Total" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Checked By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchackedby", null, new { @class = "form-control", @id = "txtchackedby", name = "txtchackedby", autocomplete = "off", placeholder = "Chacked By" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Audit Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAuditRemarks", null, new { @class = "form-control", @id = "txtAuditRemarks", name = "txtAuditRemarks", autocomplete = "off", placeholder = "Audit Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="InvoiceAuditForm">
+
+</div>
+
+<div class=" content-area" id="divExportEntry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Export View Assessment Details</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToSearch2();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Search"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtjonoEx", null, new { @class = "form-control", @id = "txtjonoEx", name = "txtjonoEx", autocomplete = "off", placeholder = "Assessment No" })
+                                            @Html.TextBox("txtCategoryex", null, new { @class = "form-control", @id = "txtCategoryex", name = "txtCategoryex", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentex", null, new { @class = "form-control", @id = "txtAssessmentex", name = "txtAssessmentex", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Work Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWorkex", null, new { @class = "form-control", @id = "txtWorkex", name = "txtWorkex", autocomplete = "off", placeholder = "2019-20" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvoiceNoex", null, new { @class = "form-control", @id = "txtinvoiceNoex", name = "txtinvoiceNoex", autocomplete = "off", placeholder = "Invoice No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnExpPrintInvoice" value="Print Invoice" onclick="PrintExpInvoice();" class="btn btn-primary" />
+                                            <input type="button" id="btnExpPrintReceipt" value="Print Receipt" onclick="PrintExpReceipt()" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">AssessMent Date</label>
+                                    @Html.TextBox("txtAssesDateex", null, new { @class = "form-control", @id = "txtAssesDateex", name = "txtAssesDateex", autocomplete = "off", placeholder = "Assessment Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">Valid UpTo</label>
+                                    @Html.TextBox("txtValidDateex", null, new { @class = "form-control", @id = "txtValidDateex", name = "txtValidDateex", autocomplete = "off", placeholder = "Valid Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assess Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessTypeex", null, new { @class = "form-control", @id = "txtAssessTypeex", name = "txtAssessTypeex", autocomplete = "off", placeholder = "Assess Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Movemennt Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtMovemenntType", null, new { @class = "form-control", @id = "txtMovemenntType", name = "txtMovemenntType", autocomplete = "off", placeholder = "Movemennt Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Line Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtlineNamex", null, new { @class = "form-control", @id = "txtlineNamex", name = "txtlineNamex", autocomplete = "off", placeholder = "Line Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SB Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSBNumber", null, new { @class = "form-control", @id = "txtSBNumber", name = "txtSBNumber", autocomplete = "off", placeholder = "SB Number" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff ID</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txttariffIDEx", null, new { @class = "form-control", @id = "txttariffIDEx", name = "txttariffIDEx", autocomplete = "off", placeholder = "Tariff ID" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDesEx", null, new { @class = "form-control", @id = "txtDesEx", name = "txtDesEx", autocomplete = "off", placeholder = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CHA Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchaNameEx", null, new { @class = "form-control", @id = "txtchaNameEx", name = "txtchaNameEx", autocomplete = "off", placeholder = "CHA Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Agency</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAgencyEx", null, new { @class = "form-control", @id = "txtAgencyEx", name = "txtAgencyEx", autocomplete = "off", placeholder = "Agency" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtRemarksEx", null, new { @class = "form-control", @id = "txtRemarksEx", name = "txtRemarksEx", autocomplete = "off", placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Shipper Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtShipperNameEx", null, new { @class = "form-control", @id = "txtShipperNameEx", name = "txtShipperNameEx", autocomplete = "off", placeholder = "Shipper Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Waiver Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWaiverRemarksEx", null, new { @class = "form-control", @id = "txtWaiverRemarksEx", name = "txtWaiverRemarksEx", autocomplete = "off", placeholder = "Waiver Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="tab_wrapper first_tab">
+                                <ul class="tab_list">
+                                    <li class="active" rel="tab_1_1" id="tabItems">List Of Containers and Its Charges:</li>
+
+                                    <li rel="tab_1_2" class="" id="tabLocation">Mode Of Payment:</li>
+
+                                    <li rel="tab_1_3" class="" id="tabLocation">Other Charges</li>
+                                    <li rel="tab_1_4" class="" id="tabLocation">Credit Note</li>
+
+                                    @*  <li rel="tab_1_4" class="">Tab 4</li>*@
+                                </ul>
+                                <div class="content_wrapper">
+                                    <div title="tab_1_1" class="accordian_header tab_1_1 active">Tab 1<span class="arrow"></span></div>
+                                    <div class="tab_content first tab_1_1 active" title="tab_1_1" style="display: block;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelImportSummary", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1Ex">
+                                                    <thead>
+                                                        <tr></tr>
+                                                    </thead>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div title="tab_1_3" class="accordian_header tab_1_2 undefined">Tab 2<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_2" title="tab_1_2" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2Ex">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div title="tab_1_3" class="accordian_header tab_1_3 undefined">Tab 3<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_3" title="tab_1_3" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example3Ex">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div title="tab_1_4" class="accordian_header tab_1_4 undefined">Tab 4<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_4" title="tab_1_4" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example4Ex">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentByEx", null, new { @class = "form-control", @id = "txtAssessmentByEx", name = "txtAssessmentByEx", autocomplete = "off", placeholder = "Assessment By" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentOnEx", null, new { @class = "form-control", @id = "txtAssessmentOnEx", name = "txtAssessmentOnEx", autocomplete = "off", placeholder = "Assessment On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Receipt By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptByex", null, new { @class = "form-control", @id = "txtReceiptByex", name = "txtReceiptByex", autocomplete = "off", placeholder = "Receipt By" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Receipt On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptOnEx", null, new { @class = "form-control", @id = "txtReceiptOnEx", name = "txtReceiptOnEx", autocomplete = "off", placeholder = "Receipt On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtNetTotalEx", null, new { @class = "form-control", @id = "txtNetTotalEx", name = "txtNetTotalEx", autocomplete = "off", placeholder = "Net Total" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Discount Amt</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDiscountAmtEx", null, new { @class = "form-control", @id = "txtDiscountAmtEx", name = "txtDiscountAmtEx", autocomplete = "off", placeholder = "Discount Amt" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsgstex", null, new { @class = "form-control", @id = "txtsgstex", name = "txtsgstex", autocomplete = "off", placeholder = "SGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtCGSTEx", null, new { @class = "form-control", @id = "txtCGSTEx", name = "txtCGSTEx", autocomplete = "off", placeholder = "CGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIGSTEx", null, new { @class = "form-control", @id = "txtIGSTEx", name = "txtIGSTEx", autocomplete = "off", placeholder = "IGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Grand Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtGrandTotalEx", null, new { @class = "form-control", @id = "txtGrandTotalEx", name = "txtGrandTotalEx", autocomplete = "off", placeholder = "Grand Total" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">GSTIN Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtgstinnumberEx", null, new { @class = "form-control", @id = "txtgstinnumberEx", name = "txtgstinnumberEx", autocomplete = "off", placeholder = "GSTIN NUMBER" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Party Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPartyNameEx", null, new { @class = "form-control", @id = "txtPartyNameEx", name = "txtPartyNameEx", autocomplete = "off", placeholder = "Party Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Audit Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAuditRemarksEx", null, new { @class = "form-control", @id = "txtAuditRemarksEx", name = "txtAuditRemarksEx", autocomplete = "off", placeholder = "Audit Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divBondEntry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Bond View Assessment Details</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToSearch3();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Search"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtjonoBond", null, new { @class = "form-control", @id = "txtjonoBond", name = "txtjonoBond", autocomplete = "off", placeholder = "Assessment No" })
+                                            @Html.TextBox("txtCategoryebond", null, new { @class = "form-control", @id = "txtCategoryebond", name = "txtCategoryebond", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentBond", null, new { @class = "form-control", @id = "txtAssessmentBond", name = "txtAssessmentBond", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Work Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWorkBond", null, new { @class = "form-control", @id = "txtWorkBond", name = "txtWorkBond", autocomplete = "off", placeholder = "2019-20" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvoiceNoBond", null, new { @class = "form-control", @id = "txtinvoiceNoBond", name = "txtinvoiceNoBond", autocomplete = "off", placeholder = "Invoice No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnBondPrintInvoice" value="Print Invoice" onclick="PrintBondInvoice();" class="btn btn-primary" />
+                                            <input type="button" id="btnBondPrintReceipt" value="Print Receipt" onclick="PrintBondReceipt()" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">AssessMent Date</label>
+                                    @Html.TextBox("txtAssesDateBond", null, new { @class = "form-control", @id = "txtAssesDateBond", name = "txtAssesDateBond", autocomplete = "off", placeholder = "Assessment Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">Valid UpTo</label>
+                                    @Html.TextBox("txtValidDateBond", null, new { @class = "form-control", @id = "txtValidDateBond", name = "txtValidDateBond", autocomplete = "off", placeholder = "Valid Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assess Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessTypeBond", null, new { @class = "form-control", @id = "txtAssessTypeBond", name = "txtAssessTypeBond", autocomplete = "off", placeholder = "Assess Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Delivery Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDeliveryTypeBond", null, new { @class = "form-control", @id = "txtDeliveryTypeBond", name = "txtDeliveryTypeBond", autocomplete = "off", placeholder = "Delivery Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGM No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIGmNoBond", null, new { @class = "form-control", @id = "txtIGmNoBond", name = "txtIGmNoBond", autocomplete = "off", placeholder = "IGM No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Item No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtItemNoBond", null, new { @class = "form-control", @id = "txtItemNoBond", name = "txtItemNoBond", autocomplete = "off", placeholder = "Item No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff ID</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txttariffIDBond", null, new { @class = "form-control", @id = "txttariffIDBond", name = "txttariffIDBond", autocomplete = "off", placeholder = "Tariff ID" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tariff Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDesBond", null, new { @class = "form-control", @id = "txtDesBond", name = "txtDesBond", autocomplete = "off", placeholder = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CHA Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchaNameBond", null, new { @class = "form-control", @id = "txtchaNameBond", name = "txtchaNameBond", autocomplete = "off", placeholder = "CHA Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Importer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtImportreBond", null, new { @class = "form-control", @id = "txtImportreBond", name = "txtImportreBond", autocomplete = "off", placeholder = "Importer Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Value</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtvaluebond", null, new { @class = "form-control", @id = "txtvaluebond", name = "txtvaluebond", autocomplete = "off", placeholder = "Value" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Duty</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDutybond", null, new { @class = "form-control", @id = "txtDutybond", name = "txtDutybond", autocomplete = "off", placeholder = "Duty" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtRemarksEx", null, new { @class = "form-control", @id = "txtRemarksEx", name = "txtRemarksEx", autocomplete = "off", placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+
+                        <div class="panel panel-primary">
+                            <div class="tab_wrapper first_tab">
+                                <ul class="tab_list">
+                                    <li class="active" rel="tab_1_1" id="tabItems">List Of Containers and Its Charges:</li>
+
+                                    <li rel="tab_1_2" class="" id="tabLocation">Mode Of Payment:</li>
+
+                                    <li rel="tab_1_3" class="" id="tabLocation">Other Charges</li>
+                                    <li rel="tab_1_4" class="" id="tabLocation">Credit Note</li>
+                                    <li rel="tab_1_5" class="" id="tabLocation">Discount Amount</li>
+
+                                    @*  <li rel="tab_1_4" class="">Tab 4</li>*@
+                                </ul>
+                                <div class="content_wrapper">
+                                    <div title="tab_1_1" class="accordian_header tab_1_1 active">Tab 1<span class="arrow"></span></div>
+                                    <div class="tab_content first tab_1_1 active" title="tab_1_1" style="display: block;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelImportSummary", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1Bond">
+                                                    <thead>
+                                                        <tr></tr>
+                                                    </thead>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div title="tab_1_3" class="accordian_header tab_1_2 undefined">Tab 2<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_2" title="tab_1_2" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2Bond">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div title="tab_1_3" class="accordian_header tab_1_3 undefined">Tab 3<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_3" title="tab_1_3" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example3Bond">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div title="tab_1_4" class="accordian_header tab_1_4 undefined">Tab 4<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_4" title="tab_1_4" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example4Bond">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div title="tab_1_5" class="accordian_header tab_1_5 undefined">Tab 5<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_5" title="tab_1_5" style="display: none;">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelLastImportPortWise", null, new { @class = "btn btn-primary btn-md" })
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example5Bond">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentByBond", null, new { @class = "form-control", @id = "txtAssessmentByBond", name = "txtAssessmentByBond", autocomplete = "off", placeholder = "Assessment By" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentOnBond", null, new { @class = "form-control", @id = "txtAssessmentOnBond", name = "txtAssessmentOnBond", autocomplete = "off", placeholder = "Assessment On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">No of 20</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtNoof20", null, new { @class = "form-control", @id = "txtNoof20", name = "txtNoof20", autocomplete = "off", placeholder = "No of 20" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">No of 40</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtNoof40", null, new { @class = "form-control", @id = "txtNoof40", name = "txtNoof40", autocomplete = "off", placeholder = "No of 40" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">No of 45</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtNoof45", null, new { @class = "form-control", @id = "txtNoof45", name = "txtNoof45", autocomplete = "off", placeholder = "No of 45" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Receipt By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptByBond", null, new { @class = "form-control", @id = "txtReceiptByBond", name = "txtReceiptByBond", autocomplete = "off", placeholder = "Receipt By" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Receipt On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptOnBond", null, new { @class = "form-control", @id = "txtReceiptOnBond", name = "txtReceiptOnBond", autocomplete = "off", placeholder = "Receipt On" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtNetTotalBond", null, new { @class = "form-control", @id = "txtNetTotalBond", name = "txtNetTotalBond", autocomplete = "off", placeholder = "Net Total" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Discount Amt</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDiscountAmtBond", null, new { @class = "form-control", @id = "txtDiscountAmtBond", name = "txtDiscountAmtBond", autocomplete = "off", placeholder = "Discount Amt" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsgstBond", null, new { @class = "form-control", @id = "txtsgstBond", name = "txtsgstBond", autocomplete = "off", placeholder = "SGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtCGSTBond", null, new { @class = "form-control", @id = "txtCGSTBond", name = "txtCGSTBond", autocomplete = "off", placeholder = "CGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIGSTBond", null, new { @class = "form-control", @id = "txtIGSTBond", name = "txtIGSTBond", autocomplete = "off", placeholder = "IGST" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Grand Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtGrandTotalBond", null, new { @class = "form-control", @id = "txtGrandTotalBond", name = "txtGrandTotalBond", autocomplete = "off", placeholder = "Grand Total" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">GSTIN Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtgstinnumberBond", null, new { @class = "form-control", @id = "txtgstinnumberBond", name = "txtgstinnumberBond", autocomplete = "off", placeholder = "GSTIN NUMBER" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Party Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPartyNameBond", null, new { @class = "form-control", @id = "txtPartyNameBond", name = "txtPartyNameBond", autocomplete = "off", placeholder = "Party Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function Viewsummary() {
+        $("#divIGMEntry").show();
+        $("#divSearchInvoic").hide();
+    }
+    function BackToSearch() {
+        $("#divIGMEntry").hide();
+        $("#divSearchInvoic").show();
+    }
+    function BackToSearch2() {
+        $("#divExportEntry").hide();
+        $("#divSearchInvoic").show();
+    }
+    function BackToSearch3() {
+        $("#divBondEntry").hide();
+        $("#divSearchInvoic").show();
+    }
+    function BackToSearch4() {
+
+        $("#divDomesticEntry").hide();
+        $("#divSearchInvoic").show();
+    }
+
+    function BackToSearch5() {
+
+        //$("#divDomesticEntry").hide();
+        $("#divMNREntry").hide();
+        $("#divSearchInvoic").show();
+    }
+
+    function ClearCtrl() {
+        $("#txtReceiptNo").val('');
+        $("#txtContainerNo").val('');
+        $("#txtIgmNo").val('');
+        $("#txtItemNo").val('');
+        $("#txtinvoiceNo").val('');
+        $("#txtReceiptNo").val('');
+        $("#txtChequeNo").val('');
+        $("#txtSBNo").val('');
+        $("#txtBondNo").val('');
+        $("#txtBOENo").val('');
+        $("#txtGrandTotal").val('');
+        $("#txtNOCNo").val('');
+    }
+
+    $("#ddlSearch").change(function () {
+        var ddlSearchby = $("#ddlSearch option:selected").text();
+        if (ddlSearchby == "Container No") {
+            $("#divConatiner").show();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+        if (ddlSearchby == "IGM-Item No") {
+            $("#divConatiner").hide();
+            $("#divigmno").show();
+            $("#divitemno").show();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divMNREntry").hide();
+            $("#divDomesticEntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+        if (ddlSearchby == "Invoice No") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").show();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#divDomesticEntry").hide();
+            $("#diviNOCNo").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+
+        if (ddlSearchby == "Receipt No") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").show();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+
+        if (ddlSearchby == "Cheque No") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").show();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+
+        if (ddlSearchby == "SB No") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").show();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+
+        if (ddlSearchby == "Bond No") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").show();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+
+        if (ddlSearchby == "BOE No") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").show();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+
+        if (ddlSearchby == "Grand Total") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").show();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+
+        if (ddlSearchby == "NOC No") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").show();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+        if (ddlSearchby == "BL Number") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").show();
+            $("#divFromDate").hide();
+            $("#divToDate").hide();
+            $("#divddlCategory").hide();
+            $("#btnExcel").show();
+            $("#btnExcelOFCategory").hide();
+        }
+        if (ddlSearchby == "ALL") {
+            $("#divConatiner").hide();
+            $("#divigmno").hide();
+            $("#divitemno").hide();
+            $("#divinvoiceNo").hide();
+            $("#diviReceiptNo").hide();
+            $("#diviChequeNo").hide();
+            $("#diviSBNo").hide();
+            $("#diviBondNo").hide();
+            $("#diviBOENo").hide();
+            $("#diviGrandTotal").hide();
+            $("#diviNOCNo").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").hide();
+            $("#diviBLNo").hide();
+            $("#divFromDate").show();
+            $("#divToDate").show();
+            $("#divddlCategory").show();
+            $("#btnExcel").hide();
+            $("#btnExcelOFCategory").show();
+        }
+        ClearCtrl();
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+    $(window).on("load", function (e) {
+        $("#global-loader").fadeOut();
+    })
+</script>
+<script>
+
+    function ShowSelectedValue(type) {
+
+        var ddlSearch = document.getElementById('ddlSearch').value;
+
+        if (ddlSearch == 0) {
+            document.getElementById("ddlSearch").style.borderColor = "red";
+            alert('Please select Search On!')
+
+            event.preventDefault();
+            return;
+        }
+
+
+        var e = document.getElementById("ddlSearch");
+        var DepartmentID = e.options[e.selectedIndex].value;
+        var Search = "";
+        if (DepartmentID == "Invoice No") {
+            Search = $("#txtinvoiceNo").val();
+        }
+        if (DepartmentID == "Container No") {
+            Search = $("#txtContainerNo").val();
+        }
+        if (DepartmentID == "IGM-Item No") {
+            Search = $("#txtIgmNo").val();
+        }
+        if (DepartmentID == "Invoice No") {
+            Search = $("#txtinvoiceNo").val();
+        }
+        if (DepartmentID == "Receipt No") {
+            Search = $("#txtReceiptNo").val();
+        }
+        if (DepartmentID == "Cheque No") {
+            Search = $("#txtChequeNo").val();
+        }
+        if (DepartmentID == "SB No") {
+            Search = $("#txtSBNo").val();
+        }
+        if (DepartmentID == "Bond No") {
+            Search = $("#txtBondNo").val();
+        }
+        if (DepartmentID == "BOE No") {
+            Search = $("#txtBOENo").val();
+        }
+        if (DepartmentID == "Grand Total") {
+            Search = $("#txtGrandTotal").val();
+        }
+        if (DepartmentID == "NOC No") {
+            Search = $("#txtNOCNo").val();
+        }
+        if (DepartmentID == "BL Number") {
+            Search = $("#TxtBlNo").val();
+        }
+        if (DepartmentID == "ALL") {
+
+            var isValid = true;
+            var category = $("#ddlCategory").val();
+
+            if (category == "") {
+                $("#ddlCategory").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else {
+                $("#ddlCategory").removeClass("is-invalid state-invalid");
+            }
+
+
+            if (isValid) {
+
+
+                category = $("#ddlCategory option:selected").text().toUpperCase();
+                Fromdate = $("#FromDate").val();
+                Todate = $("#ToDate").val();
+
+                var data1 = { 'category': category, 'FromDate': Fromdate, 'ToDate': Todate};
+                data = JSON.stringify(data1);
+                console.log(data);
+                $.ajax({
+
+                    url: '/CreditNote/GetInvoiceAuditSearchByCategory',
+                    type: 'Post',
+                    data: data,
+                    async: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        RepTableDataJson($("#reportTable"), data, "AuditSearchByCategory", "AuditSearchByCategory_List");
+                        $("#global-loader").fadeOut();
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+
+        } else {
+            var txtItemNo = $("#txtItemNo").val();
+            var data1 = { 'category': DepartmentID, 'Search': Search, 'txtItemNo': txtItemNo };
+            data = JSON.stringify(data1);
+
+            //alert(data);
+            $.ajax({
+
+                url: '/CreditNote/GetInvoiceAuditSearch',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+
+                    RepTableDataJson($("#reportTable"), data, "GetInvoiceBind", "GetInvoiceBind");
+                    $("#global-loader").fadeOut();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+
+        }
+
+
+
+    }
+
+
+    function Show(type) {
+        // alert("before")
+        $("#global-loader").fadeIn();
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 100000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValue(type);
+
+        }, delayInMilliseconds);
+
+
+
+    }
+
+    function EditIGM(AssessNo, WorkYear, Category) {
+
+        $("#divIGMEntry").show();
+        $("#divSearchInvoic").hide();
+
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear, 'Category': Category };
+        var data = JSON.stringify(data1);
+
+        if (Category == 'Import') {
+
+            $.ajax({
+                url: "/Report/GetAssessInvoice",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+                    $("#txtCategory").val(data[0].Category);
+                    $("#txtAssessment").val(data[0].AssessNo);
+                    $("#txtWork").val(data[0].AssessYear);
+                    $("#txtinvoiceNo1").val(data[0].InvoiceNo);
+                    $("#txtAssesDate").val(data[0].AssessDate);
+                    $("#txtValidDate").val(data[0].ValidData);
+                    $("#txtAssessType").val(data[0].AssessType);
+                    $("#txtDeliveryType").val(data[0].DeliveryType);
+                    $("#txtBirthingDate").val(data[0].BIrtingDate);
+                    $("#txtIgmNo1").val(data[0].IGMNo);
+                    $("#txtItemNo1").val(data[0].ItemNo);
+                    $("#txtBlNumber").val(data[0].BlNumberNO);
+                    $("#txttariffID").val(data[0].TariffID);
+
+                    $("#txtDes").val(data[0].Des);
+                    $("#txtlineName").val(data[0].LineName);
+                    $("#txtchaName").val(data[0].CHaNAme);
+                    $("#txtConsignee").val(data[0].Consignee);
+                    $("#txtWaiverRemarks").val(data[0].WaiverRemarks);
+                    $("#txtValue").val(data[0].Value);
+                    $("#txtDuty").val(data[0].Duty);
+                    $("#txtTallyLedger").val(data[0].TallyLedger);
+                    $("#txtAssessmentBy").val(data[0].AssessmentBy);
+                    $("#txtAssessmentOn").val(data[0].AssessmentOn);
+                    $("#txtReceiptBy").val(data[0].ReceiptBy);
+                    $("#txtReceiptOn").val(data[0].ReceipOn);
+                    $("#txtNetTotal").val(data[0].NetTotal);
+                    $("#txtDiscountAmt").val(data[0].DiscountAmt);
+                    $("#txtTariffMapped").val(data[0].TariffMappedBy);
+                    $("#txtTariffMappedon").val(data[0].TariffMappedOn);
+                    $("#txtServiceTax").val(data[0].ServiceTax);
+                    $("#txtsgst").val(data[0].SGST);
+                    $("#txtCGST").val(data[0].CGST);
+                    $("#txtIGST").val(data[0].IGST);
+                    $("#txtgstinnumber").val(data[0].GSTInNumber);
+                    $("#txtPartyName").val(data[0].PartyName);
+                    $("#txtGrandTotal1").val(data[0].GrandTotal);
+                    $("#txtchackedby").val(data[0].Checkedby);
+                    $("#txtjono").val(data[0].Jono);
+
+                    getfata(AssessNo, WorkYear);
+                    getfataRecipt(AssessNo, WorkYear);
+                    getfataRebit(Jono);
+                    getfataCredit(AssessNo, WorkYear, Category);
+                    EditExport(AssessNo, WorkYear, Category);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            })
+        }
+
+        else if (Category == 'Export') {
+            $("#divIGMEntry").hide();
+            $("#divSearchInvoic").hide();
+            $("#divExportEntry").show();
+            $("#divBondEntry").hide();
+
+
+            $.ajax({
+                url: "/Report/ExportAssessInvoice",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+
+                    $("#txtCategoryex").val(data[0].Category);
+                    $("#txtAssessmentex").val(data[0].AssessNo);
+                    $("#txtWorkex").val(data[0].AssessYear);
+                    $("#txtinvoiceNoex").val(data[0].InvoiceNo);
+                    $("#txtAssesDateex").val(data[0].AssessDate);
+                    $("#txtValidDateex").val(data[0].ValidData);
+                    $("#txtAssessTypeex").val(data[0].AssessType);
+                    $("#txtMovemenntType").val(data[0].DeliveryType);
+
+                    $("#txtSBNumber").val(data[0].Sbno);
+                    $("#txttariffIDEx").val(data[0].TariffID);
+                    $("#txtDesEx").val(data[0].Des);
+                    $("#txtlineNamex").val(data[0].LineName);
+                    $("#txtchaNameEx").val(data[0].CHaNAme);
+                    $("#txtAgencyEx").val(data[0].Consignee);
+                    $("#txtShipperNameEx").val(data[0].ShipperName);
+                    $("#txtRemarksEx").val(data[0].Remarks);
+                    $("#txtAssessmentByEx").val(data[0].AssessmentBy);
+                    $("#txtAssessmentOnEx").val(data[0].AssessmentOn);
+                    $("#txtReceiptByex").val(data[0].ReceiptBy);
+                    $("#txtReceiptOnEx").val(data[0].ReceipOn);
+                    $("#txtNetTotalEx").val(data[0].NetTotal);
+                    $("#txtDiscountAmtEx").val(data[0].DiscountAmt);
+                    $("#txtsgstex").val(data[0].SGST);
+                    $("#txtCGSTEx").val(data[0].CGST);
+                    $("#txtIGSTEx").val(data[0].IGST);
+                    $("#txtgstinnumberEx").val(data[0].GSTInNumber);
+                    $("#txtPartyNameEx").val(data[0].PartyName);
+                    $("#txtGrandTotalEx").val(data[0].GrandTotal);
+                    $("#txtAuditRemarksEx").val(data[0].AuditRemark);
+
+
+
+                    getfataCredexport(AssessNo, WorkYear, Category);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            })
+        }
+
+        else if (Category == 'BOND') {
+            //alert('Bond')
+            $("#divIGMEntry").hide();
+            $("#divSearchInvoic").hide();
+            $("#divExportEntry").hide();
+            $("#divBondEntry").show();
+            $("#divMNREntry").hide();
+
+            $.ajax({
+                url: "/Report/BondAssessInvoice",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+
+
+                    $("#txtCategoryBond").val(data[0].Category);
+                    $("#txtAssessmentBond").val(data[0].AssessNo);
+                    $("#txtWorkBond").val(data[0].AssessYear);
+                    $("#txtinvoiceNoBond").val(data[0].InvoiceNo);
+                    $("#txtAssesDateBond").val(data[0].AssessDate);
+                    $("#txtValidDateBond").val(data[0].ValidData);
+                    $("#txtAssessTypeBond").val(data[0].AssessType);
+                    $("#txtDeliveryTypeBond").val(data[0].DeliveryType);
+                    $("#txtIGmNoBond").val(data[0].IGMNo);
+                    $("#txtItemNoBond").val(data[0].ItemNo);
+
+                    $("#txttariffIDBond").val(data[0].TariffID);
+                    $("#txtDesBond").val(data[0].Des);
+
+                    $("#txtchaNameBond").val(data[0].CHaNAme);
+                    $("#txtImportreBond").val(data[0].Consignee);
+
+                    $("#txtAssessmentByBond").val(data[0].AssessmentBy);
+                    $("#txtAssessmentOnBond").val(data[0].AssessmentOn);
+                    $("#txtNoof20").val(data[0].ReceiptBy);
+                    $("#txtNoof40").val(data[0].ReceipOn);
+                    $("#txtNetTotalBond").val(data[0].NetTotal);
+
+                    $("#txtsgstBond").val(data[0].SGST);
+                    $("#txtCGSTBond").val(data[0].CGST);
+                    $("#txtIGSTBond").val(data[0].IGST);
+                    $("#txtgstinnumberBond").val(data[0].GSTInNumber);
+                    $("#txtPartyNameBond").val(data[0].PartyName);
+                    $("#txtGrandTotalBond").val(data[0].GrandTotal);
+
+
+
+                    getfataBond(AssessNo, WorkYear);
+                    getfataBondCharages(AssessNo, WorkYear);
+                    getfataBondBank(AssessNo, WorkYear);
+                    getfataBonddis(AssessNo, WorkYear);
+
+                    getfataBondvcre(AssessNo, WorkYear, Category);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            })
+        }
+
+
+        else if (Category == 'Domestic') {
+            //alert('Bond')
+            $("#divIGMEntry").hide();
+            $("#divSearchInvoic").hide();
+            $("#divExportEntry").hide();
+            $("#divBondEntry").hide();
+            $("#divDomesticEntry").show();
+            $("#divMNREntry").hide();
+            $.ajax({
+                url: "/Report/DomesticAssessInvoice",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+                    debugger;
+
+                    $("#txtCategoryeDomestic").val(data[0].Category);
+                    $("#txtAssessmentDomestic").val(data[0].AssessNo);
+                    $("#txtWorkDomestic").val(data[0].AssessYear);
+                    $("#txtinvoiceNoDomestic").val(data[0].InvoiceNo);
+                    $("#txtAssesDateDomestic").val(data[0].AssessDate);
+                    $("#txtValidDateDomestic").val(data[0].ValidData);
+                    $("#txtDeliveryTypeDomestic").val(data[0].DeliveryType);
+
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            })
+        }
+
+        else {
+            //alert('Bond')
+            $("#divIGMEntry").hide();
+            $("#divSearchInvoic").hide();
+            $("#divExportEntry").hide();
+            $("#divBondEntry").hide();
+            $("#divDomesticEntry").hide();
+            $("#divMNREntry").show();
+            $.ajax({
+                url: "/Report/MNRAssessInvoice",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+                    $("#txtCategoryeMNR").val(data[0].Category);
+                    $("#txtAssessmentMNR").val(data[0].AssessNo);
+                    $("#txtWorkMNR").val(data[0].AssessYear);
+                    $("#txtinvoiceNoMNR").val(data[0].InvoiceNo);
+                    $("#txtAssesDateMNR").val(data[0].AssessDate);
+                    $("#txtValidDateMNR").val(data[0].ValidData);
+
+                    $("#txtDeliveryTypeMNR").val(data[0].DeliveryType);
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            })
+        }
+
+
+    }
+
+    function onNoteForm(InvoiceNo) {
+
+        var data1 = { 'InvoiceNo': InvoiceNo};
+        data = JSON.stringify(data1);
+        console.log(data);
+        $.ajax({
+
+            url: '/CreditNote/_InvoiceAuditForm',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $("#divSearchInvoic").hide();
+                $("#InvoiceAuditForm").show();
+                $("#InvoiceAuditForm").html(data);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function goBack() {
+        $("#divSearchInvoic").show();
+        $("#InvoiceAuditForm").hide();
+    }
+
+
+    function getfata(AssessNo, WorkYear) {
+        //alert('hii')
+        $("#divIGMEntry").show();
+        $("#divSearchInvoic").hide();
+
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetInvoiceBind",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+
+
+                RepTableDataJson($("#example1"), data, "GetInvoiceBind", "GetInvoiceBind");
+
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataRecipt(AssessNo, WorkYear) {
+        //alert('hii')
+        $("#divIGMEntry").show();
+        $("#divSearchInvoic").hide();
+        $("#global-loader").fadeIn();
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetReciptBind",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+
+
+                RepTableDataJson($("#example2"), data, "GetReciptBind", "GetReciptBind");
+
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataRebit(Jono) {
+        //alert('hii')
+        $("#divIGMEntry").show();
+        $("#divSearchInvoic").hide();
+        debugger;
+
+        var data1 = { 'Jono': Jono };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetRebitBind",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+
+
+                RepTableDataJson($("#example3"), data, "GetRebitBind", "GetRebitBind");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataCredit(AssessNo, WorkYear, Category) {
+        //alert('hii')
+        $("#divIGMEntry").show();
+        $("#divSearchInvoic").hide();
+        debugger;
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear, 'Category': Category };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetCreditBind",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+
+
+                RepTableDataJson($("#example4"), data, "GetCreditBind", "GetCreditBind");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataCredexport(AssessNo, WorkYear, Category) {
+        //alert('hii')
+        $("#divIGMEntry").hide();
+        $("#divSearchInvoic").hide();
+        $("#divExportEntry").show();
+        debugger;
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear, 'Category': Category };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetCreditBind",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+
+
+                RepTableDataJson($("#example4Ex"), data, "GetCreditBind", "GetCreditBind");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataBond(AssessNo, WorkYear) {
+
+        $("#divIGMEntry").hide();
+        $("#divSearchInvoic").hide();
+        $("#divExportEntry").hide();
+        $("#divBondEntry").show();
+        debugger;
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetAssessBond",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                debugger;
+
+                RepTableDataJson($("#example1Bond"), data, "GetAssessBond", "GetAssessBond");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataBondCharages(AssessNo, WorkYear) {
+        $("#divIGMEntry").hide();
+        $("#divSearchInvoic").hide();
+        $("#divExportEntry").hide();
+        $("#divBondEntry").show();
+        debugger;
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetAssessBondCharges",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                debugger;
+
+                RepTableDataJson($("#example2Bond"), data, "GetAssessBondCharges", "GetAssessBondCharges");
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataBondBank(AssessNo, WorkYear) {
+        //alert('hii')
+        $("#divIGMEntry").hide();
+        $("#divSearchInvoic").hide();
+        $("#divExportEntry").hide();
+        $("#divBondEntry").show();
+        debugger;
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetAssessBondBank",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                debugger;
+
+                RepTableDataJson($("#example3Bond"), data, "GetAssessBondBank", "GetAssessBondBank");
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataBonddis(AssessNo, WorkYear) {
+        //alert('hii')
+        $("#divIGMEntry").hide();
+        $("#divSearchInvoic").hide();
+        $("#divExportEntry").hide();
+        $("#divBondEntry").show();
+        debugger;
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetAssessBondDis",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                debugger;
+
+                RepTableDataJson($("#example4Bond"), data, "GetAssessBondDis", "GetAssessBondDis");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function getfataBondvcre(AssessNo, WorkYear) {
+        //alert('hii')
+        $("#divIGMEntry").hide();
+        $("#divSearchInvoic").hide();
+        $("#divExportEntry").hide();
+        $("#divBondEntry").show();
+        debugger;
+
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetAssessBondCredit",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                debugger;
+
+                RepTableDataJson($("#example5Bond"), data, "GetAssessBondCredit", "GetAssessBondCredit");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#global-loader").fadeOut();
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+</script>
+<script>
+
+    function PrintInvoice() {
+        var AssessType = $("#txtAssessType").val();
+        var data1 = { 'Category': "Import Invoice", 'AssessType': AssessType };
+        data = JSON.stringify(data1);
+
+
+
+        var txtAssessment = $("#txtAssessment").val();
+        var txtWork = $("#txtWork").val();
+
+        if (txtAssessment != "") {
+            $.ajax({
+                url: '/Report/GetMuptiplePrintImport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var url = response + txtAssessment + '&WorkYear=' + txtWork;
+                    window.open(url, '_blank');
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+        }
+        else {
+            alert("Invalid Assessment No.");
+            return;
+        }
+    };
+
+    function PrintReceipt() {
+        debugger;
+        var table = document.getElementById("example2");
+        var ReceiptNo = 0;
+
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            ReceiptNo = row.cells[0].innerHTML;
+        }
+
+        var data1 = { 'receiptNo': ReceiptNo };
+        data = JSON.stringify(data1);
+
+        if (ReceiptNo > 0) {
+            $.ajax({
+                url: '/ImportReceipt/ImportReceiptPrint',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.close();
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.document.write(response);
+                    //myWindow.print();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+        }
+        else {
+            alert("Receipt Not Generated.");
+            return;
+        }
+
+
+    };
+
+
+    function PrintExpInvoice() {
+        debugger;
+        var AssessType = $("#txtAssessTypeex").val();
+        var data1 = { 'Category': "Export Invoice", 'AssessType': AssessType };
+        data = JSON.stringify(data1);
+        var txtAssessment = $("#txtAssessmentex").val();
+        var txtWork = $("#txtWorkex").val();
+
+        if (txtAssessment != "") {
+            $.ajax({
+                url: '/Report/GetMuptiplePrintImport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var url = response + txtAssessment + '&WorkYear=' + txtWork;
+                    window.open(url, '_blank');
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+        }
+        else {
+            alert("Invalid Assessment No.");
+            return;
+        }
+    };
+
+    function PrintExpReceipt() {
+        debugger;
+        var table = document.getElementById("example2");
+        var ReceiptNo = 0;
+
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            ReceiptNo = row.cells[0].childNodes[0].value;
+            if (ReceiptNo > 0) {
+                break;
+            }
+        }
+
+        var data1 = { 'receiptNo': ReceiptNo };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/ImportReceipt/ImportReceiptPrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                window.print();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+                //myWindow.print();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#global-loader").fadeOut();
+            }
+        });
+    };
+    //==========End==Export Print====================
+
+    //=========Start===Bond Print====================
+    function PrintBondInvoice() {
+        debugger;
+        var data1 = { 'Category': "Bond Invoice" };
+        data = JSON.stringify(data1);
+
+        var txtAssessmentBond = $("#txtAssessmentBond").val();
+        var txtWorkBond = $("#txtWorkBond").val();
+
+        if (txtAssessmentBond != "") {
+            $.ajax({
+                url: '/Report/GetMuptiplePrintImport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var url = response + txtAssessmentBond + '&WorkYear=' + txtWorkBond;
+                    window.open(url, '_blank');
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+        }
+        else {
+            alert("Invalid Assessment No.");
+            return;
+        }
+    };
+
+
+
+    function PrintBondReceipt() {
+        debugger;
+        var table = document.getElementById("example2Bond");
+        var ReceiptNo = 0;
+
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            ReceiptNo = row.cells[0].innerHTML;
+        }
+
+        var data1 = { 'receiptNo': ReceiptNo };
+        data = JSON.stringify(data1);
+
+        if (ReceiptNo > 0) {
+            z
+            $.ajax({
+                url: '/ImportReceipt/ImportReceiptPrint',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.close();
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.document.write(response);
+                    //myWindow.print();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut("slow");
+                }
+            });
+        }
+        else {
+            alert("Receipt not Generated.");
+            return;
+        }
+
+    };
+    //==========End==Bond Print====================
+
+    //================start ===import==ptint ====
+
+
+</script>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelInvoiceAuditReport", "CreditNote")?';
+
+
+    }
+
+    function GetExcelFileWithCategory() {
+
+        window.location = '@Url.Action("ExportToExcelInvoiceAuditWithCategory", "CreditNote")?';
+
+
+    }
+
+
+</script>
+
+@*Domestic View Assessment Details*@
+
+<div class=" content-area" id="divDomesticEntry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Domestic View Assessment Details</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToSearch4();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Search"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtjonoDomestic", null, new { @class = "form-control", @id = "txtjonoDomestic", name = "txtjonoDomestic", autocomplete = "off", placeholder = "Assessment No" })
+                                            @Html.TextBox("txtCategoryeDomestic", null, new { @class = "form-control", @id = "txtCategoryeDomestic", name = "txtCategoryeDomestic", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentDomestic", null, new { @class = "form-control", @id = "txtAssessmentDomestic", name = "txtAssessmentDomestic", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Work Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWorkDomestic", null, new { @class = "form-control", @id = "txtWorkDomestic", name = "txtWorkDomestic", autocomplete = "off", placeholder = "2019-20" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvoiceNoDomestic", null, new { @class = "form-control", @id = "txtinvoiceNoDomestic", name = "txtinvoiceNoDomestic", autocomplete = "off", placeholder = "Invoice No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnBondPrintInvoice" value="Print Invoice" onclick="PrintDomesticInvoice();" class="btn btn-primary" />
+                                            <input type="button" id="btnBondPrintReceipt" value="Print Receipt" onclick="PrintDomesticReceipt()" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">AssessMent Date</label>
+                                    @Html.TextBox("txtAssesDateDomestic", null, new { @class = "form-control", @id = "txtAssesDateDomestic", name = "txtAssesDateDomestic", autocomplete = "off", placeholder = "Assessment Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">Valid UpTo</label>
+                                    @Html.TextBox("txtValidDateDomestic", null, new { @class = "form-control", @id = "txtValidDateDomestic", name = "txtValidDateDomestic", autocomplete = "off", placeholder = "Valid Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assess Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessTypeDomestic", null, new { @class = "form-control", @id = "txtAssessTypeDomestic", name = "txtAssessTypeDomestic", autocomplete = "off", placeholder = "Assess Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Delivery Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDeliveryTypeDomestic", null, new { @class = "form-control", @id = "txtDeliveryTypeDomestic", name = "txtDeliveryTypeDomestic", autocomplete = "off", placeholder = "Delivery Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function PrintMNRInvoice() {
+        debugger;
+        var data1 = { 'Category': "MNR Invoice" };
+        data = JSON.stringify(data1);
+
+        var txtinvoiceNoMNR = $("#txtinvoiceNoMNR").val();
+        var txtWorkMNR = $("#txtWorkMNR").val();
+
+        if (txtAssessmentBond != "") {
+            $.ajax({
+                url: '/Report/GetMuptiplePrintImport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var url = response + txtinvoiceNoMNR + '&WorkYear=' + txtWorkMNR + '&LineID' + txtValidDateMNR + '&InvoiceType' + txtDeliveryTypeMNR;
+                    window.open(url, '_blank');
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+        }
+        else {
+            alert("Invalid Assessment No.");
+            return;
+        }
+    };
+</script>
+
+
+@*MNR View Assessment Details*@
+
+<div class=" content-area" id="divMNREntry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">MNR Assessment Details</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToSearch5();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Search"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtjonotxtjonoMNR", null, new { @class = "form-control", @id = "txtjonoMNR", name = "txtjonoMNR", autocomplete = "off", placeholder = "Assessment No" })
+                                            @Html.TextBox("txtCategoryeMNR", null, new { @class = "form-control", @id = "txtCategoryeMNR", name = "txtCategoryeMNR", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assessment No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentMNR", null, new { @class = "form-control", @id = "txtAssessmentMNR", name = "txtAssessmentMNR", autocomplete = "off", placeholder = "Assessment No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Work Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWorkMNR", null, new { @class = "form-control", @id = "txtWorkMNR", name = "txtWorkMNR", autocomplete = "off", placeholder = "2019-20" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvoiceNoMNR", null, new { @class = "form-control", @id = "txtinvoiceNoMNR", name = "txtinvoiceNoMNR", autocomplete = "off", placeholder = "Invoice No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnBondPrintInvoice" value="Print Invoice" onclick="PrintMNRInvoice();" class="btn btn-primary" />
+                                            <input type="button" id="btnBondPrintReceipt" value="Print Receipt" onclick="PrintMNRReceipt()" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-12 col-lg-3" style="display:none">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">AssessMent Date</label>
+                                    @Html.TextBox("txtAssesDateMNR", null, new { @class = "form-control", @id = "txtAssesMNR", name = "txtAssesDateMNR", autocomplete = "off", placeholder = "Assessment Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+
+                            <div class="col-sm-12 col-lg-3" style="display:none">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">Valid UpTo</label>
+                                    @Html.TextBox("txtValidDateMNR", null, new { @class = "form-control", @id = "txtValidDateMNR", name = "txtValidDateMNR", autocomplete = "off", placeholder = "Valid Date" })
+                                </div>
+                                @*</div>*@
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assess Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessTypeMNR", null, new { @class = "form-control", @id = "txtAssessTypeMNR", name = "txtAssessTypeMNR", autocomplete = "off", placeholder = "Assess Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Delivery Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDeliveryTypeMNR", null, new { @class = "form-control", @id = "txtDeliveryTypeMNR", name = "txtDeliveryTypeMNR", autocomplete = "off", placeholder = "Delivery Type" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function PrintDomesticInvoice() {
+        debugger;
+        var data1 = { 'Category': "Domestic Invoice" };
+        data = JSON.stringify(data1);
+
+        var txtAssessmentDomestic = $("#txtAssessmentDomestic").val();
+        var txtWorkDomestic = $("#txtWorkDomestic").val();
+
+        if (txtAssessmentBond != "") {
+            $.ajax({
+                url: '/Report/GetMuptiplePrintImport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var url = response + txtAssessmentDomestic + '&WorkYear=' + txtWorkDomestic;
+                    window.open(url, '_blank');
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+        }
+        else {
+            alert("Invalid Assessment No.");
+            return;
+        }
+    }
+</script>

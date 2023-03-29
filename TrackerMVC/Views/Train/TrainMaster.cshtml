@@ -1,0 +1,504 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrainMaster>
+
+@{
+    ViewBag.Title = "TrainMaster";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+
+<div class=" content-area" id="divTrainList">
+    <div class="page-header">
+        <h4 class="page-title">Train Summary: @Model.Count() </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @*<a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a>*@
+                <a onclick="AddTrain();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-plus" data-placement="bottom" title="Generate Trolley"></i> </a>
+
+            </li>
+
+        </ol>
+    </div>
+   
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="TrainTable" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting">Train NO.</th>
+                                                <th class="wd-10p sorting">From</th>
+                                                <th class="wd-10p sorting">To</th>
+                                                <th class="wd-10p sorting">Operator</th>
+                                                <th style="visibility:hidden;width:10%"></th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+                                                <tr>
+                                                    <td>@d.TrainNO </td>
+                                                    <td>@d.PortFrom </td>
+                                                    <td>@d.PortTO </td>
+                                                    <td>@d.Operator </td>
+                                                    <td> <a onclick="EditTrolley(@d.TrainNO')" href="#" class="btn btn-sm btn-info" title="Edit"><i class="fa fa-edit"></i></a></td>
+
+                                                </tr>
+                                            }
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class=" content-area" id="divAddTrainDetails" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Train Details</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="input-group">
+                                @* <input type="text" class="form-control" placeholder="Search for...">*@
+                                <span class="input-group-append " id="tabPurpose">
+
+                                    <button class="btn btn-primary active" id="import" style="text-transform: uppercase;" type="button">Import</button>
+                                    <button class="btn btn-primary" id="export" style="text-transform: uppercase;" type="button">Export </button>
+                                    @*@Html.HiddenFor(model => model.IsImportORExportSelected, new { htmlAttributes = new { @class = "form-control", @id = "selectedImportORExport" } })*@
+                                    <label id="selectedImportORExport" class="display_none"></label>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="row" >
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train NO</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TrainNo", null, new { @class = "form-control", @id = "trainNO", name = "trainNO", @maxlength = 10, autocomplete = "on" })
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                      
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Port Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlportList",
+                                            (IEnumerable<SelectListItem>)ViewBag.portList,
+                                                    new { @class = "form-control" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Operator Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlOperatorList",
+                                   (IEnumerable<SelectListItem>)ViewBag.OperatorList,
+
+                                                    new { @class = "form-control" })
+                                        </div>
+                                        <button type="button" class="btn btn-icon btn-green" name="addOperator" title="Add Operator" id="addOperator"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="col-lg-12 col-sm-12 display_none " id="opertaor_wrap">
+                            <div class="form-group">
+                                <label class="form-label mandatory">New Operator Name</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="" id="newOperatorName">
+                                    <span class="input-group-append">
+                                        <button class="btn btn-green" type="button" id="saveOperator">ADD!</button>
+                                        <button class="btn btn-gray" type="button" id="closeOperator"><i class="fa fa-close"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Removal Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("RemovalDate", null, new { @class = "form-control form_datetime1", @id = "txtRemovalDate", name = "txtRemovalDate", @Value = DateTime.Now.AddDays(0).ToString("dd MMM yyyy HH:mm") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="btnSave" name="saveProfile" value="Save" class="btn btn-success" />
+                                        @*<input type="button" name="clearProfile" value="Clear" class="btn btn-gray" title="clear" id="clearValue" />*@
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#TrainTable').dataTable({
+            retrieve: true,
+            paging: false,
+            "bInfo": false
+
+        })
+    });
+
+</script>
+
+<script>
+    function AddTrain() {
+
+        $("#divTrainList").hide()
+        $('#divAddTrainDetails').show()
+
+    }
+</script>
+
+<script>
+    function getBack() {
+        $("#divAddTrainDetails").hide()
+        $('#divTrainList').show()
+        document.location = '@Url.Action("TrainMaster", "Train")';
+        
+    }
+</script>
+
+<script>
+    $("#addOperator").on("click", function () {
+        $("#opertaor_wrap").removeClass();
+
+        $("#opertaor_wrap").addClass("display_block");
+
+    });
+    $("#closeOperator").on("click", function () {
+        $("#opertaor_wrap").removeClass();
+
+        $("#opertaor_wrap").addClass("display_none");
+
+    });
+    $("#saveOperator").on("click", function () {
+        var operatorName = $("#newOperatorName").val();
+        $.ajax(
+           {
+               
+               url: "/Train/SaveNewOperator",
+               data: '{operatorName: ' + JSON.stringify(operatorName) + '}',
+               type: "POST",
+               contentType: "application/json; charset=utf-8",
+               success: function (message) {
+                 //  alert(message);
+                   if (message == "1") {
+                       var newOption = "<option value='" + operatorName + "'>" + operatorName + "</option>";
+                       $(newOption).insertBefore($("#ddlOperatorList option:last")); //add new option
+                       $("#ddlOperatorList").val(operatorName);
+
+                       $("#opertaor_wrap").removeClass();
+                       $("#newOperatorName").removeClass();
+                       $("#newOperatorName").val("");
+                       $("#newOperatorName").addClass("form-control")
+                       $("#opertaor_wrap").addClass("display_none");
+                       alert("Operator add successfully")
+                   }
+                   else {
+                       alert("Data provided incomplete or already Exisiting. Try again!")
+                   }
+               },
+
+               error: function (message) {
+
+                   alert(JSON.stringify(message.responseText));
+
+
+               }
+           });
+
+    });
+</script>
+
+<script>
+
+    $("#btnSave").click(function () {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+        //   alert(document.getElementById("isActive").checked);
+        var TrainData = {};
+        TrainData.TrainNo = $("#trainNO").val();
+        TrainData.PortFrom = $("#ddlportList option:selected").text();
+
+        TrainData.PortTO = "ICD";
+
+        TrainData.OperatorID = $("#ddlOperatorList").val();
+        TrainData.Operator = $("#ddlOperatorList option:selected").text();
+
+        TrainData.RemovalDate = $("#txtRemovalDate").val();
+       
+        $.ajax({
+            url: "/Train/SaveTrainDetails",
+            data: '{trainDetails: ' + JSON.stringify(TrainData) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                //  alert(result)
+                if (result == 1) {
+                    alert("Data Updated successfully");
+                    document.getElementById('trainNO').value = "";
+                    document.getElementById('ddlportList').value = "";
+                    document.getElementById('ddlOperatorList').value = "";
+                    document.getElementById('txtRemovalDate').value = "";
+                    document.getElementById('btnSave').value = "Save";
+                    $('#trainNO').removeClass("form-control is-valid state-valid")
+
+                    $('#trainNO').addClass("form-control")
+                }
+                else if (result == 2) {
+                    alert("Data Saved successfully");
+                    document.getElementById('trainNO').value = "";
+                    document.getElementById('ddlportList').value = "";
+                    document.getElementById('ddlOperatorList').value = "";
+                    document.getElementById('txtRemovalDate').value = "";
+                    $('#trainNO').removeClass("form-control is-valid state-valid")
+
+                    $('#trainNO').addClass("form-control")
+
+                }
+                else if (result == 3) {
+                    alert("Already exist same train data")
+
+                }
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    });
+</script>
+
+<script>
+
+    function validate() {
+        // alert("hifg");
+
+        var trainNO = document.getElementById('trainNO').value;
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (trainNO == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#trainNO").removeClass("form-control is-valid state-valid")
+            $("#trainNO").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+    //$('#btnRemoveCSS').click(function () {
+
+</script>
+<script>
+
+    $("#trainNO").on("blur", function () {
+
+        $.ajax(
+            {
+                url: '/Train/GetExisitingTrainNO?trainNo=' + $("#trainNO").val(),
+                type: 'GET',
+                data: "",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $("#trainNO").removeClass();
+                    if (data == true) {
+                        $("#trainNO").addClass("form-control is-valid state-valid")
+                    } else {
+                        $("#trainNO").addClass("form-control is-invalid state-invalid")
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+    });
+
+    $("#trainNO").autocomplete({
+
+        autoFocus: true,
+        scroll: true,
+        source: function (request, response) {
+            //  alert("hi")
+            $.ajax({
+                url: "/Train/GetNoForAutoComplete",
+                type: "POST",
+                dataType: "json",
+                data: { name: request.term },
+                success: function (data) {
+                    if (!data.length) {
+
+                    }
+                    else {
+
+                        response($.map(data, function (item) {
+
+                            return { value: item };
+
+
+                        }))
+                    }
+                }
+            })
+        },
+        select: function (e, ui) {
+            $("#trainNO").val(ui.item.value);
+            // CheckCompanyAvailability(ui.item.value);
+            return false;
+        },
+        messages: {
+            noResults: "", results: ""
+        }
+    });
+    $("#newOperatorName").autocomplete({
+
+        autoFocus: true,
+        scroll: true,
+        source: function (request, response) {
+            //  alert("hi")
+            $.ajax({
+                url: "/Train/GetOperatorNameForAutoComplete",
+                type: "POST",
+                dataType: "json",
+                data: { name: request.term },
+                success: function (data) {
+                    if (!data.length) {
+
+                    }
+                    else {
+
+                        response($.map(data, function (item) {
+
+                            return { value: item };
+
+
+                        }))
+                    }
+                }
+            })
+        },
+        select: function (e, ui) {
+            $("#newOperatorName").val(ui.item.value);
+            // CheckCompanyAvailability(ui.item.value);
+            return false;
+        },
+        messages: {
+            noResults: "", results: ""
+        }
+    });
+
+    $("#newOperatorName").on("blur", function () {
+
+        $.ajax(
+            {
+                url: '/Train/GetExisitingOperatorName?operatorName=' + $("#newOperatorName").val(),
+                type: 'GET',
+                data: "",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $("#newOperatorName").removeClass();
+                    if (data == true) {
+                        $("#newOperatorName").addClass("form-control is-valid state-valid")
+                    } else {
+                        $("#newOperatorName").addClass("form-control is-invalid state-invalid")
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+    });
+
+</script>
+
+<script>
+    function Clear() {
+
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        let current_datetime = new Date()
+        let formatted_date = current_datetime.getDate() + " " + months[current_datetime.getMonth()] + " " + current_datetime.getFullYear() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes()
+        let JODate = current_datetime.getDate() + " " + months[current_datetime.getMonth()] + " " + current_datetime.getFullYear()
+        //   alert(formatted_date)
+        //  alert("hi")
+        $("#ddlAgent").val("");
+        $("#ddlShippinLine").val("");
+        $("#ddlshipper").val("")
+        $("#ddlConsignee").val("")
+        $("#txtViaNo").val("")
+        $("#ddlVessel").val("")
+    }
+  </script>

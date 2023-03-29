@@ -1,0 +1,1602 @@
+﻿
+@{
+    ViewBag.Title = "Transporter Dashboard";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    .pointer_cursor {
+        cursor: pointer;
+    }
+</style>
+<script src="~/js/GetTableJsonwopaging.js"></script>
+
+<link href="~/css/Transporter.css" rel="stylesheet" />
+<div id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Transporter</h4>
+    </div>
+    <div class="row">
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <img class="arrival_image" src="~/images/transporter.png">
+                            <!-- <i class="mdi mdi-truck-trailer left import_icon arrival"></i> -->
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p>Transporter</p>
+                            <h1 class="counter">3</h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="1.2951" data-thickness="20" data-color="#9f78ff">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <div class="widget-line mt-5 ">
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter text-nowrap">
+                            <thead class="text-white" style="background-color:#7bc144">
+                                <tr>
+                                    <th style="color:white;text-align:left;font-weight:bold;">#</th>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Transporter</th>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Code</th>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Drivers</th>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Trailers</th>
+
+
+                                    @*<th style="color:white;">Total</th>*@
+
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @foreach (var d in ViewBag.Transportername as List<TrackerMVCEntities.BusinessEntities.TransporterEntities>)
+                                {
+
+                                    <tr>
+                                        <td style="text-align:right;">@d.TransID</td>
+                                        <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;" onclick="getPersonMonthlyDetails('@d.TransName')">@d.TransName </td>
+                                        <td style="text-align:right;">@d.FuelShortCode </td>
+                                        <td style="text-align:right;">@d.TrailerCount </td>
+                                        <td style="text-align:right;">@d.DriverCount </td>
+
+
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+
+        </div>
+        <div class="col-sm-12 col-lg-6">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-info " onclick="ViewSummaryDrivers()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-user-secret fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Drivers</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.DriverCount</h2>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-success" onclick="ViewTrailerSummary()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-truck fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Vehicles</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.TrailerCount</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-azure-light " onclick="ViewGargaeDetails()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-car fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Garage</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.TrailergarageCount</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-warning " onclick="ViewWithoutDrivers()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-id-card-o fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Without Driver</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.DriverWihoutDrivers</h2>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-danger" onclick="ViewSummaryOFaccident()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-trash fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Accidental</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.accidentDetails</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-gray " onclick="ViewOFServivingDetails()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-chain-broken fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Servicing</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.Servicing</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-orange" onclick="ViewSummaryTrailerShifting()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-arrows fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Shifting</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.TrailerShiftingLocation</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card text-left bg-gradient-primary text-white" onclick="ViewInsuranceDetails()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-check-square-o fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Insurance & RTO </h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.InsuranceandRtoTracking</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 col-sm-12">
+                    <div class="card bg-lime" onclick="WithoutPaperDetails()" style="cursor:pointer">
+                        <div class="card-body" style="padding:0.2rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="fa fa-files-o fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">Without Paper</h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.WithoutPaper</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+
+
+        <!--Codes By Trailers Location-->
+        <div class="col-lg-6 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <img class="arrival_image" src="~/images/Location.png">
+                            <!-- <i class="mdi mdi-truck-trailer left import_icon arrival"></i> -->
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p>Various Location</p>
+                            <h1 class="counter">@ViewBag.TrailerLocationcount</h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="1.2951" data-thickness="20" data-color="#9f78ff">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <div class="widget-line mt-5 ">
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter text-nowrap">
+                            <thead class="text-white" style="background-color:#7bc144">
+                                <tr>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Location</th>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Count</th>
+
+
+                                    @*<th style="color:white;">Total</th>*@
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in ViewBag.TrailerLocation as List<TrackerMVCEntities.BusinessEntities.TrailersEntities>)
+                                {
+
+                                    <tr>
+                                        <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Location </td>
+
+                                        <td style="text-align:right;" onclick="ShowTrailerList(@d.LocationID,@d.Count)">@d.Count</td>
+
+
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="col-lg-6 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <img class="arrival_image" src="~/images/Location.png">
+                            <!-- <i class="mdi mdi-truck-trailer left import_icon arrival"></i> -->
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p>Navkar CFS</p>
+                            <h1 class="counter">@ViewBag.NavkarLocationCount</h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="1.2951" data-thickness="20" data-color="#9f78ff">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <div class="widget-line mt-5 ">
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter text-nowrap">
+                            <thead class="text-white" style="background-color:#7bc144">
+                                <tr>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Location</th>
+                                    <th style="color:white;text-align:left;font-weight:bold;">Count</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in ViewBag.TrailerLocationICD as List<TrackerMVCEntities.BusinessEntities.TrailersEntities>)
+                                {
+
+                                    <tr>
+                                        <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Location </td>
+
+                                        <td style="text-align:right;" onclick="ShowTrailerList(@d.LocationID,@d.Count)">@d.Count</td>
+
+
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+        <!--bar graph-->
+
+    </div>
+</div>
+
+<div class=" content-area" id="divdriverSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Driver Summary : <label id="lbldrivercount"></label></h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover  text-nowrap" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th class="wd-15p sorting">Driver Code</th>
+                                        <th class="wd-15p sorting">Driver Name</th>
+                                        <th class="wd-15p sorting">Transpoter</th>
+                                        <th class="wd-15p sorting">Account No</th>
+                                        <th class="wd-15p sorting">IFSC Code</th>
+                                        <th class="wd-15p sorting">Bank Name</th>
+                                        <th class="wd-15p sorting">Branch Name</th>
+                                        <th class="wd-15p sorting">Payment Mode</th>
+
+
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area overflow-hidden" id="divtrailerMaasterView" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Vehicle Master Summary : <label id="lblcount"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    <div class="input-group">
+                        <button class="btn btn-primary" type="button" id="TRAILER" onclick="TrailerSummaryList('TRAILER');">TRAILER</button>
+                        <button class="btn btn-primary" type="button" id="KALMAR" onclick="TrailerSummaryList('KALMAR');">KALMAR</button>
+                        <button class="btn btn-primary" type="button" id="FORKLIFT" onclick="TrailerSummaryList('FORKLIFT');">FORKLIFT</button>
+                        <button class="btn btn-primary" type="button" id="HYDRA" onclick="TrailerSummaryList('HYDRA');">HYDRA</button>
+                        <button class="btn btn-primary" type="button" id="OTHERS" onclick="TrailerSummaryList('OTHERS');">OTHERS</button>
+
+
+                    </div><br /><br />
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>vehicle No.</th>
+                                            <th>Owned By</th>
+                                            <th>Passing</th>
+                                            <th>grade</th>
+                                            <th>Model No.</th>
+                                            <th>Chasis No.</th>
+                                            <th>Engine No.</th>
+                                            <th>trailer Type</th>
+                                            <th>Permit</th>
+                                            <th>Permit Expiry</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area overflow-hidden" id="DivTrailerLocation" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Trailer  : <label id="lbltrailercount"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelLocationCount", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area overflow-hidden" id="DivgarageDetails" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Garage  : <label id="lblgarage"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack2();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToexcelGaregecount", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example3" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area overflow-hidden" id="DivWihtourDrivers" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Trailer's Without Drivers  : <label id="lblWithoutdrivers"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack3();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToEListOfVehicleWithoutEntries", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example4" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class=" content-area overflow-hidden" id="DivAccident" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Accidental  : <label id="lblaccident"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack4();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold;font-size: 30px"> NCL :</span> <label id="lbltxtNCL" style="font-weight: bold;font-size: 30px"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold;font-size: 30px"> NTL :</span> <label id="lbltxtNTL" style="font-weight: bold;font-size: 30px"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToexcelGetAccidentDetails", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example5" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area overflow-hidden" id="Divservicicng" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Servicing  : <label id="lblaccident"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack5();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToexcelGetServicingDetails", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example7" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class=" content-area overflow-hidden" id="DivTrailerShifting" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Shifting  : <label id="lblTrailerShifting"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack5();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToexcelGetTrailerShiftingDetails", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example8" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@* Insurance And RTO Details *@
+
+<div id="divInsuranceandRtoDetails" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Insurance And RTO Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack5();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-sm-6 col-lg-12">
+
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="card text-left bg-gradient-success text-white" onclick="Getdetails('Insurance')" style="cursor:pointer">
+                        <div class="card-body" style="padding:1rem;">
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="mdi mdi-battery-20 fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">
+                                        Insurance Due Date
+                                    </h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.PolicyCount</h2>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-12">
+                    <div class="card text-left bg-gradient-info text-white" onclick="Getdetails('Tax')" style="cursor:pointer">
+                        <div class="card-body" style="padding:1rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="mdi mdi-battery-charging-20 fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">
+                                        Tax Due Date
+                                    </h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.TaxDate</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="card text-left bg-gradient-danger text-white" onclick="Getdetails('Fitness')" style="cursor:pointer">
+                        <div class="card-body" style="padding:1rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="mdi mdi-battery-minus fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">
+                                        Fitness Due Date
+                                    </h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.Fitness</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+
+
+                <div class="col-lg-3 col-sm-12">
+                    <div class="card bg-cyan" onclick="Getdetails('National Permit Expiry')" style="cursor:pointer">
+                        <div class="card-body" style="padding:1rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="mdi mdi-battery-negative fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">
+                                        National Permit Due Date
+                                    </h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.NationalPermitExpiry</h2>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="card bg-teal" onclick="Getdetails('Local Permit Expiry')" style="cursor:pointer">
+                        <div class="card-body" style="padding:1rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="mdi mdi-battery-outline fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">
+                                        Local Permit Due Date
+                                    </h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.LocalPermitExpiry</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="card bg-gray " onclick="Getdetails('Green Tax')" style="cursor:pointer">
+                        <div class="card-body" style="padding:1rem;">
+
+                            <div class="ml-auto">
+                                <span class="text-white display-6"><i class="mdi mdi-bell-ring-outline fa-1x"></i></span>
+                            </div>
+                            <div class="float-right ">
+                                <div>
+                                    <h5 class="text-white">
+                                        Green tax Due Date
+                                    </h5>
+                                    <h2 class="text-white m-0 " id="PrincipalCount">@ViewBag.GreenTax</h2>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+           
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+<div class=" content-area overflow-hidden" id="DivallInsuranceDetailslist" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            <lable id="getHeaderInsurance"></lable>  : <label id="lblinsuranceCountt"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack8();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelInsureanceDetails", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example12" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class=" content-area overflow-hidden" id="DivWithoutpaper" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Without paper  : <label id="lblWithouPaper"></label>
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack5();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelWithoutPaper", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example14" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+
+                                                <th>Vehicle Name</th>
+                                                <th>Trans_Date</th>
+
+                                            </tr>*@
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+
+        });
+
+
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+
+        });
+
+        //$('#example3').DataTable({
+        //    "bLengthChange": false,
+        //    "bInfo": false,
+        //    "bPaginate": false,
+        //    //"bFilter": false,
+        //    "paging": false
+
+
+        //});
+
+        $("#TRAILER").css({ "background-color": "#7754ce" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+
+    });
+
+    function ViewSummaryDrivers() {
+
+        $("#divSummary").hide();
+        $("#divdriverSummary").show();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $.ajax({
+            type: 'POST',
+            url: '/Driver/getDriver',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                $('#lbldrivercount').text(data.length);
+                //alert(JSON.stringify(data));
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+
+                        { "data": "DriverID" },
+                        { "data": "DriverName" },
+                        { "data": "TransporterName" },
+                        { "data": "AccountNo" },
+                        { "data": "IFSCCode" },
+                        { "data": "BankName" },
+                        { "data": "BranchName" },
+                        { "data": "PaymentMode" },
+
+                    ],
+                    "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'DriverDetails',
+                        "filename": 'DriverDetails_List'
+
+                    }
+                    ]
+
+                })
+
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+    function getBack() {
+        $("#divSummary").show();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+    }
+
+
+
+</script>
+
+
+
+<script>
+
+    function ViewTrailerSummary() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").show();
+        $("#DivTrailerLocation").hide();
+        TrailerSummaryList('TRAILER');
+
+    }
+
+
+
+    function TrailerSummaryList(vehicletype) {
+
+        $.ajax({
+            url: "/TrailerTransport/AjaxGettrailersDetails",
+            data: '{vehicletype: ' + JSON.stringify(vehicletype) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $('#lblcount').text(data.length);
+
+                $("#divtrailerMaasterView").show();
+                $("#divheader").hide();
+                $("#diventrytable").hide();
+                $("#divtrailerMaasterView").show();
+                $("#divheader").hide();
+                $("#diventrytable").hide();
+                $('#example2').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": true,
+                    "aaData": data,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "retrieve": false,
+                    "paging": false,
+                    "columns": [
+
+                        { "data": "trailername" },
+                        { "data": "OwnedBy" },
+                        { "data": "Passing" },
+                        { "data": "Grade" },
+                        { "data": "ModelNo" },
+                        { "data": "ChasisNo" },
+                        { "data": "EngineNo" },
+                        { "data": "trailerType" },
+                        { "data": "Permit" },
+                        { "data": "PermitExpiry" }
+                    ],
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'TrailersMasterDetails',
+                        "filename": 'TrailersMasterDetails_List'
+
+                    }
+                    ]
+                });
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function getBack1() {
+
+        $("#divSummary").show();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+
+    }
+
+</script>
+<script>
+    $("#TRAILER").click(function () {
+        $("#TRAILER").css({ "background-color": "#7754ce" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+    });
+    $("#KALMAR").click(function () {
+        $("#KALMAR").css({ "background-color": "#7754ce" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+    });
+    $("#FORKLIFT").click(function () {
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#7754ce" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+    });
+    $("#HYDRA").click(function () {
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#7754ce" });
+    });
+    $("#OTHERS").click(function () {
+        $("#OTHERS").css({ "background-color": "#7754ce" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+    });
+</script>
+
+
+<script>
+
+    function ShowTrailerList(LocationID, Count) {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").show();
+
+        $.ajax({
+            url: "/Transporter/AjaxTrailerLocation",
+            data: '{LocationID: ' + JSON.stringify(LocationID) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //  alert(data);
+                RepTableDataJsonwopaging($("#example"), data, "TotalContainerPendency", "TotalContainerPendency");
+
+                //var data = JSON.parse(data);
+                //alert(data);
+
+                $('#lbltrailercount').text(Count);
+                //$('#example').DataTable({
+                //    "destroy": true,
+                //    "bLengthChange": false,
+                //    "bInfo": true,
+                //    "aaData": data,
+                //    "bPaginate": false,
+                //    "bFilter": true,
+                //    "retrieve": false,
+                //    "paging": false,
+                //    "columns": [
+
+                //        { "data": "Location" },
+                //        { "data": "trans_date" }
+
+                //    ]
+
+                //});
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+
+    function ViewGargaeDetails() {
+
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").show();
+        $.ajax({
+            url: "/Transporter/GetGarageDetails",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example3"), data, "TotalContainerPendency", "TotalContainerPendency");
+                var table = document.getElementById("example3");
+                $('#lblgarage').text(table.rows.length - 1)
+                //alert(table.rows.length);
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function getBack2() {
+        $("#divSummary").show();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+
+    }
+
+    function getBack3() {
+        $("#divSummary").show();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+
+    }
+
+
+    function ViewWithoutDrivers() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").show();
+
+        $.ajax({
+            url: "/Transporter/TransportListOFVehicle",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example4"), data, "TotalContainerPendency", "TotalContainerPendency");
+                var table = document.getElementById("example4");
+                $('#lblWithoutdrivers').text(table.rows.length - 1)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+</script>
+
+<script>
+    function getBack4() {
+        $("#divSummary").show();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+
+    }
+    function ViewSummaryOFaccident() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").show();
+
+        $.ajax({
+            url: "/Transporter/GetAccidentDetails",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example5"), data, "TotalContainerPendency", "TotalContainerPendency");
+                var table = document.getElementById("example5");
+                $('#lblaccident').text(table.rows.length - 1)
+                var row;
+                var countNTl = 0;
+                var CountNCL = 0;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i]
+                    var Group = row.cells[7].innerText
+                    if (Group == "NTL") {
+                        countNTl = countNTl + 1;
+                    }
+                    if (Group == "NCL") {
+                        CountNCL = CountNCL + 1;
+                    }
+                }
+                
+               
+          
+                $('#lbltxtNCL').text(CountNCL);
+                $('#lbltxtNTL').text(countNTl);
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function ViewOFServivingDetails() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+        $("#Divservicicng").show();
+
+        $.ajax({
+            url: "/Transporter/GetServicingDetails",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example7"), data, "TotalContainerPendency", "TotalContainerPendency");
+                var table = document.getElementById("example7");
+                $('#lblaccident').text(table.rows.length - 1)
+                //$('#lblgarage').text(Count);
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function getBack5() {
+        $("#divSummary").show();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+        $("#Divservicicng").hide();
+        $("#DivTrailerShifting").hide();
+        $("#divInsuranceandRtoDetails").hide();
+        $("#DivWithoutpaper").hide();
+    }
+
+
+    function ViewSummaryTrailerShifting() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+        $("#Divservicicng").hide();
+        $("#DivTrailerShifting").show();
+
+
+        $.ajax({
+            url: "/Transporter/GetTrailerShiftingDetails",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example8"), data, "TotalContainerPendency", "TotalContainerPendency");
+                var table = document.getElementById("example8");
+                $('#lblTrailerShifting').text(table.rows.length - 1)
+                //$('#lblgarage').text(Count);
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        
+    }
+
+
+
+    function ViewInsuranceDetails() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+        $("#Divservicicng").hide();
+        $("#DivTrailerShifting").hide();
+        $("#divInsuranceandRtoDetails").show();
+       
+    }
+</script>
+
+
+<script>
+    function Getdetails(searchcriteria) {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+        $("#Divservicicng").hide();
+        $("#DivTrailerShifting").hide();
+        $("#divInsuranceandRtoDetails").hide();
+        $("#DivallInsuranceDetailslist").show();
+        
+        if (searchcriteria == "Insurance") {
+            $("#getHeaderInsurance").text('Insurance Due Date');
+        }
+
+        if (searchcriteria == "National Permit Expiry") {
+            $("#getHeaderInsurance").text('National Permit Expiry Due Date');
+        }
+        if (searchcriteria == "Local Permit Expiry") {
+            $("#getHeaderInsurance").text('National Permit Expiry Due Date');
+        }
+
+        if (searchcriteria == "Tax") {
+            $("#getHeaderInsurance").text('Tax Due Date');
+        }
+
+        if (searchcriteria == "Fitness") {
+            $("#getHeaderInsurance").text('Fitness Due Date');
+        }
+        if (searchcriteria == "Green Tax") {
+            $("#getHeaderInsurance").text('Green Tax Due Date');
+        }
+
+        var data1 = { 'searchcriteria': searchcriteria };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/Transporter/GetallInsuranceDetailsList",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example12"), data, "TotalContainerPendency", "TotalContainerPendency");
+                var table = document.getElementById("example12");
+                $('#lblinsuranceCountt').text(table.rows.length - 1)
+                //$('#lblgarage').text(Count);s
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function getBack8() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+        $("#Divservicicng").hide();
+        $("#DivTrailerShifting").hide();
+        $("#divInsuranceandRtoDetails").show();
+        $("#DivallInsuranceDetailslist").hide();
+    }
+
+
+
+    function WithoutPaperDetails() {
+        $("#divSummary").hide();
+        $("#divdriverSummary").hide();
+        $("#divtrailerMaasterView").hide();
+        $("#DivTrailerLocation").hide();
+        $("#DivgarageDetails").hide();
+        $("#DivWihtourDrivers").hide();
+        $("#DivAccident").hide();
+        $("#Divservicicng").hide();
+        $("#DivTrailerShifting").hide();
+        $("#divInsuranceandRtoDetails").hide();
+        $("#DivallInsuranceDetailslist").hide();
+        $("#DivWithoutpaper").show();
+
+        $.ajax({
+            url: "/Transporter/GetwithoutpaperDetails",
+            //data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example14"), data, "TotalContainerPendency", "TotalContainerPendency");
+                var table = document.getElementById("example14");
+                //var table1 = document.getElementById("tblimportdelivery");
+                $('#lblWithouPaper').text(table.rows.length - 1);
+                //$('#lblWithouPaper').text(table.rows.length - 1)
+                //$('#lblgarage').text(Count);
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>

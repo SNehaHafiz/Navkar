@@ -1,0 +1,234 @@
+﻿
+@{
+    ViewBag.Title = "Clear Party";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<!DOCTYPE html>
+<script src="~/js/GetTableJson.js"></script>
+<div class="content-area overflow-hidden" id="entryscreen">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Clear Party</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlCustomerName" />
+                                            <input type="hidden" class="form-control" id="hdnPayFromId" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-xs-4">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="Add();">Add</button>
+                                            <input id="ENtryid" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divInvoiceDetails">
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblInvoiceList">
+                                            <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Replace Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlReplacerName" />
+                                            <input type="hidden" class="form-control" id="hdnReplaceId" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">ID</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" readonly="readonly" id="ReplaceID" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 col-xs-4">
+                                <div class="form-group">
+                                    <label class="form-label">'</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="SaveClear();">Save</button>
+                                            <input id="ENtryid" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+<script>
+    function Add() {
+        debugger;
+        var search = document.getElementById('ddlCustomerName').value;
+        try {
+            var data1 = { 'search': search };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/BID/PartySeach",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    RepTableDataJson($("#tblInvoiceList"), response, "ClearParty", "BID")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+        } catch (ex) {
+        }
+    }
+    $(document).ready(function () {
+        AutomCom();
+        AutomCom1()
+    });
+    function AutomCom() {
+        debugger;
+        $("#ddlCustomerName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/BID/getPartyNameReceipt",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //debugger;
+                        response($.map(data, function (item) {
+                            //debugger;
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                //debugger;
+                $("#ddlCustomerName").val(i.item.label);
+                $("#hdnPayFromId").val(i.item.val);
+            },
+            minLength: 1
+        });
+    };
+    function AutomCom1() {
+        debugger;
+        $("#ddlReplacerName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/BID/getPartyNameReceipt",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //debugger;
+                        response($.map(data, function (item) {
+                            //debugger;
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                //debugger;
+                $("#ddlReplacerName").val(i.item.label);
+                $("#hdnReplaceId").val(i.item.val);
+                $("#ReplaceID").val(i.item.val);
+            },
+            minLength: 1
+        });
+    };
+
+    function SaveClear() {
+        debugger;
+
+
+        var hdnPayFromId = $("#hdnPayFromId").val();
+        var hdnReplaceId = $("#hdnReplaceId").val();
+        var ddlReplacerName = $("#ddlReplacerName").val();
+        var ddlCustomerName = $("#ddlCustomerName").val();
+        var data1 = { 'hdnPayFromId': hdnPayFromId, 'hdnReplaceId': hdnReplaceId, 'ddlReplacerName': ddlReplacerName, 'ddlCustomerName': ddlCustomerName };
+
+            var data = JSON.stringify(data1);
+        
+            $.ajax({
+                url: "/BID/SaveClear",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+
+                    if (response >= "1") {
+                        alert("Record saved successfully");
+                        window.location = "/BID/SaveClear";
+                        //Clear();
+                    }
+                    else {
+                        alert("Record not saved successfully. Try Again!");
+                        $("#btnsave").removeAttr('disabled');
+                    }
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            })
+       
+    }
+</script>

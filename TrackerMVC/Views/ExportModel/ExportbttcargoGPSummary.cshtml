@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewBag.Title = "ExportbttcargoGPSummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div>
+    <div class="page-header">
+        <h4 class="page-title">Export BTT Cargo Gate Pass Summary</h4>
+        <a class="btn btn-sm" href="#" style="height:36px;align-content:center;color:white;background-color: #5ed84f;" data-placement="bottom" title="Add" data-original-title="Add" onclick="AddBTTCargoGP()"><i style="font-size: 18px;" class="fa fa-plus  mt-1"></i> </a>
+    </div>
+    <div class="row">
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(0).ToString("dd MMM yyyy 08:00") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(+1).ToString("dd MMM yyyy 08:00") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label mandatory">Search Criteria</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.DropDownList("ddlCriteria", new List<SelectListItem>
+                                                            { new SelectListItem { Text = "--Select--", Value = ""},
+                                                  new SelectListItem { Text = "SB No", Value = "SB No"},
+
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlCriteria", onchange = "OnCriteriaChange()" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12" id="divSearchText" style="display:none">
+            <div class="form-group">
+                <label class="form-label mandatory" id="divsearchlabel"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSearchText", null, new { @class = "form-control", @id = "txtSearchText", name = "txtSearchText", autocomplete = "off", placeholder = "Search Text" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12 mt-5">
+            <div class="form-group">
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <input type="button" id="btnShow" value="Show" class="btn btn-primary bgcolor" onclick="ExportbttcargoGPSummary()" style=" background-color: #9f78ff;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="table-responsive">
+                <table id="tblExpensesSummary" class="table table-bordered table-hover th_Background tbl-cart text-nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Print</th>
+                            <th>GP No</th>
+                            <th>GP Date </th>
+                            <th>Truck No </th>
+                            <th>SBNO </th>
+                            <th>Btt Qty </th>
+                            <th>Btt WT </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+     $(document).ready(function () {
+         ExportbttcargoGPSummary();
+     });
+
+    function OnCriteriaChange() {
+        var ddlCriteria = $("#ddlCriteria").val();
+        if (ddlCriteria != "") {
+             if (ddlCriteria == "SB No") {
+                $("#divSearchText").show();
+                 $("#divsearchlabel").text("SB No");
+                 $("#txtSearchText").val('');
+            }
+
+        }
+        else {
+
+            $("#divSearchText").hide();
+
+        }
+    }
+
+    function ExportbttcargoGPSummary() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+          var FromDate = $("#FromDate").val();
+          var ToDate = $("#ToDate").val();
+          var ddlCriteria = $("#ddlCriteria").val();
+          var SearchText = "";
+
+          if (ddlCriteria == "SB No") {
+              SearchText = $("#txtSearchText").val();
+          }
+          else {
+              SearchText = "";
+          }
+          data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Criteria': ddlCriteria, 'SearchText': SearchText };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExportModel/GetExportbttcargoGPSummary',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+
+                 if (jsonResult == "[]") {
+                    alert('No Data Found')
+                } else {
+                    $('#tblExpensesSummary').DataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": jsonResult,
+                        "bPaginate": false,
+                        "bInfo": false,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+
+                            {
+                                extend: 'excel',
+                                title: 'Export BTT Cargo GP Summary',
+                                exportOptions: {
+                                    columns: [1, 2, 3, 4, 5, 6]
+                                }
+                            }
+                        ],
+
+                        "paging": true,
+                        "aaSorting": [],
+                        "columnDefs": [{
+                            "targets": 0,
+                            "orderable": false,
+                        }],
+                        "columns": [
+                            //{
+                            //    "data": "Print",
+                            //    "render": function (data, type, row, meta) {
+                            //        if (type === 'display') {
+
+                            //            data = "<button class=\"btn btn-info btn-sm\" title=\"Print\"  onclick=\"PrintExportBTTCargoGatePass()\" ><\button>";
+
+
+                            //        return data;
+                            //    }
+                            //},
+                            /* {"data": "SrNo"},*/
+                           // { "data":" <a onclick="GatePassPrint()" href="#" class="btn btn-primary" title="Print">   <i class="fa fa-print"></i></a>"}
+                            {
+                                "data": "data",
+                                "render": function (data, type, row, meta) {
+                                    data = "<a href=\"#\" class=\"btn btn-sm btn-success\" title=\"Print\" onclick=\"PrintExportBTTCargoGatePass('" + row.GPNO + "')\">Print</a>";
+                                    return data;
+                                }
+                            },
+                            {"data": "GPNO"},
+                            { "data": "GPDate" },
+                            { "data": "TrailerNo" },
+                            { "data": "SBNo" },
+                            { "data": "BTTQty" },
+                            { "data": "BTTWT" }
+
+
+                        ]
+                    });
+
+
+                    $(".buttons-excel").addClass("btn btn-primary bgcolor");
+                    $(".buttons-excel>span").replaceWith('<i class="fa fa-file-excel-o"  data-placement="bottom"  title="Export To Excel"></i>');
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+    }
+
+    function AddBTTCargoGP() {
+                  document.location = '@Url.Action("ExpCargoBTTGP", "ExportModel")';
+
+    }
+
+    function PrintExportBTTCargoGatePass(GPNO) {
+
+        var data1 = { GPNO: GPNO };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ExportModel/PrintExportBTTCargoGatePass",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+</script>

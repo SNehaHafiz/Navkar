@@ -1,0 +1,175 @@
+﻿@model  TrackerMVCEntities.BusinessEntities.IGMEntities
+@{
+    ViewBag.Title = "AuctionNoticeSummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/validation.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area" >
+    <div class="page-header">
+        <h4 class="page-title">Auction Notice Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">Notice Type</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.DropDownList("ddlNoticeType", new List<SelectListItem>
+                                         { new SelectListItem { Text = "First Notice", Value = "1"},
+                                             new SelectListItem { Text = "Second Notice", Value = "2"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlNoticeType" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divIGMNo">
+            <div class="form-group">
+                <label class="form-label">IGM No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtIGMNo", null, new { @class = "form-control", @id = "txtIGMNo", autocomplete = "off" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divItemNo">
+            <div class="form-group">
+                <label class="form-label">Item No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtItemNo", null, new { @class = "form-control", @id = "txtItemNo", autocomplete = "off" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary" onclick="ShowAuction();">Show</button>
+                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnCancel" onclick="CancelAuction();">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblNoticeDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function ShowAuction() {
+
+        var NoticeType = $("#ddlNoticeType").val();
+        var IGMNo = $("#txtIGMNo").val();
+        var ItemNo = $("#txtItemNo").val();
+
+        if (NoticeType == "") {
+            alert("Notice Type cannot be Blank.");
+            return;
+        }
+
+        if (IGMNo == "") {
+            alert("IGM No cannot be Blank.");
+            return;
+        }
+
+        if (ItemNo == "") {
+            alert("Item No cannot be Blank.");
+            return;
+        }
+        debugger;
+        try {
+
+            $.ajax({
+                type: 'POST',
+                url: '/Auction/getAuctionNoticeSummary',
+                data: '{NoticeType: ' + JSON.stringify(NoticeType) + ', IGMNo: ' + JSON.stringify(IGMNo) + ', ItemNo: ' + JSON.stringify(ItemNo) + '}',
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    debugger;
+                    RepTableDataJson($("#tblNoticeDet"), data, "AuctionSummary", "AuctionSummary");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+            });
+        } catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    function CancelAuction() {
+
+        var NoticeType = $("#ddlNoticeType").val();
+        var IGMNo = $("#txtIGMNo").val();
+        var ItemNo = $("#txtItemNo").val();
+
+        if (NoticeType == "") {
+            alert("Notice Type cannot be Blank.");
+            return;
+        }
+
+        if (IGMNo == "") {
+            alert("IGM No cannot be Blank.");
+            return;
+        }
+
+        if (ItemNo == "") {
+            alert("Item No cannot be Blank.");
+            return;
+        }
+        debugger;
+        try {
+            if (window.confirm("Are you sure want to cancel Auction Notice ?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Auction/CalcelAuctionNotice',
+                    data: '{NoticeType: ' + JSON.stringify(NoticeType) + ', IGMNo: ' + JSON.stringify(IGMNo) + ', ItemNo: ' + JSON.stringify(ItemNo) + '}',
+                    //data: JSON.stringify(formData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+                        if (data == "Notice Cancel Successfully") {
+                            window.location = "/Auction/AuctionNoticeSummary"
+                        } else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+
+                });
+            }
+
+        } catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+    
+</script>

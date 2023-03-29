@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewBag.Title = "SearchTrailer";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonPagging.js"></script>
+<div id="tracker-loader"></div>
+<style>
+    .table th {
+        background-color: #7bc144 !important;
+        color: white;
+    }
+</style>
+<div class="content-area overflow-hidden" id="divDriver">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Trailer Search</h4>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="TxtTailerid" type="text" class="form-control" placeholder="trailer No" style="text-transform:uppercase" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" style="width:60PX" id="btnSearch" type="button" onclick="ShowTrailerDetails()"><i class="fe fe-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div>
+                            <div class="col-lg-3 col-sm-12">
+                                <label id="lblason" style="background-color:yellow;color:blue;display:none;font-size:0.875rem;font-weight: 600;"></label>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="btn-primary p-2" style="background-color:#7bc144"><h4>Trailer Details</h4></div>
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Current Location</strong></td>
+                                            <td><label id="TxtCurrentLocation" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Status</strong></td>
+                                            <td><label id="TxtStatus" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Transporter</strong></td>
+                                            <td><label id="txtTransporter" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Driver</strong></td>
+                                            <td><label id="TxtDriver" style="font-weight: bold"></label></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="btn-primary p-2" style="background-color:#7bc144"><h4>Insurance Details</h4></div>
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Tax Fitness:</strong></td>
+                                            <td><label id="txtFitness" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Policy End Date:</strong></td>
+                                            <td><label id="Policy_End_Date" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Green Due Date:</strong></td>
+                                            <td><label id="TXtGreentat" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>PUC Date:</strong></td>
+                                            <td><label id="TXtPucDate" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Tax Due Date:</strong></td>
+                                            <td><label id="TxtDueDate" style="font-weight: bold"></label></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-white btn-primary" style="width:150px"><strong>Used For:</strong></td>
+                                            <td><label id="TXtUsedFor" style="font-weight: bold"></label></td>
+                                        </tr>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                           
+                            <h4 style="font-weight: bold;">Last 7 Movements</h4>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2">
+                                            <thead>
+                                                <tr></tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#example2').DataTable({
+        //    "bLengthChange": false,
+        //    "bInfo": false,
+        //    "bPaginate": false,
+        //    //"bFilter": false,
+        //    "paging": false
+        //    //"dom": 'Bfrtip',
+        //    //"buttons": [{
+        //    //    "extend": 'excel',
+        //    //    "title": 'VoucherDetails',
+        //    //    "filename": 'VoucherDetails_List'
+
+        //    //}
+        //    //]
+        //});
+
+
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+<script>
+
+
+
+    function ShowTrailerDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var trailername = $("#TxtTailerid").val();
+
+        $.ajax({
+            url: "/Trailer/AjaxGetTrailerDetails",
+            data: '{trailername: ' + JSON.stringify(trailername) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.length == 0) {
+                    alert("Record not found!")
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+                $("#lblason").show();
+                $("#TxtCurrentLocation").text(data[0].CurrentLocation);
+                $("#TxtStatus").text(data[0].Status);
+                $("#txtTransporter").text(data[0].Trasnporter);
+                $("#TxtDriver").text(data[0].Driver);
+
+                $("#txtFitness").text(data[0].Fitness_Due_Date);
+                $("#Policy_End_Date").text(data[0].Policy_End_Date);
+                $("#TXtUsedFor").text(data[0].usedfor);
+                $("#TxtDueDate").text(data[0].Tax_Due_Date);
+                $("#TXtPucDate").text(data[0].puc_date);
+                $("#TXtGreentat").text(data[0].green_tax_due);
+
+                $("#lblason").text("Status as on: " + data[0].Lastdate);
+
+                ShowMovementDetails(trailername);
+                $("#tracker-loader").fadeOut("slow");
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    function ShowMovementDetails(trailername) {
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/Trailer/GetTrailerMovementdetails',
+            data: '{trailername: ' + JSON.stringify(trailername) + '}',
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), data, "Voucher Closed Details", "VoucherClosedDetails_List");
+
+
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

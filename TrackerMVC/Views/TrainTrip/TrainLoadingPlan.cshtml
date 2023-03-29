@@ -1,0 +1,1756 @@
+﻿
+@{
+    ViewBag.Title = "TrainLoadingPlan";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="tracker-loader"></div>
+<div class=" content-area" id="ImportTrainLoadingSheet">
+    <div class="page-header">
+        <h4 class="page-title">Domestic HUB train Loading Sheet</h4>
+        <div class="ibox-content text-right">
+            <a onclick="Summary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Train Loading Sheet Summary"></i> </a>
+        </div>
+    </div>
+    <div class="row" id="DashBoard">
+        <div class="col-sm-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Trip No</label>
+                                @*@Html.DropDownList("ddlTripNo", (IEnumerable<SelectListItem>)ViewBag.TripList, "--Select--", new { @class = "form-control", @id = "ddlTripNo", name = "ddlTripNo", autocomplete = "off", onchange = "GetTrainNo()" })*@
+                                @Html.TextBox("txtTripNo", null, new { @class = "form-control", @id = "txtTripNo", name = "txtTripNo", autocomplete = "off", @maxlength = 500
+                                })
+
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-lg-1">
+                            <div class="form-group label-floating" style="padding-top:26px">
+                                <button class="btn btn-primary" id="TripSearch" type="button" onclick="LoadTripSearch()"><i class="fe fe-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3" id="divddlTrainNo">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Train No</label>
+                                @Html.TextBox("txtTrainNo", null, new { @class = "form-control", @id = "txtTrainNo", name = "txtTrainNo", autocomplete = "off", rows = "2", @maxlength = 500, @disabled = true })
+
+                            </div>
+                        </div>
+                        @*</div>
+                            <div class="row">*@
+                        <div class="col-md-3 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Origin</label>
+
+                                @Html.TextBox("txtOrigin", null, new { @class = "form-control", @id = "txtOrigin", name = "txtOrigin", autocomplete = "off", rows = "2", @maxlength = 500, @disabled = true })
+
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Destination</label>
+                                @Html.TextBox("txtDestination", null, new { @class = "form-control", @id = "txtDestination", name = "txtDestination", autocomplete = "off", rows = "2", @maxlength = 500, @disabled = true })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3" style="display:none">
+                            <div class="form-group" style="padding-top:20px">
+                                @*<div class="row gutters-xs">
+                                    <div class="col">*@
+                                <input type="submit" id="Show" name="show" value="Show" class="btn btn-success" onclick="ShowAllWagonNo()" />
+                                @*<input type="button" name="clearProfile" value="Clear" class="btn btn-gray" title="clear" id="clearValue" />*@
+                                @*<button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue" onclick="New()"><i class="fa fa-undo"></i></button>*@
+                                @*</div>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal1" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none">
+
+                        <div class="col-md-6 col-lg-3" id="divddlWagon">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Wagon No</label>
+                                <select id="ddlWagon" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3" id="divddlContainer1">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Container No.1</label>
+                                <select id="ddlContainer1" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-1" id="divlblsize1">
+                            <div class="form-group label-floating" style="padding-top:30px">
+                                <label class="form-label" id="lblSize1">00</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3" id="divddlContainer2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Container No.2</label>
+                                <select id="ddlContainer2" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-1" id="divlblsize2">
+                            <div class="form-group label-floating" style="padding-top:30px">
+                                <label class="form-label" id="lblSize2">00</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-1" id="divShowButton">
+                            <div class="form-group label-floating" style="padding-top:27px;">
+                                <a onclick="ShowWagonList();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white" ;><i class="fa fa-check" title="Add Train load entry"></i> </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="containerList" style="width:100%;">
+                                    <thead>
+                                        <tr>
+
+                                            <th class="wd-15p sorting">Wagon No</th>
+                                            <th class="wd-10p sorting">Container 1</th>
+                                            <th class="wd-10p sorting">Size 1</th>
+                                            <th class="wd-10p sorting">Net Wt. (1)</th>
+                                            <th class="wd-10p sorting">Tare Wt. (1)</th>
+                                            <th class="wd-10p sorting">Actual Wt. (1)</th>
+                                            <th class="wd-10p sorting">commodity. (1)</th>
+                                            <th class="wd-10p sorting">POL. (1)</th>
+                                            <th class="wd-10p sorting">Status 1 </th>
+                                            <th class="wd-10p sorting">Container 2</th>
+                                            <th class="wd-10p sorting">Size 2</th>
+                                            <th class="wd-10p sorting">Net Wt. (2)</th>
+                                            <th class="wd-10p sorting">Tare Wt. (2)</th>
+                                            <th class="wd-10p sorting">Actual Wt. (2)</th>
+                                            <th class="wd-10p sorting">commodity. (2)</th>
+                                            <th class="wd-10p sorting">POL. (2)</th>
+                                            <th class="wd-10p sorting">Status 2</th>
+
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer text-right">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="submit" id="Save" name="save" value="Save" class="btn btn-success" onclick="Save()" />
+                                    <input type="submit" style="display:none" id="Submit" name="Submit" value="Submit" class="btn btn-primary" onclick="Submit()" />
+
+                                    @*<input type="button" name="clearProfile" value="Clear" class="btn btn-gray" title="clear" id="clearValue" />*@
+                                    <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue" onclick="New()"><i class="fa fa-undo"></i></button>
+                                    <span style="font-weight: bold;visibility:hidden"> TEUS :</span>   <label id="LblEMpty" style="font-weight: bold;visibility:hidden"></label>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divLoadingSummary" class="content-area" style="display:none">
+    <div class="page-header">
+
+        <h4 class="page-title">List of pending  Domestic HUB train Loading   for Summary</h4>
+        <div class="ibox-content text-right">
+            <a onclick="Back();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Import Train Loading Sheet"></i> </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="LoadingSheetList" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="wd-15p sorting">Sr No</th>
+                                            <th class="wd-15p sorting">Trip No</th>
+                                            <th class="wd-15p sorting">Train No</th>
+                                            <th class="wd-15p sorting">Port Train No</th>
+                                            <th class="wd-15p sorting">Origin</th>
+                                            <th class="wd-15p sorting">Destination</th>
+                                            <th class="wd-15p sorting">Added On</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="TestModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id='myModalContent'>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#containerList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false
+
+        })
+        $('#LoadingSheetList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false
+        })
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+    $.ajax({
+        type: 'POST',
+        url: '/TrainTrip/DeleteTempAllRecords',
+        //  data: '{viewModel: ' + JSON.stringify(viewModel) + ', containerData: ' + JSON.stringify(SelectedData) + '}',
+        //data: JSON.stringify(formData),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: true,
+        success: function (data) {
+        }
+    });
+
+</script>
+<script>
+    function GetTrainNo() {
+
+        var TripID = $("#txtTripNo").text();
+        var data = JSON.stringify({
+            'TripID': TripID
+        });
+
+        $.ajax({
+            url: "/TrainTrip/GetTripNoWiseData",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $("#txtTrainNo").val(data.TrainNo[0].TrainNo);
+                $("#txtOrigin").val(data.TrainNo[0].Origin);
+                $("#txtDestination").val(data.TrainNo[0].Destination);
+                var select = $("#ddlWagon");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data.WagonList, function (data, value) {
+
+                    select.append($("<option></option>").val(value.WagonID).html(value.WagonNo));
+                })
+
+                var select1 = $("#ddlContainer1");
+                //  $("#txtEmailTo").val(data.EmailID);
+                select1.empty();
+                select1.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data.ContainerList1, function (data, value) {
+
+                    select1.append($("<option></option>").val(value.SrNo).html(value.ContainerNo));
+                })
+
+                var select2 = $("#ddlContainer2");
+                //  $("#txtEmailTo").val(data.EmailID);
+                select2.empty();
+                select2.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data.ContainerList1, function (data, value) {
+
+                    select2.append($("<option></option>").val(value.SrNo).html(value.ContainerNo));
+                })
+
+
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+    function LoadTripSearch() {
+
+        $.ajax({
+            type: "POST",
+            url: "/TrainTrip/SearchExportTripDetails",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                //alert(response);
+                $('#TestModal').modal('show');
+                $('#myModalContent').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+
+
+    function Edit(TripNo, TrainNo, Origin, Destination) {
+        $('#txtTripNo').val(TripNo);
+        $('#txtTrainNo').val(TrainNo);
+        $('#txtOrigin').val(Origin);
+        $('#txtDestination').val(Destination);
+        $("#divLoadingSummary").hide();
+        $("#ImportTrainLoadingSheet").show();
+        $("#Save").val("Update");
+        $("#Submit").show();
+        ShowAllWagonNo();
+    }
+
+
+    function ShowAllWagonNo() {
+
+        $("#tracker-loader").fadeIn("slow");
+        var txtTrainNo = $("#txtTrainNo").val();
+
+        var TripNo = $("#txtTripNo").val();
+        var data1 = {
+            'TrainNo': txtTrainNo.toUpperCase(), 'TripNo': TripNo
+        };
+
+        var data = JSON.stringify(data1);
+        //  alert(data);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/TrainTrip/AddDomesticTempDataOnlyForWagon',
+            data: data,
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                // if (data.Containerlist != "Some Invalid data in File.") {
+                $('#containerList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "searching": true,
+                    "bInfo": false,
+                    "paging": false,
+                    "aaData": data.TrainTrip1,
+
+                    "columns": [
+                        { "data": "WagonNo" },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"ContainerNo1[]\" class=\" form-control\" style=\"width: 150px;text-transform:uppercase\" id=\"ContainerNo1' + row.WagonNo + '\" maxlength=\"11\" min=\"11\" Value="' + row.ContainerNo1 + '" onchange="Change1(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"number\" name=\"Size1[]\" class=\" form-control\" style=\"width: 70px;\" id=\"Size1' + row.WagonNo + '\" maxlength=\"2\" Value="' + row.Size1 + '" onchange="SizeChange1(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"number\" name=\"NetWt1[]\" class=\" form-control\" style=\"width: 90px;\" id=\"NetWt1' + row.WagonNo + '\" Value="' + row.NetWt1 + '" onchange="NetWtChange1(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"number\" name=\"TareWt1[]\" class=\" form-control\" style=\"width: 90px;\" id=\"TareWt1' + row.WagonNo + '\" Value="' + row.TareWt1 + '" onchange="TareWtChange1(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"number\" name=\"ActualWt1[]\" class=\" form-control\" style=\"width: 90px;\" id=\"ActualWt1' + row.WagonNo + '\" Value="' + row.ActualWt1 + '" onchange="ActualWtChange1(' + row.WagonNo + ')" >';
+                                return data;
+                            }
+                        },
+
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"commodity1[]\" class=\" form-control\" style=\"width: 90px;\" id=\"commodity1' + row.WagonNo + '\" Value="' + row.commodity1 + '"">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"POL1[]\" class=\" form-control\" style=\"width: 90px;\" id=\"POL1' + row.WagonNo + '\" Value="' + row.POL1 + '"">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"Status1[]\" class=\" form-control\" style=\"width: 150px;text-transform:uppercase;\" id=\"Status1' + row.WagonNo + '\" Value="' + row.Status1 + '" disable>';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"ContainerNo2[]\" class=\" form-control\" style=\"width: 150px;text-transform:uppercase\" id=\"ContainerNo2' + row.WagonNo + '\" maxlength=\"11\" Value="' + row.ContainerNo2 + '"  onchange="Change2(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"number\" name=\"Size2[]\" class=\" form-control\" style=\"width: 70px;\" id=\"Size2' + row.WagonNo + '\" maxlength=\"2\" Value="' + row.Size2 + '" onchange="SizeChange2(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"number\" name=\"NetWt2[]\" class=\" form-control\" style=\"width: 90px;\" id=\"NetWt2' + row.WagonNo + '\" Value="' + row.NetWt2 + '" onchange="NetWtChange2(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"number\" name=\"TareWt2[]\" class=\" form-control\" style=\"width: 90px;\" id=\"TareWt2' + row.WagonNo + '\" Value="' + row.TareWt2 + '" onchange="TareWtChange2(' + row.WagonNo + ')">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"number\" name=\"ActualWt2[]\" class=\" form-control\" style=\"width: 90px;\" id=\"ActualWt2' + row.WagonNo + '\" Value="' + row.ActualWt2 + '" onchange="ActualWtChange2(' + row.WagonNo + ')" >';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"commodity2[]\" class=\" form-control\" style=\"width: 90px;\" id=\"commodity2' + row.WagonNo + '\" Value="' + row.commodity1 + '"">';
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"POL2[]\" class=\" form-control\" style=\"width: 90px;\" id=\"POL2' + row.WagonNo + '\" Value="' + row.POL1 + '"">';
+                                return data;
+                            }
+                        },
+
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"text\" name=\"Status2[]\" class=\" form-control\" style=\"width: 150px;text-transform:uppercase\" id=\"Status2' + row.WagonNo + '\" Value="' + row.Status2 + '" disable>';
+                                return data;
+                            }
+                        }
+                    ]
+                });
+                document.getElementById("lbltwenty").innerHTML = data.TotalCountSizeWise[0].Size20;
+                document.getElementById("lblforty").innerHTML = data.TotalCountSizeWise[0].Size40;
+                document.getElementById("lblfortyfive").innerHTML = data.TotalCountSizeWise[0].Size45;
+                document.getElementById("lblTotal1").innerHTML = data.TotalCountSizeWise[0].SizeTeus;
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    function Change1(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo1 = "ContainerNo1" + WagonNo;
+        var Size1 = "Size1" + WagonNo;
+        var NetWt1 = "NetWt1" + WagonNo;
+        var TareWt1 = "TareWt1" + WagonNo;
+        var Status1 = "Status1" + WagonNo;
+        var commodity1 = "commodity1" + WagonNo;
+        var POL1 = "POL1" + WagonNo;
+        var ActualWt1 = "ActualWt1" + WagonNo;
+        var CNo2 = "ContainerNo2" + WagonNo;
+        var ContainerNo = document.getElementById(CNo1).value;
+        var ContainerNoCheck = document.getElementById(CNo1).value;
+        var sizecheck = document.getElementById(Size1).value;
+
+        if (ContainerNo == "EF") {
+
+            document.getElementById(CNo2).value ='EF'
+            document.getElementById(Size1).value = "0";
+            document.getElementById(NetWt1).value = "0";
+            document.getElementById(TareWt1).value = "0";
+            document.getElementById(commodity1).value = "0";
+            document.getElementById(POL1).value = "0";
+            document.getElementById(ActualWt1).value = "0";
+            document.getElementById(CNo1).value = "EMPTY FLAT";
+            document.getElementById(Status1).value = "EMPTY FLAT";
+            ContainerNo = 'EMPTY FLAT'
+            document.getElementById("LblEMpty").innerHTML = 1;
+              $("#tracker-loader").fadeOut("slow");
+
+        }
+
+        if (ContainerNo != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 1, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val() };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/GetExportContainerSize',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    if (data.TrainTrip1[0].ContainerCount != "0") {
+                        alert("Duplicate Container Numbers not allowed")
+                        document.getElementById(Size1).value = "";
+                        document.getElementById(NetWt1).value = "";
+                        document.getElementById(TareWt1).value = "";
+                        document.getElementById(commodity1).value = "";
+                        document.getElementById(POL1).value = "";
+
+                        document.getElementById(CNo1).value = "";
+                        document.getElementById(CNo1).focus();
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    }
+                    if (data.TrainTrip1[0].SUMSIZE != "0") {
+                        alert("Only two 20' or one 40' containers are allowed on one wagon")
+                        document.getElementById(Size1).value = "";
+                        document.getElementById(NetWt1).value = "";
+                        document.getElementById(TareWt1).value = "";
+                        document.getElementById(commodity1).value = "";
+                        document.getElementById(POL1).value = "";
+                        document.getElementById(CNo1).value = "";
+                        document.getElementById(CNo1).focus();
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    }
+                    if (data.TrainTrip1[0].TotalTues > "90") {
+                        alert("Total TEUS count should not exceed 90. Please check!")
+                        document.getElementById(Size1).value = "";
+                        document.getElementById(NetWt1).value = "";
+                        document.getElementById(TareWt1).value = "";
+                        document.getElementById(CNo1).value = "";
+                        document.getElementById(commodity1).value = "";
+                        document.getElementById(POL1).value = "";
+                        document.getElementById(CNo1).focus();
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    }
+                    if (data.TrainTrip1[1].Status1 == "") {
+
+                        if (ContainerNo == "EMPTY FLAT") {
+                            document.getElementById(CNo1).value = "EMPTY FLAT";
+                            $("#tracker-loader").fadeOut("slow");
+                        } else {
+                            alert('Specified container no is not found in MTY/Loaded pre planning. Cannot proceed.');
+                            document.getElementById(CNo1).value = "";
+                            document.getElementById(CNo1).focus();
+                            $("#tracker-loader").fadeOut("slow");
+                            return false;
+                        }
+
+                        //  $("#tracker-loader").fadeOut("slow");
+
+                    }
+                    else {
+
+                        if (data.TrainTrip1[1].Size != "0") {
+                            document.getElementById(Size1).value = data.TrainTrip1[1].Size;
+                            document.getElementById(NetWt1).value = data.TrainTrip1[1].NetWt1;
+                            document.getElementById(TareWt1).value = data.TrainTrip1[1].TareWt1;
+                            document.getElementById(ActualWt1).value = data.TrainTrip1[1].ActualWt1;
+                            document.getElementById(commodity1).value = data.TrainTrip1[1].commodity1;
+                            document.getElementById(POL1).value = data.TrainTrip1[1].POL1;
+
+                            document.getElementById(Status1).value = data.TrainTrip1[1].Status1;
+                        }
+                    }
+
+                    document.getElementById("lbltwenty").innerHTML = data.TotalCountSizeWise[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data.TotalCountSizeWise[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data.TotalCountSizeWise[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data.TotalCountSizeWise[0].SizeTeus;
+                    Change2(WagonNo);
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+
+        if (ContainerNoCheck == "" && sizecheck != "") {
+
+
+            var r = confirm("Are You Sure you want to delete this containerno!");
+            if (r == true) {
+                var data1 = { 'ContainerNo': ContainerNoCheck, 'Number': 1, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val() };
+                var data = JSON.stringify(data1);
+                $.ajax({
+                    type: 'POST',
+                    url: '/TrainTrip/GetDeleteTraintripDetails',
+                    data: data,
+                    //data: JSON.stringify(formData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+
+                        document.getElementById(Size1).value = "";
+                        document.getElementById(NetWt1).value = "";
+                        document.getElementById(TareWt1).value = "";
+                        document.getElementById(commodity1).value = "";
+                        document.getElementById(POL1).value = "";
+                        document.getElementById(ActualWt1).value = "";
+                        document.getElementById(Status1).value = "";
+
+
+                        $("#tracker-loader").fadeOut("slow");
+
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                });
+            } else {
+                alert("You Pressed Cancel");
+                $("#tracker-loader").fadeOut("slow");
+            }
+        }
+
+
+
+
+
+
+
+
+
+    }
+    function Change2(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo2 = "ContainerNo2" + WagonNo;
+        var Size2 = "Size2" + WagonNo;
+        var NetWt2 = "NetWt2" + WagonNo;
+        var TareWt2 = "TareWt2" + WagonNo;
+        var Status2 = "Status2" + WagonNo;
+        var commodity2 = "commodity2" + WagonNo;
+        var POL2 = "POL2" + WagonNo;
+        var ActualWt2 = "ActualWt2" + WagonNo;
+
+        var ContainerNo = document.getElementById(CNo2).value;
+        var ContainerNoCheck = document.getElementById(CNo2).value;
+        var sizecheck = document.getElementById(Size2).value;
+
+        if (ContainerNo == "EF") {
+            document.getElementById(Size2).value = "0";
+            document.getElementById(NetWt2).value = "0";
+            document.getElementById(TareWt2).value = "0";
+            document.getElementById(commodity2).value = "0";
+            document.getElementById(POL2).value = "0";
+            document.getElementById(ActualWt2).value = "0";
+            document.getElementById(CNo2).value = "EMPTY FLAT";
+            document.getElementById(Status2).value = "EMPTY FLAT";
+            ContainerNo = "EMPTY FLAT"
+            $("#tracker-loader").fadeOut("slow");
+        }
+        //if (ContainerNo.length != "11" && ContainerNo != "EMPTY FLAT") {
+        //    alert("Please enter valid container no.")
+        //    document.getElementById(CNo2).value = "";
+        //    document.getElementById(CNo2).focus();
+        //    $("#tracker-loader").fadeOut("slow");
+        //    return false;
+        //}
+
+
+        if (ContainerNo != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 2, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val() };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/GetExportContainerSize',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+
+                    if (data.TrainTrip1[0].ContainerCount != "0") {
+                        alert("Duplicate Container Numbers not allowed")
+                        document.getElementById(Size2).value = "";
+                        document.getElementById(NetWt2).value = "";
+                        document.getElementById(TareWt2).value = "";
+                        document.getElementById(commodity2).value = "";
+                        document.getElementById(ActualWt2).value = "";
+                        document.getElementById(POL2).value = "";
+                        document.getElementById(CNo2).value = "";
+                        document.getElementById(CNo2).focus();
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    }
+                    if (data.TrainTrip1[0].SUMSIZE != "0") {
+                        alert("Only two 20' or one 40' containers are allowed on one wagon")
+                        document.getElementById(Size2).value = "";
+                        document.getElementById(NetWt2).value = "";
+                        document.getElementById(TareWt2).value = "";
+                        document.getElementById(commodity2).value = "";
+                        document.getElementById(ActualWt2).value = "";
+                        document.getElementById(POL2).value = "";
+                        document.getElementById(CNo2).value = "";
+                        document.getElementById(CNo2).focus();
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    }
+                    if (data.TrainTrip1[0].TotalTues > "90") {
+                        alert("Total TEUS count should not exceed 90. Please check!")
+                        document.getElementById(Size2).value = "";
+                        document.getElementById(NetWt2).value = "";
+                        document.getElementById(TareWt2).value = "";
+                        document.getElementById(commodity2).value = "";
+                        document.getElementById(ActualWt2).value = "";
+                        document.getElementById(POL2).value = "";
+                        document.getElementById(CNo2).value = "";
+                        document.getElementById(CNo2).focus();
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    }
+                    if (data.TrainTrip1[1].Status1 == "") {
+                        if (ContainerNo == "EMPTY FLAT") {
+                            document.getElementById(CNo2).value = "EMPTY FLAT";
+                            $("#tracker-loader").fadeOut("slow");
+                        } else {
+                            alert("Specified container no is not found in MTY/Loaded pre planning. Cannot proceed.");
+                            document.getElementById(CNo2).value = "";
+                            document.getElementById(CNo2).focus();
+                            $("#tracker-loader").fadeOut("slow");
+                            return false;
+                        }
+
+                    }
+                    else {
+
+
+                        if (data.TrainTrip1[1].Size != "0") {
+                            document.getElementById(Size2).value = data.TrainTrip1[1].Size;
+                            document.getElementById(NetWt2).value = data.TrainTrip1[1].NetWt1;
+                            document.getElementById(TareWt2).value = data.TrainTrip1[1].TareWt1;
+                            document.getElementById(ActualWt2).value = data.TrainTrip1[1].ActualWt1;
+                            document.getElementById(commodity2).value = data.TrainTrip1[1].commodity1;
+                            document.getElementById(POL2).value = data.TrainTrip1[1].POL1;
+
+                            document.getElementById(Status2).value = data.TrainTrip1[1].Status1;
+                        }
+                    }
+
+                    document.getElementById("lbltwenty").innerHTML = data.TotalCountSizeWise[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data.TotalCountSizeWise[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data.TotalCountSizeWise[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data.TotalCountSizeWise[0].SizeTeus;
+                    NetWtChange1(WagonNo);
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+
+        if (ContainerNoCheck == "" && sizecheck != "") {
+
+
+            var r = confirm("Are You Sure you want to delete this containerno!");
+            if (r == true) {
+                var data1 = { 'ContainerNo': ContainerNoCheck, 'Number': 2, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val() };
+                var data = JSON.stringify(data1);
+                $.ajax({
+                    type: 'POST',
+                    url: '/TrainTrip/GetDeleteTraintripDetails',
+                    data: data,
+                    //data: JSON.stringify(formData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+
+                        document.getElementById(Size2).value = "";
+                        document.getElementById(NetWt2).value = "";
+                        document.getElementById(TareWt2).value = "";
+                        document.getElementById(commodity2).value = "";
+                        document.getElementById(POL2).value = "";
+                        document.getElementById(ActualWt2).value = "";
+                        document.getElementById(Status2).value = "";
+
+
+                        $("#tracker-loader").fadeOut("slow");
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                });
+            } else {
+                alert("You Pressed Cancel");
+
+                $("#tracker-loader").fadeOut("slow");
+            }
+        }
+
+
+
+    }
+    function SizeChange1(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo1 = "ContainerNo1" + WagonNo;
+        var Size1 = "Size1" + WagonNo;
+        var Size2 = "Size2" + WagonNo;
+        var NetWt1 = "NetWt1" + WagonNo;
+        var TareWt1 = "TareWt1" + WagonNo;
+
+        var ActualWt1 = "ActualWt1" + WagonNo;
+        var Status1 = "Status1" + WagonNo;
+        var commodity1 = "commodity1" + WagonNo;
+        var POL1 = "POL1" + WagonNo;
+
+        var ContainerNo = document.getElementById(CNo1).value;
+        var Size = document.getElementById(Size1).value;
+        var SizeO = document.getElementById(Size2).value;
+        var NetWt = document.getElementById(NetWt1).value;
+        var TareWt = document.getElementById(TareWt1).value;
+
+        var ActualWt = document.getElementById(ActualWt1).value;
+        var Status1 = document.getElementById(Status1).value;
+        var commodity1 = document.getElementById(commodity1).value;
+        var POL1 = document.getElementById(POL1).value;
+
+        if (ContainerNo == "") {
+            alert("Please fill container no first")
+            document.getElementById(Size1).value = "";
+            document.getElementById(NetWt1).value = "";
+            document.getElementById(TareWt1).value = "";
+            document.getElementById(CNo1).value = "";
+            document.getElementById(CNo1).focus();
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+
+        if ((Size != "20") && (Size != "40") && (Size != "45")) {
+            alert("Size Invalid");
+            document.getElementById(Size1).value = "";
+            document.getElementById(Size1).focus();
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        if (parseFloat(Size) + parseFloat(SizeO) > 40) {
+            alert("Size Invalid");
+            document.getElementById(Size1).value = "";
+            document.getElementById(Size1).focus();
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+
+        if (Size != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 1, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status1, 'commodity1': commodity1, 'POL1': POL1};
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+    function SizeChange2(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo2 = "ContainerNo2" + WagonNo;
+        var Size2 = "Size2" + WagonNo;
+        var Size1 = "Size1" + WagonNo;
+        var NetWt2 = "NetWt2" + WagonNo;
+        var TareWt2 = "TareWt2" + WagonNo;
+
+        var ActualWt2 = "ActualWt2" + WagonNo;
+        var Status2 = "Status2" + WagonNo;
+        var commodity2 = "commodity2" + WagonNo;
+        var POL2 = "POL2" + WagonNo;
+
+        var ContainerNo = document.getElementById(CNo2).value;
+        var Size = document.getElementById(Size2).value;
+        var SizeO = document.getElementById(Size1).value;
+        var NetWt = document.getElementById(NetWt2).value;
+        var TareWt = document.getElementById(TareWt2).value;
+
+        var ActualWt = document.getElementById(ActualWt2).value;
+        var Status2 = document.getElementById(Status2).value;
+        var commodity2 = document.getElementById(commodity2).value;
+        var POL2 = document.getElementById(POL2).value;
+
+        if (ContainerNo == "") {
+            alert("Please fill container no first")
+            document.getElementById(Size2).value = "";
+            document.getElementById(NetWt2).value = "";
+            document.getElementById(TareWt2).value = "";
+            document.getElementById(CNo2).value = "";
+            document.getElementById(CNo2).focus();
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+
+        if ((Size != "20") && (Size != "40") && (Size != "45")) {
+            alert("Size Invalid");
+            document.getElementById(Size2).value = "";
+            document.getElementById(Size2).focus();
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        if (parseFloat(Size) + parseFloat(SizeO) > 40) {
+            alert("Size Invalid");
+            document.getElementById(Size2).value = "";
+            document.getElementById(Size2).focus();
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        if (Size != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 2, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status2, 'commodity1': commodity2, 'POL1': POL2 };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+    function NetWtChange1(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo1 = "ContainerNo1" + WagonNo;
+        var Size1 = "Size1" + WagonNo;
+        var NetWt1 = "NetWt1" + WagonNo;
+        var TareWt1 = "TareWt1" + WagonNo;
+
+        var ActualWt1 = "ActualWt1" + WagonNo;
+        var Status1 = "Status1" + WagonNo;
+        var commodity1 = "commodity1" + WagonNo;
+        var POL1 = "POL1" + WagonNo;
+        var ContainerNo = document.getElementById(CNo1).value;
+        var Size = document.getElementById(Size1).value;
+        var NetWt = document.getElementById(NetWt1).value;
+        var TareWt = document.getElementById(TareWt1).value;
+
+        var ActualWt = document.getElementById(ActualWt1).value;
+        var Status1 = document.getElementById(Status1).value;
+        var commodity1 = document.getElementById(commodity1).value;
+        var POL1 = document.getElementById(POL1).value;
+        if (NetWt != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 1, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status1, 'commodity1': commodity1, 'POL1': POL1};
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    NetWtChange2(WagonNo);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+    function NetWtChange2(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo2 = "ContainerNo2" + WagonNo;
+        var Size2 = "Size2" + WagonNo;
+        var NetWt2 = "NetWt2" + WagonNo;
+        var TareWt2 = "TareWt2" + WagonNo;
+
+        var ActualWt2 = "ActualWt2" + WagonNo;
+
+        var Status2 = "Status2" + WagonNo;
+        var commodity2 = "commodity2" + WagonNo;
+        var POL2 = "POL2" + WagonNo;
+
+        var ContainerNo = document.getElementById(CNo2).value;
+        var Size = document.getElementById(Size2).value;
+        var NetWt = document.getElementById(NetWt2).value;
+        var TareWt = document.getElementById(TareWt2).value;
+
+        var ActualWt = document.getElementById(ActualWt2).value;
+        var Status2 = document.getElementById(Status2).value;
+        var commodity2 = document.getElementById(commodity2).value;
+        var POL2 = document.getElementById(POL2).value;
+        if (NetWt != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 2, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status2, 'commodity1': commodity2, 'POL1': POL2 };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+    function TareWtChange1(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo1 = "ContainerNo1" + WagonNo;
+        var Size1 = "Size1" + WagonNo;
+        var NetWt1 = "NetWt1" + WagonNo;
+        var TareWt1 = "TareWt1" + WagonNo;
+
+        var ActualWt1 = "ActualWt1" + WagonNo;
+        var Status1 = "Status1" + WagonNo;
+        var commodity1 = "commodity1" + WagonNo;
+        var POL1 = "POL1" + WagonNo;
+        var ContainerNo = document.getElementById(CNo1).value;
+        var Size = document.getElementById(Size1).value;
+        var NetWt = document.getElementById(NetWt1).value;
+        var TareWt = document.getElementById(TareWt1).value;
+
+        var ActualWt = document.getElementById(ActualWt1).value;
+        var Status1 = document.getElementById(Status1).value;
+        var commodity1 = document.getElementById(commodity1).value;
+        var POL1 = document.getElementById(POL1).value;
+
+        if (TareWt != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 1, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status1, 'commodity1': commodity1, 'POL1': POL1};
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+    function TareWtChange2(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo2 = "ContainerNo2" + WagonNo;
+        var Size2 = "Size2" + WagonNo;
+        var NetWt2 = "NetWt2" + WagonNo;
+        var TareWt2 = "TareWt2" + WagonNo;
+
+        var ActualWt2 = "ActualWt2" + WagonNo;
+        var Status2 = "Status2" + WagonNo;
+        var commodity2 = "commodity2" + WagonNo;
+        var POL2 = "POL2" + WagonNo;
+
+        var ContainerNo = document.getElementById(CNo2).value;
+        var Size = document.getElementById(Size2).value;
+        var NetWt = document.getElementById(NetWt2).value;
+        var TareWt = document.getElementById(TareWt2).value;
+
+        var ActualWt = document.getElementById(ActualWt2).value;
+        var Status2 = document.getElementById(Status2).value;
+        var commodity2 = document.getElementById(commodity2).value;
+        var POL2 = document.getElementById(POL2).value;
+        if (TareWt != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 2, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status2, 'commodity1': commodity2, 'POL1': POL2 };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+
+    function ActualWtChange1(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo1 = "ContainerNo1" + WagonNo;
+        var Size1 = "Size1" + WagonNo;
+        var NetWt1 = "NetWt1" + WagonNo;
+        var TareWt1 = "TareWt1" + WagonNo;
+
+        var ActualWt1 = "ActualWt1" + WagonNo;
+        var Status1 = "Status1" + WagonNo;
+        var commodity1 = "commodity1" + WagonNo;
+        var POL1 = "POL1" + WagonNo;
+        var ContainerNo = document.getElementById(CNo1).value;
+        var Size = document.getElementById(Size1).value;
+        var NetWt = document.getElementById(NetWt1).value;
+        var TareWt = document.getElementById(TareWt1).value;
+
+        var ActualWt = document.getElementById(ActualWt1).value;
+        var Status1 = document.getElementById(Status1).value;
+        var commodity1 = document.getElementById(commodity1).value;
+        var POL1 = document.getElementById(POL1).value;
+        if (ActualWt != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 1, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status1, 'commodity1': commodity1, 'POL1': POL1};
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+    function ActualWtChange2(WagonNo) {
+        $("#tracker-loader").fadeIn("slow");
+        var CNo2 = "ContainerNo2" + WagonNo;
+        var Size2 = "Size2" + WagonNo;
+        var NetWt2 = "NetWt2" + WagonNo;
+        var TareWt2 = "TareWt2" + WagonNo;
+
+        var ActualWt2 = "ActualWt2" + WagonNo;
+        var Status2 = "Status2" + WagonNo;
+        var commodity2 = "commodity2" + WagonNo;
+        var POL2 = "POL2" + WagonNo;
+
+        var ContainerNo = document.getElementById(CNo2).value;
+        var Size = document.getElementById(Size2).value;
+        var NetWt = document.getElementById(NetWt2).value;
+        var TareWt = document.getElementById(TareWt2).value;
+
+        var ActualWt = document.getElementById(ActualWt2).value;
+        var Status2 = document.getElementById(Status2).value;
+        var commodity2 = document.getElementById(commodity2).value;
+        var POL2 = document.getElementById(POL2).value;
+        if (ActualWt != "") {
+            var data1 = { 'ContainerNo': ContainerNo, 'Number': 2, 'WagonNo': WagonNo, 'TripNo': $("#txtTripNo").val(), 'Size': Size, 'NetWt1': NetWt, 'TareWt1': TareWt, 'ActualWt1': ActualWt, 'Status1': Status2, 'commodity1': commodity2, 'POL1': POL2};
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/UpdateExportTempData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    document.getElementById("lbltwenty").innerHTML = data[0].Size20;
+                    document.getElementById("lblforty").innerHTML = data[0].Size40;
+                    document.getElementById("lblfortyfive").innerHTML = data[0].Size45;
+                    document.getElementById("lblTotal1").innerHTML = data[0].SizeTeus;
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+</script>
+
+<script>
+
+    function ShowWagonList() {
+
+        var C1 = $("#ddlContainer1 option:selected").text();
+        var C2 = $("#ddlContainer2 option:selected").text();
+        var S1 = $("#lblSize1").text();
+        var S2 = $("#lblSize2").text();
+
+        if (C1 == "--Select--") {
+            C1 = "";
+            txtContainer1 = C1;
+        }
+        else {
+            var txtContainer1 = $("#ddlContainer1 option:selected").text();
+        }
+
+        if (C2 == "--Select--") {
+            C2 = "";
+            txtContainer2 = C2;
+        }
+        else {
+            var txtContainer2 = $("#ddlContainer2 option:selected").text();
+        }
+        ///***************For Container Validation
+        if (S1 == 40 && S2 == 20) {
+            alert("Please select proper container!");
+        }
+        else if (S1 == 20 && S2 == 40) {
+            alert("Please select proper container!");
+        }
+        else if (S1 == 40 && S2 == 40) {
+            alert("Please select proper container!");
+        }
+        else {
+
+            //}
+
+            ///***************end For Container Validation
+            var txtWagonNo = $("#ddlWagon option:selected").text();
+
+            // var txtContainer2 = $("#ddlContainer2 option:selected").text();
+            var TripID = $("#ddlTripNo option:selected").text();
+
+            var WagonNo = $("#ddlWagon option:selected").text() + "<input Name=WagonNo type=hidden id=WagonNo   value=" + txtWagonNo + ">";
+            var Container1 = $("#ddlContainer1 option:selected").text() + "<input Name=Container1 type=hidden id=Container1   value=" + txtContainer1 + ">";
+            var Container2 = $("#ddlContainer2 option:selected").text() + "<input Name=Container2 type=hidden id=Container2   value=" + txtContainer2 + ">";
+
+
+            var data1 = { 'WagonNo': txtWagonNo.toUpperCase(), 'Container1': txtContainer1, 'Container2': txtContainer2, 'TripNo': TripID };
+
+            var data = JSON.stringify(data1);
+            //  alert(data);
+
+            //var exists = $('#containerList tr > td:contains(' + txtWagonNo.toUpperCase() + ')').length;
+
+            //    if (exists == 1) {
+
+            //        alert("Wagon No. alredy exist!");
+
+            //    }
+            // else {
+
+            $.ajax({
+                type: 'POST',
+                url: '/TrainTrip/AddTempWagonData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+
+
+                    //if (data.JOValidation.validationMessage == 0) {
+
+                    //    alert("Container " + txtContainerNo + " is already marked IN, cannot proceed with updating")
+
+                    //}
+
+                    // if (data.Containerlist != "Some Invalid data in File.") {
+                    $('#containerList').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        "searching": true,
+                        "bInfo": false,
+                        "paging": false,
+                        "aaData": data.Containerlist,
+
+                        "columns": [
+                            { "data": "WagonNo" },
+                            { "data": "ContainerNo1" },
+                            { "data": "ContainerNo2" },
+
+                            //{
+                            //    "data": "TempID",
+                            //    "render": function (data, type, row, meta) {
+                            //        if (type === 'display') {
+
+                            //            data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                            //        }
+
+                            //        return data;
+                            //    }
+
+
+                            //}
+                        ]
+                    });
+
+                }
+
+            });
+            //}
+            var txtWagonNo = $("#ddlWagon option:selected").text();
+            var txtContainer1 = $("#ddlContainer1 option:selected").text();
+            var txtContainer2 = $("#ddlContainer2 option:selected").text();
+
+            document.getElementById('ddlWagon').value = "";
+            document.getElementById('ddlContainer1').value = "";
+            document.getElementById('ddlContainer2').value = "";
+
+            $("#ddlWagon").removeClass("form-control is-valid state-valid")
+            $("#ddlWagon").addClass("form-control")
+            $("#ddlContainer1").removeClass("form-control is-valid state-valid")
+            $("#ddlContainer1").addClass("form-control")
+            $("#ddlContainer2").removeClass("form-control is-valid state-valid")
+            $("#ddlContainer2").addClass("form-control")
+            $("#lblSize1").text("00");
+            $("#lblSize2").text("00");
+
+        }
+    }
+
+</script>
+<script>
+    function New() {
+        $("#txtTrainNo").val("");
+        //$("#ddlTrainNo").val("");
+        $('#txtTripNo').attr('disabled', false);
+        document.getElementById('txtTripNo').value = "";
+
+        document.getElementById("lbltwenty").innerHTML = "";
+        document.getElementById("lblforty").innerHTML = "";
+        document.getElementById("lblfortyfive").innerHTML = "";
+        document.getElementById("lblTotal1").innerHTML = "";
+
+        $("#txtTripNo").removeClass("form-control is-valid state-valid")
+        $("#txtTripNo").addClass("form-control")
+        $("#txtTripNo").focus();
+        $("#txtOrigin").val("");
+        $("#txtDestination").val("");
+        $("#Save").val("Save");
+        $("#Submit").hide();
+        $.ajax({
+            type: 'POST',
+            url: '/TrainTrip/DeleteTempAllRecords',
+            //  data: '{viewModel: ' + JSON.stringify(viewModel) + ', containerData: ' + JSON.stringify(SelectedData) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+            }
+        });
+        var table = $('#containerList').DataTable();
+        table
+            .clear()
+            .draw();
+        $("#tracker-loader").fadeOut("slow");
+    }
+
+</script>
+<script>
+    $('#ddlContainer1').change(function (e) {
+        var ContainerNo1 = $("#ddlContainer1 option:selected").text();
+        var data = JSON.stringify({
+            'ContainerNo1': ContainerNo1
+
+        });
+        $.ajax({
+            url: "/TrainTrip/GetSizeAgainstContainer1",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $("#lblSize1").text(data[0].Size1)
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+</script>
+<script>
+    $('#ddlContainer2').change(function (e) {
+        var ContainerNo1 = $("#ddlContainer2 option:selected").text();
+        var data = JSON.stringify({
+            'ContainerNo1': ContainerNo1
+
+        });
+        $.ajax({
+            url: "/TrainTrip/GetSizeAgainstContainer1",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $("#lblSize2").text(data[0].Size1)
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+</script>
+
+<script>
+    function Save() {
+        //var SelectedData = new Array();
+        //$('#containerList tbody tr').each(function (i, row) {
+        //    var data = {};
+        //    $(this).find('input').each(function () {
+        //        data[this.id] = $(this).val();
+        //    })
+        //    SelectedData.push(data);
+
+        //});
+        $("#tracker-loader").fadeIn("slow");
+
+        if (document.getElementById("LblEMpty").innerHTML == "0") {
+            if (document.getElementById("lblTotal1").innerHTML == "0") {
+            alert("Please add Container List Wagon wise first");
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        }
+
+        if ($("#txtTripNo").val() == "") {
+            alert("Please add Loading details first");
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        if ($("#txtTrainNo").val() == "") {
+            alert("Please add Loading details first");
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        var TripDetails = {};
+
+        TripDetails.TripNo = $("#txtTripNo").val();
+        TripDetails.TrainNo = $("#txtTrainNo").val();
+        TripDetails.Origin = $("#txtOrigin").val();
+        TripDetails.Destination = $("#txtDestination").val();
+
+
+        var data1 = { 'TripDetails': TripDetails };
+        var data = JSON.stringify(data1);
+
+        //alert(data);
+        $.ajax({
+            url: "/TrainTrip/SaveDomesticTrainData",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                alert(response)
+                $("#txtTrainNo").val("");
+                //$("#ddlTrainNo").val("");
+                $('#txtTripNo').attr('disabled', false);
+                $("#txtTripNo").val("");
+                $("#txtTripNo").focus();
+                $("#txtOrigin").val("");
+                $("#txtDestination").val("");
+                $("#tracker-loader").fadeOut("slow");
+                New();
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function Summary() {
+        $("#divLoadingSummary").show();
+        $("#ImportTrainLoadingSheet").hide();
+        $.ajax({
+            url: "/TrainTrip/GetDomesticTrainTripsForModify",
+            //data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                $('#LoadingSheetList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "paging": false,
+                    "aaSorting": [[0, 'asc']],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0],
+                        },
+
+                    ],
+                    "columns": [
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+                                data = "<a href=\"#\" class=\"btn btn-sm btn-info\" title=\"Edit\" onclick=\"Edit('" + row.TripNo + "','" + row.TrainNo + "','" + row.Origin + "','" + row.Destination + "')\">Edit</a>";
+                                return data;
+                            }
+                        },
+                        { "data": "SrNo" },
+                        { "data": "TripNo" },
+                        { "data": "TrainNo" },
+                        { "data": "PortTrainNo" },
+                        { "data": "Origin" },
+                        { "data": "Destination" },
+                        { "data": "AddedOn" }
+                    ]
+                })
+            },
+
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function Back() {
+        $("#divLoadingSummary").hide();
+        $("#ImportTrainLoadingSheet").show();
+    }
+    function Edit(TripNo, TrainNo, Origin, Destination) {
+        $('#txtTripNo').val(TripNo);
+        $('#txtTrainNo').val(TrainNo);
+        $('#txtOrigin').val(Origin);
+        $('#txtDestination').val(Destination);
+        $("#divLoadingSummary").hide();
+        $("#ImportTrainLoadingSheet").show();
+        $("#Save").val("Update");
+        $("#Submit").show();
+        ShowAllWagonNo();
+    }
+    function Submit() {
+        $("#tracker-loader").fadeIn("slow");
+
+        if (document.getElementById("LblEMpty").innerHTML == "0") {
+            if (document.getElementById("lblTotal1").innerHTML == "0") {
+                alert("Please add Container List Wagon wise first");
+                $("#tracker-loader").fadeOut("slow");
+                return false;
+            }
+        }
+        if ($("#txtTripNo").val() == "") {
+            alert("Please add Loading details first");
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        if ($("#txtTrainNo").val() == "") {
+            alert("Please add Loading details first");
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        var result = confirm('Do you want to submit?');
+        if (result) {
+            var TripDetails = {};
+
+            TripDetails.TripNo = $("#txtTripNo").val();
+            TripDetails.TrainNo = $("#txtTrainNo").val();
+            TripDetails.Origin = $("#txtOrigin").val();
+            TripDetails.Destination = $("#txtDestination").val();
+
+            var data1 = { 'TripDetails': TripDetails };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/TrainTrip/SubmitDomesticTrainTrip",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    alert(response);
+                    New();
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+    }
+</script>

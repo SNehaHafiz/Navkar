@@ -1,0 +1,1462 @@
+﻿
+@{
+     
+
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<link href="~/plugins/iconfonts/icons.css" rel="stylesheet" />
+<script src="~/js/sweet-alert.min.js"></script>
+<style>
+    .table.dataTable {
+        clear: both;
+        margin-top: 0px !important;
+        margin-bottom: 6px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+        margin-top: 4px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #28a745;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 15px;
+            width: 15px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        /*background-color: #28a745;*/
+        background-color: #11CDEF;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(20px);
+        -ms-transform: translateX(20px);
+        transform: translateX(20px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    #seleTo {
+        text-align: right;
+        margin-top: 4px
+    }
+
+    #seleFrom {
+        text-align: right;
+        margin-top: 4px
+    }
+
+    @@media only screen and (max-width: 600px) {
+        #seleFrom {
+            text-align: left;
+        }
+
+        #seleTo {
+            text-align: left;
+        }
+    }
+</style>
+<div id="divMain">
+    <div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+        <div class="page-header">
+            <h4 class="page-title">Raise Ticket</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button"  class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewReceiptSummary();"><i class="fa fa-file-text"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "ReceiptForm" }))
+        {
+            <div class="row">
+                <div class="col-md-8 col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">To </label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <label id="mailid" style="font-weight:600">support.navkar@digidisruptors.com </label>>
+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                @*<div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group d-flex">
+                                            <span id="Bug" class="form-label"><strong>Bug</strong></span>
+                                            <label class="switch">
+                                                <input type="checkbox" id="FormState" onchange="checkForm()">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span id="newRequirement" class="form-label"><strong>New Requirement</strong></span>
+                                        </div>
+                                    </div>*@
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="form-group ">
+                                        <div class="form-label">Ticket Type</div>
+                                        <div class="custom-controls-stacked">
+                                            <div class="row col-sm-12 col-md-12 col-lg-12">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" id="FormState" name="example-radios" value="option1" checked="" onchange="checkForm()">
+                                                    <span id="Bug" class="custom-control-label"><strong>Bug &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span>
+                                                </label>
+                                                <label class="custom-control custom-radio"  style="@ViewBag.message">
+                                                    <input type="radio" class="custom-control-input" id="FormState01" name="example-radios" value="option2" onchange="checkForm()">
+                                                    <span id="newRequirement" class="custom-control-label"><strong>New Requirement&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" id="FormState02" name="example-radios" value="option3" onchange="checkForm()">
+                                                    <span id="correction" class="custom-control-label"><strong>Corrections</strong></span>
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Module / Subject </label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextArea("Subject", null, new { @class = "form-control ", @id = "Subject", autocomplete = "off", @Value = "", @placeholder = "Subject", rows = "2" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Description </label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextArea("Description", null, new { @class = "form-control", @id = "Description", name = "Description", autocomplete = "off", placeholder = "Description", rows = "5" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12 col-sm-12">
+                                <div class="row">
+                                    <a onclick="AddAttachment(1)">
+                                        <i class="fa fa-paperclip fa-2x" style="color:#070884" aria-hidden="true" title="Upload Attachments"></i>
+                                        <span class="custom-switch-description" style="font-size:17px;color:#6c4cbb"><b><label id="lblAttachment_1">0</label></b></span>
+                                    </a>
+
+                                    <div class="col-md-12 col-lg-8 col-sm-12" id="divLiveCam">
+                                        <div class="input-group">
+
+                                            <input type="file" accept="image/*" class="form-control" multiple id="multi_camera_">
+                                            <span class="input-group-append">
+                                                <button class="btn btn-primary" style="height: 44px !important" type="button" onclick="uploadFiles()">Upload</button>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4 col-lg-4 col-sm-4" id="divCaptCam" style="display:none">
+                                        <div class="form-group">
+                                            <label class="form-label">Captured Picture <i class="fa fa-close pull-right" style="color:red;cursor:pointer" onclick="CloseCapturedImage()"></i></label>
+                                            <div class="row gutters-xs">
+                                                <img id="imgCapture" style="visibility: hidden; width: 100%;height: 100%" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs float-right">
+                                            <div class="col">
+                                                <button class="btn btn-success "  data-toggle="modal" data-target="#divSendmailOTP" type="button" id="savedetails" onclick="GetcompanyticketDetails()">Send</button>
+                                                @*<button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row" style="display:none" id="divsammry">
+        <div class=" content-area">
+            <div class="page-header">
+                <h4 class="page-title">Ticket Summary</h4>
+                <div class="form-group">
+                    <label class="form-label"></label>
+                    <div class="row gutters-xs">
+                        <div class="col"  >
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a onclick="GoBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fe fe-plus" data-placement="bottom" title="Back"></i>  </a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-append " id="tabPurpose">
+                                    <button class="btn btn-success active" id="import" style="text-transform: uppercase;" type="button" onclick="ShowOpen()">Open</button>
+                                    <button class="btn btn-success" id="export" style="text-transform: uppercase;" type="button" onclick="showclose()">Close </button>
+                                    <label id="selectedImportORExport" class="display_none"></label>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div id="divshow">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="row no-gutters">
+                                        <div class="col-2">
+                                            <label class="form-label mt-1">Search</label>
+                                        </div>
+                                        <div class="col-10 form-group">
+
+                                            <div class="input-icon">
+                                                <span class="input-icon-addon">
+                                                    <i class="fe fe-search"></i>
+                                                </span>
+                                                <input type="text" id="searchText1" class="form-control" placeholder="Search Here...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-1 mb-2">
+                                    <div class="row no-gutters mb-2">
+                                        <div class="pull-right">
+                                            <div id="buttonsOpnTkt"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center table-hover w-100 card-table m-0 text-nowrap" data-page-length='8' id="tblOpenTkt">
+                                    <thead class="bg-primary">
+                                        <tr>
+                                            <th class="text-white text-center">Action</th>
+                                            <th class="text-white text-center">TICKET NO</th>
+                                            <th class="text-white text-center">DESCRIPTION</th>
+                                            <th class="text-white text-center">TICKET TYPE</th>
+                                            <th class="text-white text-center">RAISED BY</th>
+                                            <th class="text-white text-center">RAISED ON</th>
+                                            <th class="text-white text-center">PENDING SINCE (Hrs.)</th>
+                                        </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- table-wrapper -->
+                        </div>
+                        <div id="divshow1" style="display:none">
+                            <div class="row" style="display:none" id="divfrom">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="row no-gutters">
+                                        <div class="col-4">
+                                            <label class="form-label mt-1"><strong>From Date</strong></label>
+                                        </div>
+                                        <div class="col-8 form-group">
+                                            <div class="input-icon">
+                                                <span class="input-icon-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                                @Html.TextBox("txtFromDate", null, new { @class = "form-control datePickerD", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy"), onkeydown = "event.preventDefault()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="row no-gutters">
+                                        <div class="col-4">
+                                            <label class="form-label mt-1"><strong>To Date</strong></label>
+                                        </div>
+                                        <div class="col-8 form-group">
+                                            <div class="input-icon">
+                                                <span class="input-icon-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                                @Html.TextBox("txtToDate", null, new { @class = "form-control datePickerD", @Value = DateTime.Now.ToString("dd MMM yyyy"), onkeydown = "event.preventDefault()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <a onclick="Show();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fe fe-search" data-placement="bottom" title="Search"></i>  </a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="row no-gutters">
+                                        <div class="col-2">
+                                            <label class="form-label mt-1"><strong>Search</strong></label>
+                                        </div>
+                                        <div class="col-10 form-group">
+
+                                            <div class="input-icon">
+                                                <span class="input-icon-addon">
+                                                    <i class="fe fe-search"></i>
+                                                </span>
+                                                <input type="text" id="searchText2" class="form-control" placeholder="Search Here...">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-1 mb-2" style="padding-left: 0px;">
+                                    <div class="row no-gutters mb-2">
+                                        <div class="pull-left">
+                                            <div id="buttonsCloseTkt"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center table-hover w-100 card-table m-0 text-nowrap" data-page-length='8' id="tblClosedTkt">
+                                    <thead class="bg-primary">
+                                        <tr>
+                                            <th class="text-white text-center">Action</th>
+                                            <th class="text-white text-center">Action</th>
+                                            <th class="text-white text-center">TICKET NO</th>
+                                            <th class="text-white text-center">DESCRIPTION</th>
+                                            <th class="text-white text-center">TICKET TYPE</th>
+                                            <th class="text-white text-center">RAISED BY</th>
+                                            <th class="text-white text-center">RAISED ON</th>
+                                            <th class="text-white text-center">CLOSED BY</th>
+                                            <th class="text-white text-center">CLOSED ON</th>
+                                            <th class="text-white text-center">PENDING SINCE (Hrs.)</th>
+                                        </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- table-wrapper -->
+                        </div>
+                    </div>
+                    <!-- section-wrapper -->
+                </div>
+            </div>
+            <div class="row" style="display:none; color:red">
+                <input id="txtUser" value="@ViewBag.Userid" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal  fade" id="myModalAttachment" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContentAttachment'>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="divClosedTkt" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content" style="width: 60%;margin-left: 20%;">
+            <div class="modal-header  bg-info text-white">
+                <h5 class="modal-title">Delete Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="myForm">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <label class="form-label">Resolution Comment</label>
+                                @Html.TextArea("Reason", null, new { @class = "form-control", @id = "Reason", name = "Reason", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnDone" value="Done" class="btn btn-outline-danger pull-right"  aria-label="Close" onclick="DeleteRequestConfirm()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="divSendmailOTP" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content" style="width: 60%;margin-left: 20%;">
+            <div class="modal-header  bg-info text-white">
+                 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="myForm">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <label class="form-label">Email ID</label>
+                                <input ID="txtemaiid" type="text"  class="form-control" />
+                                
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnDone" value="Done" data-toggle="modal" data-target="#divSumbitOTP" class="btn btn-outline-success pull-right" aria-label="Close" onclick="Verify()">Verify</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="divSumbitOTP" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content" style="width: 60%;margin-left: 20%;">
+            <div class="modal-header  bg-info text-white">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="myForm">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <label class="form-label">OTP Enter</label>
+                                <input ID="txtOTPEnter" type="text" class="form-control" />
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnsumbitotp" value="Done" class="btn btn-outline-success pull-right" aria-label="Close" onclick="Sumbit()">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divRaisedTicketDetails"></div>
+<script>
+    var runningno = 1;
+    var MasterAttachment = [];
+    var TktCaptureList = [];
+    var TktAttachment = [];
+    var DummyCaptureList = [];
+    var Type1 = 'Raise Tkt';
+    var Rno = 1;
+    var IsValid = 0;
+    var MainTktID = 0;
+    $(document).ready(function () {
+
+        $('.datePickerD')
+            .datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true,
+
+            });
+        checkForm();
+
+        var Attach = "lblAttachment_" + 1;
+        document.getElementById(Attach).innerHTML = 0;
+
+        
+    });
+    function checkForm() {
+        //FormState
+        var val = $("#FormState").is(':checked')
+        if (val == true) {
+            $("#newRequirement").css("color", "#ccc");
+            $("#correction").css("color", "#ccc");
+            $("#Bug").css("color", "black");
+        }
+        var val1 = $("#FormState01").is(':checked')
+        if (val1 == true) {
+            $("#Bug").css("color", "#ccc");
+            $("#newRequirement").css("color", "black");
+            $("#correction").css("color", "#ccc");
+        }
+        var val2 = $("#FormState02").is(':checked')
+        if (val2 == true) {
+            $("#Bug").css("color", "#ccc");
+            $("#correction").css("color", "black");
+            $("#newRequirement").css("color", "#ccc");
+        }
+    }
+    function checkForm2() {
+        //FormState
+        //var val = $("#FormState2").is(':checked')
+        //if (val == true) {
+        //    $("#Bug2").css("color", "#ccc");
+        //    $("#newRequirement2").css("color", "black");
+        //}
+        //else {
+        //    $("#newRequirement2").css("color", "#ccc");
+        //    $("#Bug2").css("color", "black");
+        //}
+
+        var val = $("#FormState11").is(':checked')
+        if (val == true) {
+            $("#newRequirement2").css("color", "#ccc");
+            $("#correction2").css("color", "#ccc");
+            $("#Bug2").css("color", "black");
+        }
+        var val1 = $("#FormState22").is(':checked')
+        if (val1 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#newRequirement2").css("color", "black");
+            $("#correction2").css("color", "#ccc");
+        }
+        var val2 = $("#FormState33").is(':checked')
+        if (val2 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#correction2").css("color", "black");
+            $("#newRequirement2").css("color", "#ccc");
+        }
+    }
+    function showclose() {
+
+        $('#divshow1').show();
+        $('#divshow').hide();
+        $('#divfrom').show();
+        $('#import').removeClass('active');
+        $('#export').addClass('active');
+    }
+
+
+    function ShowOpen() {
+        $('#divshow').show();
+        $('#divshow1').hide();
+        $('#divfrom').hide();
+        $('#export').removeClass('active');
+        $('#import').addClass('active');
+
+        $("#global-loader").fadeIn();
+        var search = document.getElementById('txtUser').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/TicketSystem/Search",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#tblOpenTkt').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": response,
+                    "bPaginate": true,
+                    "bInfo": false,
+                    "paging": true,
+                    order: [],
+                    "searching": true,
+                    "dom": '<"top"i>rt<"bottom float-left m-3"p><"newQuote bottom float-right m-3"><"clear">',
+                    "columns": [
+                        {
+                            "data": "ID",
+                            "orderable": false,
+                            "render": function (data, type, row, meta) {
+                                var disableApprBtn = "";
+                                var disableCloseBtn = "";
+                                if (row.IsApproved == 1) {
+                                    disableApprBtn = "disabled";
+                                    disableCloseBtn = "";
+                                } else {
+                                    disableApprBtn = "";
+                                    disableCloseBtn = "disabled";
+                                }
+                                if (type === 'display') {
+                                    if (row.TktTypeName == "New Requirement") {
+                                        data = "<div class=\"btn-list text-left\"><button class=\"btn btn-sm btn-danger\" data-placement=\"bottom\" data-target=\"#divClosedTkt\" data-toggle=\"modal\" style=\"width: 30px;\" data-original-title=\"Close Ticket\" title=\"Close Ticket\" " + disableCloseBtn + "  onclick=\"deleteticket('" + row.ID + "')\"><i class=\"fa fa-trash\"></i></button><button class=\"btn btn-sm btn-info\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"View Ticket\" onclick=\"Viewticket('" + row.ID + "',0)\"><i class=\"fe fe-eye\"></i></button><button class=\"btn btn-sm btn-warning\"  data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"Change Ticket Type\" " + disableApprBtn + "  onclick=\"ChangeTicketType('" + row.ID + "','" + row.TktTypeName + "')\"><i class=\"fe fe-edit\"></i></button><button class=\"btn btn-sm btn-success\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"Approve Ticket\" " + disableApprBtn + " onclick=\"Approveticket('" + row.ID + "')\"><i class=\"ti-check-box\"></i></button></div>";
+                                    } else {
+                                        data = "<div class=\"btn-list text-left\"><button class=\"btn btn-sm btn-danger\" data-placement=\"bottom\" data-target=\"#divClosedTkt\" data-toggle=\"modal\" style=\"width: 30px;\" data-original-title=\"Close Ticket\" title=\"Close Ticket\" onclick=\"deleteticket('" + row.ID + "')\"><i class=\"fa fa-trash\"></i></button><button class=\"btn btn-sm btn-info\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"View Ticket\" onclick=\"Viewticket('" + row.ID + "',0)\"><i class=\"fe fe-eye\"></i></button><button class=\"btn btn-sm btn-warning\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"Change Ticket Type\" onclick=\"ChangeTicketType('" + row.ID + "','" + row.TktTypeName + "')\"><i class=\"fe fe-edit\"></i></button></div>";
+                                    }
+                                }
+
+                                return data;
+                            }
+
+                        },
+                        { "data": "TktNo" },
+                        { "data": "Description", "className": "text-left" },
+                        { "data": "TktTypeName", "className": "text-left" },
+                        { "data": "UserName", "className": "text-left" },
+                        { "data": "AddedOn", "className": "text-left" },
+                        { "data": "PendingSince", "className": "text-right" }
+
+                    ],
+                    mark: true
+                });
+                var table = $('#tblOpenTkt').DataTable();
+                table = $('#tblOpenTkt').DataTable();
+                // #myInput is a <input type="text"> element
+                $('#searchText1').on('keyup', function () {
+                    table.search(this.value).draw();
+                });
+
+                var buttons = new $.fn.dataTable.Buttons(table, {
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-sign-out mr-2"></i> Excel',
+                            titleAttr: 'Excel',
+                            className: 'btn btn-outline-info'
+                        },
+                    ]
+                }).container().appendTo($('#buttonsOpnTkt'));
+                $("#global-loader").fadeOut();
+
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+        });
+
+
+    }
+    function Show() {
+        $('#divshow').hide();
+        $('#divshow1').show();
+        $('#divfrom').show();
+        $('#import').removeClass('active');
+        $('#export').addClass('active');
+
+        var FromDate = $("#txtFromDate").val();
+        var ToDate = $("#txtToDate").val();
+        if (FromDate == null || FromDate == undefined || FromDate == "") {
+            Swal.fire("Error!", "Please select From Date .", "error");
+            return;
+        }
+        if (ToDate == null || ToDate == undefined || ToDate == "") {
+            Swal.fire("Error!", "Please select To Date.", "error");
+            return;
+        }
+        var date1 = document.getElementById('txtFromDate').value;
+        var date2 = document.getElementById('txtToDate').value;
+        date1 = new Date(date1);
+        date2 = new Date(date2);
+        if (date1 > date2) {
+            //document.getElementById('txtFromDate').value = "";
+            Swal.fire("Error!", "From Date always smaller than To Date.", "error");
+            return;
+        }
+        $("#global-loader").fadeIn();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/TicketSystem/SearchClosed",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#tblClosedTkt').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": response,
+                    "bPaginate": true,
+                    "bInfo": false,
+                    "paging": true,
+                    order: [],
+                    "searching": true,
+                    "dom": '<"top"i>rt<"bottom float-left m-3"p><"newQuote bottom float-right m-3"><"clear">',
+                    "columns": [
+                        {
+                            "data": "ID",
+                            "orderable": false,
+                            "render": function (data, type, row, meta) {
+
+                                if (type === 'display') {
+                                    data = "<div class=\"btn-list text-left\"><button class=\"btn btn-sm btn-info\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"View Ticket\" onclick=\"Viewticket('" + row.ID + "',0)\"><i class=\"fe fe-eye\"></i></button></div>";
+
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        {
+                            "data": "ID",
+                            "orderable": false,
+                            "render": function (data, type, row, meta) {
+
+                                if (type === 'display') {
+                                    data = "<div class=\"btn-list text-left\"><button class=\"btn btn-sm btn-facebook\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"Re-Open Ticket\" onclick=\"Viewticket('" + row.ID + "',0)\"><i class='fa fa-folder-open-o'></i></button></div>";
+
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "TktNo" },
+                        { "data": "Description", "className": "text-left" },
+                        { "data": "TktTypeName", "className": "text-left" },
+                        { "data": "UserName", "className": "text-left" },
+                        { "data": "AddedOn", "className": "text-left" },
+                        { "data": "ClosedByName", "className": "text-left" },
+                        { "data": "ClosedOn", "className": "text-left" },
+                        { "data": "PendingSince", "className": "text-right" }
+
+                    ],
+                    mark: true
+                });
+                var table = $('#tblClosedTkt').DataTable();
+                table = $('#tblClosedTkt').DataTable();
+                // #myInput is a <input type="text"> element
+                $('#searchText2').on('keyup', function () {
+                    table.search(this.value).draw();
+                });
+
+                var buttons = new $.fn.dataTable.Buttons(table, {
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-sign-out mr-2"></i> Excel',
+                            titleAttr: 'Excel',
+                            className: 'btn btn-outline-info'
+                        },
+                    ]
+                }).container().appendTo($('#buttonsCloseTkt'));
+                $("#global-loader").fadeOut();
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+        });
+
+
+    }
+
+    function GoBack() {
+        $("#DivReceiptGenDet").show();
+        $("#divsammry").hide();
+
+    }
+    function ViewReceiptSummary() {
+        $("#DivReceiptGenDet").hide();
+        $("#divsammry").show();
+        ShowOpen();
+    }
+
+    function GetcompanyticketDetails() {
+
+        
+        $.ajax({
+            type: "POST",
+            url: "/TicketSystem/SendCheckMail",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                
+                if (response == "Please update Emaild-ID.") {
+                    alert(response);
+                    $("#divSendmailOTP").modal("show");
+                }
+                else {
+                    $("#divSendmailOTP").modal("hide");
+                    GetcompanyticketDetails1();
+                }
+               
+
+            },
+             
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+
+        })
+    }
+    
+    function Verify() {
+
+        var EmailID = $("#txtemaiid").val();
+        var data = { 'EmailID': EmailID }
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "POST",
+            url: "/TicketSystem/SendOtp",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $("#divSendmailOTP").modal('hide')
+
+            },
+
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+
+        })
+
+    }
+    function Sumbit() {
+        
+        var EmailID = $("#txtemaiid").val();
+        var OTPEnter = $("#txtOTPEnter").val();
+        var data = { 'EmailID': EmailID, 'OTPEnter': OTPEnter}
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "POST",
+            url: "/TicketSystem/SendCheckMailSumbit",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response == "Email update successfully") {
+                    alert(response);
+                    $("#divSumbitOTP").modal('hide');
+                }
+                else {
+                    alert(response);
+                }
+                
+                
+            },
+
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+
+        })
+
+    }
+
+    function GetcompanyticketDetails1() {
+        debugger;
+        $("#divSendmailOTP").modal("hide");
+        var Subject = $("#Subject").val();
+        var Description = $("#Description").val();
+        var MailID = document.getElementById('mailid').innerHTML;
+        if (Subject == "") {
+            Swal.fire("Error!", "Cannot proceed.Please enter Module/Subject name. ", "error");
+            return;
+        }
+        if (Description == "") {
+            Swal.fire("Error!", "Cannot proceed.Please enter Description. ", "error");
+            return;
+        }
+        var TktType = 0;
+        var val = $("#FormState").is(':checked')
+        if (val == true) {
+            TktType = 0;
+        }
+        var val1 = $("#FormState01").is(':checked')
+        if (val1 == true) {
+            TktType = 1;
+        }
+        var val2 = $("#FormState02").is(':checked')
+        if (val2 == true) {
+            TktType = 2;
+        }
+
+        var saveElement = {};
+        saveElement.MailID = MailID;
+        saveElement.TktType = TktType;
+        saveElement.Subject = Subject;
+        saveElement.Description = Description;
+        saveElement.AddedOn = new Date();
+
+        var TotalAttchment = [];
+        TotalAttchment = TktAttachment;
+        for (i = 0; i < TotalAttchment.length; i++) {
+            var element3 = {};
+            element3.UploadFor = "Raise Tkt";
+            element3.DocName = TotalAttchment[i].DocName;
+            element3.FilePath = TotalAttchment[i].FilePath;
+            element3.ContentType = TotalAttchment[i].ContentType;
+            MasterAttachment.push(element3);
+        };
+
+        $("#gloabal-loader").fadeIn();
+        var data = { 'TktData': saveElement, 'TktAttachment': MasterAttachment }
+        data = JSON.stringify(data);
+
+                $.ajax({
+                    url: "/TicketSystem/AjaxAddOrEditTicketData",
+                    data: data,
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        $("#gloabal-loader").fadeOut();
+                        $("#divSendmailOTP").modal("hide");
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response[0].Message,
+                            icon: 'success'
+                        }).then((result) => {
+
+                           document.location = '@Url.Action("RaiseTicket", "TicketSystem")';
+                        })
+
+
+                    },
+                    error: function (error) {
+                        $("#global-loader").fadeOut("slow");
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        Swal.fire("Error!", "Something went wrong: " + str, "error");
+                    }
+                });
+
+            $("#fileticketattachment").val('');
+            $("#Description").val('');
+    }
+    function GetcheckForm() {
+        //FormState
+        //var val = $("#FormState2").is(':checked')
+        //if (val == true) {
+        //    $("#Bug2").css("color", "#ccc");
+        //    $("#newRequirement2").css("color", "black");
+        //}
+        //else {
+        //    $("#newRequirement2").css("color", "#ccc");
+        //    $("#Bug2").css("color", "black");
+        //}
+
+        var val = $("#FormState11").is(':checked')
+        if (val == true) {
+            $("#newRequirement2").css("color", "#ccc");
+            $("#correction2").css("color", "#ccc");
+            $("#Bug2").css("color", "black");
+        }
+        var val1 = $("#FormState22").is(':checked')
+        if (val1 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#newRequirement2").css("color", "black");
+            $("#correction2").css("color", "#ccc");
+        }
+        var val2 = $("#FormState33").is(':checked')
+        if (val2 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#correction2").css("color", "black");
+            $("#newRequirement2").css("color", "#ccc");
+        }
+    }
+    function ChangeTicketType(ID, TktTypeName) {
+        MainTktID = ID;
+        Viewticket(ID,1);
+        if (TktTypeName == "Bug") {
+            document.getElementById("FormState11").checked = true;
+            document.getElementById("FormState22").checked = false;
+            document.getElementById("FormState33").checked = false;
+        } else if (TktTypeName == "New Requirement") {
+            document.getElementById("FormState11").checked = false;
+            document.getElementById("FormState22").checked = true;
+            document.getElementById("FormState33").checked = false;
+        } else {
+            document.getElementById("FormState11").checked = false;
+            document.getElementById("FormState22").checked = false;
+            document.getElementById("FormState33").checked = true;
+        }
+        //var val = $("#FormState2").is(':checked')
+        //if (val == true) {
+        //    $("#Bug2").css("color", "#ccc");
+        //    $("#newRequirement2").css("color", "black");
+        //}
+        //else {
+        //    $("#newRequirement2").css("color", "#ccc");
+        //    $("#Bug2").css("color", "black");
+        //}
+
+        var val = $("#FormState11").is(':checked')
+        if (val == true) {
+            $("#newRequirement2").css("color", "#ccc");
+            $("#correction2").css("color", "#ccc");
+            $("#Bug2").css("color", "black");
+        }
+        var val1 = $("#FormState22").is(':checked')
+        if (val1 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#newRequirement2").css("color", "black");
+            $("#correction2").css("color", "#ccc");
+        }
+        var val2 = $("#FormState33").is(':checked')
+        if (val2 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#correction2").css("color", "black");
+            $("#newRequirement2").css("color", "#ccc");
+        }
+
+    }
+    function UpdateTicketType() {
+        var TktType = 0;
+        var val = $("#FormState11").is(':checked')
+        if (val == true) {
+            TktType = 0;
+        }
+        var val1 = $("#FormState22").is(':checked')
+        if (val1 == true) {
+            TktType = 1;
+        }
+        var val2 = $("#FormState33").is(':checked')
+        if (val2 == true) {
+            TktType = 3;
+        }
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to modified selected Ticket Type?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.value) {
+                var search = document.getElementById('txtUser').value;
+                var data1 = { 'ID': MainTktID, 'search': search, 'TktType': TktType };
+
+                var data = JSON.stringify(data1);
+                $.ajax({
+                    url: "/TicketSystem/UpdateTicketTypeDetails",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+
+                        Swal.fire({
+                            title: 'Success!',
+                            text: "Ticket Updated Successfully!",
+                            icon: 'success'
+                        }).then((result) => {
+                            document.location = '@Url.Action("RaiseTicket", "TicketSystem")';
+                            ViewReceiptSummary();
+                        })
+                    },
+                    error: function (error) {
+                        $("#global-loader").fadeOut("slow");
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        Swal.fire("Error!", "Something went wrong: " + str, "error");
+                    }
+                });
+            }
+        });
+
+    }
+    function Approveticket(ID) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to approve selected Ticket?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.value) {
+                var search = document.getElementById('txtUser').value;
+                var data1 = { 'ID': ID, 'search': search };
+
+                var data = JSON.stringify(data1);
+                $.ajax({
+                    url: "/TicketSystem/ApproveTicket",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+
+                        Swal.fire({
+                            title: 'Success!',
+                            text: "Ticket Approved Successfully!",
+                            icon: 'success'
+                        }).then((result) => {
+                            ViewReceiptSummary();
+                        })
+                    },
+                    error: function (error) {
+                        $("#global-loader").fadeOut("slow");
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        Swal.fire("Error!", "Something went wrong: " + str, "error");
+                    }
+                });
+            }
+        });
+
+    }
+    function deleteticket(ID) {
+        MainTktID = ID;
+    }
+    function DeleteRequestConfirm() {
+        var Reason = document.getElementById("Reason").value;
+        if (Reason == "" || Reason == undefined|| Reason == null) {
+            Swal.fire("Error!", "Cannot proceed.Please enter Resolution Comment. ", "error");
+            return;
+        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to closed selected Ticket?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.value) {
+                var search = document.getElementById('txtUser').value;
+                var data1 = { 'ID': MainTktID, 'search': search, 'Reason': Reason };
+
+                var data = JSON.stringify(data1);
+                $.ajax({
+                    url: "/TicketSystem/SaveClear",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+
+                        Swal.fire({
+                            title: 'Success!',
+                            text: "Ticket Closed Successfully!",
+                            icon: 'success'
+                        }).then((result) => {
+                            document.location = '@Url.Action("RaiseTicket", "TicketSystem")';
+                            ViewReceiptSummary();
+                            //Show();
+                        })
+                    },
+                    error: function (error) {
+                        $("#global-loader").fadeOut("slow");
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        Swal.fire("Error!", "Something went wrong: " + str, "error");
+                    }
+                });
+            }
+        });
+
+    }
+    function Viewticket(ID,IsUpdate) {
+        debugger;
+        $("#global-loader").fadeIn("slow");
+        var data1 = { 'ID': ID, 'IsUpdate': IsUpdate};
+        var data = JSON.stringify(data1);
+                $.ajax({
+                    url: "/TicketSystem/_ViewRaisedTicket",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        $("#global-loader").fadeOut("slow");
+                        $('#divRaisedTicketDetails').html(response);
+                        $('#divRaisedTicketDetails').show();
+                        $("#divMain").hide();
+
+                    },
+                    error: function (error) {
+                        $("#global-loader").fadeOut("slow");
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        Swal.fire("Error!", "Something went wrong: " + str, "error");
+                    }
+                });
+
+    }
+    ///*************************FOR ATTACHMENT**********************************/
+    function Capture() {
+        webcam.capture();
+    }
+    $(function () {
+        //  $("#btnCapture").val = "Please wait..."
+
+        jQuery("#webcam").webcam({
+            width: 320,
+            height: 240,
+            mode: "save",
+            swffile: '/Webcam_Plugin/jscam.swf',
+            debug: function (type, status) {
+                $('#camStatus').append(type + ": " + status + '<br /><br />');
+            },
+
+            onSave: function (data, ab) {
+                $("#global-loader").fadeIn();
+                $.ajax({
+                    type: "POST",
+                    url: '/TicketSystem/GetCapture',
+                  //  data: '{ParameterID: ' + JSON.stringify(ParameterID) + '}',
+                    data: '',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        DummyCaptureList = [];
+
+                        $("#global-loader").fadeIn();
+                        $("#imgCapture").css("visibility", "visible");
+                        $("#imgCapture").attr("src", response[0].url);
+                        $("#divLiveCam").css("display", "none");
+                        $("#divCaptCam").css("display", "block");
+                        $('#url').val(response[0].url);
+                        var element = {};
+                        element.SrNo1 = Rno;
+                        element.CaptureUrl = response[0].url;
+                        element.DocName = response[0].DocName;
+                        element.FilePath = response[0].FilePath;
+                        element.ContentType = response[0].ContentType;
+
+                        DummyCaptureList.push(element);
+
+
+                        $("#global-loader").fadeOut();
+                    },
+                    failure: function (error) {
+                        $("#global-loader").fadeOut();
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        Swal.fire("Error!", "Something went wrong: " + str, "error");
+                    }
+                });
+            },
+            onCapture: function () {
+                webcam.save('/QC/Capture');
+
+
+            }
+        });
+    });
+    function CloseCapturedImage() {
+        $("#divLiveCam").css("display", "block");
+        $("#divCaptCam").css("display", "none");
+    }
+    function UploadCapture() {
+
+        for (i = 0; i < DummyCaptureList.length; i++) {
+            var element = {};
+            element.SrNo1 = DummyCaptureList[i].SrNo1;
+            element.CaptureUrl = DummyCaptureList[i].CaptureUrl;
+            element.DocName = DummyCaptureList[i].DocName;
+            element.FilePath = DummyCaptureList[i].FilePath;
+            element.ContentType = DummyCaptureList[i].ContentType;
+            TktCaptureList.push(element);
+        }
+
+        for (i = 0; i < DummyCaptureList.length; i++) {
+
+            runningno++;
+            var element = {};
+            element.DocName = DummyCaptureList[i].DocName;
+            element.RunningID = runningno;
+            element.FilePath = DummyCaptureList[i].FilePath;
+            element.ContentType = DummyCaptureList[i].ContentType;
+            element.UploadType = "Capture_"+1;
+            element.SrNo1 = 1;
+
+            TktAttachment.push(element);
+        }
+        DummyCaptureList = [];
+        CaptureCountRows();
+        CloseCapturedImage();
+    }
+    function CaptureCountRows() {
+
+        var ParameterID1 = 1;
+        var Attach = "lblAttachment_" + ParameterID1;
+        document.getElementById(Attach).innerHTML = TktAttachment.length;
+
+    }
+    function AddAttachment(SrNo1) {
+
+        var data = { 'SrNo1': SrNo1 }
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "POST",
+            url: "/TicketSystem/_AddAttachmentForRaiseTkt",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $('#myModalContentAttachment').html(response);
+                $('#myModalAttachment').modal('show');
+
+            },
+            failure: function (response) {
+                Swal.fire("Error!", response, "error");
+                Swal.fire("Error!", response.responseText, "error");
+
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+
+        })
+    }
+    ///*************************FOR ATTACHMENT**********************************/
+</script>
+<script>
+
+    function uploadFiles() {
+        try {
+            var input_ = $("#multi_camera_");
+            var files = input_[0].files;
+            var formData = new FormData();
+            for (var i = 0; i != files.length; i++) {
+                var extension = files[i].name.toString().split('.').pop();
+                if (extension == files[i].name.toString()) {
+                    extension = '';
+                }
+                else {
+                    extension = extension.toLowerCase();
+                }
+                formData.append("FileAttach", files[i]);
+
+            }
+            console.log(files);
+
+        $.ajax(
+            {
+                url: '@Url.Action("UploadEmailIDListFileForRaiseTkt", "TicketSystem")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                async: false,
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        var element = {};
+                        element.SrNo1 = Rno;
+                        element.CaptureUrl = data[i].FilePath;
+                        element.DocName = data[i].DocName;
+                        element.FilePath = data[i].FilePath;
+                        element.ContentType = data[i].ContentType;
+                        Rno++;
+                        DummyCaptureList.push(element);
+
+                    }
+                    $("#multi_camera_").val("");
+                    UploadCapture();
+                }
+                });
+        }
+        catch (err) {
+            console.log(err)
+        }
+
+    }
+</script>
+

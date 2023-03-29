@@ -1,0 +1,1399 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.MyViewModelEntiites>
+@{
+    /**/
+
+    ViewBag.Title = "Insurance And RTO Tracking";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area" id="divinsuranceandRto">
+    <div class="page-header">
+        <h4 class="page-title">Insurance And RTO Tracking</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryList();"><i class="fa fa-file-text"></i></button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="divshowreneval">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Vehicle No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtVehicleNo", null, new { @class = "form-control joNo", @id = "txtVehicleNo", name = "txtVehicleNo", autocomplete = "on", Style = "font-weight: bold;  text-transform: uppercase;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-lg-1">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="form-group label-floating">
+                                    <button class="btn btn-primary" type="button" id="Search" data-toggle="modal" data-target="#largeModal" onclick="return LoadTrailerDetails();"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Registration No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtregistrationNo", null, new { @class = "form-control", @id = "txtregistrationNo", name = "txtregistrationNo", autocomplete = "on", Style = "font-weight: bold;  text-transform: uppercase;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Registration Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("RegistrationDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Registration Owner</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtregistrationowner", null, new { @class = "form-control", @id = "txtregistrationowner", name = "txtregistrationowner", autocomplete = "on", Style = "font-weight: bold;  text-transform: uppercase;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Vehicle Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlvehicleType", (IEnumerable<SelectListItem>)ViewBag.VehicleTypeList, "--Select--", new { @class = "form-control", @id = "ddlvehicleType", name = "ddlvehicleType", autocomplete = "off" })
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Year Of manufacture</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("YearOfmanf", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Make</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlMake", (IEnumerable<SelectListItem>)ViewBag.Makelist, "--Select--", new { @class = "form-control", @id = "ddlMake", name = "ddlMake", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Chasis No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchasisno", null, new { @class = "form-control", @id = "txtchasisno", name = "txtchasisno", autocomplete = "on", Style = "font-weight: bold;  text-transform: uppercase;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Engine No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtEngineno", null, new { @class = "form-control", @id = "TxtEngineno", name = "TxtEngineno", autocomplete = "on", Style = "font-weight: bold;  text-transform: uppercase;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Gross Weight(GVW)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtGrossweight", null, new { @class = "form-control", @id = "TxtGrossweight", name = "TxtGrossweight", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Model</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.TextBox("TxtModulename", null, new { @class = "form-control", @id = "TxtModulename", name = "TxtModulename", autocomplete = "on" })*@
+
+                                            @Html.DropDownList("ddlModel", (IEnumerable<SelectListItem>)ViewBag.ModelList, "--Select--", new { @class = "form-control", @id = "ddlModel", name = "ddlModel", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Invoice Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtInvoiceAmount", null, new { @class = "form-control", @id = "TxtInvoiceAmount", name = "TxtInvoiceAmount", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label">R.C.Book CPM/MAN</label>
+                                    @*<label class="custom-switch">
+                                            <input type="checkbox" name="custom-switch-checkbox" value="true" id="mycheck"  class="custom-switch-input test removebutton" checked>
+                                            <span class="custom-switch-indicator" data-original-title="Active" data-toggle="tooltip"></span>
+                                        </label>*@
+                                    <div>
+                                        <label class="radio">
+                                            Yes
+                                            <input type="radio" class="w3-check" name="rdRCBook" id="radioyes" value="Yes" checked>
+
+                                        </label>
+                                        <span style="padding-left:30px"></span>
+                                        <label class="radio">
+                                            No
+                                            <input type="radio" class="w3-check" name="rdRCBook" id="radiono" value="No">
+
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="panel panel-primary">
+                            <div class="tab_wrapper first_tab">
+                                <ul class="tab_list">
+                                    <li class="active" rel="tab_1_1" id="tabItems">Insurance</li>
+                                    <li rel="tab_1_2" class="" id="tabLocation">RTO</li>
+                                    <li rel="tab_1_3" class="" id="tabPOTerms">Loan</li>
+                                    <li rel="tab_1_4" class="" id="tabPOUpload">Upload</li>
+                                    @*  <li rel="tab_1_4" class="">Tab 4</li>*@
+                                </ul>
+                                <div class="content_wrapper">
+                                    <div title="tab_1_1" class="accordian_header tab_1_1 active">Tab 1<span class="arrow"></span></div>
+                                    <div class="tab_content first tab_1_1 active" title="tab_1_1" style="display: block;">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">policy Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("txtpolicy", null, new { @class = "form-control", @id = "txtpolicy", name = "txtpolicy", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Policy No.</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("txtPolicyNo", null, new { @class = "form-control", @id = "txtPolicyNo", name = "txtPolicyNo", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Policy date</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("PolicyDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                                            @*@Html.TextBox("PolicyDate", null, new { @class = "form-control", @type = "Date" })*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Insurance Company</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.TextBox("TxtInsuranceCompany", null, new { @class = "form-control", @id = "TxtInsuranceCompany", name = "TxtInsuranceCompany", autocomplete = "on" })*@
+                                                            @Html.DropDownList("ddlInsuranceCompany", (IEnumerable<SelectListItem>)ViewBag.InsuranceCompany, "--Select--", new { @class = "form-control", @id = "ddlInsuranceCompany", name = "ddlInsuranceCompany", autocomplete = "off" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Valid Upto</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("ValidUpto", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                                            @*@Html.TextBox("ValidUpto", null, new { @class = "form-control", @type = "Date", @value = DateTime.Now })*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Premium Amount</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("TxtPremiumAMount", null, new { @class = "form-control", @id = "TxtPremiumAMount", name = "TxtPremiumAMount", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Payment Date</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("PaymentDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                                            @*@Html.TextBox("PaymentDate", null, new { @class = "form-control", @type = "Date", @value = DateTime.Now })*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Sum of Insured</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("TXTSumofinsured", null, new { @class = "form-control", @id = "TXTSumofinsured", name = "TXTSumofinsured", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div title="tab_1_2" class="accordian_header tab_1_2 undefined">Tab 2<span class="arrow"></span></div><div class="tab_content tab_1_2" title="tab_1_2" style="display: none;">
+                                        <div id="ShowEditRtoDetails"></div>
+                                        <div id="ShowRenevalDetailsDetails"></div>
+                                        <div class="row" style="display:none" id="showRtoDetails">
+                                            <div class="col-md-12 col-lg-12">
+
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" cellspacing="0" cellpadding="0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th>Type</th>
+                                                                <th>Permit No</th>
+                                                                <th>From</th>
+
+                                                                <th>TO</th>
+                                                                <th>Amount</th>
+
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody style="box-sizing :border-box;">
+                                                            @foreach (var item in (ViewBag.IssuesList)[0])
+                                                            {
+                                                                <tr>
+                                                                    <td><input type="checkbox" name="checklist[]" class="checklist" id="checklist" value="@item"></td>
+                                                                    <td>@item</td>
+                                                                    @if (@item == "Tax Validity :")
+                                                                    {
+                                                                        <td>
+                                                                            @Html.DropDownList("ddlTaxype", (IEnumerable<SelectListItem>)ViewBag.TaxTYpe, "--Select--", new { @class = "form-control", @id = "ddlTaxype", name = "ddlTaxype", autocomplete = "off" })
+                                                                        </td>
+                                                                    }
+                                                                    else if (@item == "Permit Validity")
+                                                                    {
+                                                                        <td>
+                                                                            @Html.DropDownList("ddlPermittype", (IEnumerable<SelectListItem>)ViewBag.PermitTypeList, "--Select--", new { @class = "form-control", @id = "ddlPermittype", name = "ddlPermittype", autocomplete = "off" })
+                                                                        </td>
+                                                                    }
+
+                                                                    else
+                                                                    {
+                                                                        <td>
+                                                                            <input id="TxtAllow" placeholder="Enter Account" type="text" class="form-control" value="0" style="visibility:hidden" />
+                                                                        </td>
+                                                                    }
+
+                                                                    @if (@item == "Permit Validity")
+                                                                    {
+                                                                        <td>
+                                                                            <input id="TxtPermitno" placeholder="Enter No." type="text" class="form-control" />
+                                                                        </td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>
+                                                                            <input id="TxtAllow" placeholder="Enter Account" type="text" class="form-control" value="0" style="visibility:hidden" />
+                                                                        </td>
+                                                                    }
+
+                                                                    <td>
+                                                                        @*<input type="Date" name="Fromdate" class=" form-control" id="Fromdate">*@
+                                                                        @Html.TextBox("Fromdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBox("TOdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                                                        @*<input type="Date" name="TOdate" class=" form-control" id="TOdate">*@
+                                                                    </td>
+                                                                    <td>
+                                                                        <input id="txtAccountName" placeholder="Enter Account" type="text" class="form-control" value="" />
+                                                                    </td>
+
+
+
+                                                                </tr>
+
+
+                                                            }
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div title="tab_1_3" class="accordian_header tab_1_3 undefined">Tab 3<span class="arrow"></span></div><div class="tab_content tab_1_3" title="tab_1_3" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Bank Name</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("TxtBankName", null, new { @class = "form-control", @id = "TxtBankName", name = "TxtBankName", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">End date</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.TextBox("endDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })*@
+                                                            @*<input type="Date" name="Fromdate" class=" form-control" id="endDate">*@
+                                                            @Html.TextBox("endDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">EMI Amount</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.TextBox("txtemiamount", null, new { @class = "form-control", @id = "txtemiamount", name = "txtemiamount", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*Code For Tab 4 *@
+                                    <div title="tab_1_4" class="accordian_header tab_1_4 undefined">Tab 4<span class="arrow"></span></div><div class="tab_content tab_1_4" title="tab_1_4" style="display: none;">
+
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <label class="form-label">Docuement Type </label>
+                                                <select id="DDlVehicleTypeDocumentdetails" class="form-control">
+                                                    <option value="">--Select--</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Upload Files</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <div class="form-group" id="divFileUpload">
+                                                                <input type="file" id="fileJOAttachment" name="postedFile" />
+                                                                @*<input type="Button" id="btnUpload" value="Upload" class="btn btn-primary" />*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <div class="form-group" id="divFileUpload">
+                                                                <input type="Button" id="btnUpload" value="Upload" class="btn btn-primary" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    @*Code End For Tab 4 *@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-12" id="divsave">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button type="button" class="btn btn-success" name="clearProfile" title="clear" id="clearValue" onclick="SaveInsuranceDetails()">Save</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12" style="display:none" id="divupdate">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button type="button" class="btn btn-success" name="clearProfile" title="clear" id="clearValue" onclick="UpdateInsuranceDetails()">Update</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12" style="display:none" id="divrenveal">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button type="button" class="btn btn-success" name="clearProfile" title="clear" id="clearValue" onclick="RenevalInsuranceDetails()">Reneval</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="modal  fade" id="TestModal"  role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id='myModalContent'>
+            </div>
+        </div>
+    </div>*@
+
+<div id='myModalContent'>
+</div>
+
+<div class=" content-area" id="divsummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Insurance And RTO Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelDetails", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="tblInsrunaceshow" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr>
+
+                                            @*<th class="wd-10p sorting">Sr No</th>
+                                                <th class="wd-10p sorting">Paid ID</th>*@
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="myModal1" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContent1'>
+
+        </div>
+    </div>
+</div>
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContent'>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function LoadTrailerDetails() {
+
+        $.ajax({
+            type: "POST",
+            url: "/VehicleDetails/GetTrailerDetails",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $("#divinsuranceandRto").hide();
+                $("#myModalContent").show();
+                //alert(response);
+                $('#TestModal').modal('show');
+                $('#myModalContent').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+
+
+
+
+
+    }
+
+    function LoadRtoDetails() {
+
+        $.ajax({
+            type: "POST",
+            url: "/VehicleDetails/GetRtoDetails",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                //alert(response);
+                // $('#TestModal').modal('show');
+                $('#ShowEditRtoDetails').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+
+
+    function LoadRenvealDetails() {
+
+        $.ajax({
+            type: "POST",
+            url: "/VehicleDetails/GetRenevalDetails",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                //alert(response);
+                // $('#TestModal').modal('show');
+                $('#ShowRenevalDetailsDetails').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false,
+            "bSortable": false,
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0, 1, 2, 3, 4, 5, 6]
+                }
+
+            ]
+
+
+
+        });
+        $("#showRtoDetails").show();
+        $("#divsave").show();
+
+        // LoadRtoDetails();
+    });
+</script>
+
+<script>
+    function showInsuranceList() {
+        $("#showInsurance").show();
+        $("#showLoan").hide();
+
+    }
+
+    function showLoanList() {
+        $("#showInsurance").hide();
+        $("#showLoan").show();
+    }
+</script>
+
+<script type="text/javascript">
+
+
+    function ShowTrailerDetails() {
+    //    var res = validate();
+    //    if (res == false) {
+    //        return false;
+    //    }
+
+        var TrailerName = $("#txtVehicleNo").val()
+
+
+
+        var data = { 'TrailerName': TrailerName };
+        var data1 = JSON.stringify(data);
+
+        $.ajax({
+            url: "/VehicleDetails/GetInsuranceData",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $("#FromDate").val(data.Regdate);
+                $("#ddlvehicleType").val(data.vehicletype);
+                $("#TxtModulename").val(data.modelname);
+                $("#txtchasisno").val(data.chasisno);
+                $("#TxtEngineno").val(data.engineno);
+                $("#TxtModulename").val(data.modelname);
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function SaveInsuranceDetails() {
+        var TrailerName = $("#txtVehicleNo").val();
+        var RegNo = $("#txtregistrationNo").val();
+        var Regdate = $("#RegistrationDate").val();
+        var RegOwner = $("#txtregistrationowner").val();
+        var VehicleType = $("#ddlvehicleType option:selected").val();
+        var yearofmanufacture = $("#YearOfmanf").val();
+        var Make = $("#ddlMake option:selected").val();
+        var ChasisNo = $("#txtchasisno").val();
+        var ENgineNo = $("#TxtEngineno").val();
+        var GrossWeight = $("#TxtGrossweight").val();
+        var Model = $("#ddlModel option:selected").val();
+        var InVoiceAmount = $("#TxtInvoiceAmount").val();
+        var RCBookField = $("input[name='rdRCBook']:checked").val();
+
+        var RGno = 0;
+
+        //Insurance data
+
+        var PolicyType = $("#txtpolicy").val();
+        var PolicyNumber = $("#txtPolicyNo").val();
+        var InsuranceCompany = $("#ddlInsuranceCompany option:selected").val();
+        var PremiumAmount = $("#TxtPremiumAMount").val();
+        var SumOFinsured = $("#TXTSumofinsured").val();
+        var PolicyDate = $("#PolicyDate").val();
+        var ValidUpto = $("#ValidUpto").val();
+        var PaymentDate = $("#PaymentDate").val();
+
+
+        //RTO data
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+     //   alert(checkboxarray);
+
+        var tablearray = [];
+        var table = document.getElementById("example2");
+        var row;
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                var TaxType = $("#ddlTaxype option:selected").val();
+                var PermitType = $("#ddlPermittype option:selected").val();
+                var PermitNo = $("#TxtPermitno").val();
+
+                var InvoiceNo = row.cells[1].innerText;
+                if (InvoiceNo == checkboxarray[k]) {
+                    VehicleNo = $("#txtVehicleNo").val();
+                    FromDate = row.cells[4].children[0].value;
+                    TODate = row.cells[5].children[0].value;
+                    Amount = row.cells[6].children[0].value;
+                    tablearray.push({ 'InvoiceNo': InvoiceNo, 'FromDate': FromDate, 'TODate': TODate, 'Amount': Amount, 'VehicleNo': VehicleNo})
+                }
+            }
+        }
+
+        var bankname = $("#TxtBankName").val();
+        var ENdDate = $("#endDate").val();
+        var EmiAMount = $("#txtemiamount").val();
+
+        if (tablearray.length == 0) {
+            alert("Please select Tax to proceed");
+
+        }
+        else {
+            var data1 = {
+                'RTODetails': tablearray, 'TrailerName': TrailerName, 'RegNo': RegNo, 'Regdate': Regdate,
+                'RegOwner': RegOwner, 'VehicleType': VehicleType, 'yearofmanufacture': yearofmanufacture, 'Make': Make
+                , 'ChasisNo': ChasisNo, 'ENgineNo': ENgineNo, 'GrossWeight': GrossWeight, 'Model': Model,
+                'InVoiceAmount': InVoiceAmount, 'RCBookField': RCBookField, 'PolicyType': PolicyType, 'PolicyNumber': PolicyNumber, 'InsuranceCompany': InsuranceCompany,
+                'PremiumAmount': PremiumAmount, 'SumOFinsured': SumOFinsured, 'PolicyDate': PolicyDate, 'ValidUpto': ValidUpto, 'PaymentDate': PaymentDate
+                , 'bankname': bankname, 'ENdDate': ENdDate, 'EmiAMount': EmiAMount, 'TaxType': TaxType, 'PermitType': PermitType, 'PermitNo': PermitNo, 'RGno': RGno};
+            var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/VehicleDetails/SaveRtoInsuranceData",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        alert(data);
+
+                      document.location = '@Url.Action("InsuranceAndRTOTracking", "VehicleDetails")';
+
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+
+    }
+
+
+    function UpdateInsuranceDetails() {
+
+        var res = validateUpdateFunction();
+        if (res == false) {
+            return false;
+        }
+
+         var TrailerName = $("#txtVehicleNo").val();
+        var RegNo = $("#txtregistrationNo").val();
+        var Regdate = $("#RegistrationDate").val();
+        var RegOwner = $("#txtregistrationowner").val();
+        var VehicleType = $("#ddlvehicleType option:selected").val();
+        var yearofmanufacture = $("#YearOfmanf").val();
+        var Make = $("#ddlMake option:selected").val();
+        var ChasisNo = $("#txtchasisno").val();
+        var ENgineNo = $("#TxtEngineno").val();
+        var GrossWeight = $("#TxtGrossweight").val();
+        var Model = $("#ddlModel option:selected").val();
+        var InVoiceAmount = $("#TxtInvoiceAmount").val();
+        var RCBookField = $("input[name='rdRCBook']:checked").val();
+
+        var RGno = 0;
+
+        //Insurance data
+
+        var PolicyType = $("#txtpolicy").val();
+        var PolicyNumber = $("#txtPolicyNo").val();
+        var InsuranceCompany = $("#ddlInsuranceCompany option:selected").val();
+        var PremiumAmount = $("#TxtPremiumAMount").val();
+        var SumOFinsured = $("#TXTSumofinsured").val();
+        var PolicyDate = $("#PolicyDate").val();
+        var ValidUpto = $("#ValidUpto").val();
+        var PaymentDate = $("#PaymentDate").val();
+       // var ENdDate = $("#endDate").val();
+
+
+        //RTO data
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("tblrtodetails");
+        var row;
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                var TaxType = $("#ddlTaxype option:selected").val();
+                var PermitType = $("#ddlPermittype option:selected").val();
+                var PermitNo = $("#TxtPermitno").val();
+
+                var InvoiceNo = row.cells[1].innerText;
+                if (InvoiceNo == checkboxarray[k]) {
+                    VehicleNo = $("#txtVehicleNo").val();
+                    FromDate = row.cells[4].children[0].value;
+                    TODate = row.cells[5].children[0].value;
+                    Amount = row.cells[6].children[0].value;
+                    tablearray.push({ 'InvoiceNo': InvoiceNo, 'FromDate': FromDate, 'TODate': TODate, 'Amount': Amount, 'VehicleNo': VehicleNo})
+                }
+            }
+        }
+
+        var bankname = $("#TxtBankName").val();
+        var ENdDate = $("#endDate").val();
+        var EmiAMount = $("#txtemiamount").val();
+
+        if (tablearray.length == 0) {
+            alert("Please select Tax to proceed");
+
+        }
+        else {
+            var data1 = {
+                'RTODetails': tablearray, 'TrailerName': TrailerName, 'RegNo': RegNo, 'Regdate': Regdate,
+                'RegOwner': RegOwner, 'VehicleType': VehicleType, 'yearofmanufacture': yearofmanufacture, 'Make': Make
+                , 'ChasisNo': ChasisNo, 'ENgineNo': ENgineNo, 'GrossWeight': GrossWeight, 'Model': Model,
+                'InVoiceAmount': InVoiceAmount, 'RCBookField': RCBookField, 'PolicyType': PolicyType, 'PolicyNumber': PolicyNumber, 'InsuranceCompany': InsuranceCompany,
+                'PremiumAmount': PremiumAmount, 'SumOFinsured': SumOFinsured, 'PolicyDate': PolicyDate, 'ValidUpto': ValidUpto, 'PaymentDate': PaymentDate
+                , 'bankname': bankname, 'ENdDate': ENdDate, 'EmiAMount': EmiAMount, 'TaxType': TaxType, 'PermitType': PermitType, 'PermitNo': PermitNo, 'RGno': RGno};
+            var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/VehicleDetails/SaveRtoInsuranceData",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        alert(data);
+
+                      document.location = '@Url.Action("InsuranceAndRTOTracking", "VehicleDetails")';
+
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+
+    }
+</script>
+
+
+<script>
+    function TrailerReneval(tRAILERNAME) {
+        LoadRenvealDetails();
+        $("#divshowreneval").show();
+        $("#divinsuranceandRto").show();
+        $("#showRtoDetails").hide();
+        $("#divrenveal").show();
+        $("#tblrtodetails").hide();
+        $("#divsave").hide();
+        $("#divupdate").hide();
+        $("#myModalContent").hide();
+        $("#txtpolicy").val("");
+         $("#txtPolicyNo").val("");
+
+       $("#TxtPremiumAMount").val("");
+         $("#TXTSumofinsured").val("");
+
+
+        $("#TxtBankName").val("");
+
+         $("#txtemiamount").val("");
+        //$(':input').val('');
+        var data1 = { 'TrailerName': tRAILERNAME };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/VehicleDetails/GetTrailerWIseInsuranceDetails",
+            data: data,
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $("#txtVehicleNo").val(data.tRAILERNAME);
+                $("#txtregistrationNo").val(data.regno);
+                $("#RegistrationDate").val(data.Regdate);
+                $("#txtregistrationowner").val(data.regname);
+                $("#ddlvehicleType").val(data.vehicletype);
+                $("#YearOfmanf").val(data.yearofmanufacture);
+                $("#ddlMake").val(data.makeby);
+                $("#txtchasisno").val(data.chasisno);
+                $("#TxtEngineno").val(data.engineno);
+                $("#TxtGrossweight").val(data.GrossWeight);
+                $("#ddlModel").val(data.modelname);
+                $("#TxtInvoiceAmount").val(data.InVoiceAmount);
+                if (data.rcbookfiled == "True") {
+                    document.getElementById("radioyes").checked = true;
+                } else {
+                    document.getElementById("radiono").checked = true;
+                }
+                //document.getElementById("rdRCBook").checked = false;
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+
+
+
+    function RenevalInsuranceDetails() {
+          var TrailerName = $("#txtVehicleNo").val();
+        var RegNo = $("#txtregistrationNo").val();
+        var Regdate = $("#RegistrationDate").val();
+        var RegOwner = $("#txtregistrationowner").val();
+        var VehicleType = $("#ddlvehicleType option:selected").val();
+        var yearofmanufacture = $("#YearOfmanf").val();
+        var Make = $("#ddlMake option:selected").val();
+        var ChasisNo = $("#txtchasisno").val();
+        var ENgineNo = $("#TxtEngineno").val();
+        var GrossWeight = $("#TxtGrossweight").val();
+        var Model = $("#ddlModel option:selected").val();
+        var InVoiceAmount = $("#TxtInvoiceAmount").val();
+        var RCBookField = $("input[name='rdRCBook']:checked").val();
+
+        var RGno = 0;
+
+        //Insurance data
+
+        var PolicyType = $("#txtpolicy").val();
+        var PolicyNumber = $("#txtPolicyNo").val();
+        var InsuranceCompany = $("#ddlInsuranceCompany option:selected").val();
+        var PremiumAmount = $("#TxtPremiumAMount").val();
+        var SumOFinsured = $("#TXTSumofinsured").val();
+        var PolicyDate = $("#PolicyDate").val();
+        var ValidUpto = $("#ValidUpto").val();
+        var PaymentDate = $("#PaymentDate").val();
+
+
+        //RTO data
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+     //   alert(checkboxarray);
+
+        var tablearray = [];
+        var table = document.getElementById("example4");
+        var row;
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                var TaxType = $("#ddlTaxype option:selected").val();
+                var PermitType = $("#ddlPermittype option:selected").val();
+                var PermitNo = $("#TxtPermitno").val();
+
+                var InvoiceNo = row.cells[1].innerText;
+                if (InvoiceNo == checkboxarray[k]) {
+                    VehicleNo = $("#txtVehicleNo").val();
+                    FromDate = row.cells[4].children[0].value;
+                    TODate = row.cells[5].children[0].value;
+                    Amount = row.cells[6].children[0].value;
+                    tablearray.push({ 'InvoiceNo': InvoiceNo, 'FromDate': FromDate, 'TODate': TODate, 'Amount': Amount, 'VehicleNo': VehicleNo})
+                }
+            }
+        }
+
+        var bankname = $("#TxtBankName").val();
+        var ENdDate = $("#endDate").val();
+        var EmiAMount = $("#txtemiamount").val();
+
+        if (tablearray.length == 0) {
+            alert("Please select Tax to proceed");
+
+        }
+        else {
+            var data1 = {
+                'RTODetails': tablearray, 'TrailerName': TrailerName, 'RegNo': RegNo, 'Regdate': Regdate,
+                'RegOwner': RegOwner, 'VehicleType': VehicleType, 'yearofmanufacture': yearofmanufacture, 'Make': Make
+                , 'ChasisNo': ChasisNo, 'ENgineNo': ENgineNo, 'GrossWeight': GrossWeight, 'Model': Model,
+                'InVoiceAmount': InVoiceAmount, 'RCBookField': RCBookField, 'PolicyType': PolicyType, 'PolicyNumber': PolicyNumber, 'InsuranceCompany': InsuranceCompany,
+                'PremiumAmount': PremiumAmount, 'SumOFinsured': SumOFinsured, 'PolicyDate': PolicyDate, 'ValidUpto': ValidUpto, 'PaymentDate': PaymentDate
+                , 'bankname': bankname, 'ENdDate': ENdDate, 'EmiAMount': EmiAMount, 'TaxType': TaxType, 'PermitType': PermitType, 'PermitNo': PermitNo, 'RGno': RGno};
+            var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/VehicleDetails/RenevalRtoInsuranceData",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        alert(data);
+
+                      document.location = '@Url.Action("InsuranceAndRTOTracking", "VehicleDetails")';
+
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+
+
+
+
+
+    }
+
+
+</script>
+
+
+<script>
+    function ViewSummaryList() {
+        $("#divsummary").show()
+        $("#divinsuranceandRto").hide()
+        $("#myModalContent").hide()
+        $.ajax({
+            type: 'POST',
+            url: '/VehicleDetails/TPTariffSummary',
+            //data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                $("#tblInsrunaceshow").empty();
+                RepTableDataJson($("#tblInsrunaceshow"), data, "Voucher Closed Details", "VoucherClosedDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function getBack1() {
+                document.location ='@Url.Action("InsuranceAndRTOTracking", "VehicleDetails")'
+
+    }
+</script>
+
+
+<script>
+    function validateUpdateFunction() {
+
+        var PoliCydate = document.getElementById('PolicyDate').value;
+        var Validdate = document.getElementById('ValidUpto').value;
+        var end = document.getElementById('endDate').value;
+        var paymentdate = document.getElementById('PaymentDate').value;
+        var Yearof = document.getElementById('YearOfmanf').value;
+
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+
+
+        document.getElementById("PolicyDate").style.borderColor = "gainsboro";
+        document.getElementById("ValidUpto").style.borderColor = "gainsboro";
+        document.getElementById("endDate").style.borderColor = "gainsboro";
+        document.getElementById("PaymentDate").style.borderColor = "gainsboro";
+        document.getElementById("YearOfmanf").style.borderColor = "gainsboro";
+
+
+
+        if (PoliCydate == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("PolicyDate").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (Validdate == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("ValidUpto").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (end == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("endDate").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (paymentdate == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("PaymentDate").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (Yearof == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("YearOfmanf").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+
+<script>
+    $('#ddlvehicleType').blur(function (e) {
+        var VehicleTypeid = $("#ddlvehicleType").val();
+        $.ajax({
+            url: "/VehicleDetails/AjaxGetVehicleDocType",
+            data: '{VehicleTypeid: ' + JSON.stringify(VehicleTypeid) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#DDlVehicleTypeDocumentdetails");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+
+
+    });
+</script>
+
+
+<script>
+    function addAttchmentINFolder(data) {
+
+        var MSNO = data;
+        var DocumenttypeID = $("#DDlVehicleTypeDocumentdetails option:selected").val();
+        ///Attach
+        var fileUpload = $("#fileJOAttachment").get(0);
+        var files = fileUpload.files;
+
+        // Create FormData object
+        var fileData = new FormData();
+
+
+        if (files.length == 0) {
+            //alert("Please select File!!")
+            return false;
+        }
+        else {
+
+            var iSize = document.getElementById('fileJOAttachment').files[0].size / 1024
+            iSize = (Math.round((iSize / 1024) * 100) / 100)
+
+            // Looping over all files and add it to FormData object
+            for (var i = 0; i < files.length; i++) {
+
+                fileData.append(files[i].name, files[i]);
+
+            }
+
+            // Adding one more key to FormData object
+            // fileData.append('username', 'Manas');
+            fileData.append('MSNoFile', MSNO);
+            fileData.append('DocumenttypeID', DocumenttypeID);
+
+        }
+        //attach
+        $.ajax({
+            url: "/VehicleDetails/SaveVehicleAttachmentToDirectory",
+            type: "POST",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            data: fileData,
+            success: function (response) {
+
+                $("#cute-loader").fadeOut("slow");
+
+                alert("Record saved successfully!")
+                @* document.location = '@Url.Action("DriverSummary", "Driver")';*@
+                },
+            error: function (errormessage) {
+                $("#cute-loader").fadeOut("slow");
+                alert("error");
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        $('#btnUpload').click(function () {
+
+            
+
+            var VehicleNo = $("#txtVehicleNo").val();
+          
+            if (VehicleNo != 0) {
+                addAttchmentINFolder(VehicleNo);
+            } else {
+                //$.ajax({
+                //    type: "POST",
+                //    url: "/Driver/GetMaxIDFromDriver",
+                //    //data: data,
+                //    contentType: "application/json; charset=utf-8",
+                //    success: function (data) {
+
+                //        $("#DriverID").val(data)
+                //        addAttchmentINFolder(data);
+                //    },
+                //    failure: function (response) {
+                //        alert(response);
+                //        alert(response.responseText);
+                //    },
+                //    error: function (response) {
+                //        alert(response.responseText);
+                //    }
+
+                //})
+            }
+
+
+        });
+
+
+    });
+
+
+
+
+    function GetTrailerDOcView(tRAILERNAME) {
+      
+        var data1 = { 'tRAILERNAME': tRAILERNAME };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/VehicleDetails/ShowVehicleattachment",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $('#myModal1').modal('show');
+                $('#myModalContent1').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+</script>
+
+

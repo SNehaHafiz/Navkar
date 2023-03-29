@@ -1,0 +1,248 @@
+﻿
+@{
+    ViewBag.Title = "Driver Payment";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Driver's Payment</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(1).ToString("dd MMM yyyy 07:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Transpoter</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownList("ddlTranspoter", (IEnumerable<SelectListItem>)ViewBag.Transpoter, "--Select-- ", new { @class = "form-control", @id = "ddlTranspoter", name = "ddlTranspoter", autocomplete = "off" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowDriverPayment()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                 
+
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                <thead>
+                                    <tr>
+
+                                        <th class="wd-15p sorting">Sr No.</th>
+                                        <th class="wd-15p sorting">CUSTOMER CODE</th>
+                                        <th class="wd-15p sorting">BENEFICARY BRANCH CODE</th>
+                                        <th class="wd-15p sorting">AMOUNT</th>
+                                        <th class="wd-15p sorting">REMARKS 1</th>
+                                        <th class="wd-15p sorting">DEBIT ACCOUNT NO</th>
+                                        <th class="wd-15p sorting">CUSTOMER NAME</th>
+                                        <th class="wd-15p sorting">CITY</th>
+                                        <th class="wd-15p sorting">CREDIT ACCOUNT NO</th>
+                                        <th class="wd-15p sorting">BENEFICARY NAME</th>
+                                        <th class="wd-15p sorting">REMARK 2</th>
+                                        <th class="wd-15p sorting">PRODUCT CODE</th>
+                                        <th class="wd-15p sorting">E_MAIL_ID</th>
+                                        <th class="wd-15p sorting">REMARK 3</th>
+                                        <th class="wd-15p sorting">REMARK 4</th>
+                                        <th class="wd-15p sorting">FILE NAME</th>
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [1]
+                }
+
+            ],
+            "buttons": [{
+                "extend": 'excel',
+                "filename": 'DriverPaymentDetails_List',
+                //"exclude_inputs": 'true',
+                //"row": '[1,1]'
+
+            }
+            ]
+        });
+    });
+</script>
+
+
+<script type="text/javascript">
+
+
+    function ShowDriverPayment() {
+
+
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+        var FromDate = $("#FromDate").val()
+        var ToDate = $("#ToDate").val()
+        var Transporterid = $("#ddlTranspoter option:selected").val();
+
+
+      
+
+            $.ajax({
+                type: 'POST',
+                url: '/LoadingPlan/AjaxDriverPaymentMode',
+                data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ',Transporterid: ' + JSON.stringify(Transporterid) + '}',
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    $('#example1').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        //"bFilter": false,
+                        "paging": false,
+                        "aaData": data,
+                        "columns": [
+                            { "data": "SrNo" },
+                            { "data": "CUSTOMER_CODE" },
+                            { "data": "BENEFICARY_BRANCH_CODE" },
+                            { "data": "AMOUNT" },
+                            { "data": "REMARKS_1" },
+                            { "data": "DEBIT_ACCOUNT_NO" },
+                            { "data": "CUSTOMER_NAME" },
+                            { "data": "CITY" },
+                            { "data": "CREDIT_ACCOUNT_NO" },
+                            { "data": "BENEFICARY_NAME" },
+                            { "data": "REMARK_2" },
+                            { "data": "PRODUCT_CODE" },
+                            { "data": "E_MAIL_ID" },
+                            { "data": "REMARK_3" },
+                            { "data": "REMARK_4" },
+                            { "data": "FILE_NAME" }
+                          
+                           
+                        ], "dom": 'Bfrtip',
+
+                        "buttons": [{
+                            "extend": 'excel',
+                            "title": '',
+                            "filename": 'DriverPaymentDetails_List',
+                            "header": ''
+                          
+                    
+                        },
+                            
+                        ]
+                    });
+                  
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+
+
+   
+</script>
+
+
+<script>
+    function validate() {
+
+        var txttranspoter = document.getElementById('ddlTranspoter').value;
+
+    
+
+        var blResult = Boolean;
+        blResult = true;
+
+        document.getElementById("ddlTranspoter").style.borderColor = "gainsboro";
+
+        if (txttranspoter == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("ddlTranspoter").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (txttranspoter == "--Select--") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("ddlTranspoter").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+      
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>

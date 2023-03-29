@@ -1,0 +1,285 @@
+﻿
+@{
+    ViewBag.Title = "CancelCtrReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Cancel List</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        @*<div class="col-lg-8 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Line Wise Inventory Summary .</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col-6">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Sales Register Report .</label>
+                                <div class="row gutters-xs">
+                                    @*<div class="col-2">
+                                            <label style="margin-top: 7px;">Inventory As On</label>
+                                        </div>
+                                        <div class="col-3">
+                                            @Html.TextBox("FromDate", null, new { @id = "SelectedDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                        </div>*@
+                                    @*<div class="col-2">
+                                            <label style="margin-top: 4px;">From:</label>
+                                        </div>*@
+                                    <div class="col-2">
+                                        @Html.TextBox("FromDate", null, new { @id = "FDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                    </div>
+                                    <div class="col-2">
+
+                                        @Html.TextBox("ToDateDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", onchange = "CheckDate();", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                    </div>
+                                    <div class="col-md-12 col-lg-8">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('ALL')" type="button">ALL</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('IMPORT')" type="button">IMPORT</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EXPORT')" type="button">EXPORT</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('BOND')" type="button">BOND</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('DOMESTIC')" type="button">DOMESTIC</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('OTHER')" type="button">OTHER</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('MNR')" type="button">MNR</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('OTHERMNR')" type="button">OTHER MNR</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('Canceled')" type="button">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-md-2 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">No of Records</label>
+                                    @Html.TextBox("txtCount", null, new { @class = "form-control", @id = "txtCount", name = "txtCount", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-22 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Net Amount</label>
+                                    @Html.TextBox("NetTotal", null, new { @class = "form-control", @id = "NetTotal", name = "NetTotal", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-22 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Total Gst</label>
+                                    @Html.TextBox("txtCGST", null, new { @class = "form-control", @id = "txtCGST", name = "txtCGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            @*<div class="col-md-22 col-lg-2">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label">IGST</label>
+                                        @Html.TextBox("txtIGST", null, new { @class = "form-control", @id = "txtIGST", name = "txtIGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                    </div>
+                                </div>*@
+                            @*<div class="col-md-22 col-lg-2">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label"> Total GST</label>
+                                        @Html.TextBox("txtTotalGST", null, new { @class = "form-control", @id = "txtTotalGST", name = "txtTotalGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                    </div>
+                                </div>*@
+                            <div class="col-md-22 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Grand Total</label>
+                                    @Html.TextBox("txtTotal", null, new { @class = "form-control", @id = "txtTotal", name = "txtTotal", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+
+
+                            <input type="hidden" name="txtCategory" id="txtCategory">
+
+
+                        </div>
+
+
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelSalesRegisterReport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#example2').DataTable({
+        //    "bLengthChange": false,
+        //    "bInfo": false,
+        //    "bPaginate": false,
+        //    //"bFilter": false,
+        //    "paging": false
+        //    //"dom": 'Bfrtip',
+        //    //"buttons": [{
+        //    //    "extend": 'excel',
+        //    //    "title": 'VoucherDetails',
+        //    //    "filename": 'VoucherDetails_List'
+
+        //    //}
+        //    //]
+        //});
+
+
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+<script>
+
+
+    function ShowSelectedValue(type) {
+        var Activity = type;
+        var FromDate = $("#FDate").val();
+
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'Fdate': FromDate, 'Activity': Activity, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackSalesRegisterReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJson($("#reportTable"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                var table = document.getElementById("reportTable");
+                Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+    function Show(type) {
+       // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 100000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValue(type);
+
+        }, delayInMilliseconds);
+
+
+
+    }
+</script>
+
+<script type="text/javascript">
+    function Textboxvalue(Activity) {
+
+        var Activity = Activity;
+        var FromDate = $("#FDate").val();
+
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'Fdate': FromDate, 'Activity': Activity, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackSalesRegisterReportTextBoxbind',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                var sum = 0;
+                var Total = 0;
+                for (var i = 0; i < data.length; i++) {
+                    Total += parseInt(data[i].GrandTotal);
+                }
+
+                var NetTotal = 0;
+                for (var i = 0; i < data.length; i++) {
+                    NetTotal += parseInt(data[i].NetTotal);
+                }
+
+                var CGST = 0;
+                for (var i = 0; i < data.length; i++) {
+                    CGST += parseInt(data[i].TotalGST);
+                }
+
+                //var CGST = 0;
+                //for (var i = 0; i < Data.length; i++) {
+                //    CGST += Data[i].CGST;
+                //}
+
+                //var IGST = 0;
+                //for (var i = 0; i < Data.length; i++) {
+                //    IGST += Data[i].IGST;
+                //}
+
+                //var TotalGST = +SGST + +CGST + +IGST;
+
+
+                $('#txtCount').val(data.length);
+                //$('#txtSGST').val(SGST);
+                $('#NetTotal').val(NetTotal);
+                $('#txtCGST').val(CGST);
+                //$('#txtTotalGST').val(TotalGST);
+                $('#txtTotal').val(Total);
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+
+
+    }
+</script>

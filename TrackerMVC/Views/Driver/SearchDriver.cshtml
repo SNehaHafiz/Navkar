@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "Search Driver";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Search Driver</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Search By </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSeachby", new List<SelectListItem>
+                         { new SelectListItem { Text = "--Select--", Value = ""},
+                           new SelectListItem { Text = "License No", Value = "License No"},
+                           new SelectListItem { Text = "Driver Code", Value = "Driver Code"},
+                           new SelectListItem { Text = "driver name", Value = "driver name"},
+                           }, new { @class = "form-control", autocomplete = "off" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" id="lblshow">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtNumber" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowDetails()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelDriverEntries", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row" id="divMovementDetailsDetails">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Last Five Movement Records</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelDriverLeaveEntities", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="getdetails">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+        
+    })
+    $('#ddlSeachby').change(function (e) {
+        var SearchNO = $("#ddlSeachby").val();
+        // alert(SearchNO);
+        if (SearchNO == "License No") {
+            $("#lblshow").text("License No");
+        }
+        if (SearchNO == "Driver Code") {
+            $("#lblshow").text("Driver Code");
+
+        }
+        if (SearchNO == "driver name") {
+            $("#lblshow").text("driver name");
+
+        }
+
+
+    });
+
+
+
+    function ShowDetails() {
+
+        $("#tracker-loader").fadeIn("slow");
+        var searchcerteria = $("#ddlSeachby").val();
+        var searchon = $("#txtNumber").val();
+
+        var data1 = { 'searchcerteria': searchcerteria, 'searchon': searchon };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Driver/GetDriversDetails',
+            data: data,
+
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example").empty();
+                RepTableDataJsonwopaging($("#example"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+            
+
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        LastFiveRecords(searchcerteria, searchon);
+    }
+
+
+
+    function LastFiveRecords(searchcerteria, searchon) {
+
+        $("#tracker-loader").fadeIn("slow");
+        var data1 = { 'searchcerteria': searchcerteria, 'searchon': searchon };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/Driver/GetDriverLeaveEntriesDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+               
+                $("#getdetails").empty();
+                RepTableDataJsonwopaging($("#getdetails"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    //$(document).ready(function () {
+    //    $('#getdetails').DataTable({
+    //        "bLengthChange": false,
+    //        "bInfo": false,
+    //        "bPaginate": false,
+    //        //"bFilter": false,
+    //        "paging": false
+
+
+    //    });
+
+
+
+    //});
+
+</script>

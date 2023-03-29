@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "ImportLongStandingContainer";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/validation.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/UserScripts/Auction/ImportLongStandingContainerController.js"></script>
+<style>
+    table, tbody {
+        color: black;
+    }
+</style>
+@*<div id="tracker-loader"></div>*@
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Import Long Standing Container</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Search In</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlSearchIn", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--None--", Value = ""},
+                                             new SelectListItem { Text = "Days Range", Value = "Days Range"},
+                                             new SelectListItem { Text = "Cargo Description", Value = "Cargo Description"},
+                                           new SelectListItem { Text = "Container No", Value = "Container No"},
+                                           new SelectListItem { Text = "Shipping Line", Value = "Shipping Line"},
+                                           new SelectListItem { Text = "Consignee", Value = "Consignee"},
+                                           new SelectListItem { Text = "Type", Value = "Type"},
+                                           new SelectListItem { Text = "Size", Value = "Size"},
+
+
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearchIn" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Search Text</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSearchText", null, new { @class = "form-control",@id= "txtSearchText" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As On</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAsOnDate", null, new { @class = "form-control form_datetime1", @id = "txtAsOnDate", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Day</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDay", null, new { @class = "form-control", @id = "txtFromDay" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Day</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDay", null, new { @class = "form-control", @id = "txtToDay" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary" title="Show" id="btnShow">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelLongStanding", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col" style="background-color: #409eef;color: white;padding: 5px;font-size: initial;text-align: center;">
+                                        preliminary Auction Notice Send
+                                    </div> &nbsp;&nbsp;&nbsp;
+                                    <div class="col" style="background-color: #847a7f;color: white;padding: 5px;font-size: initial;text-align: center;">
+                                        Final Auction Notice Send
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%"></table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

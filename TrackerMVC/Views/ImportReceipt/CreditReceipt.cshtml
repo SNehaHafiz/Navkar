@@ -1,0 +1,527 @@
+﻿@model TrackerMVCEntities.BusinessEntities.CategorywiseInvoice
+@{
+    ViewBag.Title = "CreditReceipt";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+@*<link href="~/css/printstyle.css" rel="stylesheet" />*@
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/UserScripts/CreditReceiptController.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+    <div class="page-header">
+        <h4 class="page-title">Credit/Advance Receipt Adjustment</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Pending Receipt" id="summarylist" onclick="PendingSummary();"><i class="fa fa-file-text"></i></button>
+                    @* <button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewReceiptSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "ReceiptForm" }))
+    {
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Trans No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptNo", null, new { @class = "form-control ", @id = "txtReceiptNo", autocomplete = "off", @readonly = "Readonly", Placeholder = "NEW" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Trans Date.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceiptDate", null, new { @class = "form-control ", @id = "txtReceiptDate", autocomplete = "off", @readonly = "Readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlCategoryMode", new List<SelectListItem>
+                                              {  new SelectListItem { Text = "Import Invoice", Value = "ImportInvoice"},
+                                                new SelectListItem { Text = "Bond Invoice", Value = "BondInvoice"},
+                                                new SelectListItem { Text = "Auction Invoice", Value = "Auction invoice"},
+                                                new SelectListItem { Text = "Misc Invoice", Value = "Misc Invoice"},
+                                                new SelectListItem { Text = "Domestic Invoice", Value = "Domestic Invoice"},
+                                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategoryMode" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Receipt Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlReceiptType", new List<SelectListItem>
+                                              {  new SelectListItem { Text = "Credit", Value = "Credit"},
+                                                  new SelectListItem { Text = "Advance Receipt", Value = "Advance Receipt"},
+                                                  new SelectListItem { Text = "Cheque", Value = "Cheque"},
+                                                  new SelectListItem { Text = "RTGS", Value = "RTGS"},
+                                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlReceiptType" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Search Criteria</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSearchCriteria", new List<SelectListItem>
+                                               { new SelectListItem { Text = "Billing Party", Value = "BillingParty"},
+                                                   new SelectListItem { Text = "IGM/Item Number", Value = "IGMItemNo"},
+                                                 new SelectListItem { Text = "BL Number", Value = "BLNo"},
+                                                 new SelectListItem { Text = "Bond Number", Value = "BondNo"},
+                                                 new SelectListItem { Text = "Shipping Bill Number", Value = "ShippingBillNo"},
+                                                 new SelectListItem { Text = "Assessment Number", Value = "AssessmentNo"},
+                                                 new SelectListItem { Text = "BOE Number", Value = "BOENo"},
+                                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearchCriteria" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divAssessmentNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Assessment No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAssessmentNo", null, new { @class = "form-control ", @id = "txtAssessmentNo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divIGMNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">IGM No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIGMNo", null, new { @class = "form-control ", @id = "txtIGMNo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divItemNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Item No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtItemNo", null, new { @class = "form-control ", @id = "txtItemNo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divBOENo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">BOE No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBOENo", null, new { @class = "form-control ", @id = "txtBOENo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divBLNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">BL No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBLNo", null, new { @class = "form-control ", @id = "txtBLNo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divBondNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Bond No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBondNo", null, new { @class = "form-control ", @id = "txtBondNo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divShippingBillNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Shipping Bill No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtShippingBillNo", null, new { @class = "form-control ", @id = "txtShippingBillNo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12" id="divCustomerName">
+                                <div class="form-group">
+                                    <label class="form-label">Customer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlCustomerName" />
+                                            <input type="hidden" class="form-control" id="hdnCustomerName" />
+                                            @*@Html.DropDownListFor(model => model.BillParty, (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select--", new { @class = "form-control", @id = "ddlCustomerName", name = "ddlCustomerName", autoComplete = "on" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divTDSPercentage" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">TDS Percentage</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.TDSPerId, (IEnumerable<SelectListItem>)ViewBag.TDSPerM, new { @class = "form-control", @id = "ddlTDSPerc", name = "ddlTDSPerc", autoComplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divShowButton">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnShowInvoice" name="Add">Show Invoice</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divInvoiceDetails">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblInvoiceList">
+                                            <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                                <tr>
+                                                    <th style="width:1px;color: white;">#</th>
+                                                    <th style="width:80px;color: white;">Invoice No</th>
+                                                    <th style="width:100px;color: white;">Invoice Date</th>
+                                                    <th style="width:80px;color: white;">Inv. Amount</th>
+                                                    <th style="width:80px;color: white;">Credit Amt</th>
+                                                    <th style="width:100px;color: white;">Prev Rec Amt</th>
+                                                    <th style="width:80px;color: white;">Receival Amt</th>
+                                                    <th style="width:100px;color: white;">Received Amt</th>
+                                                    <th style="width:80px;color: white;">TDS(-)</th>
+                                                    <th style="width:100px;color: white;">Net Receved</th>
+                                                    <th style="width:80px;color: white;">O/S</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12" id="divPendingPendingChequeRTGS" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Pending Cheque/RTGS</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPendingPendingChequeRTGS", null, new { @class = "form-control ", @id = "txtPendingPendingChequeRTGS", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtRemarks", null, new { @class = "form-control ", @id = "txtRemarks", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-12">
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" type="button" id="btnSave" name="Add">Save</button>&nbsp;
+                                            <button class="btn btn-success" type="button" id="btnPrint" name="Add">Print</button>&nbsp;
+                                            <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>
+<div class=" content-area" id="divReceiptSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Credit Generation Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary">Show</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblReceiptSummaryDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divPendingInvoice" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Pending Receipt Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBackInv();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary"  onclick="GetReceiptDetails()">Show</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @*@Html.ActionLink("Export To Excel", "ExportToExcelPendingInvoice", null, new { @class = "btn btn-primary btn-md" })*@
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblPendingInvoiceList"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function ShowInvoice() {
+        $("#divInvoiceDetails").show();
+        $("#divPaymentDetails").hide();
+    };
+
+    function ShowPayment() {
+        $("#divInvoiceDetails").hide();
+        $("#divPaymentDetails").show();
+    };
+    function getBack() {
+        $("#DivReceiptGenDet").show();
+        $("#divReceiptSummary").hide();
+    }
+    function ViewReceiptSummary() {
+        $("#DivReceiptGenDet").hide();
+        $("#divReceiptSummary").show();
+    }
+    function PendingSummary() {
+        $("#DivReceiptGenDet").hide();
+        $("#divPendingInvoice").show();
+    }
+    function getBackInv() {
+        $("#DivReceiptGenDet").show();
+        $("#divPendingInvoice").hide();
+    }
+    $("#tracker-loader").fadeOut("slow");
+    $("#ddlCustomerName").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/ImportReceipt/getPartyNameReceipt",
+                data: "{ 'prefixText': '" + request.term + "','Mode': 'ImportInvoice'}",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    //
+                    response($.map(data, function (item) {
+                        //
+                        return {
+                            label: item.AGName,
+                            val: item.AGID
+                        };
+                    }))
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        },
+        select: function (e, i) {
+            //
+            $("#ddlCustomerName").val(i.item.label);
+            $("#hdnCustomerName").val(i.item.val);
+        },
+        minLength: 1
+    });
+    $(function () {
+
+        $('.datePicker1').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true
+
+        })
+            .on('changeDate', function (e) {
+
+                $('.datepicker').hide();
+            });
+    });
+
+    $('#ddlReceiptType').change(function (e) {
+        debugger;
+        var ReceiptType = $("#ddlReceiptType").val();
+
+        if (ReceiptType == "Cheque" || ReceiptType == "RTGS") {
+            $("#divPendingPendingChequeRTGS").show();
+            
+        }
+        else {
+            $("#divPendingPendingChequeRTGS").hide();
+        }
+    
+        if (ReceiptType == "Cheque" || ReceiptType == "RTGS" || ReceiptType =="Credit" ) {
+            $("#divTDSPercentage").hide();
+
+        }
+        else {
+            $("#divTDSPercentage").show();
+        }
+
+ 
+    });
+    function GetReceiptDetails() {
+        debugger;
+  
+        var ToDate = $("#txtFromDate").val();
+        $.ajax({
+            url: '/ImportReceipt/getReceiptSummaryPending',
+            type: 'Post',
+            data: '{ToDate: ' + JSON.stringify(ToDate) +   '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                if (data == "0" || data == "[]") {
+                    //  ControlCtrl.TableReceiptSummaryDet.empty();
+                    alert('No Receipt found.');
+                    return;
+                }
+                $("#tblPendingInvoiceList").empty();
+                RepTableDataJson($("#tblPendingInvoiceList"), data, "ImportReceipt", "ImportReceipt");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+</script>

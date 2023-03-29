@@ -1,0 +1,216 @@
+﻿
+@{
+    ViewBag.Title = "UpdateTCS";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+
+    @@media (min-width: 768px) {
+        .modal-lg {
+            width: 90%;
+            max-width: 1200px;
+        }
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h3>Update TCS</h3>
+
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtinvno" type="text" placeholder="Invoice No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="Show();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtinvdate", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Grand Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txttotal" type="number" placeholder="Grand Total" class="form-control" readonly="readonly" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">TCS Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txttcsamount" type="number" placeholder="TCS Amount" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    function Show() {
+        debugger;
+
+      var AssessNo =  $("#txtinvno").val();
+
+
+        var data1 = { "AssessNo": AssessNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ExpensesHead/GetTCSAmountDet',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    return;
+                }
+
+                $('#txtinvdate').val(data[0].AssessDate);
+                $('#txttotal').val(data[0].GrandTotal);
+                $('#txttcsamount').val(data[0].tcsamt);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function Save() {
+         debugger;
+        var InvoiceNo = document.getElementById('txtinvno').value;
+        var GrandTotal = document.getElementById('txttotal').value;
+        var TcsAmt = document.getElementById('txttcsamount').value;
+
+        if (InvoiceNo == "") {
+             document.getElementById("txtinvno").style.borderColor = "red";
+            alert('Please enter invoiceno!')
+            event.preventDefault();
+            return;
+         }
+
+        if (GrandTotal == "") {
+                document.getElementById("txtremarks").style.borderColor = "red";
+             alert('Please enter remarks !')
+             event.preventDefault();
+             return;
+        }
+
+
+        if (TcsAmt == "" || TcsAmt <=0 ) {
+            document.getElementById("txttcsamount").style.borderColor = "red";
+             alert('Please enter TCS Amount')
+             event.preventDefault();
+             return;
+         }
+
+        var data1 = {
+            'InvoiceNo': InvoiceNo, 'TcsAmt': TcsAmt
+            };
+
+        var data = JSON.stringify(data1);
+
+        
+
+     $.ajax({
+         url: "/ExpensesHead/UpdateTCSAmt",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+         success: function (data) {
+             alert(data)
+                window.location.href = '@Url.Action("UpdateTCS", "ExpensesHead")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+</script>
+

@@ -1,0 +1,731 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.FuelEntities>
+@{
+    ViewBag.Title = "FuelSlip";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="tracker-loader"></div>
+
+<div class=" content-area overflow-hidden" id="AddItems">
+    <div id="divFuelList">
+        <div class="page-header">
+            <h4 class="page-title">
+                @*Fuel Slip: @Model.Count()*@
+                Fuel Slip: 
+            </h4>
+
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                        @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();"><i class="fa fa-file-text"></i></button>*@
+                        <a onclick="AdditionalMovementRequest()" class="btn btn-primary btn-info text-right" style="align-content:center;color:white"><i class="fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Pending Additional Movement Request"></i> </a>
+                        <a onclick="DirectGenerateFuel()" class="btn btn-primary btn-success text-right" style="align-content:center;color:white;display:none"><i class="fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Generate Fuel Slip"></i> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtsearchtrailername" placeholder="Enter Trailer Name" type="text" class="form-control" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">Trailer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="showFUelslipdetails();">Show</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="showItems">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th style="visibility:hidden"></th>
+                                                    <th style="visibility:hidden"></th>
+                                                    <th style="visibility:hidden"></th>
+
+                                                    <th>Yard Name</th>
+                                                    <th>Trailer No.</th>
+                                                    <th>In/Out Date</th>
+                                                    <th>In/Out</th>
+                                                    <th>Activity</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Container No.</th>
+                                                    <th>Customer</th>
+                                                    <th>Delivery Address</th>
+                                                    <th>Driver</th>
+                                                    <th>Transporter</th>
+                                                    <th>Passing</th>
+                                                    <th>Transporter Type</th>
+                                                    <th>Container Count</th>
+                                                    <th>Type</th>
+
+
+                                                </tr>
+                                            </thead>
+                                          
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- Show the table after click of save button  -->
+                <!--End of save button-->
+            </div>
+            <!-- table-wrapper -->
+        </div>
+    </div>
+
+    <!-- section-wrapper -->
+    <div id="divGenerateFuel">
+
+    </div>
+    <div class=" content-area" id="divPendingAdditionalFuelRequest" style="display:none">
+        <div class="page-header">
+            <h4 class="page-title">List of pending to generate Additional Movement(Fuel) </h4>
+            <div class="ibox-content  text-right">
+                <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="wd-15p sorting">Request On</th>
+                                            <th class="wd-15p sorting">Voucher No</th>
+                                            <th class="wd-15p sorting">Container No</th>
+                                            <th class="wd-15p sorting">Activity</th>
+                                            <th class="wd-15p sorting">From Location</th>
+                                            <th class="wd-15p sorting">To Location</th>
+                                            <th class="wd-15p sorting">Fuel Quanity</th>
+                                            <th class="wd-15p sorting">Kilo-Meter</th>
+                                            <th class="wd-15p sorting">Remarks</th>
+
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="example-Modal3">Enter Remarks</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="form-control-label">Transid</label>
+                        <input type="text" class="form-control" id="Transid" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">Remarks:</label>
+                        <textarea class="form-control" id="TxtRemarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="CancelVehicleStatuswithremakrs()">Save Remakrs</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ContainerList').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+        });
+    })
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+ </script>
+
+
+
+
+<script>
+
+
+    function showFUelslipdetails() {
+
+        $("#tracker-loader").fadeIn("slow");
+        var Trailername = $("#txtsearchtrailername").val();
+        var data1 = { 'Trailername': Trailername };
+        var data = JSON.stringify(data1);
+        var res = validateRemakrsFunction();
+        if (res == false) {
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+
+
+        $.ajax({
+            url: "/LoadingPlan/GetFuelSLipdata",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "Json",
+            data: data,
+            success: function (data) {
+                debugger;
+                $('#ContainerList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": true,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": false,
+                    "columns": [
+                        {
+                            "data": "ActivityID",
+                            "render": function (data, type, row, meta) {
+                                debugger;
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-primary" title="Approve" onclick="GenerateFuel(\'' + row.TrailerNo.replace(/'/g, "\\'") + '\',\'' + row.ContainerNo.replace(/'/g, "\\'") + '\',\'' + row.INOUT.replace(/'/g, "\\'") + '\',' + row.ActivityID + ',' + row.LocationYardID + ')">Generate</a>';
+                                }
+
+                                return data;
+                            }
+                        },
+                                                        
+
+
+                        {
+                            "data": "ActivityID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="' + row.btnClass + '" title="Approve" onclick="UpdateFuelStatus(' + row.TrailerNo + ',' + row.LocationYardID + ',' + row.ActivityID + ')">Voucher Close</a>';
+                                }
+
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "ActivityID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="' + row.Vehiclebtncss + '" title="Approve"   data-toggle="modal" data-target="#exampleModal3"     onclick="CancelVehicleStatus(' + row.VehTransID + ')">Cancel</a>';
+                                }
+
+                                return data;
+                            }
+                        },
+
+                        { "data": "LocationYardName" },
+                        { "data": "TrailerNo" },
+                        { "data": "InOutDate" },
+                        { "data": "INOUT" },
+                        { "data": "Activity" },
+                        { "data": "From" },
+                        { "data": "To" },
+                        { "data": "ContainerNo" },
+                        { "data": "DelAddress" },
+                        { "data": "DelAddress" },
+                        { "data": "driver" },
+                        { "data": "Transportor" },
+                        { "data": "Passing" },
+                        { "data": "TrailerType" },
+                        { "data": "containerCount" },
+                        { "data": "Type" }
+
+
+                       
+                    ]
+                });
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+        })
+    }
+    
+    function GenerateFuel(TrailerNo, ContainerNo, Activity, ActivityTypeID, LocationYardID)
+    {
+        $("#tracker-loader").fadeIn("slow");
+        var data3 = { 'trailername': TrailerNo}
+        var data2 = JSON.stringify(data3);
+        if (Activity == 'I') {
+
+            $.ajax({
+                url: "/LoadingPlan/GetValidateTPDetails",
+                data: data2,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                  
+                    if (data == 'O') {
+                        alert("You cannot Generate TP Slip is not Closed for this trailer!");
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    } else {
+                        var datac1 = {
+                            'TrailerNo': TrailerNo,
+                            'ContainerNo1': ContainerNo,
+                            'ActivityType': Activity,
+                            'ActivityTypeID': ActivityTypeID,
+                            'LocationYardID': LocationYardID
+
+                        };
+                        var datac = JSON.stringify(datac1);
+                    
+                        $.ajax({
+                            url: "/LoadingPlan/VoucherValidation",
+                            data: datac,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            // dataType: "json",
+                            success: function (data1) {
+
+                                if (data1.VoucherNo != null) {
+                                    alert("Same container number Voucher already generated Voucher No." + data1.VoucherNo + " and Date " + data1.VoucherDate + "");
+                                    $("#tracker-loader").fadeOut("slow");
+                                }
+                                //else if (data1.CntCount == 0) {
+                                //    alert("Fuel Slip cannot generate because out time of containers exceeded 1 hour")
+
+                                //}
+                                else {
+
+                                    $.ajax({
+                                        url: "/LoadingPlan/GenerateFuelWithData",
+                                        data: datac,
+                                        type: "POST",
+                                        contentType: "application/json; charset=utf-8",
+                                        // dataType: "json",
+                                        success: function (response) {
+                                            //alert(data);
+                                            var voucherNoVal = response.validation;
+                                            var status = response.INOUT;
+                                            // alert(voucherNoVal);
+
+                                            // alert(status);
+                                            if (voucherNoVal == 0) {
+                                                if (status == 'O') {
+                                                    alert("Entry already showing OPEN for this trailer number " + TrailerNo + ", Please CLOSE opened entries first.");
+                                                    $("#tracker-loader").fadeOut("slow");
+                                                }
+                                                if (status == 'I') {
+                                                    alert("Entry already showing Closed for this trailer number " + TrailerNo + ", Please Open entries first.");
+                                                    $("#tracker-loader").fadeOut("slow");
+                                                }
+                                            }
+
+                                            else {
+                                                $("#divGenerateFuel").show()
+                                                // $("#lblTrailerNo").val(TrailerNo);
+
+                                                $('#divFuelList').hide()
+                                                $('#divGenerateFuel').html(response);
+                                            }
+                                            $("#tracker-loader").fadeOut("slow");
+                                        },
+
+                                        error: function (error) {
+                                            let str = error.responseText;
+                                            var a = str.indexOf("<title>") + 7;
+                                            var b = str.indexOf("</title>");
+                                            str = str.substring(a, b);
+                                            alert("Something went wrong: " + str);
+                                            $("#tracker-loader").fadeOut("slow");
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                },
+
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        } else {
+
+            var datac1 = {
+                'TrailerNo': TrailerNo,
+                'ContainerNo1': ContainerNo,
+                'ActivityType': Activity,
+                'ActivityTypeID': ActivityTypeID,
+                'LocationYardID': LocationYardID
+
+            };
+            var datac = JSON.stringify(datac1);
+     
+            $.ajax({
+                url: "/LoadingPlan/VoucherValidation",
+                data: datac,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data1) {
+
+                    if (data1.VoucherNo != null) {
+                        alert("Same container number Voucher already generated Voucher No." + data1.VoucherNo + " and Date " + data1.VoucherDate + "")
+                    }
+                    //else if (data1.CntCount == 0) {
+                    //    alert("Fuel Slip cannot generate for voucher no because out time of containers exceeded 1 hour")
+
+                    //}
+                    else {
+
+                        $.ajax({
+                            url: "/LoadingPlan/GenerateFuelWithData",
+                            data: datac,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            // dataType: "json",
+                            success: function (response) {
+                                debugger;
+                                //alert(data);
+                                var voucherNoVal = response.validation;
+                                var status = response.INOUT;
+                                // alert(voucherNoVal);
+
+                                // alert(status);
+                                if (voucherNoVal == 0) {
+                                    if (status == 'O') {
+                                        alert("Entry already showing OPEN for this trailer number " + TrailerNo + ", Please CLOSE opened entries first.");
+                                        $("#tracker-loader").fadeOut("slow");
+                                    }
+                                    if (status == 'I') {
+                                        alert("Entry already showing Closed for this trailer number " + TrailerNo + ", Please Open entries first.");
+                                        $("#tracker-loader").fadeOut("slow");
+                                    }
+                                }
+                                //else if (response.CntCount == 0) {
+                                //    alert("FueL Slip cannot be generated because time of 1 Hour exceeded")
+                                //}
+                                else {
+                                    $("#divGenerateFuel").show()
+                                    // $("#lblTrailerNo").val(TrailerNo);
+
+                                    $('#divFuelList').hide()
+                                    $('#divGenerateFuel').html(response);
+                                }
+                                $("#tracker-loader").fadeOut("slow");
+                            },
+
+                            error: function (error) {
+                                let str = error.responseText;
+                                var a = str.indexOf("<title>") + 7;
+                                var b = str.indexOf("</title>");
+                                str = str.substring(a, b);
+                                alert("Something went wrong: " + str);
+                                $("#tracker-loader").fadeOut("slow");
+                            }
+                        });
+                    }
+                }
+            });
+        }
+      
+        
+      
+    }
+</script>
+<script>
+    function VoucherValidation()
+    {
+    
+    }
+</script>
+<script>
+    function DirectGenerateFuel()
+    {
+        $.ajax({
+            url: "/LoadingPlan/DirectGenerateFuel",
+
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //  dataType: "json",
+            success: function (response) {
+                $("#divFuelList").hide()
+                $("#divPendingAdditionalFuelRequest").hide()
+                $('#divGenerateFuel').show()
+
+                $('#divGenerateFuel').html(response);
+
+            }
+        });
+    }
+    function AdditionalMovementRequest() {
+        $("#divFuelList").hide()
+        $('#divGenerateFuel').hide()
+        $("#divPendingAdditionalFuelRequest").show()
+
+        $.ajax({
+            url: "/LoadingPlan/AjaxGetPendingAdditionalMovementRequest",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "Json",
+            success: function (data) {
+                $('#example').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": true,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": false,
+                    "columns": [
+                        {
+                            "data": "RequestID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-info" title="Approve" onclick="GenerateRequest(' + row.RequestID + ')">Generate</a>';
+                                }
+
+                                return data;
+                            }
+                        },
+                        { "data": "RequestOn" },
+                        { "data": "VoucherNo" },
+                        { "data": "ContainerNo" },
+                        { "data": "Activity" },
+                        { "data": "FromLocation" },
+                        { "data": "ToLocation" },
+                        { "data": "FuelQuanity"},
+                        { "data": "Kilometer" },
+                        { "data": "Remarks" }
+
+
+                    ]
+                });
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText)
+            }
+
+        })
+    }
+    function getBack() {
+        $("#divFuelList").show()
+        $('#divGenerateFuel').hide()
+        $("#divPendingAdditionalFuelRequest").hide()
+    }
+    function GenerateRequest(RequestID) {        
+        $.ajax({
+            url: "/LoadingPlan/GenerateRequest",
+            data: JSON.stringify({ 'RequestID': RequestID}),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "Json",
+            success: function (data) {
+             alert(data)
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText)
+            }
+        })
+        AdditionalMovementRequest();
+    }
+</script>
+<script>
+    function UpdateFuelStatus(TrailerNo, LocationYardID, ActivityID)
+    {
+        var datac1 = {
+            'TrailerNo': TrailerNo, 'LocationYardID': LocationYardID, 'ActivityID': ActivityID
+           
+        };
+        var datac = JSON.stringify(datac1);
+        var res = confirm("Do you want to close it?")
+        if (res) {
+            $.ajax({
+                url: "/LoadingPlan/UpdateFuelStatus",
+                data: datac,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+                    if (data = 0) {
+                        alert("Please check rights!");
+                    } else {
+                        alert("Closed Successfully");
+                    }
+                   
+
+                },
+
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+        else {
+
+        }
+    }
+</script>
+
+<script>
+    function CancelVehicleStatus(VehTransID) {
+
+        $("#Transid").val(VehTransID);
+    
+      
+      
+    }
+
+
+
+
+
+    function CancelVehicleStatuswithremakrs() {
+
+
+        var transid = $("#Transid").val();
+        var Remarks = $("#TxtRemarks").val();
+
+        var data1 = { 'transid': transid, 'Remarks': Remarks };
+        var data = JSON.stringify(data1);
+
+
+
+        if (Remarks == "") {
+            alert("Please Enter the Remarks!")
+            document.getElementById("TxtRemarks").style.borderColor = "red";
+            return false;
+        }
+
+        //var res = confirm("Do you want to cancel movement'?'");
+        //if (res) {
+        $.ajax({
+            url: "/LoadingPlan/CancelVehicleStatus",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                showFUelslipdetails();
+                $("#Transid").val("");
+                $("#TxtRemarks").val("");
+                $("#exampleModal3").modal('hide')
+                @* document.location = '@Url.Action("FuelSlip", "LoadingPlan")';*@
+
+            },
+
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+    }
+</script>
+
+
+
+<script>
+    function validateRemakrsFunction() {
+
+        var TxtTrailername = document.getElementById('txtsearchtrailername').value;
+
+
+
+
+
+        document.getElementById("txtsearchtrailername").style.borderColor = "gainsboro";
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (TxtTrailername == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("txtsearchtrailername").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+

@@ -1,0 +1,1392 @@
+﻿
+@{
+    ViewBag.Title = "Fuel Bill Verifications";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class="content-area overflow-hidden" id="divmainsummary">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Fuel Bill Verifications</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bill Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtBillYear", "2020-21", new { @class = "form-control", @id = "TxtBillYear", @name = "TxtBillYear", autocomplete = "off", @placeHolder = "2020-21" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bill No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtnew", "New", new { @class = "form-control", @id = "txtnew", @name = "txtnew", autocomplete = "off" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bill Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtBillDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bill No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtBillno", null, new { @class = "form-control", @id = "TxtBillno", @name = "TxtBillno", autocomplete = "off" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-lg-1">
+                                <div class="form-group label-floating" style="padding-top:26px">
+                                    <button class="btn btn-primary" id="TripSearch" type="button" data-toggle="modal" data-target="#smallModal" onclick="LoadModel()"><i class="fe fe-search"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            @*<div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label mandatory">Vendor Name</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownList("TxtVendorName", (IEnumerable<SelectListItem>)ViewBag.VendorName, "--Select-- ", new { @class = "form-control", @id = "TxtVendorName", name = "TxtVendorName", autocomplete = "off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vendor Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("TxtVendorName", (IEnumerable<SelectListItem>)ViewBag.VendorName, "--Select-- ", new { @class = "form-control", @id = "TxtVendorName", name = "TxtVendorName", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12" id="divtrailernodrop">
+                                <label class="form-label">GST No </label>
+
+                                <select id="ddlGSTNo" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Slip No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TXtSlipno", null, new { @class = "form-control", @id = "TXtSlipno", @name = "TXtSlipno", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12" id="divSBAdd">
+                                <div class="form-group" style="padding-top:25px">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-white" type="button" id="btnAddSBNo" style="border-color:black" name="Add" onclick="OnAddSBNo()"><i class="fa fa-check"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divSBAdd">
+                                <div class="form-group" style="padding-top:25px">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="OnAddSBNo()"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Rate(Rs./liter)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TXtrate", null, new { @class = "form-control", @id = "TXtrate", @name = "TXtrate", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divSBAdd">
+                                <div class="form-group" style="padding-top:25px">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="OnAddSBNo()">Apply</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-label" style="visibility:hidden">Checkboxes</div>
+                                <div class="custom-controls-stacked">
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1">
+                                        <span class="custom-control-label" style="font-weight:bold">Total Petrol :</span>
+                                    </label>
+
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-label" style="visibility:hidden">Checkboxes</div>
+                                <div class="custom-controls-stacked">
+
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="example-checkbox2" value="option2">
+                                        <span class="custom-control-label" style="font-weight:bold">Total Diesel :</span>
+                                    </label>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-12">
+                                <div class="form-group" style="padding-top:30px">
+                                    <label class="form-label mandatory">select .xls file from which to be imported</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="file" id="fileImport" name="postedFile" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group" style="padding-top:25px">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" id="btnImport" type="button">Import</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%;background-color:#f4f5fa !important;">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting">SR No.</th>
+                                                <th class="wd-10p sorting">Slip No.</th>
+                                                <th class="wd-10p sorting ">Fuel Qty</th>
+                                                <th class="wd-10p sorting">Rate</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Net Amount</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("TxtNetamount", null, new { @class = "form-control", @id = "TxtNetamount", @name = "TxtNetamount", autocomplete = "off", @type = "Number" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">TCS (%)</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("TxtTCSPercentage", null, new { @class = "form-control", @id = "TxtTCSPercentage", @name = "TxtTCSPercentage", autocomplete = "off", @type = "Number", onchange = "GetGrandtotalPercentage()" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">TCS Amount</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("TxtTCSAmount", null, new { @class = "form-control", @id = "TxtTCSAmount", @name = "TxtTCSAmount", autocomplete = "off", @type = "Number", onchange = "GetGrandtotalamount()" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Grand Total</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("TxtGrandTotal", null, new { @class = "form-control", @id = "TxtGrandTotal", @name = "TxtGrandTotal", autocomplete = "off", @type = "Number", @disabled = true })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting">Select</th>
+                                                <th class="wd-10p sorting">Slip No.</th>
+                                                <th class="wd-10p sorting ">Voucher No.</th>
+                                                <th class="wd-10p sorting">Slip Date</th>
+                                                <th class="wd-10p sorting">Activity</th>
+                                                <th class="wd-10p sorting">Trailer Name</th>
+                                                <th class="wd-10p sorting">From</th>
+                                                <th class="wd-10p sorting">To</th>
+                                                <th class="wd-10p sorting">Fuel</th>
+                                                <th class="wd-10p sorting">Vendor Fuel Qty</th>
+                                                <th class="wd-10p sorting">Fuel Qty</th>
+                                                <th class="wd-10p sorting">Rate</th>
+                                                <th class="wd-10p sorting">Amount</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-1 col-xs-4">
+                        <div class="form-group">
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success btn-xs" id="btndriverholdpayment" onclick="SaveDetails();">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="smallModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id='myModalContent'>
+            <div class=" content-area" id="diventry">
+                <div class="page-header">
+                    <h4 class="page-title">Bill No Details </h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label mandatory">Search</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+
+                                                <input id="TXtSearch" type="text" class="form-control" onchange="LoadBillNo()" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th class="wd-15p sorting">SR No</th>
+                                                        <th class="wd-15p sorting">ID</th>
+                                                        <th class="wd-15p sorting">Bill Year.</th>
+                                                        <th class="wd-15p sorting">Bill No</th>
+                                                        <th class="wd-15p sorting">Bill Date</th>
+
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- table-wrapper -->
+                    </div>
+                    <!-- section-wrapper -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divsummry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Fuel Bill Verification Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Search</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("--Select--", new List<SelectListItem>
+                                          { new SelectListItem { Text = "ALL", Value = "ALL"},
+                                              new SelectListItem { Text = "Vendor Name", Value = "Vendor Name"},
+                                              new SelectListItem { Text = "Invoice No", Value = "Invoice No"},
+                                              new SelectListItem { Text = "Slip No", Value = "Slip No"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlsummarysearchcerteria" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divsearchtext" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" id="lblgetlable"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSearchtext", null, new { @class = "form-control ", @id = "txtSearchtext", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="DivVendorname" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Vendor Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlVendorName", (IEnumerable<SelectListItem>)ViewBag.VendorName, "--Select-- ", new { @class = "form-control", @id = "ddlVendorName", name = "ddlVendorName", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShow" onclick="GetBillVerificationdetails()">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger" name="clearProfile" title="clear" id="btnShow" onclick="CancelDetails()">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold;font-size:30px"> Total Fuel :</span> <label id="lbltwenty" style="font-weight: bold;font-size:30px"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold;font-size:30px"> Total Amount :</span> <label id="lblforty" style="font-weight: bold;font-size:30px"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelBillVerificationCode", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tbbillverticationSummaryDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divUpdatesummry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Update Fuel Bill Verification</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12 col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Bill No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtEditBillNo", null, new { @class = "form-control", @id = "TxtEditBillNo", @name = "TxtEditBillNo", autocomplete = "off", @readonly = true })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Work Year</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtWorkyear", null, new { @class = "form-control", @id = "TxtWorkyear", @name = "TxtWorkyear", autocomplete = "off", @readonly = true })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Invoice No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtUpdateinvoiceno", null, new { @class = "form-control", @id = "TxtUpdateinvoiceno", @name = "TxtUpdateinvoiceno", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Bill Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtEditBillDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Vendor Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("TxtEditVendorName", (IEnumerable<SelectListItem>)ViewBag.VendorName, "--Select-- ", new { @class = "form-control", @id = "TxtEditVendorName", name = "TxtEditVendorName", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 col-xs-4">
+                    <div class="form-group">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <button class="btn btn-success btn-xs" id="btndriverholdpayment" onclick="UpdateDetails();">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function ViewSummary() {
+        $("#divsummry").show();
+        $("#divmainsummary").hide();
+    }
+
+    function getBack() {
+        $("#divsummry").hide();
+        $("#divmainsummary").show();
+    }
+    $('#ddlsummarysearchcerteria').change(function (e) {
+        var SearchNO = $("#ddlsummarysearchcerteria").val();
+        // alert(SearchNO);
+        if (SearchNO == "ALL") {
+            $("#lblgetlable").text("ALL");
+            $("#divsearchtext").hide();
+            $("#DivVendorname").hide();
+            $("#txtSearchtext").val("");
+        }
+        if (SearchNO == "Vendor Name") {
+            $("#divsearchtext").hide();
+            $("#DivVendorname").show();
+
+            $("#txtSearchtext").val("");
+        }
+        if (SearchNO == "Invoice No") {
+            $("#divsearchtext").show();
+            $("#DivVendorname").hide();
+            $("#lblgetlable").text("Invoice No");
+            $("#txtSearchtext").val("");
+
+        }
+        if (SearchNO == "Slip No") {
+            $("#divsearchtext").show();
+            $("#DivVendorname").hide();
+            $("#lblgetlable").text("Slip No");
+            $("#txtSearchtext").val("");
+
+        }
+    });
+
+
+    function GetBillVerificationdetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var searchcerteria = $("#ddlsummarysearchcerteria").val();
+        var Searchtext = $("#txtSearchtext").val();
+        if (searchcerteria == "Vendor Name") {
+
+            var Searchtext = $("#ddlVendorName option:selected").val();
+        }
+        var FromDate = $("#txtSummaryFromDate").val();
+        var ToDate = $("#txtSummaryToDate").val();
+        $.ajax({
+            url: '/LoadingPlan/GetBillVerificationDetails',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', searchcerteria: ' + JSON.stringify(searchcerteria) + ', Searchtext: ' + JSON.stringify(Searchtext) + '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                if (data == "0" || data == "[]") {
+                    //  ControlCtrl.TableReceiptSummaryDet.empty();
+                    alert('No Receipt found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tbbillverticationSummaryDet").empty();
+                RepTableDataJson($("#tbbillverticationSummaryDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                var table = document.getElementById("tbbillverticationSummaryDet");
+                var row;
+
+
+                var TotTEUS1 = 0;
+                var TotTEUS2 = 0;
+
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    var Fuel = row.cells[14].innerText;
+                    var Amount = row.cells[16].innerText;
+
+                    //alert(Size)
+
+
+                    TotTEUS1 = TotTEUS1 + Number(Fuel);
+
+
+                    TotTEUS2 = TotTEUS2 + Number(Amount);
+
+
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                // alert(TotTEUS);
+                $("#lbltwenty").text(TotTEUS1.toFixed(2));
+                $("#lblforty").text(TotTEUS2.toFixed(2));
+
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+</script>
+<script type="text/javascript">
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+
+        });
+
+
+
+    });
+
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+
+        });
+
+
+
+    });
+</script>
+<script>
+
+    function LoadModel() {
+
+        LoadBillNo();
+    }
+    function LoadBillNo() {
+
+        var searchcerteria = $("#TXtSearch").val();
+        var data1 = { 'searchcerteria': searchcerteria };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/loadingplan/SearchBillNo",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //  "bFilter": false,
+                    "paging": true,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "SRno",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-primary" title="View" onclick="Getdetailstofill(\'' + row.BillYear.replace(/'/g, "\\'") + '\',' + row.Billno + ')">Select</a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+
+                        { "data": "SRno" },
+                        { "data": "ID" },
+                        { "data": "BillYear" },
+                        { "data": "Billno" },
+                        { "data": "BillDate" },
+
+
+
+
+                    ],
+                })
+
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+
+        })
+    }
+
+
+    function Getdetailstofill(BillYear, Billno) {
+
+
+        var data1 = { 'BillYear': BillYear, 'Billno': Billno };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/loadingplan/GetFilltablesDetails",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                alert(data);
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    //"bPaginate": true,
+                    //  "bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                        //{
+                        //    "data": "Bill no",
+                        //    "render": function (data, type, row, meta) {
+                        //        if (type === 'display') {
+
+                        //            data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  value="' + data + '">';
+                        //        }
+
+                        //        return data;
+                        //    }
+
+
+                        //},
+                        { "data": "Slip No" },
+                        { "data": "Slip No" },
+                        { "data": "Invoice No" },
+                        { "data": "Slip Date" },
+                        { "data": "Activity" },
+                        { "data": "Trailer Name" },
+                        { "data": "From" },
+                        { "data": "Upto" },
+                        { "data": "Upto" },
+                        { "data": "Vendor Name" },
+                        { "data": "Fuel Qty" },
+                        { "data": "Rate" },
+                        { "data": "Amount" },
+                    ],
+
+                })
+
+                $('#smallModal').modal('hide');
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#btnImport').click(function () {
+            $("#tracker-loader").fadeIn("slow");
+            //$("#tracker-loader").fadeIn("slow");
+
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#fileImport").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+                if (files.length == 0) {
+                    alert("Please select File!")
+                    $("#tracker-loader").fadeOut("slow");
+                    return false;
+                }
+                else {
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+
+                        fileData.append(files[i].name, files[i]);
+                    }
+
+
+                    // Adding one more key to FormData object
+                    //  fileData.append('TDSValue', tdstype);
+
+
+                    $.ajax({
+                        url: '/loadingplan/AjaxImportFuelBillVerification',
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (data) {
+
+                            if (data.BillVerificationDetails == "") {
+                                alert(data.Getmessage)
+                                $("#tracker-loader").fadeOut("slow");
+                            } else {
+
+                                $('#example1').dataTable({
+                                    "destroy": true,
+                                    "bLengthChange": false,
+                                    //"bPaginate": true,
+                                    //  "bFilter": false,
+                                    "paging": false,
+                                    "aaData": data.BillVerificationDetails,
+                                    "columns": [
+                                        {
+                                            "data": "SlipNo",
+                                            "render": function (data, type, row, meta) {
+                                                if (type === 'display') {
+
+                                                    data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\" checked  value="' + row.SlipNo + '">';
+                                                }
+
+                                                return data;
+                                            }
+                                        },
+                                        { "data": "SlipNo" },
+                                        { "data": "Voucherno" },
+                                        { "data": "SLIpdate" },
+                                        { "data": "Activity" },
+                                        { "data": "trailerNo" },
+                                        { "data": "Fromloc" },
+                                        { "data": "Toloc" },
+                                        { "data": "fueltype" },
+                                        { "data": "VendorQty" },
+                                        { "data": "FuelQty" },
+
+                                        { "data": "Rate" },
+                                        { "data": "totamt" },
+                                    ],
+
+                                })
+                                $("#tracker-loader").fadeOut("slow");
+
+                            }
+
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                        }
+
+                    });
+                }
+
+            }
+            else {
+                alert("FormData is not supported.");
+                $("#tracker-loader").fadeOut("slow");
+            }
+            $("#fileImport").val('');
+
+        });
+
+    });
+</script>
+<script>
+    function SaveDetails() {
+        var res = validation();
+        if (res == false) {
+            return false;
+        }
+        $("#tracker-loader").fadeIn("slow");
+        var BillYear = $("#TxtBillYear").val();
+        var Billnew = $("#TxtBillno").val();
+
+        var Billdate = $("#TxtBillDate").val();
+        var VendorName = $("#TxtVendorName option:selected").val();
+        var Slipno1 = $("#TXtSlipno").val();
+        var Todate = $("#ToDate").val();
+        var Fromdate = $("#FromDate").val();
+        var Rate1 = $("#TXtrate").val();
+        //new
+        var Netamount = $("#TxtNetamount").val();
+        var TCSpercentage = $("#TxtTCSPercentage").val();
+        var TCSAmount = $("#TxtTCSAmount").val();
+        var Grandtotal = $("#TxtGrandTotal").val();
+        var GSTID = $("#ddlGSTNo option:selected").val();
+
+        var itemcount = checkItemcount();
+        if (itemcount == false) {
+            alert("No details selected for saving. Cannot proceed");
+        }
+        else {
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+            var tablearray = [];
+            var table = document.getElementById("example1");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                    var InvoiceNo = row.cells[1].innerText;
+
+                    if (InvoiceNo == checkboxarray[k]) {
+
+
+                        row = table.rows[i];
+                        Slipno = row.cells[1].innerText;
+                        VoucherNo = row.cells[2].innerText;
+                        SLIpdate = row.cells[3].innerText;
+                        Activity = row.cells[4].innerText;
+                        trailerNo = row.cells[5].innerText;
+                        Fromloc = row.cells[6].innerText;
+                        Toloc = row.cells[7].innerText;
+                        fueltype = row.cells[8].innerText;
+                        VendorQty = row.cells[9].innerText;
+                        FuelQty = row.cells[10].innerText;
+                        Rate = row.cells[11].innerText;
+                        totamt = row.cells[12].innerText;
+
+                        tablearray.push({
+                            'Slipno': Slipno, 'VoucherNo': VoucherNo, 'SLIpdate': SLIpdate,
+                            'Activity': Activity, 'trailerNo': trailerNo, 'Fromloc': Fromloc, 'Toloc': Toloc, 'fueltype': fueltype, 'VendorQty': VendorQty,
+                            'FuelQty': FuelQty, 'Rate': Rate, 'totamt': totamt
+                        })
+
+
+                    }
+                }
+            }
+            var data1 = {
+                'SlipNoList': tablearray, 'BillYear': BillYear, 'Billnew': Billnew, 'Billdate': Billdate, 'VendorName': VendorName,
+                'Slipno1': Slipno1, 'Todate': Todate, 'Fromdate': Fromdate, 'Rate1': Rate1 ,'Netamount': Netamount,
+                'TCSpercentage': TCSpercentage, 'TCSAmount': TCSAmount, 'Grandtotal': Grandtotal, 'GSTID': GSTID
+            }
+            var data = JSON.stringify(data1);
+
+
+            $.ajax({
+                url: "/LoadingPlan/SaveFuelBillVerifications",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+
+                    alert("Reocrd Saved successfully!")
+                    document.location = '@Url.Action("FuelBillVerifications", "loadingplan")'
+
+                },
+
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+
+        }
+    }
+
+
+    function validation() {
+
+        var Billyear = document.getElementById('TxtBillYear').value;
+        var BillNo = document.getElementById('TxtBillno').value;
+
+        var BilllDtae = document.getElementById('TxtBillDate').value;
+        var VendorName = document.getElementById('TxtVendorName').value;
+
+
+
+
+
+
+        var b1result = Boolean;
+        blResult = true;
+
+        document.getElementById('TxtBillYear').style.borderColor = "Gainsboro";
+        document.getElementById('TxtBillno').style.borderColor = "Gainsboro";
+
+        document.getElementById('TxtBillDate').style.borderColor = "Gainsboro";
+        document.getElementById('TxtVendorName').style.borderColor = "Gainsboro";
+
+
+
+
+        if (Billyear == "") {
+            document.getElementById('TxtBillYear').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (BillNo == "") {
+            document.getElementById('TxtBillno').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (BilllDtae == "") {
+            document.getElementById('TxtBillDate').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (VendorName == "") {
+            document.getElementById('TxtVendorName').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    }
+    function checkItemcount() {
+
+        var table = $('#example1').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+</script>
+<script>
+    function checkItemcount1() {
+
+        var table = $('#tbbillverticationSummaryDet').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+    function UpteFuelBillverification(BillNo, InvoiceNo, VendorID, BillDate, BillYear) {
+
+        $("#divUpdatesummry").show();
+        $("#divmainsummary").hide();
+        $("#divsummry").hide();
+
+
+        $("#TxtEditBillNo").val(BillNo);
+        $("#TxtUpdateinvoiceno").val(InvoiceNo);
+        $("#TxtEditVendorName").val(VendorID);
+        $("#TxtEditBillDate").val(BillDate);
+        $("#TxtWorkyear").val(BillYear);
+
+
+
+
+
+
+
+    }
+
+
+    function UpdateDetails() {
+
+      var BillNo=  $("#TxtEditBillNo").val();
+       var Invoiceno = $("#TxtUpdateinvoiceno").val();
+      var vendorid =   $("#TxtEditVendorName option:selected").val();
+        var billdate = $("#TxtEditBillDate").val();
+        var Workyear = $("#TxtWorkyear").val();
+
+        var data1 = { 'BillNo': BillNo, 'Invoiceno': Invoiceno, 'vendorid': vendorid, 'billdate': billdate, 'Workyear': Workyear };
+        var data = JSON.stringify(data1);
+         $.ajax({
+             url: "/LoadingPlan/ajaxupdateFuelbillverification",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+                alert("Reocrd Saved successfully!")
+                document.location = '@Url.Action("FuelBillVerifications", "loadingplan")'
+
+            },
+
+             error: function (error) {
+                 let str = error.responseText;
+                 var a = str.indexOf("<title>") + 7;
+                 var b = str.indexOf("</title>");
+                 str = str.substring(a, b);
+                 alert("Something went wrong: " + str);
+             }
+        });
+    }
+
+
+
+    function CancelDetails() {
+        var r = confirm("Do you want to Cancel these Slip No!");
+        if (r == true) {
+            var itemcount = checkItemcount1();
+            if (itemcount == false) {
+                alert("No details selected for saving. Cannot proceed");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+
+                var tablearray = [];
+                var table = document.getElementById("tbbillverticationSummaryDet");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+
+                    row = table.rows[i];
+
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                        var InvoiceNo = row.cells[7].innerText;
+
+                        if (InvoiceNo == checkboxarray[k]) {
+
+
+                            row = table.rows[i];
+                            Slipno = row.cells[7].innerText;
+                            Voucherno = row.cells[2].innerText;
+
+
+                            tablearray.push({
+                                'Slipno': Slipno, 'Voucherno': Voucherno
+                            })
+
+
+                        }
+                    }
+                }
+
+
+
+                var data1 = {
+                    'SlipNoList': tablearray
+                }
+                var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/LoadingPlan/CancelFuelBillverification",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+
+                    alert("Reocrd Saved successfully!")
+                    document.location = '@Url.Action("FuelBillVerifications", "loadingplan")'
+
+                },
+
+                error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+            });
+            }
+        } else {
+            alert("You Pressed Cancelled!")
+        }
+    }
+</script>
+
+<script>
+    function GetGrandtotalPercentage() {
+
+
+        var netamount = $("#TxtNetamount").val();
+        var TCSper = $("#TxtTCSPercentage").val();
+
+        $("#TxtGrandTotal").val((Number(netamount) * Number(TCSper)) + Number(netamount));
+    }
+
+
+    function GetGrandtotalamount() {
+
+
+        var netamount = $("#TxtNetamount").val();
+        var TCSamount = $("#TxtTCSAmount").val();
+
+        $("#TxtGrandTotal").val(Number(netamount) + Number(TCSamount));
+    }
+
+
+</script>
+<script>
+    $('#TxtVendorName').change(function (e) {
+        var VendorID = $("#TxtVendorName").val();
+        debugger;
+        $.ajax({
+            url: "/LoadingPlan/GetVendorGSTDetailsForbillVerification",
+            data: '{VendorID: ' + JSON.stringify(VendorID) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlGSTNo");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.GSTuniqueid).html(value.GstuniqueName));
+                })
+
+
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+
+
+    });
+</script>

@@ -1,0 +1,483 @@
+﻿
+@{
+    ViewBag.Title = "ExportbttcargoJO";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+@*<h2>ExportbttcargoJO</h2>*@
+
+
+<div id="ExportbttcargoJO">
+    <div class="page-header">
+        <h5 class="page-title">Job Order (Back To Town Cargo)</h5>
+        <a class="btn btn-sm" href="#" style="height:36px;align-content:center;color:white;background-color: #5ed84f;" data-placement="bottom" title="Add" data-original-title="Add" onclick="GetBack()"><i class="fa fa-arrow-left  mt-1"></i> </a>
+
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">JO NO</label>
+                                @Html.TextBox("txtJONO", null, new { @class = "form-control ", @id = "txtJONO", Placeholder = "", @autocomplete = "off" , @Value ="NEW" , disabled="disabled"})
+                                @Html.Hidden("txtEntryID", null, new { @class = "form-control ", @id = "txtEntryID", Placeholder = "", @autocomplete = "off" , disabled="disabled"})
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-sm-7">
+                            <div class="form-group">
+                                <label class="form-label">JO Date</label>
+                                @Html.TextBox("txtJODate", null, new { @class = "form-control form_datetime1", @id = "txtJODate", Placeholder = "", @autocomplete = "off" ,  @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-7">
+                            <div class="form-group">
+                                <label class="form-label">SB No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSBNo", null, new { @class = "form-control ", @id = "txtSBNo", Placeholder = "", @autocomplete = "off" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="FetchCargoDetails()"><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Agency Name</label>
+                                @Html.TextBox("txtAgencyName", null, new { @class = "form-control ", @id = "txtAgencyName", Placeholder = "", @autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Cargo Description</label>
+                                @Html.TextBox("txtCargoDescription", null, new { @class = "form-control ", @id = "txtCargoDescription", Placeholder = "", @autocomplete = "off" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divPendingReceipts">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select id="ddlwarehouse" class="form-control" @*onchange="GetWarehouse()"*@>
+                                            <option value="0">--Select--</option>
+                                        </select>
+                                        <input type="hidden" id="ddlwarehouseid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Carted Qty </label>
+                                @Html.TextBox("txtCartedQty", null, new { @class = "form-control ", @id = "txtCartedQty", Placeholder = "", @autocomplete = "off", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Carted Wt</label>
+                                @Html.TextBox("txtCartedWt", null, new { @class = "form-control ", @id = "txtCartedWt", Placeholder = "", @autocomplete = "off", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Stuffed Qty </label>
+                                @Html.TextBox("txtStuffedQty", null, new { @class = "form-control ", @id = "txtStuffedQty", Placeholder = "", @autocomplete = "off", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Stuffed Wt</label>
+                                @Html.TextBox("txtStuffedWt", null, new { @class = "form-control ", @id = "txtStuffedWt", Placeholder = "", @autocomplete = "off", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">BTT Qty </label>
+                                @Html.TextBox("txtoldbttqty", null, new { @class = "form-control ", @id = "txtoldbttqty", Placeholder = "", @autocomplete = "off", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">BTT Weight </label>
+                                @Html.TextBox("txtoldbttwt", null, new { @class = "form-control ", @id = "txtoldbttwt", Placeholder = "", @autocomplete = "off", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Balance Qty </label>
+                                @Html.TextBox("txtBalanceQty", null, new { @class = "form-control ", @id = "txtBalanceQty", Placeholder = "", @autocomplete = "off",@readonly="readonly" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">BTT Request Qty </label>
+                                @Html.TextBox("txtBttQty", null, new { @class = "form-control ", @id = "txtBttQty", Placeholder = "", @autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">BTT Request WT </label>
+                                @Html.TextBox("txtBttWt", null, new { @class = "form-control ", @id = "txtBttWt", Placeholder = "", @autocomplete = "off" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Area </label>
+                                @Html.TextBox("txtArea", null, new { @class = "form-control ", @id = "txtArea", Placeholder = "", @autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Part/Full</label>
+                                @Html.TextBox("txtType", null, new { @class = "form-control ", @id = "txtType", Placeholder = "", @autocomplete = "off" })
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success" type="button" id="btnSave" name="Add" onclick="OnSave()">Save</button>&nbsp;
+                                        @*<button class="btn btn-success" type="button" id="btnPrint" name="Add">Print</button>&nbsp;*@
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" onclick="Clear()";title="clear" id="btnclearValue">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    function FetchCargoDetails() {
+        var SBNo = $("#txtSBNo").val();
+
+        if (SBNo == "" || SBNo == undefined || SBNo == null) {
+            alert("ShippingBill no can not be blank");
+            return false;
+        }
+
+        var data1 = { 'SBNo': SBNo }
+        var data = JSON.stringify(data1);
+
+            $.ajax({
+                type: 'POST',
+                url: '/ExportModel/GetJOBttCargoDetailsbySBNO',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+           
+                success: function (data) {
+                   
+                    if (data.length == 0 || data == "[]") {
+                        alert("Data Not Found");
+                    } else {
+                        //var StuffQty = data[0].StuffQty ;
+                        //var BttQty = data[0].BttQty;
+                        //var StuffedQty = 0;
+                        //var  BalanceQty = 0;
+                     //   var StuffedQty = parseInt(StuffQty) - parseInt(BttQty);
+
+                      //  var BalanceQty = parseInt(data[0].carQty) - (parseInt(data[0].BttQty) - parseInt(StuffQty));
+
+                     //   BalanceQty = parseInt(BalanceQty);
+                        $("#txtAgencyName").val(data[0].AGName);
+                        $("#txtCargoDescription").val(data[0].CargoDesc);
+                        $("#txtCartedQty").val(data[0].carQty);
+                        $("#txtCartedWt").val(data[0].cargowt);
+                        $("#txtStuffedQty").val(data[0].StuffQty);
+                        $("#txtStuffedWt").val(data[0].StuffWT);
+                        $("#txtBalanceQty").val(data[0].balanceqty);
+                        $("#txtoldbttwt").val(data[0].BttWt);
+                        $("#txtoldbttqty").val(data[0].BttQty);
+                        $("#txtType").val(data[0].Type);
+                        $("#txtEntryID").val(data[0].EntryID);
+                        GetWarehouse();
+                    }
+
+
+                }
+            });
+    }
+
+    function OnSave() {
+        //  validateStep1();
+        debugger;
+     var JONO =   $("#txtJONO").val();
+     var JODate =   $("#txtJODate").val();
+     var SBNo = $("#txtSBNo").val();
+     var EntryID = $("#txtEntryID").val();
+
+     var AgencyName =   $("#txtAgencyName").val();
+     var CargoDescription = $("#txtCargoDescription").val();
+     var CartedQty =  $("#txtCartedQty").val();
+     var CartedWt= $("#txtCartedWt").val();
+     var StuffedQty = $("#txtStuffedQty").val();
+     var StuffedWt = $("#txtStuffedWt").val();
+     var BttQty =  $("#txtBttQty").val();
+     var BttWt =  $("#txtBttWt").val();
+     var Area =  $("#txtArea").val();
+        var Type = $("#txtType").val();
+        var BalanceQty = $("#txtBalanceQty").val();
+
+        var VehicleNo = $("#ddlwarehouse").val();
+
+
+        if (parseInt(BttQty) > parseInt(BalanceQty)) {
+            alert("BTT Qty cannot be greater than balance qty.")
+            return false;
+        }
+        var element = {};
+        element.JONO = JONO;
+        element.JODate = JODate;
+        element.SBNo = SBNo;
+        element.EntryID = EntryID;
+        element.AGName = AgencyName;
+        element.CargoDesc = CargoDescription;
+        element.carQty = CartedQty;
+        element.cargowt = CartedWt;
+        element.StuffQty = StuffedQty;
+        element.StuffWT = StuffedWt;
+        element.BttQty = BttQty;
+        element.BttWt = BttWt;
+        element.BttArea = Area;
+        element.Type = Type;
+        element.VehicleNo = VehicleNo;
+
+        var data1 = { 'BttcargoJOData': element }
+        var data = JSON.stringify(data1);
+        alert(data);
+         $.ajax({
+                type: 'POST',
+                url: '/ExportModel/SaveBTTCARGO',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+           
+                success: function (responce) {
+                    alert(responce);
+                    document.location = '@Url.Action("ExportbttcargoJO", "ExportModel")';
+                  
+                }
+         });
+    }
+
+    function validateStep1() {
+
+     var SBNo = $("#txtSBNo").val();
+     var AgencyName =   $("#txtAgencyName").val();
+     var CartedQty =  $("#txtCartedQty").val();
+     var CartedWt= $("#txtCartedWt").val();
+     var BalanceQty = $("#txtBalanceQty").val();
+     var StuffedWt = $("#txtStuffedWt").val();
+     var BttQty =  $("#txtBttQty").val();
+     var BttWt =  $("#txtBttWt").val();
+     var Area =  $("#txtArea").val();
+     var Type = $("#txtType").val();
+
+        if (SBNo == "" || SBNo == "0" || SBNo == null || SBNo == undefined) {
+            alert("Shipping bill no cannot be left blank.")
+            return false;
+        }
+
+        if (AgencyName == "" || AgencyName == "0" || AgencyName == null || AgencyName == undefined) {
+            alert("Agency Name no cannot be left blank.")
+            return false;
+        }
+
+        if (CartedQty == "" || CartedQty == "0" || CartedQty == null || CartedQty == undefined) {
+            alert("Carted Qty no cannot be left blank.")
+            return false;
+        }
+
+        if (Area < 5) {
+            alert("Area minimume should be 5");
+            return false;
+        }
+
+        if (CartedWt == 0 ){
+            alert("BTT Cargo weight cannot be left blank");
+            return false;
+        }
+        
+        //if (txtqty.Text) {
+        //    alert("Qty no cannot be left blank.")
+        //    //txtqty.Focus()
+        //    return 1;
+        //}
+               
+        if (CartedQty == 0 ){
+            alert("Invalid qty.");
+
+            return false;
+        }
+        if (Area == 0 ){
+            alert("Area cannot be zero. cannot proceed");
+            return false;
+
+        }
+        //strsql = ""
+        //strsql = "SELECT TOP 1 * FROM exp_carting WHERE SBNo='" & Trim(txtSBno.Text) & "' AND SBentryID=" & Val(lblsbentryid.Text) & "  AND iscancel=0"
+        //dt = sub_GetDatatable(strsql)
+        //if dt.Rows.Count > 0 Then
+        //Else
+        //    alert("Invalid shipping bill no.", vbCritical)
+        //    txtSBno.Focus()
+        //    return 1;
+        //End if
+
+        if (BalanceQty <= 0) {
+            alert("0 balance qty. cannot proceed.")
+            return false;
+        }
+        if (BttQty > BalanceQty) {
+        alert("BTT Qty cannot be greater than balance qty.")
+        return false;
+        }
+
+    }
+  
+    //function Clear() {
+    //    $("#ddlAgent").val("");
+    //    $("#ddlShippinLine").val("");
+    //    $("#ddlshipper").val("")
+    //    $("#ddlConsignee").val("")
+    //    $("#txtViaNo").val("")
+    //    $("#ddlVessel").val("")
+    //    $("#txtBLNo").val("")
+    //    $("#ddlHaulage").val("")
+    //    $("#ddlIGM").val("")
+    //    $("#ddlTransport").val("")
+    //    $("#ddlPol").val("")
+    //    $("#ddlSalesPerson").val("")
+    //    $("#txtBLNo").val("")
+    //    $("#ddlCha").val("")
+    //    $("#ddlPort").val("")
+
+    //    //$("#ddlAgent").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlShippinLine").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlshipper").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlConsignee").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#txtViaNo").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlVessel").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#txtBLNo").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlHaulage").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlIGM").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlTransport").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlPol").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlSalesPerson").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#txtBLNo").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlCha").removeClass("is-valid state-valid is-invalid state-invalid")
+    //    //$("#ddlPort").removeClass("is-valid state-valid is-invalid state-invalid")
+
+     
+    //}
+
+    function GetBack() {
+                          document.location = '@Url.Action("ExportbttcargoJOSummary", "ExportModel")';
+
+
+    }
+
+
+
+    function GetWarehouse() {
+
+       
+        SBNo = $('#txtSBNo').val();
+      
+        var data1 = { 'SBNo': SBNo };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/ExportModel/GetVehiclesBTT',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                $("#ddlwarehouse").empty();
+                $("#ddlwarehouse").append($("<option></option>").val('').html('--Select--'));
+                $.each(response, function (index, value) {
+
+                    var VehicleNo = value.VehicleNo;
+                   // var EntryID = value.EntryID;
+                  //  $("#ddlwarehouseid").val(EntryID);
+                    $("#ddlwarehouse").append($("<option></option>").val(VehicleNo).html(value.VehicleNo));
+                });
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+    }
+
+</script>

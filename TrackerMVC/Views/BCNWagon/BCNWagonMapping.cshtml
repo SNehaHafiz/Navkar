@@ -1,0 +1,550 @@
+﻿@model TrackerMVCEntities.BusinessEntities.BCNRRDownload
+@{
+    ViewBag.Title = "BCNWagonMapping";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/UserScripts/BCN/BCNWagonContainerMapping.js"></script>
+<div class=" content-area" id="divBCNWagon">
+    <div class="page-header">
+        <h4 class="page-title">BCN Wagon Mapping</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewMappingSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "BCNWagonMappingForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.TrainNo, new { htmlAttributes = new { @class = "form-control", @id = "TrainNo", Placeholder = "Train No", @autocomplete = "off" } })
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.RRWagonNo, new { htmlAttributes = new { @class = "form-control ", @id = "RRWagonContNo", Placeholder = "RR No", @autocomplete = "off" } })
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="Button" id="btnShow" value="Show" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col" style="text-align: right;">
+                                            <input type="Button" id="btnAddNew" value="Edit Row" onclick="LoadBCNAddSearch();" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWagonMappingList">
+                                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                        <tr>
+                                            <th style="width:1px;color: white;">Sr No</th>
+                                            <th style="width:1px;color: white;">Wagon No</th>
+                                            <th style="width:80px;color: white;">Wagon Pkgs</th>
+                                            <th style="width:100px;color: white;">Wagon Weight</th>
+                                            <th style="width:80px;color: white;">Remaining Pkgs</th>
+                                            <th style="width:80px;color: white;">Remaining Weight</th>
+                                            <th style="width:100px;color: white;">Container No</th>
+                                            <th style="width:80px;color: white;">Stuff Order Date</th>
+                                            <th style="width:80px;color: white;">Stuff Pkgs</th>
+                                            <th style="width:80px;color: white;">Stuff Wt</th>
+                                            <th style="width:80px;color: white;">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="form-label">Total :</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input class="form-control" id="txtTotalStuffPkgs" type="text" readonly="readonly" placeholder="Total Package" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input class="form-control" id="txtTotalStuffWt" type="text" readonly="readonly" placeholder="Total Weight" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" type="submit" id="btnSave" name="Save">Save</button>&nbsp;
+                                            <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="divBCNWagonSummary" class="content-area" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">BCN Wagon Mapping Summary</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                                 { new SelectListItem { Text = "Data Range", Value = "DateRange"},
+                                 new SelectListItem { Text = "Train Number", Value = "TrainNo"},
+                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategory" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTrainNo" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">Train No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrainNo", null, new { @class = "form-control", @id = "txtTrainNo", @placeholder = "Train Number" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12"  id="divFromDate" >
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @id = "txtFromDate" ,@autocomplete="off", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12"  id="divToDate" >
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @id = "txtToDate",@autocomplete="off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "BCNWagonMappingSummaryExport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblTrainDet"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal  fade" id="BCNWagonModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id='myModalContent'>
+        </div>
+    </div>
+</div>
+<script>
+
+    function LoadBCNAddSearch() {
+        if ($("#TrainNo").val() == "") {
+            alert("Please enter Train No");
+            $("#TrainNo").focus();
+            return false;
+        }
+
+        if ($("#RRWagonContNo").val() == "") {
+            alert("Please enter RR No");
+            $("#RRWagonContNo").focus();
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/BCNWagon/AddNewWagonBCN",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                //alert(response);
+                $('#BCNWagonModal').modal('show');
+                $('#myModalContent').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+
+    function ViewMappingSummary() {
+        $("#divBCNWagon").hide();
+        $("#divBCNWagonSummary").show();
+    }
+
+    function getBack() {
+        $("#divBCNWagon").show();
+        $("#divBCNWagonSummary").hide();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        try {
+            BCNWagonMappingLoad();
+        }
+        catch (ex) {}
+
+        $("#ddlCategory").change(function () {
+            if ($("#ddlCategory").val() == "DateRange") {
+                $("#divFromDate").show();
+                $("#divToDate").show();
+                $("#divTrainNo").hide();
+                $("#txtTrainNo").val('');
+            }
+            else if ($("#ddlCategory").val() == "TrainNo") {
+                $("#divFromDate").hide();
+                $("#divToDate").hide();
+                $("#divTrainNo").show();
+                $("#txtFromDate").val('');
+                $("#txtToDate").val('');
+            }
+        });
+
+        $("#TrainNo").change(function () {
+            debugger;
+
+            var data1 = { 'TrainNo': $("#TrainNo").val() };
+            data = JSON.stringify(data1);
+
+            try {
+                $.ajax({
+                    url: '/BCNWagon/getWagonRRNo',
+                    type: 'Post',
+                    data: data,
+                    async: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        if (response.ErrMessage != "") {
+                            $("#RRWagonContNo").val("");
+                            alert(response.ErrMessage);
+                        }
+                        else {
+                            $("#RRWagonContNo").val(response.TrainNo);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                });
+            }
+            catch (ex) {
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+        });
+
+        $("#tblWagonMappingList").dataTable({
+            "destroy": true,
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "aaSorting": [],
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+
+
+        });
+    });
+
+    function BCNWagonMappingLoad() {
+
+        $.ajax({
+            url: '/BCNWagon/ShowBCNWagonMapping',
+            type: 'Post',
+            data: "",
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                if (data.WagonContainerList.length == 0 || data.WagonContainerList == '[]') {
+                    ControlCtrl.InvoiceList.empty();
+                    InitializeTable(ControlCtrl);
+                    alert('Data Not Found.');
+                    return;
+                }
+
+                $("#TrainNo").val(data.TrainNumber);
+                $("#RRWagonContNo").val(data.WagonRRNumber);
+
+                $('#tblWagonMappingList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": false,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+
+                    "aaData": data.WagonContainerList,
+                    "columns": [
+                        { "data": "SRNo" },
+                        {
+                            "data": "WagonNo",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"EntryId\" class=\" form-control EntryId\" id=\"ContEntryId\"  value="' + row.EntryId + '">';
+                                return data + input;
+                            }
+                        },
+                        { "data": "Pkgs" },
+                        { "data": "CCWeight" },
+                        { "data": "RemainingPkgs" },
+                        { "data": "RemainingWt" },
+                        {
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"hidden\" name=\"ContainerNo\" class=\" form-control ContainerNo\" \" id=\"ContainerNo\"  value="' + data + '">';
+
+                                return data + input;
+                            }
+                        },
+                        { "data": "Date" },
+                        {
+                            "data": "StuffPkgs",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"text\" name=\"StuffPkgs\" class=\" form-control StuffPkgs\" \" id=\"StuffPkgs\"  value="' + data + '">';
+
+                                return input;
+                            }
+                        },
+                        {
+                            "data": "StuffWt",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"text\" name=\"StuffWt\" class=\" form-control StuffWt\"  \" id=\"StuffWt\"  value="' + data + '">';
+
+                                return input;
+                            }
+                        },
+                        {
+                            "data": "Remarks",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"text\" name=\"Remarks\" class=\" form-control Remarks\"  \" id=\"Remarks\"  value="' + data + '">';
+
+                                return input;
+                            }
+                        },
+                    ],
+                    "rowCallback": function (row, data, dataIndex) {
+
+                    }
+
+                })
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+
+    }
+    
+</script>

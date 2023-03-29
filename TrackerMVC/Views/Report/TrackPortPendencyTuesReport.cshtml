@@ -1,0 +1,155 @@
+﻿
+@{
+    ViewBag.Title = "Port Pendency Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Port Wise Pendency Summary</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        @*<div class="col-lg-8 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Line Wise Inventory Summary .</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col-6">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Port Wise Pendency Summary .</label>
+                                <div class="row gutters-xs">
+                                    @*<div class="col-2">
+                                        <label style="margin-top: 7px;">Inventory As On</label>
+                                    </div>
+                                    <div class="col-3">
+                                        @Html.TextBox("FromDate", null, new { @id = "SelectedDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                    </div>*@
+                                    <div class="col-6">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('ALL')" type="button">ALL</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('ROAD')" type="button">ROAD</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('RAIL')" type="button">RAIL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>DAY.</th>
+                                            <th>BMCT</th>
+                                            <th>GTI</th>
+                                            <th>NSICT.</th>
+                                            <th>NSIGT</th>
+                                            <th>HAZIRA</th>
+                                            <th>NSA</th>
+                                            <th>JNPT</th>
+                                            <th>GrandTotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [5]
+            }
+            ]
+        });
+
+    });
+
+    function Show(type) {
+       // var date = document.getElementById("SelectedDate").value;
+        var data = { 'Activity': type }
+        data = JSON.stringify(data);
+
+        //alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackPortTuesReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                // alert(JSON.stringify(data))
+                $('#reportTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+
+                    "columns": [
+
+                    { "data": "day" },
+                    { "data": "BMCT" },
+                    { "data": "GTI" },
+                    { "data": "NSICT" },
+                    { "data": "NSIGT" },
+                    { "data": "HAZIRA" },
+                    { "data": "NSA" },
+                   { "data": "JNPT" },
+                    { "data": "GrandTotal" }
+
+
+
+
+
+                    ],
+
+                });
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+    }
+</script>

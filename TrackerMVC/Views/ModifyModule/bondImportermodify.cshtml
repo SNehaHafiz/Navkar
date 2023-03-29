@@ -1,0 +1,336 @@
+﻿
+@{
+    ViewBag.Title = "bond Importer modify";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+
+
+
+<h2></h2>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+
+
+<div class=" content-area" id="divSearchNOC">
+    <div class="page-header">
+        <h4 class="page-title">Bond Importer Modification</h4>
+        @*
+               <div class="col" style="text-align:right;font-size:larger">
+                <li class="breadcrumb-item">
+                    <a onclick="OpenBISummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Bond Importer Summary"></i> </a>
+                </li>
+            </div>
+        *@
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label mandatory">Ex Boe No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <input id="txtNOCNO" type="text" class="form-control" placeholder="Ex Boe No" style="text-transform:uppercase" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-lg-1 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">'</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button class="btn btn-primary" id="btnSearch" title="Show" onclick="Fetch()" type="button"><i class="fe fe-search"></i></button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-12">
+        <div class="form-group">
+            <label class="form-label mandatory">Ex Boe Date</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <input id="txtNOCDate" type="text" class="form-control" placeholder="" style="text-transform:uppercase" autocomplete="off" readonly="readonly" value="" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-12">
+        <div class="form-group">
+            <label class="form-label mandatory">BOE No</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <input id="txtBOENo" type="text" class="form-control" placeholder="" style="text-transform:uppercase" autocomplete="off" readonly="readonly" value="" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="col-lg-3 col-sm-6">
+        <div class="form-group">
+            <label class="form-label">Old Importer Name</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <input id="txtimporter" type="text" class="form-control" placeholder="Old Importer Name" style="text-transform:uppercase" readonly="readonly" />
+                    <input type="hidden" id="txtentryid" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-sm-6">
+        <div class="form-group">
+            <label class="form-label">Old CHA Name</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <input id="txtoldcha" type="text" class="form-control" placeholder="Old CHA Name" style="text-transform:uppercase" readonly="readonly" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-3 col-sm-12">
+        <div class="form-group">
+            <label class="form-label">New Importer Name</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @Html.DropDownList("ddlimporter", (IEnumerable<SelectListItem>)ViewBag.Consignee, "--Select--", new { @class = "form-control", @id = "ddlimporter", name = "ddlimporter", autocomplete = "off" })
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-3 col-sm-12">
+        <div class="form-group">
+            <label class="form-label">New CHA Name</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @Html.DropDownList("ddlcha", (IEnumerable<SelectListItem>)ViewBag.CHAList, "--Select--", new { @class = "form-control", @id = "ddlcha", name = "ddlcha", autocomplete = "off" })
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="col-lg-3 col-sm-12">
+        <div class="form-group">
+            <label class="form-label mandatory">Modify Remarks</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <input id="txtModifyRemarks" type="text" class="form-control" placeholder="Modify Remarks" style="text-transform:uppercase" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+
+    <div class="col-lg-2 col-sm-12">
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button class="btn btn-success" onclick="Save()" title="Save">
+                        <i class="fe fe-save"></i>
+                    </button>
+                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function Fetch() {
+
+
+        var NOCNO = $("#txtNOCNO").val().trim();
+
+        var data1 = { "NOCNO": NOCNO };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetBondModifyDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $('#txtNOCDate').val(data[0].NOCDate);
+                $('#txtBOENo').val(data[0].BOENo);
+                $('#txtimporter').val(data[0].ImporterName);
+                $('#txtentryid').val(data[0].EntryID);
+                $('#txtoldcha').val(data[0].CHAName);
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
+
+<script>
+    function Save() {
+        debugger;
+        //var NOC1 = $("#txthiddennoc").val();
+        //var NOC2 = $("#txtNocNo").val();
+
+
+
+        const Master = {};
+        Master.NOCNO = $("#txtNOCNO").val();
+        Master.ImporterName = $("#ddlimporter").val();
+        Master.CHAName = $("#ddlcha").val();
+        Master.EntryID = $("#txtentryid").val();
+
+        Master.Remarks = $("#txtModifyRemarks").val();
+
+
+
+
+
+
+
+
+        var isValid = true;
+        if (Master.NOCNO == 0 || Master.NOCNO == "") {
+            isValid = isValid && false;
+            $("#txtNOCNO").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtNOCNO").removeClass("is-invalid state-invalid");
+        }
+
+        if (Master.ImporterName == 0 || Master.ImporterName == "") {
+            isValid = isValid && false;
+            $("#ddlimporter").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddlimporter").removeClass("is-invalid state-invalid");
+        }
+
+
+
+
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+        var data1 = { 'AM': Master };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/ModifyModule/UpdateBondImporterName",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (item) {
+
+
+                if (item.Status == 1) {
+                    {
+                        swal.fire({
+                            title: "success",
+                            text: item.Message,
+                            icon: "success",
+                        }).then(function (isConfirm) {
+                            if (isConfirm) {
+                                cleartextboxes();
+                            }
+                        });
+                        return false;
+
+                    }
+                }
+                else if (response.Status == 0) {
+                    {
+                        swal.fire({
+                            title: "Error!",
+                            text: item.Message,
+                            icon: "error",
+                        }).then(function (isConfirm) {
+                            if (isConfirm) {
+                                cleartextboxes();
+                            }
+                        });
+                        return false;
+
+                    }
+                }
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: "Something went wrong" + str,
+                    icon: 'error'
+                });
+            }
+        });
+
+    }
+</script>
+
+<script>
+    function cleartextboxes() {
+        document.location = '@Url.Action("bondimportermodify", "ModifyModule")';
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

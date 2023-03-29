@@ -1,0 +1,284 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrainMaster>
+@{
+    ViewBag.Title = "TrainDeparture";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area" id="Taindetails">
+    <div class="page-header">
+        <h4 class="page-title">Train Planning: @Model.Count()</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="window.location = '@Url.Action("TrainDepartureFromPort", "TrainDeparture_From_Port")' " class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <input type="Button" id="btnSave" value="Update"  class="btn btn-success btnUpdateDeparture" />
+                                <button type="button" class="btn btn-instagram pull-right">Selected: <span id="selected_count"></span> </button>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="wd-10p sorting">Train No.</th>
+                                                <th class="wd-10p sorting ">TEUS</th>
+                                                <th class="wd-10p sorting ">Port</th>
+                                                <th>Port Line No. </th>
+                                                <th>Placement Date & Time </th>
+                                                <th>Removal Date </th>
+                                                <th>Departure Date </th>
+                                                <th> </th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+
+                                            <tr>
+                                                <td> <input type="checkbox" name="chkPOD" id="chkPOD" value="@d.TrainNO" onchange="getcount()"></td>
+                                                <td>@d.TrainNO <input name=hdTrailerName type=hidden id=trailerName value='@d.TrainNO'></td>
+                                                <td>@d.TEUS </td>
+                                                <td>@d.PortName </td>
+                                                <td><input name=txtPortLine class="form-control" type="text" value='@d.PortLineNo'>  </td>
+                                                <td><input name=txtPlacementDate class="form-control RemovalDateTime" type="text" value='@d.PlacementDate'>  </td>
+                                                <td><input name=txtRemoval class="form-control RemovalDateTime" type="text" value='@d.RemovalDate'>  </td>
+
+                                                <td><input name=txtdeparture class="form-control DepartureDateTime" type="text" value='@d.DepartureDate'>  </td>
+                                                <td>
+                                                    <a class="btn btn-sm btn-primary" href="#" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="View" onclick="ShowContainerData('@d.TrainNO');"><i class="fa fa-eye"></i> </a>
+                                                </td>
+
+
+
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <input type="Button" id="btnSave" value="Update" class="btn btn-success btnUpdateDeparture" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="content-area overflow-hidden" id="ViewContainers" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Container details for Train No:   <label id="TrainNo"> </label> </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="ViewContainerdetails">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    function ShowContainerData(TrainNo) {
+       // alert(TrainNo);
+
+        var data1 = { 'TrainNo': TrainNo };
+        var data = JSON.stringify(data1);
+
+        
+
+
+        $.ajax({
+            url: "/Train/TrainwiseContainerDetails",           
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $('#TrainNo').text(TrainNo);
+           
+
+                $('#ViewContainerdetails').html(response);
+
+                $('#ViewTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    paging: false
+
+                })
+
+                //$('#lblstate').text("Second Level");
+                //$('#HeaderLabel').hide();
+
+                $('#Taindetails').hide();
+                $('#ViewContainers').show();
+               
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+    function getBack() {
+
+
+        $('#Taindetails').show();
+        $('#ViewContainers').hide();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0, 4,5,6,7,8]
+                }
+
+            ]
+
+
+        })
+    });
+</script>
+<script>
+
+    function getcount() {
+        // alert("hi")
+        var checkboxarray = [];
+
+
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+        var count = checkboxarray.length;
+        $("#selected_count").text(count);
+    }
+</script>
+<script>
+    $(".btnUpdateDeparture").click(function () {
+        var TrainList = new Array();
+       
+        var checkboxarray = [];
+
+
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+        if (checkboxarray == "") {
+            alert("Please check at list one Train number for Departure date modify!")
+            return false;
+        }
+
+        var TrainList = [];
+        var table = document.getElementById("example1");
+        var row;
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+                var x = row.cells[0].childNodes[1].value;
+                var y = row.cells[1].childNodes[1].value;
+                
+                var a = row.cells[4].childNodes[0].value;
+                var b = row.cells[5].childNodes[0].value;
+                var c = row.cells[6].childNodes[0].value;
+                var z = row.cells[7].childNodes[0].value;
+
+                if (x == checkboxarray[k]) {
+
+                    TrainList.push({ 'TrainNO': y, 'DepartureDate': z ,'RemovalDate': c,'PortLineNo':a,'PlacementDate':b})
+                    //  tablearray.push({ 'CountryID': Countryid, 'PortID': x })
+                }
+            }
+        }
+        
+     //   alert(JSON.stringify(TrainList));
+
+        $.ajax({
+            type: 'POST',
+            url: '/Train/TrainModifyDeparture',
+            data: '{ TrainList: ' + JSON.stringify(TrainList) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                alert(data);
+                //  document.location = '@Url.Action("BLSummaryForPODETA", "BL")';
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        this.checked = false
+                    }
+                    $("#selected_count").text(0);
+                });
+            }
+        })
+
+    });
+</script>
+
+
+

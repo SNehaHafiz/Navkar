@@ -1,0 +1,264 @@
+﻿
+@using System.Data;
+@{
+                /**/
+
+                ViewBag.Title = "PipeLine Reports";
+                Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+
+    table#tblGetMothValues td:first-child {
+        text-align: left;
+        padding: 10px 10px 0px 10px;
+        cursor: pointer;
+        background-color: #9f78ff;
+        color:white;
+    }
+
+    table#tblGetMothValues td {
+        text-align: right;
+       
+    }
+
+
+    table#example1 th {
+        text-align: right;
+    }
+
+  
+</style>
+
+<link href="~/css/PipelineReport.css" rel="stylesheet" />
+<div id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Monthly PipeLine Reports</h4>
+
+    </div>
+    <div class="row row-cards">
+        <div class="col-lg-6">
+            <div class="col-lg-12 col-sm-12">
+                <div class="mt-2 mb-5">
+                    <div class="input-group-append ml-10">
+                        <button type="button" class="btn btn-outline-info col-lg-4 col-sm-12" onclick="getPipelineReportDashboardCount('May')" id="May" style="cursor: pointer;">May</button>
+                        <button type="button" class="btn btn-outline-info col-lg-4 col-sm-12" onclick="getPipelineReportDashboardCount('June')" id="June" style="cursor: pointer;">June</button>
+                        <button type="button" class="btn btn-outline-info col-lg-4 col-sm-12" onclick="getPipelineReportDashboardCount('July')" id="July" style="cursor: pointer;">July</button>
+                    </div>
+                </div>
+                <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                    <div>
+                        <div class="inline">
+                            <div>
+                               @* <img class="arrival_image" src="~/images/truck-trailer.png">*@
+                               <i class="fa fa-truck left fa-2x " style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i> 
+                            </div>
+                            <div class="widget-line mt-5 margin_wrap">
+                                <p> Monthly Pipeline</p>
+                                <h1 class="counter"><label id="lblpipelinecount"></label></h1>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.60" data-thickness="20" data-color="#9f78ff">
+                        <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                    </div>
+                    <div class="widget-line mt-5 ">
+                        <div class="table-responsive" id="divdirect">
+                            <table class="table card-table table-vcenter text-nowrap" id="tbldirect" style="width:100%">
+                                <thead class="text-white" style="background-color:#7bc144">
+                                    <tr>
+
+                                        <th style="color:white;text-align:left;font-weight:bold;">Person</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in ViewBag.PipeLineReports as List<TrackerMVCEntities.BusinessEntities.DailyMovementRequestEntities>)
+                                    {
+
+                                        <tr>
+
+                                            <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Process </td>
+
+                                            <td style="text-align:right;">@d.Size20</td>
+                                            <td style="text-align:right;">@d.Size40 </td>
+                                            <td style="text-align:right;">@d.Size45 </td>
+                                            <td style="text-align:right;">@d.Teus </td>
+
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-responsive" style="display:none" id="divgetlist">
+                            <table class="table card-table table-vcenter text-nowrap" id="tblGetMothValues" style="width:100% ;margin-bottom: -1px !important;">
+                                <thead class="text-white" style="background-color:#7bc144">
+                                    <tr>
+
+                                        <th style="color:white;text-align:left;font-weight:bold;">Person</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                        <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+    $("#May").click(function () {
+        $("#May").addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+        $("#June").removeClass();
+        $("#July").removeClass();
+        $("#June").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+        $("#July").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+
+    });
+    $("#June").click(function () {
+        $("#June").addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+        $("#May").removeClass();
+        $("#July").removeClass();
+        $("#May").addClass("btn btn-outline-info col-lg-4 col-sm-12 ");
+        $("#July").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+
+    });
+    $("#July").click(function () {
+        $("#July").addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+        $("#May").removeClass();
+        $("#June").removeClass();
+
+        $("#May").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+        $("#June").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#July").addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+        $("#May").removeClass();
+        $("#June").removeClass();
+
+        $("#May").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+        $("#June").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+
+
+        // Port Pendency
+
+        var table7 = document.getElementById("tbldirect");
+        var row;
+
+
+        var COunt8 = 0;
+
+        for (var i = 1; i < table7.rows.length; i++) {
+            row = table7.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[4].innerText;
+            // alert(Size);
+            var size1 = Size;
+            COunt8 = COunt8 + Number(size1);
+            //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+        }
+        // alert(COunt6);
+
+        $("#lblpipelinecount").text(COunt8);
+    });
+</script>
+
+<script>
+    function getPipelineReportDashboardCount(Month) {
+        $("#divdirect").hide();
+        $("#divgetlist").show();
+       
+        var data1 = { 'Month': Month };
+        var data = JSON.stringify(data1);
+        //alert(data);
+        $("#global-loader").css("display", "block");
+        $.ajax({
+
+            url: '/PipeLineReport/AjaxPipeLineReport',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#tblGetMothValues').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "aaSorting": [],
+                    "ordering": false,
+                    "columns": [
+                        { "data": "Process" },
+                        { "data": "Size20" },
+                        { "data": "Size40" },
+                        { "data": "Size45" },
+                        { "data": "Teus" }
+                       
+
+                    ]
+                    
+                });
+               
+                $("#global-loader").css("display", "none");
+
+                var table8 = document.getElementById("tblGetMothValues");
+                var row;
+
+
+                var COunt4 = 0;
+
+                for (var i = 1; i < table8.rows.length; i++) {
+                    row = table8.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[4].innerText;
+                    // alert(Size);
+                    var size1 = Size;
+                    COunt4 = COunt4 + Number(size1);
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                // alert(COunt6);
+
+                $("#lblpipelinecount").text(COunt4);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+           
+        });
+
+    }
+</script>
+
+

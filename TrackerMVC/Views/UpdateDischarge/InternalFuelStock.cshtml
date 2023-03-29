@@ -1,0 +1,749 @@
+﻿
+@{
+    ViewBag.Title = "Internal Fuel Stock";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="page-header" id="divheader">
+    <h4 class="page-title">Internal Fuel Stock </h4>
+    <div class="form-group">
+        <label class="form-label"></label>
+        <div class="row gutters-xs">
+            <div class="col">
+
+                <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryDrivers();"><i class="fa fa-file-text"></i></button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="diventrytable">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Fuel Reg No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        <input id="txtEntryID" type="text" class="form-control" value="NEW" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Fuel Reg Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        <input id="txtEntryDate" type="datetime-local" class="form-control" value="@ViewBag.Date" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Fuel Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlFuelType", (IEnumerable<SelectListItem>)ViewBag.FuelType, "--Select--", new { @class = "form-control", @id = "ddlFuelType", name = "ddlFuelType", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Vehicle No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="txtVehicleNo" placeholder="Enter Stock In" type="text" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Cost Center</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCostCenter", (IEnumerable<SelectListItem>)ViewBag.CostCenter, new { @class = "form-control", @id = "ddlCostCenter", name = "ddlCostCenter", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Fuel Qty</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        <input id="txtFuelQty" placeholder="Enter Fuel Qty" type="text" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Fuel For</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlFuelFor", new List<SelectListItem>
+                                                                                {  new SelectListItem { Text = "In-Sider", Value = "insider"},
+                                                                                  new SelectListItem { Text = "Out-Sider", Value = "outsider"},
+                                                                                 
+                                                                                  }, new { @class = "form-control", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Cost Center For</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        @Html.DropDownList("ddlCostCenterFor", (IEnumerable<SelectListItem>)ViewBag.CostCenterFor, new { @class = "form-control", @id = "ddlCostCenterFor", name = "ddlCostCenterFor", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" >
+                            <div class="form-group">
+                                <label class="form-label mandatory">Rate</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="txtRate" placeholder="Enter Rate" type="text" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Vendor Name</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownList("ddlVendorName", (IEnumerable<SelectListItem>)ViewBag.VendorName, "--Select--", new { @class = "form-control", @id = "ddlVendorName", name = "ddlVendorName", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <button id="btnSave" class="btn btn-success btn-xs" onclick="return AddInternalFuelStoke();">Save</button>
+                               
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <button id="clear" class="btn btn-default btn-xs" onclick="return Clear();">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class=" content-area overflow-hidden" id="DivSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Fuel Stock Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-4">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Fuel Type</label>
+                                            @Html.DropDownList("ddlFuelType1", (IEnumerable<SelectListItem>)ViewBag.FuelType, "ALL", new { @class = "form-control", @id = "ddlFuelType1", name = "ddlFuelType1", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label mandatory">Fuel For</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.DropDownList("ddlFuelForSearch", new List<SelectListItem>
+                                                                                            { new SelectListItem { Text = "--Select--", Value = ""},
+                                                                                              new SelectListItem { Text = "Out-Sider", Value = "outsider"},
+                                                                                              new SelectListItem { Text = "In-Sider", Value = "insider"},
+                                                                                              }, new { @class = "form-control", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-22 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show('SHOW')" type="button">
+                                                SHOW
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40's :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45's :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelGetFuelStockSummary", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th>Slip No.</th>
+                                            <th>Sr No.</th>
+                                            <th>Entry Date.</th>
+                                            <th>Cost Center For</th>
+                                            <th>Cost Center.</th>
+                                            <th>Vendor Name</th>
+                                            <th>Vehicle No</th>
+                                            <th>Fuel Type</th>
+                                            <th>Qty</th>
+                                            <th>Rate</th>
+                                            <th>Fuel For</th>
+                                            <th>Added By</th>
+                                            <th>Bill No</th>
+                                            <th>Bill Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="smallModal" class="modal fade">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Message Preview</h6>*@
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+
+                    <div class="col-lg-8 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Bill No.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("TxtBillNo", null, new { @class = "form-control", @id = "TxtBillNo", name = "TxtBillNo", autocomplete = "off" })
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Rate</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("TxtBillAmt", null, new { @class = "form-control", @id = "TxtBillAmt", name = "TxtBillAmt", autocomplete = "off", @type = "Number" })
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-sm-12" id="divmodqty" style="display:none">
+                        <div class="form-group">
+                            <label class="form-label">Qty</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("TxtModifyQty", null, new { @class = "form-control", @id = "TxtModifyQty", name = "TxtModifyQty", autocomplete = "off", @type = "Number" })
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-sm-12" id="divmodrate" style="display:none">
+                        <div class="form-group">
+                            <label class="form-label">Rate</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("Txtmodifyrate", null, new { @class = "form-control", @id = "Txtmodifyrate", name = "Txtmodifyrate", autocomplete = "off", @type = "Number" })
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="button" id="btnShow" value="Save" class="btn btn-primary" onclick="SaveBillNodetails()" />
+                                    <input type="hidden" id="TxtFuelidS" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+</div>
+<script>
+
+    function SaveBillNodetails() {
+        debugger;
+        var BillNo = document.getElementById('TxtBillNo').value;
+        var AmountForBill = document.getElementById('TxtBillAmt').value;
+        var FUelID = document.getElementById('TxtFuelidS').value;
+        var QtyModify = document.getElementById('TxtModifyQty').value;
+        var RateModify = document.getElementById('Txtmodifyrate').value;
+
+
+        if (BillNo == "") {
+            document.getElementById("TxtBillNo").style.borderColor = "red";
+            alert('Please enter Bill No!')
+            event.preventDefault();
+            return;
+        }
+
+
+        if (AmountForBill == "") {
+            document.getElementById("TxtBillAmt").style.borderColor = "red";
+            alert('Please enter Bill Amount!')
+            event.preventDefault();
+            return;
+        }
+        data1 = {
+            'BillNo': BillNo, 'AmountForBill': AmountForBill, 'FUelID': FUelID, 'QtyModify': QtyModify, 'RateModify': RateModify
+
+        };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/UpdateDischarge/UpdateBillNOForInternalstock",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+
+                $('#smallModal').modal('hide');
+                Show();
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+
+
+
+    function ViewSummaryDrivers() {
+        $("#diventrytable").hide();
+        $("#divheader").hide();
+        $("#DivSummary").show();
+    }
+
+
+    function getBack() {
+        $("#diventrytable").show();
+        $("#divheader").show();
+        $("#DivSummary").hide();
+    }
+
+    function AddInternalFuelStoke() {
+
+        var txtentryDate = document.getElementById('txtEntryDate').value;
+        var txtFuelQty = document.getElementById('txtFuelQty').value;
+        var txtRate = document.getElementById('txtRate').value;
+        var ddlVendorName = document.getElementById('ddlVendorName').value;
+        var trailerid = document.getElementById('txtVehicleNo').value;
+        var ddlCostCenter = document.getElementById('ddlCostCenter').value;
+        var CostCenterFor = document.getElementById('ddlCostCenterFor').value;
+        var ddlFuelType = $("#ddlFuelType option:selected").text();
+        var ddlFuelFor = $("#ddlFuelFor option:selected").val();
+      
+        if (txtentryDate == "") {
+            document.getElementById("txtEntryDate").style.borderColor = "red";
+            alert('Please enter Entry Date!')
+            event.preventDefault();
+            return;
+        }
+
+
+        if (txtFuelQty == "") {
+            document.getElementById("txtFuelQty").style.borderColor = "red";
+            alert('Please enter Fuel Qty!')
+            event.preventDefault();
+            return;
+        }
+
+        if (txtRate == "") {
+           // alert(txtRate)
+            txtRate = 0;
+           // alert(txtRate)
+        }
+
+       
+
+        if (trailerid == "") {
+            //document.getElementById("trailerid").style.borderColor = "red";
+            alert('Please Select Trailer No !')
+            event.preventDefault();
+            return;
+        }
+
+        if (ddlVendorName == "") {
+            ddlVendorName = 0;
+        }
+
+        if (ddlFuelType == "--Select--") {
+            //document.getElementById("ddlFuelType").style.borderColor = "red";
+            alert('Please Select Fuel Type !')
+            event.preventDefault();
+            return;
+        }
+        if (CostCenterFor == "0") {
+            document.getElementById("ddlCostCenterFor").style.borderColor = "red";
+            alert('Please Select Cost Center For!')
+            event.preventDefault();
+            return;
+        }
+        if (ddlFuelFor == " ") {
+            document.getElementById("ddlFuelFor").style.borderColor = "red";
+            alert('Please Select Fuel For!')
+            event.preventDefault();
+            return;
+        }
+        data1 = {
+            'txtentryDate': txtentryDate, 'txtFuelQty': txtFuelQty, 'txtRate': txtRate,
+            'ddlVendorName': ddlVendorName, 'trailerid': trailerid, 'ddlFuelType': ddlFuelType, 'ddlCostCenter': ddlCostCenter, 'CostCenterFor': CostCenterFor, 'ddlFuelFor': ddlFuelFor
+        };
+        var data = JSON.stringify(data1);
+     
+    $.ajax({
+        url: "/UpdateDischarge/Save",
+        data: data,
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+        if(JSON.stringify(result)==0)
+        {
+            alert('Fuel Entry already exist! ')
+        }
+        else
+        {
+            alert('Record saved successfully');
+            var r = confirm( "Do you want to print?");
+                if (r == true) {
+                    $.ajax({
+                        url: "/UpdateDischarge/PrintInternalFuelStock",
+                        data: '{FuelFor : ' + JSON.stringify(ddlFuelFor) + ' }',
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        // dataType: "json",
+                        success: function (response) {
+
+                            var myWindow = window.open("", "MsgWindow1");
+                            myWindow.close();
+                            var myWindow = window.open("", "MsgWindow1");
+                            myWindow.document.write(response);
+                        },
+
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+                    });
+                } else {
+                       window.location.href = '@Url.Action("InternalFuelStock", "UpdateDischarge")';
+                }
+            window.location.href = '@Url.Action("InternalFuelStock", "UpdateDischarge")';
+        }
+    
+    
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+
+
+        
+
+    }
+</script>
+
+<script type="text/javascript">
+    function Clear(){
+      
+        document.location = '@Url.Action("InternalFuelStock", "UpdateDischarge")';
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [5]
+                }
+            ]
+        });
+
+    });
+
+
+    function Show() {
+        var cmbFueltype = $("#ddlFuelType1 option:selected").text();
+        var fromdate = $("#FromDate").val();
+        var todate = $("#ToDate").val();
+        var FuelForSearch = $("#ddlFuelForSearch option:selected").val();
+        var data1 = { 'cmbFueltype': cmbFueltype, 'FromDate': fromdate, 'ToDate': todate, 'FuelForSearch': FuelForSearch };
+        var data = JSON.stringify(data1);
+        //alert(data);
+        $.ajax({
+            url: '/UpdateDischarge/GetFuelStockSummaryDetails',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+               // alert(JSON.stringify(data));
+                $('#reportTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+
+                    "columns": [
+                        {
+                            "data": "fuelregid",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#smallModal" title="Edit" onclick="EditModel(' + row.fuelregid + ',\'' + row.FuelFor.replace(/'/g, "\\'") + '\')">Edit</a>';
+                                }
+
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "fuelregid",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="' + row.btnClass + '" title="Print" onclick="Print(' + row.fuelregid + ',\'' + row.FuelFor.replace(/'/g, "\\'") + '\')">Print</a>';
+                                }
+
+                                return data;
+                            }
+                        },
+                        { "data": "SrNo" },
+                        { "data": "fuelRefNo" },
+                        { "data": "EntryDate" },
+                        { "data": "CostCenterFor" },
+                        { "data": "CostCenter" },
+                        { "data": "vendorname" },
+                        { "data": "vehicleNo" },
+                        { "data": "fuelType" },
+                        { "data": "qty" },
+                        { "data": "Rate" },
+                        { "data": "FuelFor" },
+                        { "data": "username" },
+                        { "data": "BillNo" },
+                        { "data": "BillAmt" },
+
+                    ],
+
+                    //"dom": 'Bfrtip',
+                    //"buttons": [{
+                    //    "extend": 'excel',
+                    //    "title": function () {
+                    //        var title = 'Fuel Stock Summary';
+                    //        return title;
+                    //    },
+
+                    //    "filename": 'FuelStockSummary_List'
+
+                    //}]
+
+                });
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+
+    }
+
+
+    function EditModel(fuelregid, FuelFor) {
+        $("#TxtFuelidS").val(fuelregid);
+        $("#TxtFuelforS").val(FuelFor);
+    }
+
+
+    function Print(fuelregid, FuelFor) {
+        //var fuelregid = fuelregid;
+        var data1 = { 'fuelregid': fuelregid, 'FuelFor': FuelFor };
+        //alert(JSON.stringify(data1));
+        var data = JSON.stringify(data1);
+       
+        $.ajax({
+            url: "/UpdateDischarge/PrintInternalFuelStockReprint",
+             data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (response) {
+
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+        Show();
+    }
+</script>
+
+
+

@@ -1,0 +1,1180 @@
+﻿@model TrackerMVCEntities.BusinessEntities.CreateUser
+@{
+    ViewBag.Title = "Create User";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    .tabs-menu ul li .active {
+        background-color: orange
+    }
+
+    .custom-switch-input:checked ~ .custom-switch-indicator {
+        background: #64A5FE;
+    }
+</style>
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Create User List</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Create User</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="panel panel-primary">
+                        <div class="tab-menu-heading" style="background-color: #64A5FE">
+                            <div class="tabs-menu ">
+                                <!-- Tabs -->
+                                <ul class="nav panel-tabs">
+                                    <li class=""><a href="#Create" class="active" style="border-radius:0px;color:white;" data-toggle="tab">Create User</a></li>
+                                    <li><a href="#MenuAdd" style="border-radius:0px;color:white" data-toggle="tab">Menu Add</a></li>
+                                    <li><a href="#AssignRights" style="border-radius:0px;color:white" data-toggle="tab">Assign Rights</a></li>
+                                    <li><a href="#CopyRights" style="border-radius:0px;color:white" data-toggle="tab">Copy Rights</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel-body tabs-menu-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active " id="Create">
+                                    <div class="form-horizontal">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">First Name</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @Html.TextBox("txtfirstname", null, new { @class = "form-control ", @id = "txtfirstname", name = "txtfirstname", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Last Name</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @Html.TextBox("txtlastname", null, new { @class = "form-control ", @id = "txtlastname", name = "txtlastname", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Gender</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            <select class="form-control" id="ddlgender">
+                                                                <option value="0">--Select--</option>
+                                                                <option value="Male">Male</option>
+                                                                <option value="Female">Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">DOB </label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <input ID="txtDOB" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h5>Account Information</h5>
+                                        <div class="row">
+
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">EmployeeID</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @Html.TextBox("txtemployeeid", null, new { @class = "form-control ", @id = "txtemployeeid", name = "txtemployeeid", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">*Password</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @*@Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control", @id = "txtpassword", name = "password", placeholder = "Password", autocomplete = "off", type = "password" } })*@
+                                                            @Html.TextBox("txtpassword", null, new { @class = "form-control ", @id = "txtpassword", name = "txtpassword", autocomplete = "off", type = "password" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Department</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            <select class="form-control" id="ddldepartment">
+                                                                <option value="0">--Select--</option>
+                                                                <option value="Admin">Admin</option>
+                                                                <option value="Account">Account</option>
+                                                                <option value="Management">Management</option>
+                                                                <option value="Oprational">Operational</option>
+                                                                <option value="Empty Depot">Empty Depot</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">User Type</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            <select class="form-control" id="ddlusertype">
+                                                                <option value="0">--Select--</option>
+                                                                <option value="Admin">Admin</option>
+                                                                <option value="Account">Account</option>
+                                                                <option value="Management">Management</option>
+                                                                <option value="Oprational">Operational</option>
+                                                                <option value="Empty Depot">Empty Depot</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Email ID</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @Html.TextBox("txtemailid", null, new { @class = "form-control ", @id = "txtemailid", name = "txtemailid", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">*Password(E-Mail)</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @Html.TextBox("txtpasswordemail", null, new { @class = "form-control ", @id = "txtpasswordemail", name = "txtpasswordemail", autocomplete = "on" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Contact No</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @Html.TextBox("txtcontact", null, new { @class = "form-control ", @id = "txtcontact", name = "txtcontact", autocomplete = "on" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory">Contact No</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                            @Html.TextBox("txtuserID", null, new { @class = "form-control ", @id = "txtuserID", name = "txtuserID", autocomplete = "on" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-2 col-xs-12">
+                                                <div class="form-group">
+                                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                    <label class="custom-switch">
+                                                        <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" checked class="custom-switch-input">
+                                                        <span class="custom-switch-indicator"></span>
+                                                        <span class="custom-switch-description">Is Active?</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label"></label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+
+                                                <button id="btnSave" class="btn btn-success btn-xs" ; onclick="return AddSave();">Save</button>
+                                                <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="MenuAdd">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Menu Desc</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        @Html.TextBox("txtmenudesc", null, new { @class = "form-control ", @id = "txtmenudesc", name = "txtmenudesc", autocomplete = "on" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Menu Dept</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        @Html.DropDownList("ddlMenuDept", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlMenuDept", name = "ddlMenuDept", autocomplete = "off" })
+                                                        @*<select class="form-control" id="ddlMenuDept"></select>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Menu</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <select class="form-control" id="ddlMenu">
+                                                            <option value="0">--Select--</option>
+                                                            <option value="CFS">CFS</option>
+                                                            <option value="Bond">Bond</option>
+                                                            <option value="Dopo">Depo</option>
+                                                            <option value="Domestic">Domestic</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        @*<div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Icon</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("ddlIcon", (IEnumerable<SelectListItem>)ViewBag.icon, "--Select--", new { @class = "form-control", @id = "ddlIcon", name = "ddlIcon", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>*@
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12" id="divfromName" style="display:none">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">From Name</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        @Html.TextBox("txtfromName", null, new { @class = "form-control ", @id = "txtfromName", name = "txtfromName", autocomplete = "on" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-sm-12" id="divmenuName" style="display:none">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Menu Name</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        @Html.TextBox("txtmenu", null, new { @class = "form-control ", @id = "txtmenu", name = "txtmenu", autocomplete = "on" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-sm-12" id="divcontroller" style="display:none">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Controller</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        @Html.TextBox("txtcontroller", null, new { @class = "form-control ", @id = "txtcontroller", name = "txtcontroller", autocomplete = "on", placeholder = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-sm-12" id="divAction" style="display:none">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Action</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        @Html.TextBox("txtAction", null, new { @class = "form-control ", @id = "txtAction", name = "txtAction", autocomplete = "on" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label"></label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+
+                                                <button id="btnMenu" class="btn btn-success btn-xs" ; onclick="return Addmenu();">Save</button>
+                                                <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="AssignRights">
+                                    <div class="row">
+
+                                        <div class="col-lg-4 col-sm-12" id="divTrailerno">
+                                            <div class="form-group">
+                                                <div class="row gutters-xs">
+                                                    <label class="form-label mandatory">User Name</label>
+
+                                                    @Html.DropDownList("ddlUserName", (IEnumerable<SelectListItem>)ViewBag.User, "--Select--", new { @class = "form-control", @id = "ddlUserName", name = "ddlUserName", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12" id="divTrailerno">
+                                            <div class="form-group">
+
+                                                <label class="form-label mandatory">Menus from dept</label>
+                                                <div class="row gutters-xs">
+                                                    @Html.DropDownList("ddlMenusfrom", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlMenusfrom", name = "ddlMenusfrom", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="form-group" style="padding-top:20px">
+                                                <div class="form-group" style="padding-right:20px">
+                                                    <label class="form-label"></label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="ShowIGMDetails()">Show</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sr No.</th>
+                                                            <th>Menu</th>
+                                                            <th>Can Access?</th>
+                                                            <th>Can Add?</th>
+                                                            <th>Can Update?</th>
+                                                            <th>Can Cancel?</th>
+                                                            <th>Can View?</th>
+                                                            <th>Can Mail?</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="box-sizing :border-box;"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="display:none;">
+                                        <div class="col-lg-3 col-xs-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is Web Access?</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-xs-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is Mobile Access</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-xs-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is Local Path Access</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="SaveAssignRights()">Update</button>
+                                        @*<button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="ShowIGMDetails()">Reset Password</button>
+                <button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="ShowIGMDetails()">Path Access</button>*@
+                                        <button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="window.location='/CreateUser/CreateUser'">clear</button>
+                                    </div>
+                                    <script type="text/javascript">
+                                        $(document).ready(function () {
+                                            $('#example2').DataTable({
+                                                "bLengthChange": false,
+                                                "bInfo": false,
+                                                "bPaginate": false,
+                                                //"bFilter": false,
+                                                "paging": false,
+                                                "aoColumnDefs": [
+                                                    {
+                                                        'bSortable': false,
+                                                        'aTargets': [5]
+                                                    }
+                                                ]
+                                            });
+
+
+
+
+
+                                        });
+                                    </script>
+                                </div>
+                                <div class="tab-pane" id="CopyRights">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-sm-12" id="divTrailerno">
+                                            <div class="form-group">
+                                                <div class="row gutters-xs">
+                                                    <label class="form-label mandatory">User Name</label>
+                                                    @Html.DropDownList("ddlCUserName", (IEnumerable<SelectListItem>)ViewBag.User, "--Select--", new { @class = "form-control", @id = "ddlCUserName", name = "ddlCUserName", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12" id="divTrailerno">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Copy To</label>
+                                                <div class="row gutters-xs">
+                                                    @Html.DropDownList("ddlCopyUser", (IEnumerable<SelectListItem>)ViewBag.User, "--Select--", new { @class = "form-control", @id = "ddlCopyUser", name = "ddlCopyUser", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="form-group" style="padding-top:20px">
+                                                <div class="form-group" style="padding-right:20px">
+                                                    <label class="form-label"></label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="ShowUserDetails()">Show</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example3" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sr No.</th>
+                                                            <th>Menu</th>
+                                                            <th>Can Access?</th>
+                                                            <th>Can Add?</th>
+                                                            <th>Can Update?</th>
+                                                            <th>Can Cancel?</th>
+                                                            <th>Can View?</th>
+                                                            <th>Can Mail?</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="box-sizing :border-box;"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="display:none;">
+                                        <div class="col-lg-3 col-xs-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is Web Access?</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-xs-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is Mobile Access</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-xs-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                                <label class="custom-switch">
+                                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" class="custom-switch-input">
+                                                    <span class="custom-switch-indicator"></span>
+                                                    <span class="custom-switch-description">Is Local Path Access</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="SaveCopyRights()">Update</button>
+                                        <button type="button" class="btn btn-primary" name="clearProfile" title="clear" id="clearValue" onclick="window.location='/CreateUser/CreateUser'">clear</button>
+                                    </div>
+                                    <script type="text/javascript">
+                                        $(document).ready(function () {
+                                            $('#example3').DataTable({
+                                                "bLengthChange": false,
+                                                "bInfo": false,
+                                                "bPaginate": false,
+                                                //"bFilter": false,
+                                                "paging": false,
+                                                "aoColumnDefs": [
+                                                    {
+                                                        'bSortable': false,
+                                                        'aTargets': [5]
+                                                    }
+                                                ]
+                                            });
+
+
+
+
+
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<script>
+
+    
+    function Addmenu() {
+        debugger;
+        var MenuDesc = document.getElementById('txtmenudesc').value;
+        var MenuDept = document.getElementById('ddlMenuDept').value;
+        var fromName = document.getElementById('txtfromName').value;
+        var menuName = document.getElementById('txtmenu').value;
+        var Controller = document.getElementById('txtcontroller').value;
+        var Action = document.getElementById('txtAction').value;
+        var Menu = document.getElementById('ddlMenu').value;
+         
+  
+        var CreateUser = {};
+        CreateUser.MenuDesc = MenuDesc;
+        CreateUser.MenuDept = MenuDept;
+        CreateUser.fromName = fromName;
+        CreateUser.menuName = menuName;
+        CreateUser.Controller = Controller;
+        CreateUser.Action = Action;
+        CreateUser.Menu = Menu;
+      ;
+        $.ajax({
+        url: "/CreateUser/AddMenu",
+        data: '{CreateUser: ' + JSON.stringify(CreateUser) + '}',
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            if (result == "") {
+                alert('Record saved successfully');
+                window.location.href = '@Url.Action("CreateUser", "CreateUser")';
+            }
+            else {
+                alert(result);
+            }
+        },
+        error: function (errormessage) {
+        alert(errormessage.responseText);
+        }
+        });
+   }
+
+
+    function AddSave1() {
+        debugger;
+        var firstname = document.getElementById('txtfirstname').value;
+        var lastname = document.getElementById('txtlastname').value;
+        var gender = document.getElementById('ddlgender').value;
+        var DOB = document.getElementById('txtDOB').value;
+        var employeeid = document.getElementById('txtemployeeid').value;
+        var password = document.getElementById('txtpassword').value;
+        var department = document.getElementById('ddldepartment').value;
+        var userType = document.getElementById('ddlusertype').value;
+        var emailid = document.getElementById('txtemailid').value;
+        var passEmail = document.getElementById('txtpasswordemail').value;
+        var Contact = document.getElementById('txtcontact').value;
+        var isactive = document.getElementById('chkIsActiveEdit').value;
+        var txtuserID = document.getElementById('txtuserID').value;
+
+        if (firstname == "") {
+            document.getElementById("txtfirstname").style.borderColor = "red";
+            alert('Please Enter Your Name!')
+            event.preventDefault();
+            return;
+        }
+        if (lastname == "") {
+            document.getElementById("txtlastname").style.borderColor = "red";
+            alert('Please Enter Your LastName!')
+            event.preventDefault();
+            return;
+        }
+        if (employeeid == "") {
+            document.getElementById("txtemployeeid").style.borderColor = "red";
+            alert('Please Enter Your ID')
+            event.preventDefault();
+            return;
+        }
+
+    if (password == "") {
+        document.getElementById("txtpassword").style.borderColor = "red";
+        alert('Please Choose Your Password!')
+        event.preventDefault();
+        return;
+    }
+        if (department == 0) {
+            document.getElementById("ddldepartment").style.borderColor = "red";
+            alert('Please select Department')
+            event.preventDefault();
+            return;
+        }
+
+        if (userType == 0) {
+            document.getElementById("ddlusertype").style.borderColor = "red";
+            alert('Please select UserType')
+            event.preventDefault();
+            return;
+        }
+        var CreateUser = {};
+        CreateUser.firstname = firstname;
+        CreateUser.lastname = lastname;
+        CreateUser.gender = gender;
+        CreateUser.DOB = DOB;
+        CreateUser.employeeid = employeeid;
+        CreateUser.password = password;
+        CreateUser.department = department;
+        CreateUser.userType = userType;
+        CreateUser.emailid = emailid;
+        CreateUser.passEmail = passEmail;
+        CreateUser.Contact = Contact;
+        CreateUser.isactive = isactive;
+        CreateUser.UseriDN = txtuserID;
+   $.ajax({
+       url: "/CreateUser/Save",
+       data: '{CreateUser: ' + JSON.stringify(CreateUser) + '}',
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+        if(JSON.stringify(result) > 0)
+
+        {
+            alert('Record saved successfully');
+            window.location.href = '@Url.Action("CreateUser", "CreateUser")';
+        }
+
+
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+    }
+
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+    function ShowSSRSummary() {
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+
+        try {
+            var data1 = { 'search': search};
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/CreateUser/CreateSearch",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    RepTableDataJsonwopaging($("#tblWorkOrderOpenList"), response, "CreateSearch", "CreateSearch")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+    function edittext(UserID) {
+        debugger;
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+        if (UserID == "") {
+            alert("Please Select Valid Jo Number");
+            return;
+        }
+
+        var data1 = { "UserID": UserID };
+
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/CreateUser/GetLocationDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $('#txtfirstname').val(data[0].firstname);
+                $('#txtlastname').val(data[0].lastname);
+                $('#ddlgender').val(data[0].gender);
+                ///$('#txtDOB').val(data[0].DOB);
+                $('#txtemployeeid').val(data[0].employeeid);
+                $('#txtpassword').val(data[0].password);
+                $('#ddldepartment').val(data[0].department);
+                $('#ddlusertype').val(data[0].userType);
+                $('#txtemailid').val(data[0].emailid);
+                $('#txtpasswordemail').val(data[0].passEmail);
+                $('#txtcontact').val(data[0].Contact);
+                $('#chkIsActiveEdit').val(data[0].isactive);
+                $('#txtuserID').val(data[0].UseriDN);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function AddSave() {
+        var firstname = document.getElementById('txtfirstname').value;
+        var lastname = document.getElementById('txtlastname').value;
+
+        var data1 = { 'firstname': firstname };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/CreateUser/AjaxCheckFirstname",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response == 1) {
+                    alert("Employee Name already exist!");
+                    document.getElementById('txtfirstname').value = "";
+                }
+                else {
+                    AddSave1();
+                }
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    $("#ddlMenu").change(function () {
+        debugger;
+        var ddlSearchby = $("#ddlMenu option:selected").text();
+        if (ddlSearchby == "--Select--") {
+            $("#divcontroller").hide();
+            $("#divAction").hide();
+            $("#divfromName").hide();
+            $("#divmenuName").hide();
+
+        }
+        if (ddlSearchby == "CFS") {
+            $("#divcontroller").show();
+            $("#divAction").show();
+            $("#divfromName").hide();
+            $("#divmenuName").hide();
+
+        }
+        if (ddlSearchby == "Bond") {
+            $("#divcontroller").hide();
+            $("#divAction").hide();
+            $("#divfromName").show();
+            $("#divmenuName").show();
+
+        }
+        if (ddlSearchby == "Depo") {
+            $("#divcontroller").hide();
+            $("#divAction").hide();
+            $("#divfromName").show();
+            $("#divmenuName").show();
+
+        }
+        if (ddlSearchby == "Domestic") {
+            $("#divcontroller").hide();
+            $("#divAction").hide();
+            $("#divfromName").show();
+            $("#divmenuName").show();
+
+        }
+    });
+
+    function ShowIGMDetails() {
+   
+        var UserName = $("#ddlUserName option:selected").val();
+        var Menusfrom = $("#ddlMenusfrom option:selected").val();
+     
+        try {
+            var data1 = { 'UserName': UserName, 'Menusfrom': Menusfrom };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/CreateUser/BindMenuDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                   
+                    RepTableDataJsonwopaging($("#example2"), response, "CreateSearch", "CreateSearch")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+
+    function ShowUserDetails() {
+        debugger;
+        var ddlUserName = $("#ddlCUserName").val();
+
+        try {
+            var data1 = { 'UserName': ddlUserName, ',Menusfrom': "" };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/CreateUser/BindMenuDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    RepTableDataJsonwopaging($("#example3"), response, "CreateSearch", "CreateSearch")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+
+    function SaveAssignRights() {
+        debugger;
+        try {
+
+            if ($("#ddlUserName").val() == "") {
+                alert("Plase Select User Name.");
+                $("#ddlUserName").focus();
+                return;
+            }
+
+            var rowlenght = 0;
+
+            try {
+                $('#example2 tbody tr').each(function (i, row) {
+                    if ($(this).find('input.checklist').is(':checked')) {
+                        rowlenght = rowlenght + 1;
+                    }
+                });
+            } catch (ex) { rowlenght = 0;}
+            
+
+            if (rowlenght == 0) {
+                alert('Please Select Menu Details');
+                return;
+            };
+
+            var SelectedData = new Array();
+            $('#example2 tbody tr').each(function (i, row) {
+                //debugger;
+                if ($(this).find('input.checklist').is(':checked')) {
+                    //debugger;
+                    var data1 = {};
+                    var checklistAccess = false;
+                    var checklistAdd = false;
+                    var checklistUpdate = false;
+                    var checklistCancel = false;
+                    var checklistView = false;
+                    var checklistMail = false;
+                    var MenuId = 0;
+                    $(this).find('input').each(function () {
+                        //debugger;
+                        //alert(this.id);
+                        MenuId = $(this).val();
+                        if (this.name == "checklistAccess") {
+                            checklistAccess = this.checked;
+                        } else if (this.name == "checklistAdd") {
+                            checklistAdd = this.checked;
+                        }
+                        else if (this.name == "checklistUpdate") {
+                            checklistUpdate = this.checked;
+                        }
+                        else if (this.name == "checklistCancel") {
+                            checklistCancel = this.checked;
+                        }
+                        else if (this.name == "checklistView") {
+                            checklistView = this.checked;
+                        }
+                        else if (this.name == "checklistMail") {
+                            checklistMail = this.checked;
+                        }
+                    });
+
+                    data1 = { 'MenuId': MenuId , 'IsAccess': checklistAccess, 'CanAdd': checklistAdd, 'CanUpdate': checklistUpdate, 'CanCancel': checklistCancel, 'CanView': checklistView, 'CanMail': checklistMail };
+                    SelectedData.push(data1);
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/CreateUser/SaveAssingRight',
+                data: '{UserId: ' + JSON.stringify($("#ddlUserName").val()) + ', RightsData: ' + JSON.stringify(SelectedData)+ '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    alert(data);
+                    window.location = "/CreateUser/CreateUser";
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+        catch (ex) { alert(ex.message); };
+    }
+
+    function SaveCopyRights() {
+        debugger;
+        try {
+
+            if ($("#ddlCUserName").val() == "") {
+                alert("Plase Select User Name.");
+                $("#ddlCUserName").focus();
+                return;
+            }
+
+            if ($("#ddlCopyUser").val() == "") {
+                alert("Plase Copy To User Name");
+                $("#ddlCopyUser").focus();
+                return;
+            }
+
+            var rowlenght = 0;
+
+            try {
+                $('#example3 tbody tr').each(function (i, row) {
+                    if ($(this).find('input.checklist').is(':checked')) {
+                        rowlenght = rowlenght + 1;
+                    }
+                });
+            } catch (ex) { rowlenght = 0; }
+           
+
+            if (rowlenght == 0) {
+                alert('Please Select Menu Details');
+                return;
+            };
+
+            var SelectedData = new Array();
+            $('#example3 tbody tr').each(function (i, row) {
+                //debugger;
+                if ($(this).find('input.checklist').is(':checked')) {
+                    //debugger;
+                    var data1 = {};
+                    var checklistAccess = false;
+                    var checklistAdd = false;
+                    var checklistUpdate = false;
+                    var checklistCancel = false;
+                    var checklistView = false;
+                    var checklistMail = false;
+                    var MenuId = 0;
+                    $(this).find('input').each(function () {
+                        //debugger;
+                        //alert(this.id);
+                        MenuId = $(this).val();
+                        if (this.name == "checklistAccess") {
+                            checklistAccess = this.checked;
+                        } else if (this.name == "checklistAdd") {
+                            checklistAdd = this.checked;
+                        }
+                        else if (this.name == "checklistUpdate") {
+                            checklistUpdate = this.checked;
+                        }
+                        else if (this.name == "checklistCancel") {
+                            checklistCancel = this.checked;
+                        }
+                        else if (this.name == "checklistView") {
+                            checklistView = this.checked;
+                        }
+                        else if (this.name == "checklistMail") {
+                            checklistMail = this.checked;
+                        }
+                    });
+
+                    data1 = { 'MenuId': MenuId, 'IsAccess': checklistAccess, 'CanAdd': checklistAdd, 'CanUpdate': checklistUpdate, 'CanCancel': checklistCancel, 'CanView': checklistView, 'CanMail': checklistMail };
+                    SelectedData.push(data1);
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/CreateUser/SaveAssingRight',
+                data: '{UserId: ' + JSON.stringify($("#ddlCopyUser").val()) + ', RightsData: ' + JSON.stringify(SelectedData) + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    alert(data);
+                    window.location = "/CreateUser/CreateUser";
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+        catch (ex) { alert(ex.message); };
+    }
+    
+</script>

@@ -1,0 +1,476 @@
+﻿@model  TrackerMVCEntities.BusinessEntities.IGMEntities
+@{
+    ViewBag.Title = "AuctionNoticeGeneration";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/validation.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/UserScripts/Auction/AuctionNoticeGeneration.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area" id="divAuctionNoticeGenerate">
+    <div class="page-header">
+        <h4 class="page-title">Generate Auction Notice</h4>
+        <div class="ibox-content  text-right">
+            <button type="button" class="btn btn-icon btn-teal" name="Notice List" title="Auction Notice Generated" onclick="getSummary();"><i class="fa fa-file-text"></i></button>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-append " id="tabPurpose">
+                <button class="btn btn-primary active" id="export" style="text-transform: uppercase;" type="button" onclick="ShowManualNoticeGenerate()">Manual Notice Generate </button>
+                <button class="btn btn-primary " id="import" style="text-transform: uppercase;" type="button" onclick="ShowAutoNoticeGenerate()">Auto Notice Generate</button>
+            </span>
+        </div><br />
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "AuctionForm" }))
+        {
+            <div class="row" id="divManualNoticeScreen">
+                <div class="col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">IGM No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.IGMNo, new { htmlAttributes = new { @class = "form-control", @id = "txtIGMNo", Placeholder = "IGM No" } })
+                                                <input type='hidden' value='@Request.QueryString["IGMNo"]' id='hdnIgmNo' />
+                                                <input type="hidden" value="@Request.QueryString["ItemNo"]" id="hdnItemNo" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">ItemNo</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.ItemNo, new { htmlAttributes = new { @class = "form-control", @id = "txtItemNo", Placeholder = "Item No" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-primary" title="Show" id="btnShow">Show</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">IGM Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.IGMDate, new { htmlAttributes = new { @class = "form-control", @id = "txtIGMDate", @readonly = "Readonly", Placeholder = "IGM Date" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Notice as on Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control form_datetime1", @id = "txtDate", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Notice Id</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.NoticeId, new { htmlAttributes = new { @class = "form-control", @id = "txtNoticeId", @readonly = "Readonly", Placeholder = "Notice Id" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Notice Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.NoticeDate, new { htmlAttributes = new { @class = "form-control", @id = "txtNoticeDate", @readonly = "Readonly", Placeholder = "Notice Date" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Notice Type</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.NoticeType, new { htmlAttributes = new { @class = "form-control", @id = "txtNoticeType", @readonly = "Readonly", Placeholder = "Notice Type" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Jo No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.JoNo, new { htmlAttributes = new { @class = "form-control", @id = "txtJoNo", @readonly = "Readonly", Placeholder = "Jo No" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Auction Id 1</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.AuctionId, new { htmlAttributes = new { @class = "form-control", @id = "txtAuctionId", @readonly = "Readonly", Placeholder = "New" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Auction Id 2</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.AuctionId2, new { htmlAttributes = new { @class = "form-control", @id = "txtAuctionId2", @readonly = "Readonly", Placeholder = "New" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Agent</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.Agent, new { htmlAttributes = new { @class = "form-control", @id = "txtAgent", @readonly = "Readonly", Placeholder = "Agent Name" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Cargo Description</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.CargoDescription, new { htmlAttributes = new { @class = "form-control", @id = "txtCargoDesc", @readonly = "Readonly", Placeholder = "Cargo Desc." } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Importer Name</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.ImporterName, new { htmlAttributes = new { @class = "form-control", @id = "txtImporterName", @readonly = "Readonly", Placeholder = "Importer Name" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Notify Party</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.NotifyParty, new { htmlAttributes = new { @class = "form-control", @id = "txtNotifyParty", @readonly = "Readonly", Placeholder = "notify Party" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">No of Pkgs</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.NoOfPkgs, new { htmlAttributes = new { @class = "form-control", @id = "txtNoOfPkgs", @readonly = "Readonly", Placeholder = "No Of Package" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Pkgs Type</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.PackageType, new { htmlAttributes = new { @class = "form-control", @id = "txtPkgsType", @readonly = "Readonly", Placeholder = "Package Type" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Weight</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control", @id = "txtWeight", @readonly = "Readonly", Placeholder = "Weight" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">UOM</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.UOM, new { htmlAttributes = new { @class = "form-control", @id = "txtUOM", @readonly = "Readonly", Placeholder = "UOM" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">BL No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.BLNo, new { htmlAttributes = new { @class = "form-control", @id = "txtBLNo", @readonly = "Readonly", Placeholder = "BL No" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">BL Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.BLDate, new { htmlAttributes = new { @class = "form-control", @id = "txtBLDate", @readonly = "Readonly", Placeholder = "BL Date" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="checkbox" class="check-list" name="chkSelect" id="chkSelectAllC" /> Select All Container
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col" id="divAutionShow" style="visibility:hidden">
+                                                @Html.ActionLink("Auction Notice Already Sent", "ExportToExcelActionGen", null, new { @class = "btn btn-danger btn-md" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblAuctionNoticeGenList">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+                                                <th style="width:20px;color: white;">#</th>
+                                                <th style="width:20px;color: white;">Container No</th>
+                                                <th style="width:80px;color: white;">Container Size</th>
+                                                <th style="width:80px;color: white;">Container Type</th>
+                                                <th style="width:80px;color: white;">Arrival Date</th>
+                                                <th style="width:150px;color: white;">PKGS</th>
+                                                <th style="width:100px;color: white;">Weight</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button class="btn btn-success" type="button" id="btnGenerateFirstNotice" name="Add">Gen. First Notice</button>&nbsp;
+                                                <button class="btn btn-success" type="button" id="btnGenerateSecondNotice" name="Add">Gen. Second Notice</button>&nbsp;
+                                                @*<button class="btn btn-success" type="button" id="btnPrintFirstNotice" name="Add">Print First Notice</button>&nbsp;
+                                                    <button class="btn btn-success" type="button" id="btnPrintSecondNotice" name="Add">Print Second Notice</button>&nbsp;*@
+                                                <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row" id="divAutoNoticeScreen" style="display:none;">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Notice Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlAutoNoticeType", new List<SelectListItem>
+                                                             { new SelectListItem { Text = "--Select--", Value = ""},
+                                                                 new SelectListItem { Text = "First Notice", Value = "First Notice"},
+                                                                 new SelectListItem { Text = "Second Notice", Value = "Second Notice"}
+                                                               }, new { @class = "form-control", autocomplete = "off", @id = "ddlAutoNoticeType" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnAutoGenerate">Generate</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblAutoNoticeGenList"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divNoticeGenerated" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Notice Generated List</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">Notice Type</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.DropDownList("ddlNoticeType", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                             new SelectListItem { Text = "First Notice", Value = "First Notice"},
+                                             new SelectListItem { Text = "Second Notice", Value = "Second Notice"},
+                                             new SelectListItem { Text = "IGM Item", Value = "IGM"}
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlNoticeType" })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12" id="divNoticeDate">
+            <div class="form-group">
+                <label class="form-label">Notice Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtRepDate", (String)ViewBag.Date, new { @class = "form-control datePicker1", @id = "txtRepDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divIGMNo" style="display:none">
+            <div class="form-group">
+                <label class="form-label">IGM No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtRIGMNo", null, new { @class = "form-control", @id = "txtRIGMNo", autocomplete = "off" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divItemNo" style="display:none">
+            <div class="form-group">
+                <label class="form-label">Item No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtRItemNo", null, new { @class = "form-control", @id = "txtRItemNo", autocomplete = "off" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary">Show</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblNoticeDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getBack() {
+        $("#divAuctionNoticeGenerate").show();
+        $("#divNoticeGenerated").hide();
+    };
+    function getSummary() {
+        $("#divAuctionNoticeGenerate").hide();
+        $("#divNoticeGenerated").show();
+    }
+    function ShowManualNoticeGenerate() {
+        $("#divAutoNoticeScreen").hide();
+        $("#divManualNoticeScreen").show();
+    };
+
+    function ShowAutoNoticeGenerate() {
+        $("#divAutoNoticeScreen").show();
+        $("#divManualNoticeScreen").hide();
+    };
+
+    $(function () {
+
+        $('.datePicker1').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true
+
+        })
+            .on('changeDate', function (e) {
+
+                $('.datepicker').hide();
+            });
+    });
+
+    $("#tracker-loader").fadeOut("slow");
+</script>

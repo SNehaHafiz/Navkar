@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewBag.Title = "Voucher Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="tracker-loader"></div>
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Voucher Details Summary</h4>
+        <a href="@Url.Action("VoucherReportInandOutDetails", "Report")" class="btn btn-icon btn-blue" target="_blank" title="voucher In and Out Wise"><i class="fa fa-arrow-right"></i></a>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1 col-lg-1">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label" style="visibility:hidden">On</label>
+                                        <button class=" btn btn-primary" title="Show" id="btnSearch" onclick="ShowVoucherDetails()" type="button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-lg-1">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label" style="visibility:hidden">On</label>
+                                        <button class=" btn btn-danger" title="Cancelled Details" id="btnSearch" onclick="ClosedVoucherDetails()" type="button">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-1 col-lg-1">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label" style="visibility:hidden">On</label>
+                                        <button class=" btn btn-info" id="btnSubmi1t" title="Direct Download Excel" onclick="GetDirectExcel()" type="button">
+                                            <i class="fa fa-download"></i>  <i class="fa fa-file-excel-o"></i>
+                                        </button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcel", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr>
+
+                                            @*<th class="wd-10p sorting">Sr No</th>
+                                                <th class="wd-10p sorting">Paid ID</th>*@
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#example2').DataTable({
+        //    "bLengthChange": false,
+        //    "bInfo": false,
+        //    "bPaginate": false,
+        //    //"bFilter": false,
+        //    "paging": false
+        //    //"dom": 'Bfrtip',
+        //    //"buttons": [{
+        //    //    "extend": 'excel',
+        //    //    "title": 'VoucherDetails',
+        //    //    "filename": 'VoucherDetails_List'
+
+        //    //}
+        //    //]
+        //});
+
+
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+
+<script type="text/javascript">
+
+    function ShowVoucherDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/LoadingPlan/AjaxGetVoucherDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    function ClosedVoucherDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/LoadingPlan/AjaxGetVoucherClosedDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                //alert('hi1')
+                //alert(jsonResult)
+                //alert('hi2')
+                // $('#example2').empty();
+                // $('#example2').dataTable(jsonResult);
+                //$("#example2").DataTable().destroy();
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Closed Details", "VoucherClosedDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+     function GetDirectExcel() {
+         var FromDate = $("#FromDate").val();
+         var ToDate = $("#ToDate").val();
+
+         data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+         data = JSON.stringify(data1);
+        $("#tracker-loader").fadeIn("slow");
+         window.location = '@Url.Action("DrierctVoucherdetailsExportToExcel", "LoadingPlan")?FromDate=' + FromDate + "&ToDate=" + ToDate;
+
+        $("#tracker-loader").fadeOut("slow");
+    }
+</script>

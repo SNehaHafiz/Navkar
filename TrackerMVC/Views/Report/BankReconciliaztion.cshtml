@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "BankReconciliation";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<script src="~/js/GetTableJsonPagging.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Bank Reconciliation</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                   
+                                    <div class="col-2">
+
+                                        @Html.TextBox("ToDateDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", onchange = "CheckDate();", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                    <div class="col-md-12 col-lg-8">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show()" type="button">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExporttoExcelReconsilations", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>function Show() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowVoucherDetails();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowVoucherDetails() {
+        $("#tracker-loader").fadeIn("slow");
+         
+
+        var ToDate = $("#ToDate").val();
+        var data1 = {   'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/USP_BANK_Reconsilations',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJsonwopaging($("#reportTable"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                $("#tracker-loader").fadeOut("slow");
+
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+        $("#tracker-loader").fadeOut("slow");
+    }
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })</script>

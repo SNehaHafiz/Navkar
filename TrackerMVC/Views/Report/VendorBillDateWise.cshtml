@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewBag.Title = "VendorBillDateWise";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+
+<div id="tracker-loader"></div>
+
+<style>
+
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+        
+    }
+
+    .table td {
+        text-align: right !important;
+    }
+        .table td:first-child {
+            text-align: left !important;
+        }
+    
+   
+    body {
+        font-weight: bolder !important;
+    }
+</style>
+<div class=" content-area">
+    <div class="page-header">
+
+        <h4 class="page-title">Vendor Bill Date Wise</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+                        <div class="input-group">
+
+                            <span class="input-group-append " id="tabPurpose">
+                                <button class="btn btn-success active btn-lg m-0" id="btnLilter"  value="" type="button" onclick="Show('Liter')">Liter</button>
+                                <button class="btn btn-success btn-lg m-0" id="btnAmount"  type="button" onclick="Show('Amount')">Amount</button>
+                            </span>
+                        </div>
+
+                        <br />
+                        <div class="row" style="display:none" id="divdriverwise">
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="Showfueldetails()" />
+                                            <input id="GetValue" style="visibility:hidden" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     
+                        <div class="row" style="display:none" id="divExcelbutton">
+                            <div class="col-lg-12 col-sm-12">
+                                @Html.ActionLink("Export To Excel", "ExportToExcelVendorBilldateWise", null, new { @class = "btn btn-primary btn-md" })
+                            </div>
+
+                            </div>
+                         
+                            <div class="row" style="display:none" id="divdTable">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                            <thead>
+
+                                                <tr></tr>
+                                            </thead>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#btnLilter").click(function () {
+        $("#btnLilter").addClass("active");
+        $("#btnAmount").removeClass("active");
+    });
+
+    $("#btnAmount").click(function () {
+        $("#btnAmount").addClass("active");
+        $("#btnLilter").removeClass("active");
+
+    });
+</script>
+<script>
+    function Show(matter) {
+        $("#divdriverwise").show();
+        $("#divdTable").show();
+        $("#divExcelbutton").show();
+        $("#GetValue").val(matter);
+    }
+
+
+
+</script>
+
+<script type="text/javascript">
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+
+    function Showfueldetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var Value = $("#GetValue").val();
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Value': Value};
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetVendorBillDateWise',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

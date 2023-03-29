@@ -1,0 +1,260 @@
+﻿
+@{
+    ViewBag.Title = "Cancel Receipt Invoice";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Cancel Invoice Receipt</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Receipt No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtreceiptno" type="text" placeholder="Receipt No" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Work Year</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="ddlwyear" type="text" value="@ViewBag.WorkYear" class="form-control" />
+                                        @*<select class="form-control" id="ddlwyear">
+                                                <option value="2020-21">2020-21</option>
+                                                <option value="2019-20">2019-20</option>
+                                            </select>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-15p sorting" style="width:1px;"> <input type="checkbox" id="flowcheckall" value="" />&nbsp;Select    </th>
+
+                                            <th class="wd-10p sorting">receipt No</th>
+                                            <th class="wd-10p sorting">Invoice No</th>
+                                            <th class="wd-10p sorting">Invoice Date</th>
+                                            <th class="wd-10p sorting">Work Year</th>
+                                            <th class="wd-10p sorting">Invoice Amout</th>
+                                            <th class="wd-10p sorting">received AMount</th>
+                                            <th class="wd-10p sorting">Net received amount</th>
+                                            <th class="wd-10p sorting">TDS</th>
+                                            <th class="wd-10p sorting">User Name</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Cancel" class="btn btn-danger" onclick="Cancel()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+
+        });
+
+
+
+    });
+
+
+
+
+    function Show() {
+        var receiptno = $("#txtreceiptno").val();
+        var workyear = $("#ddlwyear").val();
+        var data1 = { 'ReceiptNo': receiptno, 'workyear': workyear };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/CancelReceiptInvoiceReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#reportTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "aaSorting": [],
+                    "order": [],
+                    "aaData": data,
+                    "columns": [
+                        {
+
+                            "data": "Select",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  value="' + row.InvoiceNo + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "ReceiptNo" },
+                        { "data": "InvoiceNo" },
+                        { "data": "AssessDate" },
+                        { "data": "WorkYear" },
+                        { "data": "Invoiceamt" },
+                        { "data": "ReceivedAMt" },
+                        { "data": "NetAmount" },
+                        { "data": "TDS" },
+                        { "data": "Addedby" },
+
+
+
+
+
+
+                    ]
+                })
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+    function Cancel() {
+
+        debugger;
+
+         var r = confirm("Are you sure want to cancel this Receipt?");
+          if (r == true) {
+              var ReceiptRefNo = $("#txtreceiptno").val();
+              var checkboxarray = [];
+              $('input[type=checkbox]').each(function () {
+                  if (this.checked) {
+
+                      checkboxarray.push($(this).val());
+                  }
+              });
+
+
+              var tablearray = [];
+              var table = document.getElementById("reportTable");
+              var row;
+              for (var i = 1; i < table.rows.length; i++) {
+
+                  row = table.rows[i];
+
+                  for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                      var InvoiceNo = row.cells[2].innerText;
+
+                      if (InvoiceNo == checkboxarray[k]) {
+                          ReceiptNo = row.cells[1].innerText;
+                          InvoiceNo = row.cells[2].innerText;
+                          WorkYear = row.cells[4].innerText;
+
+                          tablearray.push({ 'ReceiptNo': ReceiptNo, 'InvoiceNo': InvoiceNo, 'WorkYear': WorkYear })
+                      }
+                  }
+              }
+
+              var data1 = { 'tablearray': tablearray, 'ReceiptRefNo': ReceiptRefNo};
+              data = JSON.stringify(data1);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/report/CancelReceiptWithReason",
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            alert("record cancelled successful");
+                                    window.location.href = '@Url.Action("CancelReceiptInvoice", "Report")';
+                        },
+                        error: function (errormessage) {
+                         alert(errormessage.responseText);
+                        }
+                    });
+
+          }
+
+         };
+
+
+
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#reportTable').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+</script>

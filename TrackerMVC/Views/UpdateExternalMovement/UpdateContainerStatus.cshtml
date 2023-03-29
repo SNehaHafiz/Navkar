@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "updatecontainerstatus";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<div id="addHorse">
+    <div class="page-header">
+        <h1 class="page-title">Update Container Status</h1>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtcontainerno" type="text" placeholder="Container No." class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label mandatory">'</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Show();">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Criteria</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtCriteria" type="text" placeholder="Criteria" readonly="readonly" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Size</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtSize" type="text" placeholder="Size" readonly="readonly" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtType" type="text" placeholder="Type" readonly="readonly" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Vehicle No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtvehicleno" type="text" placeholder="Vehicle No." readonly="readonly" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <div class="row gutters-xs">
+                                    <select id="ddlstatus" class="form-control">
+                                        <option value="Select">Select</option>
+                                        <option value="Empty">Empty</option>
+                                        <option value="Destuff">Destuff</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"></label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                <button id="btnSave" class="btn btn-success btn-xs" onclick="return save();">Save</button>
+                                <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function Show() {
+        debugger;
+        var containerno = document.getElementById('txtcontainerno').value;
+        var Criteria = document.getElementById('txtCriteria').value;
+        var Size = document.getElementById('txtSize').value;
+        var Type = document.getElementById('txtType').value;
+        var vehicleno = document.getElementById('txtvehicleno').value;
+        var data1 = { "containerno": containerno };
+
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/UpdateExternalMovement/GetLocationDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $('#txtCriteria').val(data[0].Criteria);
+                $('#txtSize').val(data[0].Size);
+                $('#txtType').val(data[0].Type);
+                $('#txtvehicleno').val(data[0].vehicleno);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function save() {
+        debugger;
+        var txtcontainerno = document.getElementById('txtcontainerno').value;
+        var status = document.getElementById('ddlstatus').value;
+
+
+
+        //alert("hii")
+        if (txtcontainerno == "") {
+            document.getElementById("txtcontainerno").style.borderColor = "red";
+            alert('Please enter Container No.!')
+            event.preventDefault();
+            return;
+        }
+
+        var UpdateExternalMovement = {};
+        UpdateExternalMovement.containerno = txtcontainerno;
+        UpdateExternalMovement.status = status;
+
+
+$.ajax({
+    url: "/UpdateExternalMovement/savestatus",
+    data: '{UpdateExternalMovement: ' + JSON.stringify(UpdateExternalMovement) + '}',
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("UpdateContainerStatus", "UpdateExternalMovement")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+    }
+
+
+
+</script>
+

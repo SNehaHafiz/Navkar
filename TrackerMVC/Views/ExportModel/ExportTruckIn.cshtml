@@ -1,0 +1,386 @@
+﻿
+@{
+    ViewBag.Title = "ExportTruckIn";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+    <div class="page-header">
+        <h5 class="page-title">Export Truck In</h5>
+        <div class="col" style="text-align:right;font-size:larger">
+
+            <a href="@Url.Action("ExportTruckInReport", "Report")" target="_blank" style="color:#780bdb;font-family:-webkit-pictograph">Export Truck In Report</a>
+            <br />
+            <a href="@Url.Action("ExportVehicleInventoryDetails", "ExportModel")" target="_blank" style="color:#780bdb;font-family:-webkit-pictograph">Click here to view inventory details of empty vehicle</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Gate In No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtGateInNo", null, new { @class = "form-control ", @id = "txtGateInNo", autocomplete = "off", @readonly = "Readonly", Placeholder = "NEW" })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Gate In Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtGateInDate", null, new { @class = "form-control form_datetime1 ", @id = "txtGateInDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Allow ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAllow", null, new { @class = "form-control ", @id = "txtAllow", autocomplete = "off", Placeholder = "NEW" })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divSBAdd">
+                            <div class="form-group" style="padding-top:25px">
+                                @*<label class="form-label" style="visibility:hidden">.</label>*@
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="showdetails()"><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">No.Of SB No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtNoOfSBNo", null, new { @class = "form-control ", @id = "txtNoOfSBNo", @readonly = "Readonly", autocomplete = "off", Placeholder = "" })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">No. Of Vehicle</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtNoOfVehicle", null, new { @class = "form-control ", @id = "txtNoOfVehicle", @readonly = "Readonly", autocomplete = "off", Placeholder = "" })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div>
+                                @*<label class="form-label">Details </label>*@
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;" >
+                                        <tr>
+
+
+                                            <th style="width:1px;color: white;text-align:center">#</th>
+                                            <th style="width:80px;color: white;text-align:center">Truck No</th>
+                                            <th style="width:80px;color: white;text-align:center">SB No</th>
+                                            <th style="width:80px;color: white;text-align:center">Vehicle Type</th>
+                                            <th style="width:80px;color: white;text-align:center">SB Qty</th>
+                                            <th style="width:80px;color: white;text-align:center">SB Weight</th>
+                                            <th style="width:100px;color: white;text-align:center">Gate IN Qty</th>
+                                            <th style="width:80px;color: white;text-align:center">Gate IN wt</th>
+                                            <th style="width:20px;color: white;text-align:center">Unit</th>
+                                            <th style="width:80px;color: white;text-align:center">Description</th>
+                                            <th style="width:100px;color: white;text-align:center">Agency Name</th>
+                                            <th style="width:1px;color: white;text-align:center">.</th>
+                                            <th style="width:1px;color: white;text-align:center">.</th>
+                                            <th style="width:1px;color: white;text-align:center">SR No</th>
+
+
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success " type="button" id="savedetails" onclick="ExportSave();">Save</button>
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+<script>
+
+    
+
+    var EquipmentL = [];
+
+    EquipmentLs = @Html.Raw(Json.Encode(@ViewBag.EquipmentList));
+    EquipmentL = JSON.parse(EquipmentLs);
+
+
+    function showdetails() {
+        debugger;
+        var Allow = $("#txtAllow").val();
+        //if (Allow == 0) {
+        //    document.getElementById("Allow").style.borderColor = "red";
+        //    alert('Please select Allow ID !')
+        //    $("#tracker-loader").fadeOut("slow");
+        //    event.preventDefault();
+        //    return;
+        //}
+        var data1 = { 'Allow': Allow };
+        var data = JSON.stringify(data1);
+
+        
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExportModel/ExportTrukIn',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "Select",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\ "id=\"checklist\" ' + row.select + '   value="' + data + '" >';
+                                return data;
+                            }
+                        },
+                        { "data": "TruckNo" },
+                        { "data": "SBNo" },
+                        {
+                            "data": "VehicleType",
+                            "render": function (data, type, row, meta) {
+                                data = '<select  class="form-control"   name=\"VehicleType' + row.Select + '\"       id=\"VehicleType' + row.Select +  '\" >'
+                                for (j = 0; j < EquipmentL.length; j++) {
+                                    data += '<option value="' + EquipmentL[j].VehicleType + '"> ' + EquipmentL[j].VehicleType + '</option>'
+                                }
+                                data += '</select>';
+                                return data;
+                            }
+                        },
+                        { "data": "SBQty" },
+                        { "data": "SBWeight" },
+                        { "data": "GateINQty" },
+                        { "data": "GateINWt" },
+                        { "data": "Unit" },
+                        { "data": "Description" },
+                        { "data": "AgencyName" },
+                        { "data": "Agid" },
+                        { "data": "sbentryid" },
+                        { "data": "Select" },
+                    ]
+                });
+
+                var table = document.getElementById("example1");
+                var row; var row1;
+                var TruckNo1 = 0;
+                var TruckNo2 = 0;
+                var count = 0; var sbcount = 0;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    var TruckNo = row.cells[1].innerText;
+                    var SBNo = row.cells[2].innerText;
+                    //alert(count)
+                    for (var j = 1; j < table.rows.length; j++) {
+                        row1 = table.rows[j];
+                        var TruckNo3 = row1.cells[1].innerText;
+                        var SBNo2 = row1.cells[2].innerText;
+                        if (TruckNo != TruckNo3) {
+                            //alert(TruckNo1)
+                            count = Number(count) + 1;
+                           
+                        }
+                        if (SBNo2 != SBNo2) {
+                            //alert(TruckNo1)
+                            sbcount = Number(sbcount) + 1;
+
+                        }
+                    }
+                }
+                //display count when single vehicle               
+                if (table.rows.length > 0) {
+                    if (count == 0) {
+                        count = 1;
+                    }
+                    if (sbcount == 0) {
+                        sbcount = 1;
+                    }
+                }
+               
+                $("#txtNoOfVehicle").val(count);
+                $("#txtNoOfSBNo").val(sbcount);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    
+
+
+    ////Save///
+
+    function ExportSave() {
+       
+         debugger;
+        $("#tracker-loader").fadeIn("slow");
+         var GateInAllowID = $("#txtAllow").val();
+         var GateInNoDate = $("#txtGateInDate").val();
+        var itemcount = checkItemcount();
+        if (itemcount == false) {
+            alert("No Record Found To Save");
+        }
+        else {
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+            var tablearray = [];
+            var table = document.getElementById("example1");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                    var SBNo = row.cells[2].innerText;
+                    var SRNO = row.cells[13].innerText;
+                    var sbentryid = row.cells[12].innerText;
+
+                    if (SRNO == checkboxarray[k]) {
+
+                        
+                        row = table.rows[i];
+                        TruckNo = row.cells[1].innerText;
+                        SBNo = row.cells[2].innerText;
+                        VehicleType = $("#VehicleType" + SRNO + " option:selected").val();
+                        SBQTY = row.cells[4].innerText;
+                        SBWeight = row.cells[5].innerText;
+                        GateInQty = row.cells[6].innerText;
+                        GateInWT = row.cells[7].innerText;
+                        UniT = row.cells[8].innerText;
+                        Description = row.cells[9].innerText;
+                        Agid = row.cells[11].innerText;
+                        SBEntryID = row.cells[12].innerText;
+                       
+                        tablearray.push({
+                            'TruckNo': TruckNo, 'SBNo': SBNo, 'VehicleType': VehicleType, 'SBQTY': SBQTY,
+                            'SBWeight': SBWeight, 'GateInQty': GateInQty, 'GateInWT': GateInWT, 'UniT': UniT, 'Description': Description, 'Agid': Agid, 'SBEntryID': SBEntryID
+                        })
+
+
+                    }
+                }
+            }
+        }
+      
+          
+            var data1 = {
+                'Containerdetails': tablearray, 'GateInAllowID': GateInAllowID, 'GateInNoDate': GateInNoDate
+            };
+            var data = JSON.stringify(data1);
+    
+
+            $.ajax({
+                url: "/ExportModel/ExportTruckSave",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                        alert(data);
+                                  document.location = '@Url.Action("ExportTruckIn", "ExportModel")';
+                    $("#tracker-loader").fadeOut("slow");
+
+
+                },
+
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+
+    }
+
+    function checkItemcount() {
+
+        var table = $('#example1').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+</script>
+

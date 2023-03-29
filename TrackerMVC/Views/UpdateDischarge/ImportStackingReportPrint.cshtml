@@ -1,0 +1,87 @@
+﻿@using System.Data;
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Import Stacking Report Print</title>
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div style="width:100%; text-align:center; height:100%">
+        <div style="width:100%;height:100%;">
+            <div class="box">
+                <div class="boxHeaderL">
+                    <img height="70" width="200" src="~/images/NavkarLogo.jpg" />
+                </div>
+                <div class="boxHeaderR">
+                    <h3 class="buttomMargin">@ViewBag.CompanyName</h3>
+                    <h5>@ViewBag.CompanyAddress<br />@ViewBag.CompanyAddress2</h5>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <h3 class="headingh3">Stacking Print</h3>
+            </div>
+            <div class="row">
+                <table class="tblBox">
+                    <tr>
+                        <th>Vessel:</th>
+                        <th>@ViewBag.VesselName &nbsp;</th>
+                        <th>IGM No:</th>
+                        <th>@ViewBag.IGMNo &nbsp;</th>
+                        <th>IGM Date:</th>
+                        <th>@ViewBag.IGMDate &nbsp;</th>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div class="clearfix">
+                <div class="box" style="width:100%">
+                    @foreach (var dr1 in ViewBag.ItemList)
+                    {
+                        <div class="row">
+                            <table class="tblBox">
+                                <tr>
+                                    <th style="width:50%">Item No</th>
+                                    <th style="width:50%">@dr1["ItemNo"]</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <table class="tblBox">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Container No</th>
+                                    <th>SizeType</th>
+                                    <th>LineCD</th>
+                                    <th>Mode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dr in ViewBag.ContainerList)
+                                {
+                                    if (@dr1["ItemNo"] == @dr["ItemNo"])
+                                    {
+                                        <tr>
+                                            <td>@dr["SRNO"]</td>
+                                            <td>@dr["CONTAINERNO"]</td>
+                                            <td>@dr["SIZETYPE"]</td>
+                                            <td>@dr["LINECD"]</td>
+                                            <td>@dr["TRANSPORTTYPE"]</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+            <div>
+                &nbsp;
+            </div>
+        </div>
+    </div>
+</body>
+</html>

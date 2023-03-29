@@ -1,0 +1,199 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.LinewiseTuesReport>
+@{
+    ViewBag.Title = "Import Empty";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<link href="~/css/Inventory.css" rel="stylesheet" />
+<div id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Inventory - Import Empty: <label id="lblCount"></label></h4>
+    </div>
+    <div class="row row-cards" style="width:100% !important">
+        <div class="col-md-12 col-xl-7">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+
+
+                <div class="table-responsive" >
+                    <table class="table card-table table-vcenter text-nowrap" id="tblExportEmpty" >
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">LINE Code</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+                                <th style="color:white;text-align:left;font-weight:bold;">Line Name</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in Model)
+                            {
+
+                            <tr>
+                                <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.SlCode </td>
+
+                                <td data-toggle="modal" data-target="#exampleModalLong" style="text-align:right;" onclick="showContainerno(@d.LineID,20,@d.Size20,'@d.Lines')">@d.Size20</td>
+                                <td data-toggle="modal" data-target="#exampleModalLong" style="text-align:right;" onclick="showContainerno(@d.LineID,40,@d.Size40,'@d.Lines')">@d.Size40 </td>
+                                <td data-toggle="modal" data-target="#exampleModalLong" style="text-align:right;" onclick="showContainerno(@d.LineID,45,@d.Size45,'@d.Lines')">@d.Size45 </td>
+                                <td style="text-align:right;">@d.Tues </td>
+                                <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Lines </td>
+
+
+                            </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!--Codes By Trailers Location-->
+        <!--bar graph-->
+    </div>
+</div>
+
+
+
+<div class=" content-area1" id="divcontainerno" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title"><lable id="lblSLName"></lable> </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card1">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                                <thead>
+                                    <tr>
+                                        <th class="wd-15p sorting">Dwell Days</th>
+                                        <th class="wd-15p sorting">Container No</th>
+                                        <th class="wd-15p sorting">Size</th>
+                                        <th class="wd-15p sorting">Type</th>
+                                        <th class="wd-15p sorting">In Date</th>
+                                        <th class="wd-15p sorting">do validity</th>
+                                        <th class="wd-15p sorting">Offloading Yard</th>
+
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = document.getElementById("tblExportEmpty");
+        var row;
+
+
+        var COunt = 0;
+
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[4].innerText;
+            var size1 = Size;
+            COunt = COunt + Number(size1);
+            //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+        }
+
+
+        $("#lblCount").text(COunt);
+
+
+    });
+</script>
+
+<script>
+    function showContainerno(LineID, Size, count, Lines) {
+        $("#lblSLName").text(Lines)
+       
+        $("#divcontainerno").show();
+        $("#divSummary").hide();
+        var count1 = count;
+        if (count1 == 0) {
+            /// $("#example tr").remove();
+            $("#example").empty();
+
+        } else {
+            var Activity = 'Import Empty'
+            data1 = { 'Activity': Activity, 'LineID': LineID, 'Size': Size };
+            data = JSON.stringify(data1);
+             //alert(data);
+            $.ajax({
+                type: 'POST',
+                url: '/Report/AJaxGetInventoryCount',
+                //data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ',SearchCriteria: ' + JSON.stringify(SearchCriteria) + ',SearchText: ' + JSON.stringify(SearchText) + '}',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    $('#example').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        //"bFilter": false,
+                        "paging": false,
+                        "aaData": data,
+                        "columns": [
+                            { "data": "DwellDays" },
+                            { "data": "ContainerNo" },
+                            { "data": "Size" },
+                            { "data": "Type" },
+                            { "data": "InDate" },
+                            { "data": "dovalidity" },
+                            { "data": "Yardoffloading" },
+                           
+                        ]
+                    });
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+       
+    }
+
+
+    function getBack() {
+        $("#divcontainerno").hide();
+        $("#divSummary").show();
+    }
+</script>

@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewBag.Title = "Upload Invoice Copy";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+<div class=" content-area" id="uploadinvoicecopy">
+    <div class="page-header">
+        <h4 class="page-title">Upload Invoice Copy</h4>
+       
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Search</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("--Select--", new List<SelectListItem>
+                                          { new SelectListItem { Text = "ALL", Value = "ALL"},
+                                              new SelectListItem { Text = "Batch No", Value = "Batch No"},
+                                              new SelectListItem { Text = "Invoice NO", Value = "Invoice NO"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlsummarysearchcerteria" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divsearchtext" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" id="lblgetlable"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSearchtext", null, new { @class = "form-control ", @id = "txtSearchtext", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="Show" id="btnShow" onclick="GetUploadcopyinvoice()"><i class="fa fa-search"></i></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblReceiptSummaryDet"></table>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="DivUploadcopy">
+
+</div>
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContent'>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#tracker-loader").fadeOut("slow");
+    });
+
+    $('#ddlsummarysearchcerteria').change(function (e) {
+        var SearchNO = $("#ddlsummarysearchcerteria").val();
+        // alert(SearchNO);
+        if (SearchNO == "ALL") {
+            $("#lblgetlable").text("ALL");
+            $("#divsearchtext").hide();
+            $("#txtSearchtext").val("");
+
+
+
+        }
+        
+        if (SearchNO == "Invoice NO") {
+            $("#divsearchtext").show();
+            $("#lblgetlable").text("Invoice NO");
+            $("#txtSearchtext").val("");
+
+        }
+        if (SearchNO == "Batch No") {
+            $("#divsearchtext").show();
+            $("#lblgetlable").text("Batch No");
+            $("#txtSearchtext").val("");
+
+        }
+        
+
+    });
+    function GetUploadcopyinvoice() {
+        $("#tracker-loader").fadeIn("slow");
+        var searchcerteria = $("#ddlsummarysearchcerteria").val();
+        var Searchtext = $("#txtSearchtext").val();
+        var FromDate = $("#txtSummaryFromDate").val();
+        var ToDate = $("#txtSummaryToDate").val();
+        $.ajax({
+            url: '/DomesticSalesRegister/GetUploadcopyInvoicedetails',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', searchcerteria: ' + JSON.stringify(searchcerteria) + ', Searchtext: ' + JSON.stringify(Searchtext) + '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+               
+                if (data == "0" || data == "[]") {
+                
+                    alert('No Data found.');
+                    return;
+                }
+                $("#tblReceiptSummaryDet").empty();
+                RepTableDataJson($("#tblReceiptSummaryDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+               
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+      function GetExcelFile() {
+
+        window.location = '@Url.Action("ExporttoExcelJoType", "DomesticSalesRegister")?';
+
+
+    }
+</script>
+<script>
+    
+    function getUploadDetails(GSTInvocieNO) {
+
+    
+
+
+        $.ajax({
+            url: "/DomesticSalesRegister/UploadCopyDetails",
+            data: JSON.stringify({ 'GSTInvocieNO': GSTInvocieNO }),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+          
+            success: function (response) {
+             
+             
+                $('#uploadinvoicecopy').hide()
+                $('#DivUploadcopy').html(response);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText)
+            }
+        })
+    
+    }
+
+
+    function getBack() {
+        $('#uploadinvoicecopy').show()
+        $('#DivUploadcopy').html('');
+        $('#divCloseLR').hide;
+    }
+
+
+</script>
+
+<script>
+    function OnViewDetails(GSTInvoiceno) {
+        var LRNo = LRNo;
+        var data1 = { 'GSTInvoiceno': GSTInvoiceno };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/DomesticSalesRegister/ViewInvoiceCopyDetails",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $('#myModalContent').html(response);
+                $('#myModal').modal('show');
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+
+        })
+    }
+</script>
+
+
+
+
+
+

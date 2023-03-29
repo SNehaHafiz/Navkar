@@ -1,0 +1,366 @@
+﻿
+@{
+    ViewBag.Title = "Trailer Master";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script type="text/javascript" src="jquery.dataTables.js"></script>
+<script type="text/javascript" src="dataTables.numericComma.js"></script>
+<style>
+    body {
+        font-weight: bolder !important;
+    }
+</style>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden" id="divtrailerMaasterView">
+    <div class="page-header">
+        <h4 class="page-title">
+            TRAILER MASTER: <label id="lblcount"></label> 
+        </h4>
+    </div>
+
+    <div class="row">
+      
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> LDD :</span> <label id="lblcountLDD" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TALOJA :</span> <label id="lblcountTALOJA" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> SHIFT :</span> <label id="lblSHIFT" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> REFFER :</span>   <label id="lblcountREFFER" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS4" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> ODC :</span>   <label id="lblcountODC" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS5" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> Do/Repo :</span>   <label id="lblcountDo/Repo" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+
+                        <button class="btn btn-primary" type="button" id="NTL" onclick="TrailerSummaryList('NTL');">NTL</button>
+                        <button class="btn btn-primary" type="button" id="NCL" onclick="TrailerSummaryList('NCL');">NCL</button>
+
+
+                    </div><br /><br />
+                    @Html.ActionLink("Export To Excel", "ExportToExcel", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Sr No</th>
+                                            <th>Vehicle No</th>
+                                            <th>Size</th>
+                                            <th>Status</th>
+                                            <th>Transport</th>
+                                            <th>Vendor Name</th>
+                                            <th>Cargo Capacity</th>
+                                            <th>Insurance</th>
+                                            <th>Fitness</th>
+                                            <th>Tax</th>
+                                            <th>RC</th>
+                                            <th>Permit</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="smallModal" class="modal fade">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Vendor Name</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <select class="form-control" id="ddlVendorName">
+                                    <option value="0">--Select--</option>
+                                    <option value="HT1">HT1</option>
+                                    <option value="HT1">ARN 1</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1 col-xs-4">
+                    <div class="form-group">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <button class="btn btn-success btn-xs" id="btnSave" onclick="return SaveVendorName();">Save</button>
+                                <input id="TxtInsertVendorNameTrailer" style="visibility:hidden"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div><!-- modal-dialog -->
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      
+        $.fn.dataTable.moment('Do, MMMM YYYY');
+
+        $('#example').DataTable();
+    })
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+        TrailerSummaryList('NTL')
+        $("#NTL").css({ "background-color": "#7754ce" });
+        $("#NCL").css({ "background-color": "#9f78ff" });
+    })
+</script>
+<script>
+    function TrailerSummaryList(vehicleGroup) {
+        $("#tracker-loader").fadeIn("fast");
+        $.ajax({
+            url: "/TrailerTransport/AjaxGetVehicleWiseTrailers",
+            data: '{vehicleGroup: ' + JSON.stringify(vehicleGroup) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $('#lblcount').text(data.length);
+                $('#example').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": true,
+                    "aaData": data,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "retrieve": false,
+                    "paging": false,
+                    "bSortable": true,
+                    "columns": [
+                        { "data": "SrNo" },
+                        //{ "data": "trailername" },
+                        {
+                            "data": "trailername",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<label onclick="AddVendorName(\'' + row.trailername.replace(/'/g, "\\'") + '\')">' + row.trailername+'</label>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "size" },
+                        { "data": "Status" },
+                        { "data": "TransName" },
+                        { "data": "Vendorname" },
+                        { "data": "cargotype" },
+                        { "data": "Insurance" },
+                        { "data": "Fitness_Due_Date" },
+                        { "data": "Tax_Due_Date" },
+                        { "data": "RcBookFiled" },
+                        { "data": "Permit" }
+                    ]
+
+                });
+
+                var table = document.getElementById("example");
+                var row;
+
+
+                var TotTEUS1 = 0;
+                var TotTEUS2 = 0;
+                var TotTEUS3 = 0;
+                var TotTEUS4 = 0;
+                var TotTEUS5 = 0;
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    var Size = row.cells[3].innerText;
+
+                    //  alert(Size)
+
+                    if (Size == "LDD") {
+                        TotTEUS1 = Number(TotTEUS1) + 1;
+                    }
+                    if (Size == "TALOJA") {
+                        TotTEUS2 = Number(TotTEUS2) + 1;
+                    }
+                    if (Size == "SHIFT") {
+                        TotTEUS3 = Number(TotTEUS3) + 1;
+                    }
+                    if (Size == "REFFER") {
+                        TotTEUS4 = Number(TotTEUS4) + 1;
+                    }
+                    if (Size == "ODC") {
+                        TotTEUS5 = Number(TotTEUS5) + 1;
+                    }
+                    if (Size == "Do/Repo") {
+                        TotTEUS6 = Number(TotTEUS6) + 1;
+                    }
+                   
+
+
+                }
+              
+                //alert(TotTEUS);
+                $("#lblcountLDD").text(TotTEUS1);
+                $("#lblcountTALOJA").text(TotTEUS2);
+                $("#lblSHIFT").text(TotTEUS3);
+                $("#lblcountREFFER").text(TotTEUS4);
+                $("#lblcountODC").text(TotTEUS5);
+                $("#lblcountDo/Repo").text(TotTEUS6);
+
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+                $("#divTEUS2").show();
+                $("#divTEUS3").show();
+                $("#divTEUS4").show();
+                $("#divTEUS5").show();
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+
+            }
+        });
+    }
+
+
+    //function TrailerEntry() {
+    //    $("#divtrailerMaasterView").hide();
+    //    $("#divheader").show();
+    //    $("#diventrytable").show();
+    //}
+</script>
+
+<script>
+    $("#NTL").click(function () {
+        $("#NTL").css({ "background-color": "#7754ce" });
+        $("#NCL").css({ "background-color": "#9f78ff" });
+    });
+    $("#NCL").click(function () {
+        $("#NCL").css({ "background-color": "#7754ce" });
+        $("#NTL").css({ "background-color": "#9f78ff" });
+
+    });
+
+</script>
+
+
+<script>
+    function AddVendorName(id) {
+      //  alert(id);
+        $("#smallModal").modal('show');
+        $("#TxtInsertVendorNameTrailer").val(id);
+  
+    }
+
+    function SaveVendorName() {
+        var vendor = $("#ddlVendorName option:selected").val();
+        var TrailerName = $("#TxtInsertVendorNameTrailer").val();
+        var data1 = { 'TrailerName': TrailerName, 'vendor': vendor };
+        var data = JSON.stringify(data1);
+      
+
+        $.ajax({
+            url: "/TrailerTransport/SaveVendorReporting",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+                 alert("Record Saved Successfully!")
+                $("#smallModal").modal('hide');
+
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+
+            }
+        });
+    }
+</script>
+

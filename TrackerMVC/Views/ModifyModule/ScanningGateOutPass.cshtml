@@ -1,0 +1,668 @@
+﻿
+@{
+    ViewBag.Title = "Import Scanning Out Gate Pass";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+
+<style>
+    .hiderow {
+        display: none;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Import Scanning Out Gate Pass</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtdate" type="datetime-local" class="form-control" value="@ViewBag.Date" readonly="readonly" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcontainerno", null, new { @class = "form-control ", @id = "txtcontainerno", autocomplete = "off", Placeholder = "", @onblur = "Fetch()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">JO No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtjono", null, new { @class = "form-control ", @id = "txtjono", autocomplete = "off", Placeholder = "JO No",@readonly="readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+
+                                            <input type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-lg-6">
+                                <div class="row">
+                                    <div class="col-sm-12 col-lg-6 col-xs-12">
+                                        <div class="form-group label-floating" style="padding-top:26px;">
+
+                                            @Html.TextBox("TxtContainernoPrint", null, new { @class = "form-control", @id = "TxtContainernoPrint", name = "TxtContainernoPrint", autocomplete = "off", placeholder = "Full/Partial Container No." })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="padding-top:26px;">
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    <button class="btn btn-primary" id="btnprintsearch" type="button" onclick="OpenContainerSearchPrint()"><i class="fe fe-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="display:none" id="divPrinttableDetails">
+                                    <div class="col-sm-12 col-lg-12 col-xs-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="wd-15p sorting"></th>
+                                                        <th class="wd-15p sorting">Entry ID</th>
+                                                        <th class="wd-15p sorting">Jo no</th>
+                                                        <th class="wd-15p sorting">Container No</th>
+                                                        <th class="wd-15p sorting">GP Date</th>
+
+                                                    </tr>
+                                                </thead>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer No(Last 4 digits)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divtrailernodrop">
+                                <label class="form-label">Trailer No </label>
+                                <select id="ddlTrailerNo" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Drivers</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddldrivers", (IEnumerable<SelectListItem>)ViewBag.DriverList, "--Select--", new { @class = "form-control", @id = "ddldrivers", name = "ddldrivers", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+
+                                            <input type="hidden" id="txttype" />
+                                            <input type="hidden" id="txtsize" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button id="btnSave" class="btn btn-primary btn-xs" onclick="return Add();">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-xs-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblContDets">
+                                        <thead>
+                                            <tr>
+                                                
+                                                <th class="wd-15p sorting">Container No</th>
+                                                <th class="wd-15p sorting">JO No</th>
+                                                <th class="wd-15p sorting">Size</th>
+                                                <th class="wd-15p sorting">Type</th>
+                                                <th class="wd-15p sorting">Trailer No</th>
+                                                <th class="wd-15p sorting">Driver Name</th>
+                                                <th class="wd-15p sorting">Remarks</th>
+                                                <th class="hiderow" >Driver ID</th>
+                                                <th class="hiderow">Trailer ID</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" onclick="Save()" title="Save"><b>Save</b></button>
+                                            <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Scanning Gate Pass Summary</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.ActionLink("Export To Excel", "ExportToExcelScanningPassOut", null, new { @class = "btn btn-primary btn-md" })
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="card1">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="exampleInv"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script>
+
+        function BackToWorkOrder() {
+            $("#divCreate").show();
+            $("#divCreateSummary").hide();
+        }
+        function OpenWOSummary() {
+            $("#divCreate").hide();
+            $("#divCreateSummary").show();
+        }
+
+     </script>
+
+<script>
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlTrailerNo");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+</script>
+
+<script>
+
+    function Fetch() {
+
+
+        var ContainerNo = $("#txtcontainerno").val().trim();
+
+
+        var data1 = { "ContainerNo": ContainerNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetScanningPassDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+                $('#txtsize').val(data[0].Size);
+                $('#txtjono').val(data[0].JONo);
+                $('#txttype').val(data[0].Type);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function OpenContainerSearchPrint() {
+        $("#divPrinttableDetails").show();
+        var ContainerNo = $("#TxtContainernoPrint").val();
+
+        var data1 = { 'Containerno': ContainerNo };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            data: data,
+            url: '/ModifyModule/GetScanningPassDetailsForPrint',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "paging": false,
+                    "paging": false,
+                    "bFilter": false,
+                    "bInfo": false,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "EntryID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-info" title="Print" onclick="ReprintDetails(' + row.EntryID + ')"><i class="fa fa-print"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        
+                        { "data": "EntryID" },
+                        { "data": "JONo" },
+                        { "data": "ContainerNo" },
+                        { "data": "OutDate" },
+
+                    ],
+                })
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+
+    }
+</script>
+
+<script>
+    var storeAddedItem = [];
+    function Add() {
+        debugger;
+
+
+        var element = {};
+        
+        element.ContainerNo = $('#txtcontainerno').val();
+        element.JONo = $('#txtjono').val();
+        element.Size = $('#txtsize').val();
+        element.Type = $('#txttype').val();
+        element.trailername = $("#ddlTrailerNo option:selected").text();
+        element.drivername = $("#ddldrivers option:selected").text();
+        element.Remarks = $('#txtremarks').val();
+        element.trailerID = $('#ddlTrailerNo').val();
+        element.driverID = $('#ddldrivers').val();
+        //before push to data it will check null or not 
+
+
+
+        // CHECK DUPLICATE CONTAINER WHILE ADD IN GRID
+
+        var checkDuplicate = element.ContainerNo.toString(50);
+       // alert(checkDuplicate)
+        var exists = $('#tblContDets tr > td:contains(' + checkDuplicate + ')').length;
+        if (exists == 1) {
+
+            alert("Cannot Add Duplicate Container!");
+            return false;
+        }
+
+
+
+        if (element.ContainerNo == "") {
+            document.getElementById("txtcontainerno").style.borderColor = "red";
+            alert('Please  Enter container no!')
+            event.preventDefault();
+            return;
+        }
+        if (element.drivername == 0) {
+            document.getElementById("ddldrivers").style.borderColor = "red";
+            alert('Please  select driver Name!')
+            event.preventDefault();
+            return;
+        }
+        if (element.JONo == 0) {
+            document.getElementById("txtjono").style.borderColor = "red";
+            alert('JO No cannot be Blank!')
+            event.preventDefault();
+            return;
+        }
+
+        storeAddedItem.push(element);
+        // data tble
+        $('#tblContDets').DataTable({
+            "destroy": true,
+            "bLengthChange": false,
+            "aaData": storeAddedItem,
+            "bPaginate": false,
+            "bInfo": false,
+            "paging": false,
+            "columns": [
+                
+                { "data": "ContainerNo", },
+                { "data": "JONo" },
+                { "data": "Size" },
+                { "data": "Type" },
+                { "data": "trailername" },
+                { "data": "drivername" },
+                { "data": "Remarks" },
+                { "data": "trailerID", "className": "hiderow" },
+                { "data": "driverID", "className": "hiderow" },
+                
+            ]
+        });
+
+        //CLEAR TO ADD ELEMENTS
+        $('#txtjono').val("");
+        $('#txtcontainerno').val("");
+        $('#txttype').val("");
+        $('#txtsize').val("");
+        
+
+    }
+
+</script>
+
+<script>
+    function Save() {
+        debugger;
+        ///ddlentryType
+
+
+        var SelectedData = new Array();
+        var tablearray = new Array();
+        var table = document.getElementById("tblContDets");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+
+            ContainerNo = row.cells[0].innerText;
+            JONo = row.cells[1].innerText;
+            Size = row.cells[2].innerText;
+            Type = row.cells[3].innerText;
+            trailerID = row.cells[7].innerText;
+            driverID = row.cells[8].innerText;
+            Remarks = row.cells[6].innerText;
+            trailername = row.cells[4].innerText;
+            SelectedData.push({
+                'JONo': JONo, 'ContainerNo': ContainerNo, 'Size': Size, 'Type': Type, 'trailerID': trailerID,
+                'driverID': driverID, 'Remarks': Remarks, 'trailername': trailername
+            })
+        }
+        var data1 = {
+            'Debitdata': SelectedData
+        };
+        var data = JSON.stringify(data1);
+        alert(data);
+        $.ajax({
+            url: "/ModifyModule/SaveScanningGPDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("ScanningGateOutPass", "ModifyModule")';
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+           
+</script>
+<script>
+
+    function ReprintDetails(EntryID) {
+        var data1 = { 'EntryID': EntryID };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: "POST",
+            url: "/ModifyModule/PrintGateOutScanningIMP",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.document.write(response);
+
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        })
+    }
+</script>
+<script>
+
+    function Show() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowVoucherDetails();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+
+    function ShowVoucherDetails() {
+
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/ScanningGPOutReport',
+            data: '{FromDate: ' + JSON.stringify($("#FromDate").val()) + ', ToDate: ' + JSON.stringify($("#ToDate").val()) + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                debugger;
+                RepTableDataJson($("#exampleInv"), data, "Warai Invoice", "WaraiInvoice");
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                $("#tracker-loader").fadeOut("slow");
+                alert(errormessage.responseText);
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    };
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+</script>

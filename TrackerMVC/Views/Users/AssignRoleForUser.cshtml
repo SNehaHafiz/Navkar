@@ -1,0 +1,324 @@
+﻿@model IEnumerable<TrackerPurchaseEntities.BussinessEntities.SubmenuInfo>
+@{
+    ViewBag.Title = "AssignRoleForUser";
+    Layout = "~/Views/Shared/LayoutDashboard.cshtml";
+}
+
+<style>
+    .table td {
+    border-bottom: 1px solid #e3ebf3;
+}
+   .colwidth {
+        width: 80px !important;
+        min-width: 100px;
+    }
+</style>
+<div id="cute-loader" style="display: none;"></div>
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Assign Role</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;" title="User Summary"><i class="fa fa-file-text" data-toggle="tooltip" data-placement="bottom" title="User Summary" data-original-title="User Summary"></i>  </a></li>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                @Html.TextBox("UserName", null, new { @class = "form-control", @id = "UserName", name = "UserName", autocomplete = "off", disabled = "disabled" })
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <h4>Menu List</h4>
+                            <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+                                <div class="row">
+                                    @{
+                                        var Count = 0;
+                                        var Count1 = 0;
+
+                                        foreach (var d in Model)
+                                        {
+                                            Count1 = Count1 + 1;
+                                            var MenuID = d.MenuID;
+                                            if (Count != d.Priority)
+                                            {
+
+                                                <div class="col-sm-12 col-lg-12">
+
+                                                    <div class="card">
+                                                        <div class="card-header" role="tab" id="Head_@Html.DisplayFor(m => d.MenuID)" style=" color: #fff;background-color: #7bc144;">
+                                                            @*#9f78ff*@
+                                                            <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapse_@Html.DisplayFor(m => d.MenuID)" aria-expanded="false" aria-controls="@Html.DisplayFor(m => d.MenuID)">
+
+                                                                <h4 class="card-title" style="color:white;">@Html.DisplayFor(m => d.Description)</h4>
+                                                            </a>
+                                                        </div>
+
+                                                        <div id="collapse_@Html.DisplayFor(m => d.MenuID)" class="collapse" role="tabpanel" aria-labelledby="Head_@Html.DisplayFor(m => d.MenuID)" data-parent="#accordionEx">
+                                                            <div class="card-body">
+                                                                <table class="table  table-hover  tbl-cart text-nowrap" id="tbl_@Html.DisplayFor(m => d.MenuID)">
+                                                                    <thead>
+                                                                        <tr class="text-white  p-2" style=" background-color:#7bc144">
+                                                                            <th class="text-white  p-2">Module Name</th>
+                                                                            <th class="text-white colwidth p-2">Access</th>
+                                                                            <th class="text-white colwidth p-2">Add</th>
+                                                                            <th class="text-white colwidth p-2">Edit</th>
+                                                                            <th class="text-white colwidth p-2">Cancel</th>
+                                                                            <th class="text-white colwidth p-2">View</th>
+                                                                            <th class="text-white colwidth p-2">Print</th>
+                                                                        </tr>
+
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var c in Model)
+                                                                        {
+                                                                            if (MenuID == c.MenuID)
+                                                                            {
+                                                                                Count = Count + 1;
+
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        @Html.DisplayFor(m => c.SubMenu)
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="material-switch ">
+                                                                                            @if (c.IsActive)
+                                                                                            {
+                                                                                                <input id="switch_0@(c.SubMenuID)" name="Accesscheckbox" value="@(c.SubMenuID)" type="checkbox" checked />
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <input id="switch_0@(c.SubMenuID)" name="Accesscheckbox" value="@(c.SubMenuID)" type="checkbox" />
+                                                                                            }
+                                                                                            <label for="switch_0@(c.SubMenuID)" class="label-primary"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="material-switch ">
+                                                                                            @if (c.CanAdd)
+                                                                                            {
+                                                                                                <input id="switch_1@(c.SubMenuID)" name="addcheckbox" value="@(c.SubMenuID)" type="checkbox" checked />
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <input id="switch_1@(c.SubMenuID)" name="addcheckbox" value="@(c.SubMenuID)" type="checkbox" />
+                                                                                            }
+                                                                                            <label for="switch_1@(c.SubMenuID)" class="label-primary"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="material-switch ">
+                                                                                            @if (c.CanUpdate)
+                                                                                            {
+                                                                                                <input id="switch_2@(c.SubMenuID)" name="editcheckbox" value="@(c.SubMenuID)" type="checkbox" checked />
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <input id="switch_2@(c.SubMenuID)" name="editcheckbox" value="@(c.SubMenuID)" type="checkbox" />
+                                                                                            }
+                                                                                            <label for="switch_2@(c.SubMenuID)" class="label-primary"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="material-switch ">
+                                                                                            @if (c.CanCancel)
+                                                                                            {
+                                                                                                <input id="switch_3@(c.SubMenuID)" name="cancelcheckbox" value="@(c.SubMenuID)" type="checkbox" checked />
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <input id="switch_3@(c.SubMenuID)" name="cancelcheckbox" value="@(c.SubMenuID)" type="checkbox" />
+                                                                                            }
+                                                                                            <label for="switch_3@(c.SubMenuID)" class="label-primary"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="material-switch ">
+                                                                                            @if (c.CanView)
+                                                                                            {
+                                                                                                <input id="switch_4@(c.SubMenuID)" name="viewcheckbox" value="@(c.SubMenuID)" type="checkbox" checked />
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <input id="switch_4@(c.SubMenuID)" name="viewcheckbox" value="@(c.SubMenuID)" type="checkbox" />
+                                                                                            }
+                                                                                            <label for="switch_4@(c.SubMenuID)" class="label-primary"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="material-switch ">
+                                                                                            @if (c.CanPrint)
+                                                                                            {
+                                                                                                <input id="switch_5@(c.SubMenuID)" name="printcheckbox" value="@(c.SubMenuID)" type="checkbox" checked />
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <input id="switch_5@(c.SubMenuID)" name="printcheckbox" value="@(c.SubMenuID)" type="checkbox" />
+                                                                                            }
+                                                                                            <label for="switch_5@(c.SubMenuID)" class="label-primary"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            }
+                                            if (Count == d.Priority && Count1 == d.Priority)
+                                            {
+                                                Count = 0;
+                                                Count1 = 0;
+                                            }
+                                        }
+
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-success pull-right" onclick="Save(@ViewBag.UserID,'@ViewBag.UserName')" title="Save"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        @*var country = document.getElementById("ddlRoleDropdown");
+        country.value = @ViewBag.RoleID;*@
+        $("#global-loader").fadeOut("slow");
+
+    });
+
+    function Save(ID, UserName) {
+        $("#global-loader").fadeIn("slow");
+        var element = {}
+        element.ID = ID;
+
+        element.ModifiedOn = new Date();
+        element.UserName = UserName;
+        var myColumnDefs = [];
+        $('input[name=Accesscheckbox]').each(function () {
+            if (this.checked) {
+                myColumnDefs.push({ 'Status': true, 'ID': $(this).val() })
+            } else {
+                myColumnDefs.push({ 'Status': false, 'ID': $(this).val() })
+            }
+        });
+        //-- add --
+                $('input[name=addcheckbox]').each(function (i,obj) {
+            if (this.checked) {
+                myColumnDefs[i].CanAdd = true;
+            } else {
+                myColumnDefs[i].CanAdd = false;
+            }
+                });
+           //-- endadd --
+                //-- Edit --
+                $('input[name=editcheckbox]').each(function (i,obj) {
+            if (this.checked) {
+                myColumnDefs[i].CanUpdate = true;
+            } else {
+                myColumnDefs[i].CanUpdate = false;
+            }
+                });
+           //-- end Edit --
+                //-- Cancel --
+                $('input[name=cancelcheckbox]').each(function (i,obj) {
+            if (this.checked) {
+                myColumnDefs[i].CanCancel = true;
+            } else {
+                myColumnDefs[i].CanCancel = false;
+            }
+                });
+           //-- end Cancel  --
+                //-- View --
+                $('input[name=viewcheckbox]').each(function (i,obj) {
+            if (this.checked) {
+                myColumnDefs[i].CanView = true;
+            } else {
+                myColumnDefs[i].CanView = false;
+            }
+                });
+           //-- end view --
+
+                        //-- View --
+                $('input[name=printcheckbox]').each(function (i,obj) {
+            if (this.checked) {
+                myColumnDefs[i].CanPrint = true;
+            } else {
+                myColumnDefs[i].CanPrint = false;
+            }
+                });
+           //-- end view --
+        if (myColumnDefs == "") {
+            alert("There is no Menu list")
+            return false;
+        }
+        var data = { 'ListObject': myColumnDefs, 'User': element };
+        data = JSON.stringify(data);
+        console.log(myColumnDefs);
+        console.log(UserName);
+         console.log(ID);
+        $.ajax({
+            url: "/Users/AssignRoleAndMenu",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //  dataType: "json",
+            success: function (response) {
+                alert(response);
+                $("#global-loader").fadeOut("slow");
+             document.location = '@Url.Action("UserSummary", "Users")';
+            },
+            error: function (errormessage) {
+                $("#global-loader").fadeOut("slow");
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function getBack() {
+      document.location = '@Url.Action("UserSummary", "Users")';
+        }
+
+
+    function myFunction() {
+  var x = document.getElementById("myDIV");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+</script>
+
+
+
+

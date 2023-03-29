@@ -1,0 +1,498 @@
+﻿@model TrackerMVCEntities.BusinessEntities.IGMDetailsEntities
+@{
+    ViewBag.Title = "IGMDetails";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">IGM Details Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Search Criteria</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSearchCriteria", new List<SelectListItem>
+                                        { new SelectListItem { Text = "--Select--", Value = ""},
+                                            new SelectListItem { Text = "VIA No", Value = "VIANo"},
+                                            new SelectListItem { Text = "IGM No", Value = "IGMNo"},
+
+
+                                          }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearchCriteria" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divVIANo">
+                                <div class="form-group">
+                                    <label class="form-label" id="lblSearchDisplay">VIA No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtVIANo", null, new { @class = "form-control", @id = "txtVIANo", name = "txtVIA", @maxlength = 15, autocomplete = "on" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" style="display:none" id="divIGMNo">
+                                <div class="form-group">
+                                    <label class="form-label" id="lblSearchDisplay">IGM No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIGMName", null, new { @class = "form-control", @id = "txtIGMName", name = "txtIGMName", @maxlength = 15, autocomplete = "on" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowLineWiseSummary()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-append " id="tabPurpose">
+                                <button class="btn btn-primary active" id="export" style="text-transform: uppercase;" type="button" onclick="ShowLineWiseSummary()">Summary </button>
+                                <button class="btn btn-primary " id="import" style="text-transform: uppercase;" type="button" onclick="btncontainerList()">Containers List</button>
+                                <button class="btn btn-primary " id="import" style="text-transform: uppercase;" type="button" onclick="btnGenerateRailEIRCopy()">Generate Rail EIR Copy</button>
+                                <button class="btn btn-primary " id="staking" style="text-transform: uppercase;" type="button" onclick="btnStakingReport()">Staking Report</button>
+                                &nbsp;&nbsp;<input type="number" id="txtValue" style="width:80px;" title="Lot" />
+                            </span>
+                        </div><br />
+                        <div class="row" id="divsummary">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblIGMLineSummary"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divContainerDetails" style="display:none">
+                            <div class="table-responsive">
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                            <thead>
+                                                <tr>
+
+                                                    <th class="wd-15p sorting">Sr No.</th>
+                                                    <th class="wd-15p sorting">Port Name</th>
+                                                    <th class="wd-15p sorting">Jo No.</th>
+                                                    <th class="wd-15p sorting">Jo Date</th>
+                                                    <th class="wd-15p sorting">Vessel Name</th>
+                                                    <th class="wd-15p sorting">Via No</th>
+                                                    <th class="wd-15p sorting">SMTP No.</th>
+                                                    <th class="wd-15p sorting">SMTP Date</th>
+                                                    <th class="wd-15p sorting">IGM No.</th>
+                                                    <th class="wd-15p sorting">Item No.</th>
+                                                    <th class="wd-15p sorting">Container NO.</th>
+                                                    <th class="wd-15p sorting">Size</th>
+                                                    <th class="wd-15p sorting">ISO Code</th>
+                                                    <th class="wd-15p sorting">Type</th>
+                                                    <th class="wd-15p sorting">Cargo Type</th>
+                                                    <th class="wd-15p sorting">Cargo Weight</th>
+                                                    <th class="wd-15p sorting">BL Number</th>
+                                                    <th class="wd-15p sorting">BL Date</th>
+                                                    <th class="wd-15p sorting">Importer</th>
+                                                    <th class="wd-15p sorting">Line Name</th>
+                                                    <th class="wd-15p sorting">Cargo Descriptions</th>
+                                                    <th class="wd-15p sorting">In Date</th>
+                                                </tr>
+                                            </thead>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+   
+</script>
+
+<script type="text/javascript">
+    function PrintPDF(id) {
+        debugger;
+        window.location = '@Url.Action("DownloadPDF", "UpdateDischarge")?id=' + id;
+
+        @*var id = 1;
+        var data1 = { 'studentId': id };
+        // alert(JSON.stringify(data1));
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/UpdateDischarge/DownloadAttachment",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+                var sid = 1;
+                window.location = '@Url.Action("DownloadAttachment", "UpdateDischarge")?studentId=' + sid ;
+                //alert(response);
+                   },
+            error: function (errormessage) {
+                       debugger;
+                       alert(errormessage.responseText);
+                   }
+               });*@
+    }
+
+    function PrintJO(id) {
+        debugger;
+        var id = id;
+        var data1 = { 'id': id };
+        // alert(JSON.stringify(data1));
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/UpdateDischarge/ImportJobOrderReportPrint",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+                var myWindow = window.open("", "MsgWindow1","width=800,height=600");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1","width=800,height=600");
+                myWindow.document.write(response);
+                //toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=50,width=800,height=600
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function btnStakingReport() {
+        debugger;
+
+        var SearchType = $("#ddlSearchCriteria").val();
+        var SearchText = '';
+        var inpvalue = $('#txtValue');
+
+        if (inpvalue.val() == '') {
+            alert('Please Entry Lot No.');
+            inpvalue.focus();
+            return;
+        }
+
+        if ($("#ddlSearchCriteria").val() == "IGMNo") {
+            if ($("#txtIGMName").val() == '') {
+                alert('IGM No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtIGMName").val();
+            }
+        }
+        else if ($("#ddlSearchCriteria").val() == "VIANo") {
+            if ($("#txtVIANo").val() == '') {
+                alert('VIA No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtVIANo").val();
+            }
+        }
+        else {
+            alert('Please select Search Criteria');
+            return;
+        }
+
+        $.ajax({
+            url: "/UpdateDischarge/ImportStackingReportPrint",
+            data: '{SearchText: ' + JSON.stringify(SearchText) + ', value: ' + JSON.stringify(inpvalue.val()) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+                var myWindow = window.open("", "MsgWindow1", "width=800,height=600");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", "width=800,height=600");
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function btncontainerList() {
+        debugger;
+        var SearchType = $("#ddlSearchCriteria").val();
+        var SearchText = '';
+
+        if ($("#ddlSearchCriteria").val() == "IGMNo") {
+            if ($("#txtIGMName").val() == '') {
+                alert('IGM No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtIGMName").val();
+            }
+        }
+        else if ($("#ddlSearchCriteria").val() == "VIANo") {
+            if ($("#txtVIANo").val() == '') {
+                alert('VIA No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtVIANo").val();
+            }
+        }
+        else {
+            alert('Please select Search Criteria');
+            return;
+        }
+
+        $("#divContainerDetails").show();
+        $("#divsummary").hide();
+
+
+        $.ajax({
+            url: "/UpdateDischarge/getIGMDetails",
+            type: "POST",
+            data: '{SearchText: ' + JSON.stringify(SearchText) + ', SearchType: ' + JSON.stringify(SearchType) + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data == '' || data == '[]') {
+                    $('#example1').empty();
+                    $('#tblIGMLineSummary').empty();
+                    alert('Data Not Found.');
+                    return;
+                }
+               // alert(JSON.stringify(data));
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": true,
+                    //"bFilter": false,
+                    "paging": true,
+                    "aaData": data,
+                    "columns": [
+                        { "data": "SrNo" },
+                        { "data": "PortName" },
+                        { "data": "JoNo" },
+                        { "data": "JoDate" },
+                        { "data": "VesselName" },
+                        { "data": "ViaNo" },
+                        { "data": "SMTPNo" },
+                        { "data": "SMTPDate" },
+                        { "data": "IGMNo" },
+                        { "data": "ItemNo" },
+                        { "data": "ContainerNO" },
+                        { "data": "Size" },
+                        { "data": "ISOCode" },
+                        { "data": "ContainerType" },
+                        { "data": "CargoType" },
+                        { "data": "CargoWeight" },
+                        { "data": "BLNumber" },
+                        { "data": "BLDate" },
+                        { "data": "Importer" },
+                        { "data": "LineName" },
+                        { "data": "CargoDescriptions" },
+                    { "data": "Indate" }
+                    ], "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'IGMDetails',
+                        "filename": 'IGMDetails_List'
+
+                    }
+                    ]
+                })
+
+                var table = document.getElementById("example1");
+                var row;
+
+
+                var TotTEUS1 = 0;
+                var TotTEUS2 = 0;
+                var TotTEUS3 = 0;
+                var TotTEUS = 0;
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[11].innerText;
+
+                    //alert(Size)
+
+                    if (Size == 20) {
+                        TotTEUS1 = Number(TotTEUS1) + 1;
+                    }
+                    if (Size == 40) {
+                        TotTEUS2 = Number(TotTEUS2) + 2;
+                    }
+                    if (Size == 45) {
+                        TotTEUS3 = Number(TotTEUS3) + 2;
+                    }
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = TotTEUS1 + TotTEUS2 + TotTEUS3
+                // alert(TotTEUS);
+                $("#lbltwenty").text(TotTEUS1);
+                $("#lblforty").text(TotTEUS2);
+                $("#lblfortyfive").text(TotTEUS3);
+                $("#lblTotal").text(TotTEUS);
+
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+                $("#divTEUS2").show();
+                $("#divTEUS3").show();
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+        //ShowLineWiseSummary();
+
+    }
+   
+    function ShowLineWiseSummary() {
+        debugger;
+        var SearchType = $("#ddlSearchCriteria").val();
+        var SearchText = '';
+
+        if ($("#ddlSearchCriteria").val() == "IGMNo") {
+            if ($("#txtIGMName").val() == '') {
+                alert('IGM No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtIGMName").val();
+            }
+        }
+        else if ($("#ddlSearchCriteria").val() == "VIANo") {
+            if ($("#txtVIANo").val() == '') {
+                alert('VIA No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtVIANo").val();
+            }
+        }
+        else {
+            alert('Please select Search Criteria');
+            return;
+        }
+
+        $("#divContainerDetails").hide();
+        $("#divsummary").show();
+
+        $.ajax({
+
+            url: '/UpdateDischarge/getLineWiseSummaryDet',
+            type: 'Post',
+            data: '{SearchText: ' + JSON.stringify(SearchText) + ', SearchType: ' + JSON.stringify(SearchType) +'}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                if (data == '' || data == '[]') {
+                    $('#example1').empty();
+                    $('#tblIGMLineSummary').empty();
+                    alert('Data Not Found.');
+                    return;
+                }
+                RepTableDataJson($("#tblIGMLineSummary"), data, "LineWiseSummaryDetails", "LineWiseSummary");
+                //$("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+
+    $("#ddlSearchCriteria").change(function () {
+        if ($("#ddlSearchCriteria").val() == "IGMNo") {
+            $("#divIGMNo").show();
+            $("#divVIANo").hide();
+        }
+        else if ($("#ddlSearchCriteria").val() == "VIANo") {
+            $("#divIGMNo").hide();
+            $("#divVIANo").show();
+        }
+    });
+
+    function btnGenerateRailEIRCopy() {
+        debugger;
+
+        var SearchType = $("#ddlSearchCriteria").val();
+        var SearchText = '';
+
+        if ($("#ddlSearchCriteria").val() == "IGMNo") {
+            if ($("#txtIGMName").val() == '') {
+                alert('IGM No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtIGMName").val();
+            }
+        }
+        else if ($("#ddlSearchCriteria").val() == "VIANo") {
+            if ($("#txtVIANo").val() == '') {
+                alert('VIA No cannot be Blank.');
+                return;
+            }
+            else {
+                SearchText = $("#txtVIANo").val();
+            }
+        }
+        else {
+            alert('Please select Search Criteria');
+            return;
+        }
+
+        $.ajax({
+            url: "/UpdateDischarge/GenerateRailEIRCopyPrint",
+            data: '{SearchType: ' + JSON.stringify(SearchType) + ', SearchText: ' + JSON.stringify(SearchText) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+                var myWindow = window.open("", "MsgWindow1", 'width='+screen.availWidth+',height='+screen.availHeight+'');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth+',height='+screen.availHeight+'');
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+</script>

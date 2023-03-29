@@ -1,0 +1,156 @@
+﻿@model TrackerMVCEntities.BusinessEntities.LoginEntites
+
+@{
+    ViewBag.Title = "login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*@Styles.Render("~/css/login.css");*@
+<style>
+    .Loader {
+        cursor: pointer;
+    }
+</style>
+<body class="login-img">
+    <div class="container" id="divSummary">
+        <div>
+            &nbsp;
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card p-1 card text-white bg-primary py-1 d-md-down-none start-transparent">
+                    <div class="card-body" style="padding:0px; font-size:xx-large;">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col" style="text-align:center;font-family: sans-serif;">
+                                            Application Dashboard
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card-group mb-0">
+                    <div class="card p-4 card text-white bg-primary py-5 d-md-down-none start-transparent">
+                        <div class="card-body card-body text-center justify-content-center">
+                            @foreach (var row in ViewBag.HeaderLocation)
+                            {
+                                <div class="row">
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="card card bg-orange">
+                                            <div class="card-body">
+                                                <div class="d-flex no-block align-items-center">
+                                                    <div>
+                                                        <h4 class="text-white">@row["LocationCode"]</h4>
+                                                        <h2 class="text-white m-0 "><i class="fa fa-sign-in"></i></h2>
+                                                    </div>
+                                                    <div class="ml-auto">
+                                                        <span class="text-white display-6"><img src="~/images/logo1.png" style="margin-right:-50px;height:70px;" class="header-brand-img" alt="Plight logo">
+                                                            <input type="hidden" value="@row["LocationId"]" />
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 col-lg-9">
+                                        <div class="row">
+                                            @foreach (var dr in ViewBag.HeaderSubLocation)
+                                            {
+                                                if (row["LocationId"] == dr["PlocationId"])
+                                                {
+                                                    <div class="col-sm-12 col-md-6 col-lg-3 Loader">
+                                                        <div class="card bg-primary">
+                                                            <div class="card-body">
+                                                                <div class="d-flex no-block align-items-center" onclick="reLogin('@dr["ApplicationUrl"]');">
+                                                                    <div>
+                                                                        <h4> <a href="@dr["ApplicationUrl"]">@dr["ApplicationName"]</a></h4>
+                                                                        <h2 class="text-white m-0 "> <a> <i class="fa fa-sign-in"></i></a></h2>
+                                                                        <input type="hidden" id="hdnLocationId" value="@dr["LocationId"]" />
+                                                                        <input type="hidden" value="@dr["DBConnectionString"]" />
+                                                                    </div>
+                                                                    <div class="ml-auto">
+                                                                        <span class="text-white display-6"><i class="fa fa-hand-o-right fa-2x"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+        function reLogin(Url) {
+            debugger;
+            if (Url == "") {
+                alert('URL not found.');
+                return false;
+            }
+            //document.location = Url;
+            window.open(Url, "_blank");
+        }
+        //$(document).ready(function () {
+        //    $("#aLickId").click(function () {
+        //        alert($("#hdnLocationId").val());
+        //    });
+        //});
+
+        $(function () {
+            $('#login').click(function () {
+                var username = document.getElementById('txtusername').value;
+                var password = document.getElementById('txtpassword').value;
+
+                var blResult = Boolean;
+                blResult = true;
+
+                document.getElementById('txtusername').style.borderColor = "Gainsboro";
+                document.getElementById('txtpassword').style.borderColor = "Gainsboro";
+
+                if (username == "") {
+                    document.getElementById('txtusername').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+                if (password == "") {
+                    document.getElementById('txtpassword').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+
+                if (blResult == false) { alert('Please fill the required fields!'); }
+                return blResult;
+            });
+            //$('#btnRemoveCSS').click(function () {
+            //    $('#divsample').removeClass('divclass')
+            //});
+        })
+    </script>
+    <script type="text/javascript">
+
+        function onservice() {
+            alert("Under revision..!")
+        }
+
+    </script>
+</body>
+
+
+

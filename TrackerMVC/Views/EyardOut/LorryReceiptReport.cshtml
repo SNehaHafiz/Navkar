@@ -1,0 +1,297 @@
+﻿
+@{
+    ViewBag.Title = "Lorry Receipt Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="tracker-loader"></div>
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">LR Receipt Report</h4>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Category</label>
+                                            @Html.DropDownList("ddlTypeSearch", (IEnumerable<SelectListItem>)ViewBag.Activity, "ALL", new { @class = "form-control custom-select", @id = "ddlTypeSearch", name = "ddlTypeSearch", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-22 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" title="Show" onclick="Show('')" type="button">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+                            <div class="input-group">
+
+                                <span class="input-group-append " id="tabPurpose">
+                                    <button class="btn btn-success active btn-lg m-0" id="BtnTotal" style="width: 120px !important;font-weight:bold" value="" type="button" onclick="ShowCount('')">Total:  <span id="lbltotal" style="font-weight:bold"></span></button>
+                                    <button class="btn btn-success btn-lg m-0" id="Btn20" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowCount('20')">20:  <span id="lbl20" style="font-weight:bold"></span> </button>
+                                    <button class="btn btn-success btn-lg m-0" id="Btn40" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowCount('40')">40:  <span id="lbl40" style="font-weight:bold"></span></button>
+                                    <button class="btn btn-success btn-lg m-0" id="Btn45" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowCount('45')">45:  <span id="lbl45" style="font-weight:bold"></span></button>
+                                    <button class="btn btn-success btn-lg m-0" id="BtnTEUS" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowCount('')">TEUS:  <span id="lblTeus" style="font-weight:bold"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+    $(function () {
+        $("#ddlTypeSearch").change(function () {
+            if ($("#ddlTypeSearch").val() == "ALL") {
+                $("#dvtxtSearch").hide();
+            } else {
+                $("#dvtxtSearch").show();
+            }
+        });
+    });
+
+
+
+    function Show(Size) {
+        $("#tracker-loader").fadeIn("slow");
+
+        var DepartmentID = $("#ddlTypeSearch option:selected").text();
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'FromDate': FromDate, 'category': DepartmentID, 'ToDate': ToDate, 'Size': Size };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackLorryReceiptReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#reportTable").empty();
+                RepTableDataJsonwopaging($('#reportTable'), data, "ImportFinalOut", "ImportFinalOut");
+
+
+
+
+
+                var table = document.getElementById("reportTable");
+                var row;
+
+
+                var TotTEUS1 = 0;
+                var TotTEUS2 = 0;
+                var TotTEUS3 = 0;
+                var TotTEUS = 0;
+                var Total1 = 0;
+
+                for (var i = 0; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[10].innerText;
+
+                    //alert(Size)
+
+                    if (Size == 20) {
+                        TotTEUS1 = Number(TotTEUS1) + 1;
+                    }
+                    if (Size == 40) {
+                        TotTEUS2 = Number(TotTEUS2) + 1;
+                    }
+                    if (Size == 45) {
+                        TotTEUS3 = Number(TotTEUS3) + 1;
+                    }
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = TotTEUS1 + (TotTEUS2 * 2) + (TotTEUS3 * 2)
+                Total1 = TotTEUS1 + (TotTEUS2) + (TotTEUS3)
+                // alert(TotTEUS);
+                $("#lbltotal").text(Total1);
+                $("#lbl20").text(TotTEUS1);
+                $("#lbl40").text(TotTEUS2);
+                $("#lbl45").text(TotTEUS3);
+                $("#lblTeus").text(TotTEUS);
+
+
+
+
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+
+
+    }
+
+
+    function ShowCount(Size) {
+        $("#tracker-loader").fadeIn("slow");
+        // var date = document.getElementById("SelectedDate").value;
+        var DepartmentID = $("#ddlTypeSearch option:selected").text();
+        // alert(DepartmentID)
+        // var DepartmentID = e.options[e.selectedIndex].text;
+        var FromDate = $("#FromDate").val();
+        var Search = $("#txtSearch").val();
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'FromDate': FromDate, 'category': DepartmentID, 'ToDate': ToDate, 'Size': Size };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackLorryReceiptReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#reportTable").empty();
+                RepTableDataJsonwopaging($('#reportTable'), data, "ImportFinalOut", "ImportFinalOut");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelLorryreceiptdetails", "report")?';
+
+
+    }
+
+
+</script>
+<script type="text/javascript">
+    $("#BtnTotal").click(function () {
+        $("#BtnTotal").addClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn20").click(function () {
+        $("#Btn20").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn40").click(function () {
+        $("#Btn40").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn45").click(function () {
+        $("#Btn45").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#BtnTEUS").click(function () {
+        $("#BtnTEUS").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+
+    });
+    $(document).ready(function () {
+        $("#tracker-loader").fadeOut("slow");
+    });
+</script>

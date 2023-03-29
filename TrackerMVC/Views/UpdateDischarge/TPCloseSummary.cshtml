@@ -1,0 +1,247 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TPEntryEntities>
+@{
+    ViewBag.Title = "TP Close";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area" id="diventry">
+    <div class="page-header">
+        <h4 class="page-title">TP Close : @Model.Count()</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th></th>
+                                            <th class="wd-15p sorting">TP No</th>
+                                            <th class="wd-15p sorting">TP Date</th>
+                                            <th class="wd-15p sorting">Trailer NO.</th>
+                                            <th class="wd-15p sorting">Driver name</th>
+                                            <th class="wd-15p sorting">TP Location</th>
+                                            <th class="wd-15p sorting">TP FOr</th>
+                                            <th class="wd-15p sorting">Amount</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                        <tr>
+                                            <td><a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#smallModal" onclick="show(@d.TPNumber,'@d.trailername')">Close</a></td>
+                                            <td>@Html.DisplayFor(m => d.TPNO)</td>
+                                            <td>@Html.DisplayFor(m => d.TPdate)</td>
+                                            <td>@Html.DisplayFor(m => d.trailername)</td>
+                                            <td>@Html.DisplayFor(m => d.drivername)</td>
+                                            <td>@Html.DisplayFor(m => d.TPLocation)</td>
+                                            <td>@Html.DisplayFor(m => d.TPfor)</td>
+                                            <td>@Html.DisplayFor(m => d.amount)</td>
+
+
+                                        </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- table-wrapper -->
+        </div>
+        <!-- section-wrapper -->
+    </div>
+</div>
+<div id="smallModal" class="modal fade">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Message Preview</h6>*@
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+
+                    <div class="col-lg-8 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">TP No.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtTPNo", null, new { @class = "form-control", @id = "txtTPNo", name = "txtTPNo", autocomplete = "off" ,@readonly= true})
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Vehicle number</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtvehicleno", null, new { @class = "form-control", @id = "txtvehicleno", name = "txtvehicleno", autocomplete = "off" ,@readonly=true})
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Attachment</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="file" id="fileticketattachment" name="postedFile" />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+                            @*<label class="form-label" style="visibility:hidden">.</label>*@
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="button" id="btnShow" value="Save" class="btn btn-primary" onclick="SaveTpCloseDetails()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                @*<div class="modal-body">
+                        <p>This is a modal with small size</p>
+                    </div>*@<!-- modal-body -->
+                @*<div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>*@
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [1]
+                }
+
+            ],
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'TPCloseDetails',
+                "filename": 'TPCloseDetails_List'
+
+            }
+            ]
+        });
+
+    });
+
+</script>
+
+<script type="text/javascript">
+    function show(TPNumber, trailername) {
+        document.getElementById('txtTPNo').value = TPNumber
+        document.getElementById('txtvehicleno').value = trailername
+
+    }
+
+    function SaveTpCloseDetails() {
+
+        var formData = new FormData();
+        var file = document.getElementById("fileticketattachment").files[0];
+        formData.append("TPNumber", $("#txtTPNo").val());
+        formData.append("startdate", $("#FromDate").val());
+        formData.append("enddate", $("#ToDate").val());
+        formData.append("file", file);
+        var fileUpload = $("#fileticketattachment").get(0);
+        var files = fileUpload.files;
+       // alert(formData);
+        // Create FormData object
+        var fileData = new FormData();
+        if (files.length == 0) {
+            alert("Please select file!")
+            return false;
+        }
+        else {
+             $.ajax({
+                 url: "/UpdateDischarge/ajaxAddTPCloseDetails",
+                    data: formData,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        alert("Record saved successfully!");
+                          document.location = '@Url.Action("TPCloseSummary", "UpdateDischarge")';
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+        }
+        $("#fileticketattachment").val('');
+    }
+    
+
+</script>
+
+
+

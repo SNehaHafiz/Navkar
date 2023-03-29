@@ -1,0 +1,351 @@
+﻿
+@{
+    ViewBag.Title = "UserSummary";
+    Layout = "~/Views/Shared/LayoutDashboard.cshtml";
+}
+<style>
+    #tblUserList thead tr th:first-child,
+    #tblUserList tbody tr td:first-child {
+        width: 7.5em !important;
+        min-width: 7.5em !important;
+        max-width: 7.5em !important;
+        word-break: break-all;
+    }
+</style>
+
+<script src="~/assets/js/GetTableArray.js"></script>
+<script src="~/assets/js/GetTableJson.js"></script>
+
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden" id="MainUser">
+    <div class="page-header">
+        <h4 class="page-title">User Summary</h4>
+        @*<ol class="breadcrumb" id="IsDirect">
+                <li class="breadcrumb-item" id="btnBack">
+                    <a onclick="addJC();" class="btn btn-primary btn-success" style="color:white;align-content:center;MARGIN-TOP: 6PX  ">
+                        <i class="fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Create User" data-original-title="Create User" style="font-size:13px"></i>
+                    </a>
+                </li>
+            </ol>*@
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> Search Criteria</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                                            { new SelectListItem { Text = "--SELECT--", Value = "0"},
+                                                new SelectListItem { Text = "USER NAME", Value = "USER NAME"},
+                                              }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch", onchange = "Search()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divSearchText">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtName", null, new { @class = "form-control", @id = "txtName", name = "txtName" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btnShow" id="btnShow" onclick="ShowUserSummary();"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap th_Background" id="tblUserList" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="GetViewGarageJCDetails"></div>
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#tblUserList').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+        "paging": false,
+        "aaSorting": []
+
+
+    });
+
+    var Search = $("#ddlSearch").val();
+    if (Search ==0) {
+        $("#divSearchText").hide();
+    }
+    ShowUserSummary();
+
+
+    });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+    $(window).on("load", function (e) {
+        $("#global-loader").fadeOut("slow");
+    })
+</script>
+
+<script type="text/javascript">
+    $("#txtName").on('keyup', function (e) {
+        if (e.keyCode == 13) {
+            ShowUserSummary();
+        }
+    });
+
+      function ShowRightsAgainstUser() {
+        var Add = ''; var Edit = ''; var Cancel = ''; var View = ''; var Print = '';
+        var data = { 'SubMenuID': 18 };
+        data = JSON.stringify(data);
+        $.ajax({
+            type: 'POST',
+            data: data,
+            url: '/Users/RightsAgainstUser',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (response) {
+                Add = response.Add;
+                Edit = response.Edit;
+                Cancel = response.Cancel;
+                View = response.View;
+                Print = response.Print;
+               
+                if (Add == 0) {
+                     $("#Add").hide();
+                }
+                 if (Edit == 0) {
+                    //$(".BtnEdit").prop("disabled", true);
+                    $(".BtnEdit").attr('disabled','disabled');
+                }
+                 if (Cancel == 0) {
+                    //$(".BtnCancel").prop("disabled", true);
+                    $(".BtnCancel").attr('disabled','disabled');
+                }
+                 if (View == 0) {
+                    //$(".BtnView").prop("disabled", true);
+                    $(".BtnView").attr('disabled','disabled');
+                }
+                 if (Print == 0) {
+                    //$(".BtnPrint").prop("disabled", true);
+                    $(".BtnPrint").attr('disabled', 'disabled');
+                    
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+
+            }
+
+        });
+        
+
+    }
+    function ShowUserSummary() {
+        $("#global-loader").fadeIn("fast");
+        var Search = $("#ddlSearch").val();
+        var name = $("#txtName").val();
+
+        data1 = { 'Search': Search, 'name': name };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/Users/AjaxGetUserDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#tblUserList").empty();
+                RepTableDataJson($("#tblUserList"), data, "UserDetails", "UserDetails_list");
+
+                var table = document.getElementById("tblUserList");
+
+
+               
+
+
+
+                $("#global-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+                $("#global-loader").fadeOut("slow");
+            }
+        });
+        ShowRightsAgainstUser();
+    }
+
+
+
+    function RepTableDataJson(tableName, data, title, fileName) {
+      
+    try {
+        if (tableName == null) {
+            alert("table not exist.");
+        }
+
+        //Check Data Table has if already initialize then need to destroy first!
+        if ($.fn.DataTable.isDataTable(tableName)) {
+            tableName.DataTable().destroy();
+            tableName.empty();
+        }
+
+        var parseJSONResult = jQuery.parseJSON(data);
+
+        if (parseJSONResult != null && parseJSONResult.length > 0) {
+            //Get dynmmic column.
+            var dynamicColumns = [];
+            var i = 0;
+            $.each(parseJSONResult[0], function (key, value) {
+                var obj = { sTitle: key };
+                dynamicColumns[i] = obj;
+                i++;
+            });
+            //fetch all records from JSON result and make row data set.
+            var rowDataSet = [];
+            var i = 0;
+            $.each(parseJSONResult, function (key, value) {
+                var rowData = [];
+                var j = 0;
+                $.each(parseJSONResult[i], function (key, value) {
+                    rowData[j] = value;
+                    j++;
+                });
+                rowDataSet[i] = rowData;
+
+                i++;
+            });
+            tableName.dataTable({
+                "destroy": true,
+                "bLengthChange": false,
+                "aaData": rowDataSet,
+                "bInfo": true,
+                "bPaginate": true,
+                "bFilter": true,
+                "paging": true,
+                //"order": [],
+                "columns": dynamicColumns,
+                "deferRender": true,
+                "bSort": false,
+                "dom": 'Bfrtip',
+                   
+                   "buttons": [
+
+                        {
+                            extend: 'excel',
+                            title: 'User Summary',
+                            exportOptions: {
+                                columns: [ 1,2, 3,4,5]
+                            }
+                        }
+                    ]
+              //"pagingType": "full_numbers"
+            });
+                $(".buttons-excel").addClass("btn btn-primary");
+                $(".buttons-excel>span").replaceWith("<i class='fa fa-file-excel-o'></i>");
+        }
+
+
+    }
+    catch (ex) {
+        alert(ex.message);
+    }
+    }
+
+
+    function Search() {
+        var Search = $("#ddlSearch").val();
+        if (Search == 0 ) {
+            $("#divSearchText").hide();
+            document.getElementById('txtName').value = "";
+        }
+        else {
+            $("#divSearchText").show();
+        }
+
+
+    }
+
+    function addJC() {
+         document.location = '@Url.Action("GenerateJobCard", "JobCard")';
+    }
+    function ShowSelectedUserDetailsNew(USERID, USERNAME) {
+
+        var data = { 'ID': USERID, 'UserName': USERNAME };
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: 'post',
+            url: '/Users/StoreTempDateForUser',
+             data: data,
+             contentType: "application/json; charset=utf-8",
+          success: function (response) {
+        document.location = '@Url.Action("AssignRoleForUser", "Users")';
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+       function ShowSelectedUserDetails(USERID, USERNAME) {
+
+        var data = { 'ID': USERID, 'UserName': USERNAME };
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: 'post',
+            url: '/Users/StoreTempDateForUser',
+             data: data,
+             contentType: "application/json; charset=utf-8",
+          success: function (response) {
+        document.location = '@Url.Action("AssignRoleForUser", "Users")';
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>
+

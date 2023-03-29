@@ -1,0 +1,421 @@
+﻿
+@{
+                /**/
+
+                ViewBag.Title = "Modify Vehicle Movement";
+                Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="tracker-loader"></div>
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Modify Vehicle Movement</h4>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Activity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlActivity", new List<SelectListItem>
+                                              { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                  new SelectListItem { Text = "I", Value = "I"},
+                                                new SelectListItem { Text = "O", Value = "O"},
+
+                                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlActivity" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vehicle No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            <input id="TxtVehicleNumber" placeholder="Enter Vehicle No" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button id="btnSave" class="btn btn-success btn-xs" onclick="ShowImportDetails()">Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+
+                                    <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Trans date</th>
+                                                <th>Activity</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Container No</th>
+                                                <th>Size</th>
+                                                <th>Weight</th>
+                                                <th>JoNo Entry ID</th>
+                                                <th>Container Type</th>
+                                                <th>Trans ID</th>
+                                                <th>Process</th>
+                                                <th>Is Cancel</th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">From Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.DropDownList("ddlLocationList", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlLocationList", name = "ddlLocationList", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">To Locaton</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.DropDownList("ddlLocation", (IEnumerable<SelectListItem>)ViewBag.LocationTo, "--Select--", new { @class = "form-control", @id = "ddlLocation", name = "ddlLocation", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">New Vehicle No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtTrailerno" placeholder="Enter New Vehicle No." type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            <input id="txtRemarks" placeholder="Enter Remarks" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return Addsave();">Update</button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0, 5]
+                }
+
+            ]
+        });
+
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+<script type="text/javascript">
+    function ShowImportDetails() {
+
+        var res = validateSearchFunction();
+        if (res == false) {
+            return false;
+        }
+        $("#tracker-loader").fadeIn("slow");
+        var Activity = $("#ddlActivity").val();
+        var VehicleNo = $("#TxtVehicleNumber").val()
+        var data1 = { 'Activity': Activity, 'VehicleNo': VehicleNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ModifyVehicleMovement/ajaxSearchlistdetails",
+            data: data,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+               
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "columns": [
+                        {
+
+                            "data": "TransID",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"   value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "Transdate" },
+                        { "data": "Activity" },
+                        { "data": "From" },
+
+                        { "data": "To" },
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "Weight" },
+                        { "data": "JoNoEntryID" },
+                        { "data": "ContainerType" },
+                        { "data": "TransID" },
+                        { "data": "Process" },
+                        { "data": "IsCancel" },
+
+
+                    ]
+                });
+
+              
+                $("#tracker-loader").fadeOut("slow");
+
+                $("#txtTrailerno").val(VehicleNo);
+                $("#ddlLocationList").val(data[0].FromID);
+                $("#ddlLocation").val(data[0].ToID);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+
+
+    }
+</script>
+
+<script>
+
+
+    function Addsave() {
+
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("example2");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                var TransID = row.cells[10].innerText;
+
+                if (TransID == checkboxarray[k]) {
+
+                    Activity = row.cells[2].innerText;
+                    FromLocation = row.cells[3].innerText;
+                    ToLocation = row.cells[4].innerText;
+                    ContainerNO = row.cells[5].innerText;
+                    Size = row.cells[6].innerText;
+                    JoNOEntryID = row.cells[8].innerText;
+                    ContainerType = row.cells[9].innerText;
+                    TransID = row.cells[10].innerText;
+
+
+                    tablearray.push({
+                        'TransID': TransID, 'Activity': Activity, 'FromLocation': FromLocation, 'ToLocation': ToLocation,
+                        'ContainerNO': ContainerNO, 'Size': Size, 'JoNOEntryID': JoNOEntryID, 'ContainerType': ContainerType})
+                }
+            }
+        }
+     
+
+
+         if (tablearray.length == 0) {
+            alert("Please select Invoice to proceed");
+
+        }
+         else {
+             var res = validateSaveFunction();
+             if (res == false) {
+                 return false;
+             }
+
+
+             var MovementType = $("#ddlActivity").val();
+             var VehicleNo = $("#TxtVehicleNumber").val();
+             var LocationFrom = $("#ddlLocationList option:selected").val();
+             var Tolocation = $("#ddlLocation option:selected").val();
+             var NewVehicleNo = $("#txtTrailerno").val();
+             var Remarks = $("#txtRemarks").val();
+             var Data1 = {
+                 'TransDetails': tablearray, 'MovementType': MovementType, 'VehicleNo': VehicleNo, 'LocationFrom': LocationFrom,
+                 'Tolocation': Tolocation, 'NewVehicleNo': NewVehicleNo, 'Remarks': Remarks
+             }
+            var data = JSON.stringify(Data1);
+            $.ajax({
+                url: "/ModifyVehicleMovement/UpdateVehicleDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("ModifyVehicleMovement", "ModifyVehicleMovement")';
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+        }
+    }
+</script>
+
+<script>
+    function validateSearchFunction () {
+
+        var TxtActivity = document.getElementById('ddlActivity').value;
+        var TxtVehicleno = document.getElementById('TxtVehicleNumber').value;
+
+      
+        var blResult = Boolean;
+        blResult = true;
+
+
+
+        document.getElementById("ddlActivity").style.borderColor = "gainsboro";
+        document.getElementById("TxtVehicleNumber").style.borderColor = "gainsboro";
+      
+
+     
+
+        if (TxtActivity == 0) {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("ddlActivity").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (TxtVehicleno == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("TxtVehicleNumber").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+      
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+<script>
+    function validateSaveFunction() {
+
+        var TxtNewVehicleNo = document.getElementById('txtTrailerno').value;
+        var TxtRemakrs = document.getElementById('txtRemarks').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+
+        document.getElementById("txtTrailerno").style.borderColor = "gainsboro";
+        document.getElementById("txtRemarks").style.borderColor = "gainsboro";
+
+
+
+
+        if (TxtNewVehicleNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("txtTrailerno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (TxtRemakrs == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("txtRemarks").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>

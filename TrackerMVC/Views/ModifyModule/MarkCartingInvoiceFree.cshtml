@@ -1,0 +1,304 @@
+﻿
+@{
+    ViewBag.Title = "Mark Customer For Carting Invoice Free";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/sweet-alert.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Mark Customer For Carting Invoice Free</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Customer</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.CustomerList, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00"), @id = "txtfromdate" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txttodate" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label mandatory">&nbsp;</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="custom-switch ">
+                                            <input type="checkbox" name="custom-switch-checkbox" id="isactive" value="True" checked class="custom-switch-input">
+                                            <span class="custom-switch-indicator"></span>
+                                            <span class="custom-switch-description">Is Active ?</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+
+                    </div>
+                    <div class="row">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" title="Save" onclick="return UpdateJOM();">Save</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="Clear();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Mark Customer For Carting Invoice Free Summary</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.ActionLink("Export To Excel", "ExportToExcelScanningGPINReport", null, new { @class = "btn btn-primary btn-md" })
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="card1">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="exampleInv"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+</script>
+
+<script>
+    function UpdateJOM() {
+        $("#global-loader").fadeIn("slow");
+        debugger;
+        var element = {};
+        element.AGID = $("#ddlcustomer").val().trim();
+        element.FromDate = $("#txtfromdate").val().trim();
+        element.ToDate = $("#txttodate").val().trim();
+        element.Remarks = $("#txtremarks").val().trim();
+        element.IsActive = $('#isactive').is(':checked') ? $('#isactive').val() : false;
+
+        var isValid = true;
+        if (element.AGID == 0 ) {
+            isValid = isValid && false;
+            $("#ddlcustomer").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddlcustomer").removeClass("is-invalid state-invalid");
+        }
+
+
+        if (element.Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+
+
+
+
+
+        var data = { 'Master': element };
+        data = JSON.stringify(data);
+ 
+        $.ajax({
+            type: 'post',
+            url: '/ModifyModule/SaveFreeInvoiceData',
+            data: data,
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                if (response.ResponseMessage != '') {
+                    alert(response.ResponseMessage);
+                    document.location = '@Url.Action("MarkCartingInvoiceFree", "ModifyModule")';
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.Message,
+                        icon: 'error'
+                    })
+                }
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: str,
+                    icon: 'error'
+                });
+            }
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+
+        document.location = '@Url.Action("MarkCartingInvoiceFree", "ModifyModule")';
+    }
+</script>
+
+
+

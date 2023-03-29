@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "ChangeViaNo";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h3>Update  Via No</h3>
+         
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Old Via No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtOldViaNo" type="text" placeholder=""   class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">New Via No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtNewVia" type="text" placeholder="" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save1();">Save</button>
+                                        <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     function Save1() {
+        debugger;
+         var OldViaNo = document.getElementById('txtOldViaNo').value;
+         var NewViaNo = document.getElementById('txtNewVia').value;
+ 
+         if (OldViaNo == "") {
+             document.getElementById("txtOldViaNo").style.borderColor = "red";
+             alert('Please  Enter Via No!')
+            event.preventDefault();
+            return;
+         }
+         if (NewViaNo == "") {
+             document.getElementById("txtNewVia").style.borderColor = "red";
+             alert('Please  Enter Via No!')
+             event.preventDefault();
+             return;
+         }
+         
+
+         var data1 = {
+             'OldViaNo': OldViaNo, 'NewViaNo': NewViaNo
+         };
+
+         var data = JSON.stringify(data1);
+$.ajax({
+    url: "/ExpensesHead/UpdateViaNo",
+    data: data,
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("ChangeViaNo", "ExpensesHead")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+        }
+</script>

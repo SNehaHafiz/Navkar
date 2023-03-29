@@ -1,0 +1,99 @@
+﻿
+
+<div class="page-header">
+    <h4 class="page-title">Invoice Audit</h4>
+    <a onclick="goBack();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Search"></i> </a>
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Invoice No</label>
+                            @Html.TextBox("InvoiceNo", null, new { @class = "form-control", @id = "txtInvoiceNo", name = "txtInvoiceNo", value = ViewBag.InvoivceNo, autocomplete = "off", @readonly = "true" })
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-lg-12">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Note Description</label>
+                            @Html.TextArea("NoteDesc", null, new { @class = "form-control", @id = "txtNoteDesc", name = "txtNoteDesc", autocomplete = "off" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 col-lg-12" id="divShowButton">
+                        <div class="form-group" style="float:right">
+                            <div class="row gutters-xs">
+                                <div class="col" style="float:right">
+                                    <input type="button" id="btnSave" name="Save" value="Save" class="btn btn-primary btnShow" onclick="Save()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Save() {
+        var formData = {};
+        formData.InvoivceNo = $("#txtInvoiceNo").val();
+        formData.NoteDesc = $("#txtNoteDesc").val();
+        formData.NoteDate = new Date();
+        formData.NoteOn = new Date();
+
+        var isValid = true;
+        if (formData.NoteDesc == "" || formData.NoteDesc == undefined) {
+            $("#txtNoteDesc").addClass("is-invalid state-invalid");
+            isValid = isValid && false;
+        } else {
+            $("#txtNoteDesc").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid) {
+            var data = { 'InvoiceAuditForm': formData };
+            data = JSON.stringify(data);
+
+            $.ajax({
+                url: '/CreditNote/SaveInvoiceAuditForm',
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.Status == 1) {
+                        alert(data.Message);
+                        window.location = "/Report/InvoiceAudit"
+                    } else {
+                        alert("Data is not saved!");
+                    }
+
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+
+            });
+        } else {
+            alert("Please Fill all fields!");
+        }
+    }
+
+</script>

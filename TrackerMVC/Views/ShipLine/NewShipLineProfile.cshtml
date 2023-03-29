@@ -1,0 +1,606 @@
+﻿@model TrackerMVCEntities.BusinessEntities.ShipLinesMaster
+
+@{
+    ViewBag.Title = "New Shipping Line Profile";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+@using (Html.BeginForm("SaveShippingLineProfile", "ShipLine", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="page-header">
+        <h4 class="page-title">Shipping Line Profile</h4> 
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="window.location = '@Url.Action("MasterSummary", "Master")' "><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-sm-3 col-md-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Line code</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SaID, new { htmlAttributes = new { @class = "form-control Number", @id = "lineCode", maxlength = 50 } })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-10 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Line Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLName, new { htmlAttributes = new { @class = "form-control", @id = "lineName", autocomplete = "on", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-lg-7 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Importer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.ImporterName, new { htmlAttributes = new { @class = "form-control", @id = "impName" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>*@
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Full Address</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.EditorFor(model => model.shipperid, new { htmlAttributes = new { @class = "form-control Number", @id = "shipperid" } })*@
+                                            @Html.EditorFor(model => model.SLAddressI, new { htmlAttributes = new { @class = "form-control", @id = "slAddress", maxlength = 65 } })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">City</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                           
+                                            @Html.EditorFor(model => model.SLCity, new { htmlAttributes = new { @class = "form-control", @id = "slCity" } })
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>*@
+                        </div>
+                        <div class="row">
+
+                            @*<div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Pan NO</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.ImpPANNo, new { htmlAttributes = new { @class = "form-control", @id = "impPANNO" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>*@
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Person</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLAuthPerson, new { htmlAttributes = new { @class = "form-control", @id = "slAuthPerson", autocomplete = "on", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Person Designation</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLAuthPersonDesig, new { htmlAttributes = new { @class = "form-control", @id = "authdesignation", autocomplete = "on", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number 1</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLTelI, new { htmlAttributes = new { @class = "form-control", @id = "contactNo1", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number 2</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLTelII, new { htmlAttributes = new { @class = "form-control", @id = "contactNo2", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Fax Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLFax, new { htmlAttributes = new { @class = "form-control", @id = "fax", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Mobile Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLAuthPersonCell, new { htmlAttributes = new { @class = "form-control", @id = "cellNO", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Email Address</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SLEMail, new { htmlAttributes = new { @class = "form-control", @id = "emailID", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @id = "remarks", maxlength = 500 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                @*<label class="form-label">Is Active</label>*@
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.eMailIDs, new { htmlAttributes = new { @class = "form-control", @id = "emailID" } })*@
+                                        @Html.CheckBoxFor(m => m.SLIsActive, new { @checked = "checked" }) Is Active? @*<label class="form-label">Is Active</label>*@
+                                        @* <label>@Html.CheckBoxFor(m => m.IsActive)&nbsp;@Html.DisplayNameFor(m => m.IsActive)</label>*@
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @*<label class="form-label">Is Active</label>*@
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.eMailIDs, new { htmlAttributes = new { @class = "form-control", @id = "emailID" } })*@
+                                        @Html.CheckBoxFor(m => m.IsContract, new { @checked = "checked", @id = "isActive" }) Is Contractual? @*<label class="form-label">Is Active</label>*@
+                                        @* <label>@Html.CheckBoxFor(m => m.IsActive)&nbsp;@Html.DisplayNameFor(m => m.IsActive)</label>*@
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card-footer text-right">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="Save" name="saveProfile" value="Save Profile" class="btn btn-success" />
+                                        @*<input type="button" name="clearProfile" value="Clear" class="btn cursor display_none" title="clear" id="clearValue" />*@ 
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            var message = @Html.Raw(Json.Encode(ViewBag.Message))
+            alert(message);
+            document.getElementById("lineCode").value = "";
+            document.getElementById("lineName").value = "";
+            document.getElementById("slAddress").value = "";
+            //document.getElementById("slCity").value = "";
+            document.getElementById("slAuthPerson").value = "";
+            document.getElementById("authdesignation").value = "";
+            document.getElementById("contactNo1").value = "";
+            document.getElementById("contactNo2").value = "";
+            document.getElementById("fax").value = "";
+            document.getElementById("cellNO").value = "";
+            document.getElementById("emailID").value = "";
+            document.getElementById("remarks").value = "";
+            document.getElementById("isActive").checked = true;
+        };
+
+    </script>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#lineName").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/ShipLine/GetNameForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#lineName").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#slAuthPerson").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/ShipLine/GetContactPersonForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#slAuthPerson").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#authdesignation").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/ShipLine/GetDesignationForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#authdesignation").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#lineCode").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/ShipLine/GetExisitingShippingLineCode?shippingLineCode=' + $("#lineCode").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#lineCode").removeClass(); 
+                        if (data == true) {
+                            $("#lineCode").addClass("form-control is-valid state-valid")
+                        } else {
+                            $("#lineCode").addClass("form-control is-invalid state-invalid")
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#lineName").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/ShipLine/GetExisitingShippingLineName?shippingName=' + $("#lineName").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#lineName").removeClass(); 
+                        if (data == true) {
+                            $("#lineName").addClass("form-control is-valid state-valid")
+                        } else {
+                            $("#lineName").addClass("form-control is-invalid state-invalid")
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#slAddress").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/ShipLine/ValidateAddress?shippingAddress=' + $("#slAddress").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#slAddress").removeClass(); 
+                        if (data == true) {
+                            $("#slAddress").addClass("form-control is-valid state-valid")
+                        } else {
+                            $("#slAddress").addClass("form-control is-invalid state-invalid")
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#clearValue").on("click", function () {
+            document.getElementById("lineCode").value = "";
+            document.getElementById("lineName").value = "";
+            document.getElementById("slAddress").value = "";
+            //document.getElementById("slCity").value = "";
+            document.getElementById("slAuthPerson").value = "";
+            document.getElementById("authdesignation").value = "";
+            document.getElementById("contactNo1").value = "";
+            document.getElementById("contactNo2").value = "";
+            document.getElementById("fax").value = "";
+            document.getElementById("cellNO").value = "";
+            document.getElementById("emailID").value = ""; 
+            document.getElementById("remarks").value = "";
+            document.getElementById("isActive").checked = true;
+            $("#lineCode").removeClass();
+            $("#lineName").removeClass();
+            $("#slAddress").removeClass();
+
+            $("#lineCode").addClass("form-control");
+            $("#lineName").addClass("form-control");
+            $("#slAddress").addClass("form-control"); 
+        });
+
+
+        $("#emailID").on("blur", function () {
+            isEmail($("#emailID").val());
+
+        });
+
+        //var count1 = 0;
+        //$("#contactNo1").on("blur", function () {
+        //    if ($("#contactNo1").val() != "") {
+        //        $("#contactNo1").removeClass();
+        //        $("#contactNo1").addClass("form-control");
+        //        isNumber("#contactNo1", $("#contactNo1").val());
+        //        count1 = 0
+        //    } else {
+        //        if (count1 == 0) {
+        //            alert("Empty Contact No is not valid");
+        //            $("#contactNo1").removeClass();
+        //            $("#contactNo1").addClass("form-control is-invalid state-invalid");
+
+        //            count1++;
+        //        }
+
+        //    }
+
+        //});
+
+
+        //$("#contactNo2").on("blur", function () {
+        //    if ($("#contactNo2").val() != "") {
+        //        $("#contactNo2").removeClass();
+        //        $("#contactNo2").addClass("form-control");
+        //        isNumber("#contactNo2", $("#contactNo2").val());
+        //        count1 = 0
+        //    } else {
+        //        if (count1 == 0) {
+        //            alert("Empty Contact No is not valid");
+        //            $("#contactNo2").removeClass();
+        //            $("#contactNo2").addClass("form-control is-invalid state-invalid");
+
+        //            count1++;
+        //        }
+        //    }
+        //});
+
+
+        //$("#cellNO").on("blur", function () {
+        //    if ($("#cellNO").val() != "") {
+        //        $("#cellNO").removeClass();
+        //        $("#cellNO").addClass("form-control");
+        //        isNumber("#cellNO", $("#cellNO").val());
+        //        count1 = 0
+        //    } else {
+        //        if (count1 == 0) {
+        //            alert("Empty Contact No is not valid");
+        //            $("#cellNO").removeClass();
+        //            $("#cellNO").addClass("form-control is-invalid state-invalid");
+
+        //            count1++;
+        //        }
+        //    }
+
+        //});
+
+
+    });
+    function numericOnly(element, e) {
+        console.log(e.keyCode)
+        // Allow: backspace, delete, tab, escape, enter and . - , ;
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190, 45, 44, 59, 189, 109, 188, 186]) !== -1 ||
+            // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+            console.log(e.keyCode)
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+
+    }
+
+    function isEmail(email) {
+        var regex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        var res1 = regex.test(email);
+        $("#emailID").removeClass();
+        if (email == "") {
+            alert('Please Enter Email Id!');
+            $("#emailID").addClass("form-control is-invalid state-invalid")
+            // document.getElementById('email').value = ""
+            return false;
+        }
+        if (res1 == false) {
+            alert('Please Enter valid Email Id!');
+            $("#emailID").addClass("form-control is-invalid state-invalid")
+            //  document.getElementById('Email').value = ""
+            return res1;
+        }
+        else {
+            
+            $("#emailID").addClass("form-control is-valid state-valid")
+        }
+    }
+
+    function isNumber(contactID, contactNO) { 
+        var regex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
+        var res2 = regex.test(parseInt(contactNO));
+        $(contactID).removeClass();
+        if (contactNO == "") {
+            $(contactID).addClass("form-control is-invalid state-invalid")
+            alert('Please Enter valid Contact Number!');
+        }
+        if (res2 == false) {
+            $(contactID).addClass("form-control is-invalid state-invalid")
+            alert('Please Enter valid Contact Number!');
+        }
+        else {
+            $(contactID).addClass("form-control is-valid state-valid")
+        }
+    }
+</script>

@@ -1,0 +1,324 @@
+﻿@*@model TransportEntities.BusinessEntities.Horse*@
+@{
+    ViewBag.Title = "Horse";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="addHorse">
+    <div class="page-header">
+        <h4 class="page-title">Horse Master</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryList()"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtentryID" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry Date </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtentryDate" type="datetime-local" readonly  value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Horse Number </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtHorseNumber" type="text" placeholder="Horse Number" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Installed Tyres</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtInstalled" type="text" placeholder="Installed Tyres" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtWeight" type="text" placeholder="Weight" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Model</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtModel" type="text" placeholder="Model" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return AddTrailer();">Save</button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div>
+        <div id="summaryList"></div>
+    </div>
+    <script>
+        function AddTrailer1() {
+
+        var txtentryDate = document.getElementById('txtentryDate').value;
+
+        var txtHorseNumber = document.getElementById('txtHorseNumber').value;
+        //alert("hii")
+        var txtInstalled = document.getElementById('txtInstalled').value;
+        var txtWeight = document.getElementById('txtWeight').value;
+        var txtModel = document.getElementById('txtModel').value;
+        //alert("hii")
+        if (txtentryDate == "") {
+            document.getElementById("txtentryDate").style.borderColor = "red";
+            alert('Please enter Entry Date!')
+            event.preventDefault();
+            return;
+        }
+        if (txtHorseNumber == "") {
+            document.getElementById("txtHorseNumber").style.borderColor = "red";
+            alert('Please enter Horse Number!')
+            event.preventDefault();
+            return;
+        }
+        if (txtInstalled == "") {
+            document.getElementById("txtInstalled").style.borderColor = "red";
+            alert('Please select Installed Tyres!')
+            event.preventDefault();
+            return;
+        }
+        if (txtWeight == "") {
+            document.getElementById("txtWeight").style.borderColor = "red";
+            alert('Please select Weight!')
+            event.preventDefault();
+            return;
+        }
+        if (txtModel == "") {
+            document.getElementById("txtModel").style.borderColor = "red";
+            alert('Please select Model!')
+            event.preventDefault();
+            return;
+        }
+        var Horse = {};
+        Horse.EntryDate = txtentryDate;
+        Horse.HorseNumber = txtHorseNumber;
+        Horse.InstalledTyres = txtInstalled;
+        Horse.Weight = txtWeight;
+        Horse.Model = txtModel;
+$.ajax({
+url: "/Horse/Save",
+    data: '{Horse: ' + JSON.stringify(Horse) + '}',
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("Horse", "Horse")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+    }
+
+    function ViewSummaryList() {
+
+        $.ajax(
+               {
+                url: '/Horse/GetHorseSummary',
+                   type: 'GET',
+                data: "",
+
+                   contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+                       $("#summaryList").show();
+
+
+                    var html = "<div class=\" content-area overflow-hidden\" id=\"summaryLists\"> " +
+
+  " <div class=\"page-header\">"+
+      " <h4 class=\"page-title\">Horse Summary :" + data.length + "</h4>"+
+      " <div class=\"form-group\">"+
+         "  <label class=\"form-label\"></label>"+
+        "   <div class=\"row gutters-xs\">"+
+             "  <div class=\"col\">"+
+
+                "   <button type=\"button\" class=\"btn btn-icon btn-success\" name=\"addHorse\" title=\"addHorse\" id=\"addhorseScreen\" onclick=\"window.location = '@Url.Action("Horse", "Horse")' \"><i class=\"fa fa-plus\"></i></button>"+
+              " </div>"+
+         "  </div>"+
+       "</div>"+
+ "  </div>"+
+  " <div class=\"row\">"+
+      " <div class=\"col-md-12 col-lg-12\">"+
+        "   <div class=\"card\">"+
+
+             "  <div class=\"card-body\">"+
+               "    <div class=\"table-responsive\">"+
+                   "    <table id=\"Horse_Details\" class=\"table table-striped table-bordered\" style=\"width:100%\">"+
+                          " <thead>"+
+
+                             "  <tr>"+
+                        "   <th class=\"wd-10p sorting\">Entry ID</th> " +
+                                 "   <th class=\"wd-10p sorting\">Horse Number</th> " +
+                                  "   <th class=\"wd-10p sorting\">Installed Tyres</th> " +
+                        "   <th class=\"wd-10p sorting\">Weight</th> " +
+                        "   <th class=\"wd-10p sorting\">model</th> " +
+                             "  </tr>" +
+                          " </thead>" +
+                         "  <tbody style=\"box-sizing :border-box;\">"
+
+                    var rows = "";
+                    $.each(data, function (i, item) {
+                        
+                        rows += " <tr> <td>" +
+                            "" + item.EntryID + "</td>" +
+                            " <td> " + item.HorseNumber + "</td>" +
+                            " <td> " + item.InstalledTyres + "</td>" +
+                            " <td> " + item.Weight + "</td>" +
+                            " <td> " + item.model + "</td>" +
+                           
+                            
+                            "  </tr>"
+                    });
+
+                    html += rows + "  </tbody>  </table>      </div>                </div>" +
+
+                        "   <!-- table-wrapper -->" +
+                        "    </div>" +
+                        "    <!-- section-wrapper -->" +
+
+                        "    </div>" +
+                        "    </div>" +
+                        "  </div>"
+                    //alert(html)
+                       $("#addHorse").hide();
+                       $("#summaryList").show();
+                       $("#summaryList").html(html);
+                       $('#Horse_Details').DataTable({
+                           "destroy": true,
+                           "bLengthChange": false,
+                           "bInfo": true,
+                           "bPaginate": true,
+                           "bFilter": true,
+                           "retrieve": false,
+                           "paging": true,
+                           "dom": 'Bfrtip',
+                           "buttons": [{
+                               "extend": 'excel',
+                               "title": 'HorseMasterDetails',
+                               "filename": 'HorseMasterDetails_List'
+
+                           }
+                           ]
+                       });
+
+                   },
+                   error: function () {
+                      alert("error");
+                   }
+               });
+
+    }
+
+
+    </script>
+
+<script type="text/javascript">
+    function AddTrailer() {
+        var HorseNumber = $("#txtHorseNumber").val().trim();
+
+       var data1 = { 'HorseNumber': HorseNumber };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/Horse/AjaxCheckHorseNumber",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response == 1) {
+                        alert("Horse number already exist!");
+                        document.getElementById('txtHorseNumber').value = "";
+                    }
+                    else {
+                        AddTrailer1();
+                    }
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+   }
+</script>

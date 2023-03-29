@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "GST Return Summary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">GST Return Summary : <label id="lblCount">0</label> </h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("FromDate", null, new { @class = "form-control datePickerPOD", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("ToDate", null, new { @class = "form-control datePickerPOD", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show()" type="button"><i class="fe fe-search"></i></button>
+                                        @*<input type="button" value="Search" class="btn btn-primary" onclick="Show()" />*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelGSTReturnSummary", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblGST" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tblGST').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+
+          
+        });
+
+    });
+</script>*@
+<script>
+    function Show()
+    {
+    
+        var fromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var data = JSON.stringify({
+            'FromDate': fromDate,
+            'ToDate': ToDate
+        });
+        
+        $.ajax({
+            type: 'POST',
+            url: '/report/getGSTReturnList',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                var table = document.getElementById("tblGST");
+                //alert(JSON.stringify(table.rows.length));
+               // $('#lblCount').text(data.rows.length);
+               // alert(data.length);
+                //alert(jsonResult)
+                //alert('hi2')
+                // $('#example2').empty();
+                // $('#example2').dataTable(jsonResult);
+                //$("#example2").DataTable().destroy();
+                $("#tblGST").empty();
+                RepTableDataJson($("#tblGST"), data, "Gst return", "Gstreturn_List");
+                $("#tracker-loader").fadeOut("slow");
+                var table = document.getElementById("tblGST");
+                var tavle = table;
+                //alert(tavle);
+               
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

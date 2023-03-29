@@ -1,0 +1,329 @@
+﻿ 
+@{
+    ViewBag.Title = "BCNWagonMapping";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+ 
+<div class=" content-area" id="divBCNWagon">
+    <div class="page-header">
+        <h4 class="page-title">BCN Wagon Mapping Cancel</h4>
+        
+    </div>
+   
+      
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TrainNo", null, new { @class = "form-control ", @id = "TrainNo", name = "TrainNo", placeholder = "NEW", autocomplete = "off" })
+                            
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("RRWagonContNo", null, new { @class = "form-control ", @id = "RRWagonContNo", name = "RRWagonContNo", placeholder = "NEW", autocomplete = "off" })
+                                          
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="Button" id="btnShow" value="Show" onclick="LoadBCNAddSearch();" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWagonMappingList">
+                                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                        <tr>
+                                            <th style="width:80px;color: white;text-align:center"><input type="checkbox" id="flowcheckall" value="" />Select All</th>
+                                            <th style="width:1px;color: white;">Sr No</th>
+                                            <th style="width:1px;color: white;">Wagon No</th>
+                                            <th style="width:80px;color: white;">Wagon Pkgs</th>
+                                            <th style="width:100px;color: white;">Wagon Weight</th>
+                                            <th style="width:80px;color: white;">Remaining Pkgs</th>
+                                            <th style="width:80px;color: white;">Remaining Weight</th>
+                                            <th style="width:100px;color: white;">Container No</th>
+                                            <th style="width:80px;color: white;">Stuff Order Date</th>
+                                            <th style="width:80px;color: white;">Stuff Pkgs</th>
+                                            <th style="width:80px;color: white;">Stuff Wt</th>
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                         
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-danger" type="submit" id="btnSave" name="Save">Cancel</button>&nbsp;
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+</div>
+ 
+
+<script>
+
+    $("#TrainNo").change(function () {
+        debugger;
+
+        var data1 = { 'TrainNo': $("#TrainNo").val() };
+        data = JSON.stringify(data1);
+
+        try {
+            $.ajax({
+                url: '/BCNWagon/getWagonRRNo',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response.ErrMessage != "") {
+                        $("#RRWagonContNo").val("");
+                        alert(response.ErrMessage);
+                    }
+                    else {
+                        $("#RRWagonContNo").val(response.TrainNo);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+        catch (ex) {
+            $("#tracker-loader").fadeOut("slow");
+        }
+
+    });
+    function LoadBCNAddSearch() {
+        debugger;
+        var TrainNo = $("#TrainNo").val();
+        var WagonRRNo = $("#RRWagonContNo").val();
+        var data1 = { 'TrainNo': TrainNo, 'WagonRRNo': WagonRRNo };
+       
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: '/BCNWagon/ShowCanclBCNWagonMapping',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                if (data.WagonContainerList.length == 0 || data.WagonContainerList == '[]') {
+                    ControlCtrl.InvoiceList.empty();
+                    InitializeTable(ControlCtrl);
+                    alert('Data Not Found.');
+                    return;
+                }
+
+                $("#TrainNo").val(data.TrainNumber);
+                $("#RRWagonContNo").val(data.WagonRRNumber);
+
+                $('#tblWagonMappingList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": false,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+
+                    "aaData": data.WagonContainerList,
+                    "columns": [
+                        {
+
+                            "data": "SRNo",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.SRNo + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "SRNo" },
+                        {
+                            "data": "WagonNo",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"EntryId\" class=\" form-control EntryId\" id=\"ContEntryId\"  value="' + row.EntryId + '">';
+                                return data + input;
+                            }
+                        },
+                        { "data": "Pkgs" },
+                        { "data": "CCWeight" },
+                        { "data": "RemainingPkgs" },
+                        { "data": "RemainingWt" },
+                        {
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"hidden\" name=\"ContainerNo\" class=\" form-control ContainerNo\" \" id=\"ContainerNo\"  value="' + data + '">';
+
+                                return data + input;
+                            }
+                        },
+                        { "data": "Date" },
+                        { "data": "StuffPkgs" },
+                        { "data": "StuffWt" },
+                       
+                    ],
+                    "rowCallback": function (row, data, dataIndex) {
+
+                    }
+
+                })
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+
+    }
+
+</script>
+<script>
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#tblWagonMappingList').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+      function Update() {
+        debugger;
+
+        
+        $("#tracker-loader").fadeIn("slow");
+        
+
+        var r = confirm("Are you sure want to cancel this stuffing request ?");
+        if (r == true) {
+           
+
+            var itemcount = checkItemcount();
+            if (itemcount == false) {
+                alert("No Record Found To cancel");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("tblWagonMappingList");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        var SBNo = row.cells[4].innerText;
+                        var EntryID = row.cells[6].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (EntryID == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                         //   alert("hiiii");
+                            row = table.rows[i];
+                            SBNo = row.cells[4].innerText;
+                            EntryID = row.cells[6].innerText;
+                            containerNo = row.cells[3].innerText;
+                            SBEntryID = row.cells[5].innerText;
+                            tablearray.push({
+                                'SBNO': SBNo, 'EntryID': EntryID, 'containerNo': containerNo, 'SBEntryID': SBEntryID
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+            }//else part end
+            var data1 = {
+                'Debitdata': tablearray, 'Remarks': Remarks
+            };
+
+            if (tablearray.length == 0) {
+                alert("Please select record to proceed");
+                return false;
+            }
+            var data = JSON.stringify(data1);
+          //  alert(data);
+            $.ajax({
+                url: "/Report/CancelStuffingReqDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("CancelStuffingRequest", "ModifyModule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }//end of main called function
+
+        //Check Checkbox selected count
+        function checkItemcount() {
+            var table = $('#example1').DataTable();
+            if (table.rows().count() == 0) {
+                return false;
+            }
+            return true;
+        }
+    }
+</script>

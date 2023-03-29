@@ -1,0 +1,283 @@
+﻿
+@{
+    ViewBag.Title = "ExpCLP";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+    <div class="page-header">
+        <h5 class="page-title">Generate CLP</h5>
+    </div>
+    <div class="row">
+        <div class="col-md-7 col-lg-7">
+            <div class="card">
+                <div class="card-body">
+                    <div class="modal-header pd-x-20">
+                        <h5 class="page-title" style="color:blue">Container No. Wise CLP</h5>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-7">
+                            <div class="form-group">
+                                <label class="form-label">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control ", @id = "txtContainerNo", Placeholder = "Container No", @autocomplete = "off" })
+                                        <input id="lblContainerNoAgency" type="hidden" />
+                                        <input id="lblContainerNoSize" type="hidden" />
+                                        <input id="lblContainerNoentryID" type="hidden" />
+                                        <input id="lblContainerNoISOCode" type="hidden" />
+                                        <input id="lblContainerNocontainertype" type="hidden" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="OnAddContainer()"><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-7" style="padding-top:30px;">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label mandatory" style="color:blue">
+                                            No. Of Shipping Bills:
+                                            @Html.TextBox("lblShippingBillNo", null, new { @class = "form-control ", @disabled = "disabled", @id = "lblShippingBillNo", Placeholder = "", @autocomplete = "off", Style = "font-weight: bold;text-align:right;background:#FFFFE0;color:black" })
+                                        </label>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group" style="padding-top:50px">
+                                @*<label class="form-label" style="visibility:hidden">.</label>*@
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAdd" name="Add" onclick="Add()">Generate CLP</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label style="color:red">-----------------------------------------------------------------------------------------------------------------</label>
+
+                    <div class="modal-header pd-x-20">
+                        <h5 class="page-title" style="color:blue">Shipping Bill No. Wise CLP</h5>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-7">
+                            <div class="form-group">
+                                <label class="form-label">Shipping Bill No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtShippingBillNo", null, new { @class = "form-control ", @id = "txtShippingBillNo", Placeholder = "Shipping Bill No", @autocomplete = "off" })
+                                        <input id="lblAgencySB" type="hidden" />
+                                        <input id="lblMTypeSB" type="hidden" />
+                                        <input id="lblSBEntryID" type="hidden" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="AddSBNo()" ><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-7" style="padding-top:30px;">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label mandatory" style="color:blue">
+                                            No. Of Container:
+                                            @Html.TextBox("lblContainer", null, new { @class = "form-control ", @disabled = "disabled", @id = "lblContainer", Placeholder = "", @autocomplete = "off", Style = "font-weight: bold;text-align:right;background:#FFFFE0;color:black" })
+                                        </label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group" style="padding-top:50px">
+                                @*<label class="form-label" style="visibility:hidden">.</label>*@
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAdd" name="Add" onclick="GenerateSBno()">Generate CLP</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </div>
+
+     
+        @*<div class="col-md-5 col-lg-5 pull-right sidebar" style="margin-top:-70px;">
+            <div class="card panel-sidebar">
+                <div class="card-body">
+                    
+                    <div class="row">
+                    </div>
+                </div>
+            </div>
+        </div>*@
+ 
+</div>
+
+<script>
+    function OnAddContainer() {
+        debugger;
+
+        var ContainerNo = $("#txtContainerNo").val();
+
+        if (ContainerNo == "") {
+            document.getElementById("txtContainerNo").style.borderColor = "red";
+            alert('Container No cannot be left blank!')
+            event.preventDefault();
+            return;
+        }
+        var data1 = { ContainerNo: ContainerNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: '/ExportModel/ExpClpContainerShow',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                $("#lblContainerNoAgency").val(data[0].lblContainerNoAgency);
+                $("#lblContainerNoSize").val(data[0].lblContainerNoSize);
+                $("#lblContainerNoentryID").val(data[0].lblContainerNoentryID);
+                $("#lblContainerNoISOCode").val(data[0].lblContainerNoISOCode);
+                $("#lblContainerNocontainertype").val(data[0].lblContainerNocontainertype);
+                $("#lblShippingBillNo").val(data[0].lblShippingBillNo);
+              
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+
+    function AddSBNo() {
+        debugger;
+
+        var ShippingBillNo = $("#txtShippingBillNo").val();
+
+        if (ShippingBillNo == "") {
+            document.getElementById("txtShippingBillNo").style.borderColor = "red";
+            alert('Container No cannot be left blank!')
+            event.preventDefault();
+            return;
+        }
+        var data1 = { ShippingBillNo: ShippingBillNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: '/ExportModel/ExpClpSbNumberShow',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                $("#lblAgencySB").val(data[0].lblAgencySB);
+                $("#lblMTypeSB").val(data[0].lblMType);
+                $("#lblSBEntryID").val(data[0].lblSBEntryID);
+                $("#lblContainer").val(data[0].lblContainer);
+               
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+    function Add() {
+         debugger;
+        var lblSBEntryID = $("#lblSBEntryID").val();
+        var lblContainerNoentryID = $("#lblContainerNoentryID").val();
+        var txtContainerNo = $("#txtContainerNo").val();
+          
+        
+            var data1 = {
+                'lblSBEntryID': lblSBEntryID, 'lblContainerNoentryID': lblContainerNoentryID, 'txtContainerNo': txtContainerNo
+            };
+            var data = JSON.stringify(data1);
+                          $.ajax({
+                              url: "/ExportModel/SaveCLp",
+                            data: data,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                              success: function (data) {
+                                  alert(data);
+                                  document.location = '@Url.Action("ExpCLP", "exportModel")';
+                            },
+                            error: function (errormessage) {
+                                alert(errormessage.responseText);
+                            }
+                        });
+    }
+
+    
+    function GenerateSBno() {
+       
+        var lblSBEntryID = $("#lblSBEntryID").val();
+        var lblContainerNoentryID = $("#lblContainerNoentryID").val();
+        var txtContainerNo = $("#txtContainerNo").val();
+          
+        
+            var data1 = {
+                'lblSBEntryID': lblSBEntryID, 'lblContainerNoentryID': lblContainerNoentryID, 'txtContainerNo': txtContainerNo
+            };
+        var data = JSON.stringify(data1);
+      
+                          $.ajax({
+                              url: "/ExportModel/SaveCLp",
+                            data: data,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                              success: function (data) {
+                                  alert(data);
+                                  document.location = '@Url.Action("ExpCLP", "exportModel")';
+                            },
+                            error: function (errormessage) {
+                                alert(errormessage.responseText);
+                            }
+                        });
+    }
+</script>
+
+

@@ -1,0 +1,301 @@
+﻿
+@{
+    ViewBag.Title = "ProfitabilitySummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+
+
+    table#reportTable tr:first-child {
+        background: none;
+    }
+
+    table#reportTable td:first-child {
+        text-align: left;
+    }
+
+    table#reportTable td:nth-last-child(-n+2) {
+        text-align: center;
+    }
+
+    table#reportTable {
+        text-align: right;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    table#tblEditAgeing tr:first-child {
+        background: none;
+    }
+
+    table#tblEditAgeing td:first-child {
+        text-align: left;
+    }
+
+    table#tblEditAgeing {
+        text-align: right;
+    }
+</style>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+
+    .eye {
+        text-align: left;
+    }
+</style>
+<script src="~/js/GetTableJsonPagging.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden" id="DivAgeingOutStanding">
+    <div class="page-header">
+        <h4 class="page-title">Profitability Summary</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+
+                                <div class="row gutters-xs">
+
+                                    <div class="col-2">
+                                        @Html.TextBox("FromDate", null, new { @id = "FDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                    </div>
+                                    <div class="col-2">
+
+                                        @Html.TextBox("ToDateDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", onchange = "CheckDate();", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                    </div>
+                                    <div class="col-md-12 col-lg-8">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show()" type="button">Show</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <button class="btn btn-orange" id="btnKDMTeam" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileKDMTeam()"></i></button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="DivOS_Summary_Details" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title"> </h4>
+
+        <a onclick="Outstanding1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <button class="btn btn-orange" id="btnEditAgeing" style="display:none" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileEditAgeing()"></i></button>
+                            <div class="table-responsive">
+                                <table id="tblEditAgeing" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+
+    function GetExcelFileKDMTeam() {
+
+        window.location = '@Url.Action("ExportToExcelProfitabilitySummary", "Report")?';
+
+    }
+      function GetExcelFileEditAgeing() {
+
+        window.location = '@Url.Action("ExportToExcelProfitabilityRevenue", "Report")?';
+
+    }
+</script>
+<script>
+
+    function Outstanding1() {
+
+        $("#DivAgeingOutStanding").show();
+        $("#DivOS_Summary_Details").hide();
+    }
+    function ViewsRevenueDetails(Category) {
+        $("#DivAgeingOutStanding").hide();
+        $("#DivOS_Summary_Details").show();
+        $("#btnEditAgeing").show();
+
+        var FromDate = $("#FDate").val();
+
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Category': Category};
+        data = JSON.stringify(data1);
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetEdiAgeing',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+
+                $("#tblEditAgeing").empty();
+                RepTableDataJson($("#tblEditAgeing"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function ViewsExpensesDetails(Category) {
+        $("#DivAgeingOutStanding").hide();
+        $("#DivOS_Summary_Details").show();
+        $("#btnEditAgeing").show();
+
+        var FromDate = $("#FDate").val();
+
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Category': Category };
+        data = JSON.stringify(data1);
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetExpensesDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+
+                $("#tblEditAgeing").empty();
+                RepTableDataJson($("#tblEditAgeing"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function Show() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowVoucherDetails();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowVoucherDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FDate").val();
+
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetProfitabilitySummary',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJsonwopaging($("#reportTable"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                $("#tracker-loader").fadeOut("slow");
+
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+        $("#tracker-loader").fadeOut("slow");
+    }
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>

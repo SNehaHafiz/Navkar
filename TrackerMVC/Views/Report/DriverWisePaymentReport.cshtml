@@ -1,0 +1,384 @@
+﻿
+@{
+    ViewBag.Title = "Driver Wise Payment Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="/js/GetTableJsonPagging.js"></script>
+<div id="tracker-loader"></div>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<style>
+
+
+     .table thead th, .text-wrap table thead th {
+         background-color: #9f78ff;
+         color: white;
+     }
+
+     /*.table td {
+         text-align: right !important;
+     }
+
+    .table td:first-child {
+       text-align: left !important;
+    }*/
+
+     .table tr td:nth-child(2) {
+         text-align: left !important;
+     }
+
+     body {
+         font-weight: bolder !important;
+     }
+</style>
+<div class=" content-area">
+    <div class="page-header">
+
+        <h4 class="page-title">Driver Wise Payment Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+                        <div class="input-group">
+
+                            <span class="input-group-append " id="tabPurpose">
+                                <button class="btn btn-success active btn-lg m-0" id="Banktranscation" style="text-transform: uppercase;" value="" type="button" onclick="Show('Bank')">Bank Transcation Date</button>
+                                <button class="btn btn-success btn-lg m-0" id="GenerateDate" style="text-transform: uppercase;" type="button" onclick="Show('Generate')">Generate Date</button>
+                            </span>
+                        </div>
+
+
+                        <div class="row" style="display:none" id="divdriverwise">
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                         
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                     
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1" , @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Summary" class="btn btn-primary" onclick="Showdriverpayments()" />
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Brief Report" class="btn btn-info" onclick="ShowDriverbriefReport()" />
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="GetValue" style="visibility:hidden" />
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="display:none" id="divshowtotalTotal2">
+                            <div class="col-lg-8 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span class="input-group-append " id="tabPurpose">
+
+                                                <button class="btn btn-yellow" id="BtnREF" style="width: 120px !important;font-weight:bold" type="button">Total: <span id="lbltotal1" style="font-weight:bold"></span></button>
+
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="display:none" id="divshowtotal">
+                            <div class="col-lg-8 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span class="input-group-append " id="tabPurpose">
+                                                <button class="btn btn-red active btn-orange" id="BtnGen" style="width: 120px !important;font-weight:bold" type="button">HT: <span id="lblHT" style="font-weight:bold"></span></button>
+                                                <button class="btn btn-yellow btn-red" id="BtnHAz" style="width: 120px !important;font-weight:bold" type="button">NCL: <span id="lblNCL" style="font-weight:bold"></span></button>
+                                                <button class="btn btn-orange" id="BtnREF" style="width: 120px !important;font-weight:bold" type="button">NPT: <span id="lblNPT" style="font-weight:bold"></span></button>
+                                                <button class="btn btn-yellow" id="BtnREF" style="width: 120px !important;font-weight:bold" type="button">ACMPL: <span id="LblAcmpl" style="font-weight:bold"></span></button>
+                                                <button class="btn btn-orange" id="BtnREF" style="width: 120px !important;font-weight:bold" type="button">OM: <span id="Lblom" style="font-weight:bold"></span></button>
+                                                <button class="btn btn-yellow" id="BtnREF" style="width: 120px !important;font-weight:bold" type="button">Total: <span id="lbltotal" style="font-weight:bold"></span></button>
+
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="display:none" id="divdTable">
+                            <div class="col-lg-12 col-sm-12">
+                                <button class="btn btn-teal" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                <div class="table-responsive">
+                                    <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                        <thead>
+
+                                            <tr></tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+
+</script>
+<script>
+
+    $("#Banktranscation").click(function () {
+        $("#Banktranscation").addClass("active");
+        $("#GenerateDate").removeClass("active");
+    });
+
+    $("#GenerateDate").click(function () {
+        $("#GenerateDate").addClass("active");
+        $("#Banktranscation").removeClass("active");
+
+    });
+
+</script>
+
+<script>
+    function Show(matter) {
+        $("#divdriverwise").show();
+        $("#divdTable").show();
+        $("#divExcelbutton").show();
+        $("#GetValue").val(matter);
+    }
+
+
+
+</script>
+
+<script type="text/javascript">
+
+    function Showdriverpayments() {
+        $("#divshowtotal").show();
+        $("#divshowtotalTotal2").hide();
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var Value = $("#GetValue").val();
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Value': Value };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetDriverWisepaymentReport',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+
+
+
+                var table = document.getElementById("example2");
+                var row;
+
+
+                var HT = 0;
+                var NCL = 0;
+                var NPT = 0;
+                var ACMPL = 0;
+                var OM = 0;
+                var Total = 0;
+
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var HT1 = row.cells[2].innerText;
+                    var NCL1 = row.cells[3].innerText;
+                    var NPT1 = row.cells[4].innerText;
+                    var ACMPL1 = row.cells[5].innerText;
+                    var OM1 = row.cells[6].innerText;
+
+                    var Total1 = row.cells[7].innerText;
+
+                    HT = Number(HT) + parseInt(HT1);
+                    NCL = Number(NCL) + parseInt(NCL1);
+                    NPT = Number(NPT) + parseInt(NPT1);
+                    ACMPL = Number(ACMPL) + parseInt(ACMPL1);
+                    Total = Number(Total) + parseInt(Total1);
+                    OM = Number(OM) + parseInt(OM1);
+
+
+
+
+
+                }
+
+                $("#lblHT").text(HT);
+                $("#lblNCL").text(NCL);
+                $("#lblNPT").text(NPT);
+                $("#LblAcmpl").text(ACMPL);
+                $("#lbltotal").text(Total);
+                $("#Lblom").text(OM);
+
+
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+
+    function ShowDriverbriefReport() {
+        $("#divshowtotal").hide();
+        $("#divshowtotalTotal2").show();
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var Value = $("#GetValue").val();
+
+        if (Value == "Bank") {
+
+            Value = "Bank brief"
+        }
+        if (Value == "Generate") {
+
+            Value = "Generate brief"
+        }
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Value': Value };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetDriverWisepaymentReport',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+                var table = document.getElementById("example2");
+                var row;
+                var Total = 0;
+
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+
+
+                    var Total1 = row.cells[6].innerText;
+                    Total = Number(Total) + parseInt(Total1);
+                }
+
+
+                $("#lbltotal1").text(Total);
+
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '/report/ExportToExcelDriverWisepaymentDetails?';
+
+
+    }
+
+
+</script> 

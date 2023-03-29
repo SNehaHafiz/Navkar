@@ -1,0 +1,86 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.DriverEntities>
+@{
+    ViewBag.Title = "DriverDetailsForApprove";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area" id="diventry">
+    <div class="page-header">
+        <h4 class="page-title">Approve Driver's : @Model.Count()</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="wd-15p sorting">Trailer Name</th>
+                                            <th class="wd-15p sorting">Driver Name</th>
+                                            <th class="wd-15p sorting">Driver Contact</th>
+                                            <th class="wd-15p sorting">Transporter</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                        <tr>
+                                            <td><a href="#" class="btn btn-sm btn-primary" title="Print" onclick="ApproveDriversdetails(@d.DriverID,'@d.TRailername')">Approve</a></td>
+
+                                            <td>@Html.DisplayFor(m => d.TRailername)</td>
+                                            <td>@Html.DisplayFor(m => d.DriverName)</td>
+                                            <td>@Html.DisplayFor(m => d.CONTACTPERSON)</td>
+                                            <td>@Html.DisplayFor(m => d.TransporterName)</td>
+
+
+
+                                        </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- table-wrapper -->
+        </div>
+        <!-- section-wrapper -->
+    </div>
+</div>
+
+
+<script>
+    function ApproveDriversdetails(DriverID, TRailername) {
+          
+        data1 = { 'DriverID': DriverID, 'TRailername': TRailername };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Driver/AJaxGetDriverDetailsApprove",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("DriverDetailsForApprove", "Driver")'
+    }
+</script>

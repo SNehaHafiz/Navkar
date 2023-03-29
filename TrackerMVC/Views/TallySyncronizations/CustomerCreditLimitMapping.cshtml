@@ -1,0 +1,156 @@
+﻿@*@model TrackerMVCEntities.BusinessEntities.customercreditlimitmapping*@
+
+@{
+    ViewBag.Title = "updatecontainerstatus";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<div id="addHorse">
+    <div class="page-header">
+        <h1 class="page-title">Customer Credit Limit Mapping</h1>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txttest" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Credit Limit</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtCreditLimit" type="text" placeholder="Credit Limit" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">KDM Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSalesPerson", (IEnumerable<SelectListItem>)ViewBag.kdmlist, "--Select--", new { @class = "form-control", @id = "ddlSalesPerson", name = "ddlSalesPerson", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Sales Person</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.DropDownList("ddlSalesPerson", (IEnumerable<SelectListItem>)ViewBag.SizeList, "--Select--", new { @class = "form-control", @id = "ddlSalesPerson", name = "ddlSalesPerson", autocomplete = "off" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Team</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.DropDownList("ddlTeam", (IEnumerable<SelectListItem>)ViewBag.SizeList, "--Select--", new { @class = "form-control", @id = "ddlTeam", name = "ddlTeam", autocomplete = "off" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return update();">Update</button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+
+    function update() {
+        debugger;
+        var CreditLimit = document.getElementById('txtCreditLimit').value;
+        var KDMid = document.getElementById('ddlKDMid').value;
+        var SalesPerson = document.getElementById('ddlSalesPerson').value;
+        var Team = document.getElementById('ddlTeam').value;
+
+
+
+        //alert("hii")
+        if (CreditLimit == "") {
+            document.getElementById("txtCreditLimit").style.borderColor = "red";
+            alert('Please enter Full Name!')
+            event.preventDefault();
+            return;
+        }
+
+
+
+
+        var customercreditlimitmapping = {};
+        customercreditlimitmapping.CreditLimit = txtCreditLimit;
+        customercreditlimitmapping.KDMName = ddlKDMName;
+        customercreditlimitmapping.SalesPerson = ddlSalesPerson;
+        customercreditlimitmapping.Team = ddlTeam;
+
+
+
+$.ajax({
+    url: "/TallySyncronizations/update",
+    data: '{UpdateExternalMovement: ' + JSON.stringify(UpdateExternalMovement) + '}',
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("UpdateContainerStatus", "TallySyncronizations")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+    }
+
+
+
+</script>
+

@@ -1,0 +1,570 @@
+﻿@*@model TransportEntities.BusinessEntities.Horse*@
+@{
+    ViewBag.Title = "LocationMaster";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="Divaddlocation">
+    <div class="page-header">
+        <h4 class="page-title">Location Master</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Viewsummary();"><i class="fa fa-file-text"></i></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Location ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtlocationID" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtLocation" type="text" placeholder="Location" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Location General Group</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlLocationList", (IEnumerable<SelectListItem>)ViewBag.LocationList, "--Select--", new { @class = "form-control", @id = "ddlLocationList", name = "ddlLocationList", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button type="button" class="btn btn-success" name="summarylist" title="Add Expense" onclick="AddLocation();"><i class="fa fa-plus"></i></button>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Location Other Group</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlLocationListOther", (IEnumerable<SelectListItem>)ViewBag.LocationListOther, "--Select--", new { @class = "form-control", @id = "ddlLocationListOther", name = "ddlLocationListOther", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*<button type="button" class="btn btn-success" name="summarylist" title="Add Expense" onclick="AddLocation();"><i class="fa fa-plus"></i></button>*@
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divaddLocation">
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Location Group Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtLocationGroup", null, new { @class = "form-control", @id = "TxtLocationGroup", name = "TxtLocationGroup", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="button" id="Add" name="Add" value="Add" onclick="InsertLocationGroup()" class="btn btn-primary" />
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Distance Group</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlDistancegroup", (IEnumerable<SelectListItem>)ViewBag.DistanceList, "--Select--", new { @class = "form-control", @id = "ddlDistancegroup", name = "ddlDistancegroup", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button type="button" class="btn btn-success" name="summarylist" title="Add Expense" onclick="AddDistance();"><i class="fa fa-plus"></i></button>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="DivaddDistance">
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Distance Group Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtDistance", null, new { @class = "form-control", @id = "txtDistance", name = "txtDistance", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="button" id="Add" name="Add" value="Add" onclick="InsertDistanceGroup()" class="btn btn-primary" />
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">On Way KM</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtOnWayKM" type="text" placeholder="On Way KM" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Two Way KM</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtTwoWayKM" type="text" placeholder="Two Way KM" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                <label class="custom-switch">
+                                    <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" value="True" checked class="custom-switch-input">
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description">Is Active?</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"></label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+                                <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="DivShowLocation" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Location Details Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcel", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            @*<th class="wd-10p sorting">Sr No</th>
+                                                <th class="wd-10p sorting">Paid ID</th>*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function Save() {
+
+
+        var res = validateSaveFunction();
+        if (res == false) {
+            return false;
+        }
+        var ID = $("#txtlocationID").val();
+            var Location = $('#txtLocation').val();
+
+            var ddlDistancegroup = $('#ddlDistancegroup option:selected').val();
+            var DDlLocationID = $('#ddlLocationList option:selected').val();
+            var DDlLocationOtherID = $('#ddlLocationListOther option:selected').val();
+            var txtOnWayKM = $('#txtOnWayKM').val();
+        var txtTwoWayKM = $('#txtTwoWayKM').val();
+
+        var ISActive = $('#chkIsActiveEdit').is(':checked') ? $('#chkIsActiveEdit').val() : false;
+
+
+
+            var LocationMaster = {};
+            //LocationMaster.EntryDate = txtentryDate;
+            LocationMaster.Location = Location;
+            LocationMaster.DistanceGroupID = ddlDistancegroup;
+            LocationMaster.LocationGroupID = DDlLocationID;
+            LocationMaster.OnWayKM = txtOnWayKM;
+            LocationMaster.TwoWayKM = txtTwoWayKM;
+            LocationMaster.ID = ID;
+        LocationMaster.IDOtherLocation = DDlLocationOtherID;
+        LocationMaster.ISActive = ISActive;
+
+
+                $.ajax({
+                    url: "/LocationMaster/Save",
+                    data: '{LocationMaster: ' + JSON.stringify(LocationMaster) + '}',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    if(JSON.stringify(result)==0)
+                    {
+                        alert('Location name already exist! ')
+                    }
+                    else
+                    {
+                        alert('Record saved successfully');
+                        window.location.href = '@Url.Action("LocationMaster", "LocationMaster")';
+                    }
+
+
+                },
+                error: function (errormessage) {
+                alert(errormessage.responseText);
+                }
+                });
+        }
+
+
+</script>
+<script>
+    function validateSaveFunction() {
+
+        var txtdrivername = document.getElementById('txtLocation').value;
+
+
+
+
+        document.getElementById("txtLocation").style.borderColor = "gainsboro";
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (txtdrivername == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("txtLocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+<script>
+    function AddLocation() {
+        $("#txtDistance").val("")
+        $("#TxtLocationGroup").val("")
+        $("#divaddLocation").show();
+        $("#DivaddDistance").hide();
+    }
+    function AddDistance() {
+        $("#txtDistance").val("")
+        $("#TxtLocationGroup").val("")
+        $("#divaddLocation").hide();
+        $("#DivaddDistance").show();
+    }
+
+
+    function InsertLocationGroup() {
+
+        LocationName = $("#TxtLocationGroup").val()
+        alert(LocationName);
+                 $.ajax({
+                     url: "/LocationMaster/InsertLocation",
+                     data: '{LocationName: ' + JSON.stringify(LocationName) + '}',
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        alert('Record saved successfully');
+                        window.location.href = '@Url.Action("LocationMaster", "LocationMaster")';
+                },
+                error: function (errormessage) {
+                alert(errormessage.responseText);
+                }
+                });
+    }
+
+    function InsertDistanceGroup() {
+
+        DistanceName = $("#txtDistance").val()
+        alert(LocationName);
+                 $.ajax({
+                     url: "/LocationMaster/InsertDirection",
+                     data: '{DistanceName: ' + JSON.stringify(DistanceName) + '}',
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        alert('Record saved successfully');
+                        window.location.href = '@Url.Action("LocationMaster", "LocationMaster")';
+                },
+                error: function (errormessage) {
+                alert(errormessage.responseText);
+                }
+                });
+    }
+</script>
+
+<script type="text/javascript">
+    function getBack() {
+        $("#Divaddlocation").show();
+        $("#DivShowLocation").hide();
+    }
+    function ShowVoucherDetails() {
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/LoadingPlan/AjaxGetLocationDetails',
+            //  data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+
+                $("#example2").empty();
+                RepTableDataJson($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+
+            }
+        });
+    }
+</script>
+<script>
+    function AddLocation() {
+        $("#txtDistance").val("")
+        $("#TxtLocationGroup").val("")
+        $("#divaddLocation").show();
+        $("#DivaddDistance").hide();
+    }
+    function AddDistance() {
+        $("#txtDistance").val("")
+        $("#TxtLocationGroup").val("")
+        $("#divaddLocation").hide();
+        $("#DivaddDistance").show();
+    }
+
+
+    function InsertLocationGroup() {
+
+        LocationName = $("#TxtLocationGroup").val()
+
+                 $.ajax({
+                     url: "/LocationMaster/InsertLocation",
+                     data: '{LocationName: ' + JSON.stringify(LocationName) + '}',
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        alert('Record saved successfully');
+                        window.location.href = '@Url.Action("LocationMaster", "LocationMaster")';
+                },
+                error: function (errormessage) {
+                alert(errormessage.responseText);
+                }
+                });
+    }
+
+    function InsertDistanceGroup() {
+
+        DistanceName = $("#txtDistance").val()
+
+                 $.ajax({
+                     url: "/LocationMaster/InsertDirection",
+                     data: '{DistanceName: ' + JSON.stringify(DistanceName) + '}',
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        alert('Record saved successfully');
+                        window.location.href = '@Url.Action("LocationMaster", "LocationMaster")';
+                },
+                error: function (errormessage) {
+                alert(errormessage.responseText);
+                }
+                });
+    }
+</script>
+
+<script type="text/javascript">
+
+    function Viewsummary() {
+        $("#Divaddlocation").hide();
+        $("#DivShowLocation").show();
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/LocationMaster/AjaxGetLocationDetails',
+            //  data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    function EditLocationDetails(LocationID, LocationGroupID) {
+
+
+     //   $("#ddlLocationList").val(LocationGroupID);
+
+        var MenuID = '6303'
+
+        var data1 = { 'MenuID': MenuID };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/LocationMaster/MenuRights',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data == "0") {
+
+                    alert('You are not authorized. Cannot modify.');
+                }
+                else {
+                    EditLocation(LocationID)
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    function EditLocation(LocationID) {
+        $("#Divaddlocation").show();
+        $("#DivShowLocation").hide();
+
+
+
+        var MenuID = '6303'
+
+        var data1 = { 'LocationID': LocationID };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/LocationMaster/GetLocationDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $('#txtLocation').val(data[0].Location);
+                $('#ddlDistancegroup').val(data[0].DistanceGroupID);
+                $('#ddlLocationList').val(data[0].LocationGroupID);
+                $('#txtOnWayKM').val(data[0].OnWayKM);
+                $('#txtTwoWayKM').val(data[0].TwoWayKM);
+                $('#txtlocationID').val(data[0].ID);
+                $('#ddlLocationListOther').val(data[0].LocationOtherGroupId);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

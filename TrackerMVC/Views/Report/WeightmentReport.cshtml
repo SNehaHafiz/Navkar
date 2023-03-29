@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "WeightmentReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+.table thead th, .text-wrap table thead th {
+background-color: #9f78ff;
+color: white;
+}
+
+table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+color: black;
+font-weight: 900 !important;
+font-size: 15px !important;
+}
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Weightment Report</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        @*<div class="col-lg-4 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> Search Criteria</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.DropDownList("ddlCriteria", (IEnumerable<SelectListItem>)ViewBag.CriteriaList, new { @class = "form-control", @id = "ddlCriteria", name = "ddlCriteria" })
+
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-22 col-lg-2">
+                            <div class="form-group label-floating" style="margin-top: 33px;">
+                                <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show('SHOW')" type="button">
+                                    SHOW
+                                </button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                   
+                         
+                    
+                        <div class="row">
+                            @Html.ActionLink("Export To Excel", "ExportToExcelGetReport", null, new { @class = "btn btn-primary btn-md" })
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                        <thead>
+
+                                            <tr>
+                                                @*<th class="wd-10p sorting">Sr No</th>
+                            <th class="wd-10p sorting">Paid ID</th>*@
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+               
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+    <script>
+
+        function Show() {
+            debugger;
+            var data1 = { 'fromDate': $("#txtFromDate").val(), 'ToDate': $("#txtToDate").val()};
+            data = JSON.stringify(data1);
+            //alert(data);
+            $.ajax({
+                
+                url: '/Report/GetWeightmentReport',
+                type: 'Post',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                //dataType: "json",
+                async: true,
+                success: function (data) {
+                    debugger;
+                    //alert(data);
+                    RepTableDataJson($("#example2"), data, "GetWeightmentReport", "GetWeightmentReport");
+                    //var table = document.getElementById("reportTable");
+                    //Textboxvalue(Activity)
+                    $("#tracker-loader").fadeOut("slow");
+
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+
+            });
+        }
+    </script>  

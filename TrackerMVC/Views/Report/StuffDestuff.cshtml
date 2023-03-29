@@ -1,0 +1,266 @@
+﻿@model TrackerMVCEntities.BusinessEntities.DomesticDestuffEntry
+@{
+    ViewBag.Title = "Domestic Allotment";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="Entry">
+    <div class="page-header">
+        <h4 class="page-title">Domestic Allotment</h4>
+        <button class="btn btn-icon btn-teal" title="Summary list" data-toggle="tooltip" data-placement="bottom" onclick="ShowSummary()"><i class="fa fa-file-text"></i></button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Type</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <select class="form-control" id="Type">
+                                    <option value="">--Select--</option>
+                                    <option value="Allotment">Allotment</option>
+                 
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Container No</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" class="form-control" id="ContainerNo" onchange="OnContainerNo();" placeholder="Container No" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Location</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("Location", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "Location", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             
+            
+             
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Remarks</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" class="form-control" id="Remarks" placeholder="Remarks" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    <button class="btn btn-success" title="Save" data-toggle="tooltip" data-placement="bottom" onclick="Save()"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="Summary" style="display: none">
+    <div class="page-header">
+        <h4 class="page-title">Domestic Allotment Summary</h4>
+        <button class="btn btn-icon btn-success" title="Back" data-toggle="tooltip" data-placement="bottom" onclick="ShowEntry()"><i class="fa fa-arrow-left"></i></button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function OnContainerNo() {
+        var Search = $("#ContainerNo").val();
+
+        data1 = { 'Search': Search };
+        data = JSON.stringify(data1)
+
+        $.ajax({
+            type: "POST",
+            url: '/Report/CheckContainer',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+             
+                if (data != ""  ) {
+                    alert(data);
+                    $("#ContainerNo").val('')
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                 
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function ShowSummary() {
+        $("#Entry").hide();
+        $("#Summary").show();
+        Load();
+    }
+
+    function ShowEntry() {
+        $("#Summary").hide();
+        $("#Entry").show();
+    }
+
+     
+
+   
+
+    function Save() {
+        var Type = $("#Type").val();
+        var ContainerNo = $("#ContainerNo").val();
+        var Location = $("#Location").val();
+      
+        var Remarks = $("#Remarks").val();
+
+        if (Type == "") {
+            alert("Please select type.");
+            return false;
+        }
+        if (Remarks == "") {
+            alert("Please select Remarks.");
+            return false;
+        } 
+        data1 = {
+            'Type': Type, 'ContainerNo': ContainerNo, 'Location': Location, 'Remarks': Remarks
+        };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            type: "POST",
+            url: "/Report/SaveStuffDestuff",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                alert(response);
+                location.reload();
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+    }
+
+    function Load() {
+
+
+        $.ajax({
+            type: "POST",
+            url: '/Report/LoadStuffDestuff',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No data found.');
+                    $("#example").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#example").empty();
+                RepTableDataJson($("#example"), data, "QC Entry", "QC_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function RepTableDataJson(tableName, data, title, fileName) {
+        try {
+            if (tableName == null) {
+                alert("table not exist.");
+            }
+            if ($.fn.DataTable.isDataTable(tableName)) {
+                tableName.DataTable().destroy();
+                tableName.empty();
+            }
+            var parseJSONResult = jQuery.parseJSON(data);
+            if (parseJSONResult != null && parseJSONResult.length > 0) {
+                var dynamicColumns = [];
+                var i = 0;
+                $.each(parseJSONResult[0], function (key, value) {
+                    var obj = { sTitle: key };
+                    dynamicColumns[i] = obj;
+                    i++;
+                });
+                var rowDataSet = [];
+                var i = 0;
+                $.each(parseJSONResult, function (key, value) {
+                    var rowData = [];
+                    var j = 0;
+                    $.each(parseJSONResult[i], function (key, value) {
+                        rowData[j] = value;
+                        j++;
+                    });
+                    rowDataSet[i] = rowData;
+
+                    i++;
+                });
+                tableName.dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "pageLength": 25,
+                    "aaData": rowDataSet,
+                    "bInfo": true,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": true,
+                    "order": [0, 1, 2, 3, 4, 5],
+                    "columns": dynamicColumns,
+                    "deferRender": true,
+                    "bSort": false,
+                    "dom": 'Bfrtip',
+                    "searching": true,
+                    "buttons": [
+                    ]
+                });
+            }
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+    }
+</script>

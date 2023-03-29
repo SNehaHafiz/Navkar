@@ -1,0 +1,759 @@
+﻿<!doctype html>
+
+
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-TileColor" content="#0061da">
+    <meta name="theme-color" content="#1643a3">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    @* <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />*@
+    @*<link rel="shortcut icon" type="image/x-icon" href="~/images/Phoenix-logo-Bird.png">*@
+    <link rel="shortcut icon" type="image/x-icon" href="~/images/brand/DD.ico" />
+    <!-- Title -->
+    <title> @ViewBag.Title | tracker</title>
+    <link rel="stylesheet" href="~/fonts/fonts/font-awesome.min.css">
+    <!-- Font Family-->
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa:300,400,700" rel="stylesheet">
+    <!-- Sidemenu Css -->
+    <link href="~/plugins/fullside-menu/css/style.css" rel="stylesheet" />
+    <link href="~/plugins/fullside-menu/waves.min.css" rel="stylesheet" />
+    <!-- Dashboard Css -->
+    <link href="~/css/dashboard.css" rel="stylesheet" />
+    <!-- c3.js Charts Plugin -->
+    <link href="~/plugins/charts-c3/c3-chart.css" rel="stylesheet" />
+    <!-- Morris.js Charts Plugin -->
+    <link href="~/plugins/morris/morris.css" rel="stylesheet" />
+    <!-- Custom scroll bar css-->
+    <link href="~/plugins/scroll-bar/jquery.mCustomScrollbar.css" rel="stylesheet" />
+    <!---Font icons-->
+    <link href="~/plugins/iconfonts/plugin.css" rel="stylesheet" />
+    <!-- Data table css -->
+    <link href="~/plugins/datatable/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <!-- Slect2 css -->
+    <link href="~/plugins/select2/select2.min.css" rel="stylesheet" />
+    <!-- Tabs Style -->
+    <link href="~/plugins/tabs/style.css" rel="stylesheet" />
+    @*added for order controller*@
+    <script src="~/js/jquery-1.7.1.min.js"></script>
+    @* For waiting event *@
+    @* code for autocomplete*@
+
+    <link href="~/css/sumoselect.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    @* code for autocomplete*@
+
+    <style>
+
+        .global-loader1 {
+            position: fixed;
+            z-index: 50000;
+            background: url(../images/loader.svg) no-repeat 50% 50% rgba(255, 255, 255);
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0 auto;
+        }
+    </style>
+    @*end  waiting event *@
+
+</head>
+<body class="">
+    <div id="global-loader"></div>
+    <div class="page">
+        <div class="page-main" id="page-main">
+            <div class="app-header1 header py-1 d-flex">
+                <div class="container-fluid">
+                    <div class="container-fluid">
+                        <div class="d-flex">
+                            <a class="header-brand" href="#">
+                                <img src="~/images/logo.png" class="header-brand-img" alt="Plight logo">
+                            </a>
+                            <div class="menu-toggle-button">
+                                <a class="nav-link wave-effect" href="#" id="sidebarCollapse">
+                                    <span class="fa fa-bars"></span>
+                                </a>
+                            </div>
+                            <div class="mt-2">
+                                <div class="searching mt-3 ml-2">
+                                    <a href="javascript:void(0)" class="search-open mt-3">
+                                        <i class="fa fa-search text-white"></i>
+                                    </a>
+                                    <div class="search-inline">
+                                        <form>
+                                            <input type="text" class="form-control" placeholder="Search here">
+                                            <button type="submit">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                            <a href="javascript:void(0)" class="search-close">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex order-lg-2 ml-auto">
+                                <div class="dropdown d-none d-md-flex mt-1">
+                                    <a class="nav-link icon full-screen-link">
+                                        <i class="fe fe-maximize floating" id="fullscreen-button"></i>
+                                    </a>
+                                </div>
+                                <div class="dropdown d-none d-md-flex mt-1">
+                                    @if (Session["alertCount"].ToString() != "0")
+                                    {
+
+
+                                        <a class="nav-link icon" data-toggle="dropdown">
+                                            <i class="fe fe-bell floating"></i>
+                                            @*<span class="nav-unread bg-danger"></span>*@
+                                            @*<span class="btn-danger .badge">*@
+
+                                            <span class="badge badge-danger" style="border-radius: 50%;">
+                                                @Session["alertCount"].ToString()
+                                            </span>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" style="height:300px;overflow-y:auto">
+                                            @foreach (var std in @Session["DisplayUserList"] as IEnumerable<TrackerMVCEntities.BusinessEntities.NotificationList>)
+                                            {
+                                                <a href="#" class="dropdown-item d-flex pb-3">
+                                                    <div class="notifyimg">
+                                                        <i class="fa fa-commenting-o"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong>  @std.Desc;</strong>
+                                                    </div>
+                                                </a>
+                                            }
+                                            @*<a href="#" class="dropdown-item d-flex pb-3">
+                                                    <div class="notifyimg">
+                                                        <i class="fa fa-thumbs-o-up"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong>Someone likes our posts.</strong>
+                                                        <div class="small text-muted">3 hours ago</div>
+
+                                                    </div>
+                                                </a>
+                                                <a href="#" class="dropdown-item d-flex pb-3">
+                                                    <div class="notifyimg">
+                                                        <i class="fa fa-commenting-o"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong> 3 New Comments</strong>
+                                                        <div class="small text-muted">5  hour ago</div>
+                                                    </div>
+                                                </a>
+                                                <a href="#" class="dropdown-item d-flex pb-3">
+                                                    <div class="notifyimg">
+                                                        <i class="fa fa-cogs"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong> Server Rebooted.</strong>
+                                                        <div class="small text-muted">45 mintues ago</div>
+                                                    </div>
+                                                </a>*@
+                                            <div class="dropdown-divider"></div>
+                                            <a href="#" class="dropdown-item text-center">View all Notification</a>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="dropdown d-none d-md-flex mt-1">
+                                    <a class="nav-link icon" data-toggle="dropdown">
+                                        <i class="fe fe-grid floating"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow p-0">
+                                        <ul class="drop-icon-wrap p-0 m-0">
+                                            @*<li>
+                                                    <a href="email.html" class="drop-icon-item">
+                                                        <i class="fe fe-mail"></i>
+                                                        <span class="block"> E-mail</span>
+                                                    </a>
+                                                </li>*@
+                                            <li>
+                                                <a href="#" class="drop-icon-item">
+                                                    <i class="fe fe-calendar"></i>
+                                                    <span class="block">calendar</span>
+                                                </a>
+                                            </li>
+                                            @*<li>
+                                                    <a href="maps.html" class="drop-icon-item">
+                                                        <i class="fe fe-map-pin"></i>
+                                                        <span class="block">map</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="cart.html" class="drop-icon-item">
+                                                        <i class="fe fe-shopping-cart"></i>
+                                                        <span class="block">Cart</span>
+                                                    </a>
+                                                </li>*@
+                                            <li>
+                                                <a href="#" class="drop-icon-item">
+                                                    <i class="fe fe-message-square"></i>
+                                                    <span class="block">chat</span>
+                                                </a>
+                                            </li>
+                                            @*<li>
+                                                    <a href="profile.html" class="drop-icon-item">
+                                                        <i class="fe fe-phone-outgoing"></i>
+                                                        <span class="block">contact</span>
+                                                    </a>
+                                                </li>*@
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown mt-1">
+                                    <a href="#" class="nav-link pr-0 leading-none" data-toggle="dropdown">
+                                        <span class="avatar avatar-md brround" style="background-image: url(/images/document.png)"></span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow ">
+                                        <div class="text-center">
+                                            <a href="#" class="dropdown-item text-center font-weight-sembold user">@Session["Tracker_userName"].ToString()</a>
+                                            <div class="dropdown-divider"></div>
+                                        </div>
+                                        <a class="dropdown-item" href="@Url.Action("RaiseTicket", "TicketSystem")">
+                                            <i class="dropdown-icon mdi  mdi-ticket"></i> Issue Ticket
+                                        </a>
+                                        <a class="dropdown-item" href="@Url.Action("ChangPassword", "ChangPassword")">
+                                            <i class="dropdown-icon mdi  mdi-textbox-password"></i> Change Password
+                                        </a>
+                                        <a class="dropdown-item" href="@Url.Action("Logout", "Home")">
+                                            <i class="dropdown-icon mdi  mdi-logout-variant"></i> Sign out
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="wrapper">
+                <!-- Sidebar Holder -->
+                <nav id="sidebar" class="nav-sidebar">
+                    <ul class="list-unstyled components" id="accordion">
+                        <div class="user-profile">
+                            <div class="dropdown user-pro-body">
+                                <div>
+                                    <img src="~/images/document.png" alt="user-img" class="img-circle">
+                                </div>
+                                <div class="mb-2">
+                                    <a href="#" class="" data-toggle="" aria-haspopup="true" aria-expanded="false"> <span class="font-weight-semibold">@Session["Tracker_userName"].ToString()</span>  </a>
+                                    <br><span class="text-white font-weight-bold">@Session["Tracker_ConCode"].ToString()</span>
+                                </div>
+                                <a href="#" onclick="OpenModelDashboard();" title="Fetch Menu List" class="user-button"><i class="fa fa-share"></i></a>
+                                <a href="@Url.Action("Logout", "Home")" title="logout" class="user-button"><i class="fa fa-sign-out"></i></a>
+                            </div>
+                        </div>
+
+                        @{ Html.RenderAction("SideMenu", "Home");}
+                    </ul>
+                </nav>
+                @* For waiting event *@
+                <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px;
+                        top: 0px; width: 100%; height: 100%; background-color: #666666; z-index: 30001;
+                        opacity: .8; filter: alpha(opacity=70);display:none">
+                    <p style="position: absolute; top: 50%; left: 45%; color: White;">
+                        <div class="global-loader1">
+                        </div>
+                    </p>
+                </div>
+                @* end waiting event *@
+                <div class="content-area">  @RenderBody() </div>
+            </div>
+        </div>
+        <!--footer-->
+        <footer class="footer footer_wrap">
+            <div class="container">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-md-12 col-sm-12 mt-3 mt-lg-0 text-center">
+                        Copyright © @DateTime.Now.Year <a href="https://digidisruptors.com/">Digital Disruptors Pvt Ltd.</a> All rights reserved.
+                    </div>
+                    <div class="col-md-12 col-sm-12 mt-3 mt-lg-0 text-center black">
+                        tracker is best viewed with Google chrome <i class="fa fa-chrome"></i>.
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer-->
+    </div>
+    <!-- Menu modal -->
+    <div class="modal fade" id="menuModal" data-keyboard="false" data-backdrop="static" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Menu List</h4>
+                    <button type="button" class="close" data-dismiss="modal" onclick="CloseModelDashboard()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="ItemTable">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-10 col-10">
+                                    <div class="form-group ">
+                                        <label class="form-label">Search Menu</label>
+                                        @Html.TextBox("TxtSearchMenu", null, new { @class = "form-control", @id = "TxtSearchMenu", name = "TxtSearchMenu" })
+                                    </div>
+                                </div>
+                                <div class="col-2 col-2">
+                                    <div class="form-group">
+                                        <label style="visibility:hidden">Group</label>
+                                        <div class="row gutters-xs" id="searchVDiv">
+                                            <div class="col">
+                                                <span class="col-auto">
+                                                    <a class="btn btn-primary" href="#" id="searchV" onclick="FetchMenuListAgainstSearchText()" title="Search Menu"><i class="fa fa-search"></i></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <table class="table table-striped table-bordered text-wrap th_Background" style="width:100%;" id="tblMenuTable">
+                                <thead>
+                                    <tr>
+                                        <th>Menu</th>
+
+                                        <th>Sub Menu</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="modal-footer">
+                        <button type="button" id="SaveBtn" class="btn btn-primary" data-dismiss="modal" onclick="DirectGRNItemList()" style="background:#9f78ff;">Submit</button>
+                    </div>*@
+            </div>
+        </div>
+
+    </div>
+    <!-- Menu modal -->
+    <script type="text/javascript">
+        function setDefaultHeight() {
+            var elmnt = document.getElementById("page-main");
+            var height = 0;
+
+            if (elmnt.scrollHeight) {
+                height = elmnt.scrollHeight;
+            }
+            else {
+                height = $("#page-main").height();
+
+            }
+            ////height = $(".page-main").height();
+            height = height - 62;
+            $("#sidebar").height(height + "px");
+        }
+
+        $(window).on("scroll", function (e) {
+            var elmnt = document.getElementById("page-main");
+            var height = 0;
+            height = elmnt.scrollHeight;
+            if ($(this).scrollTop() > height) {
+                setDefaultHeight();
+            } else {
+                setDefaultHeight();
+            }
+        });
+
+        $(function (e) {
+            $('#example').DataTable();
+        });
+
+        //$('#example').DataTable({
+        //    retrieve: true,
+        //    paging: false
+
+
+        //});
+
+
+    </script>
+    <!-- Back to top -->
+    <a href="#top" id="back-to-top" style="display: inline;"><i class="fa fa-angle-up"></i></a>
+    <!-- Dashboard Core -->
+    @*<script src="~/js/vendors/jquery-3.2.1.min.js"></script>*@
+
+    <script src="~/plugins/fullcalendar/moment.min.js"></script>
+    <script src="~/plugins/fullcalendar/fullcalendar.min.js"></script>
+    <script src="~/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="~/js/vendors/jquery.sparkline.min.js"></script>
+    <script src="~/js/vendors/selectize.min.js"></script>
+    <script src="~/js/vendors/jquery.tablesorter.min.js"></script>
+    <script src="~/js/vendors/circle-progress.min.js"></script>
+    <script src="~/plugins/rating/jquery.rating-stars.js"></script>
+    <!-- Fullside-menu Js-->
+    <script src="~/plugins/fullside-menu/jquery.slimscroll.min.js"></script>
+    <script src="~/plugins/fullside-menu/waves.min.js"></script>
+    <!-- Echarts Js-->
+    <script src="~/plugins/echarts/echarts.js"></script>
+    <script src="~/js/index1.js"></script>
+    <!--Morris.js Charts Plugin -->
+    <script src="~/plugins/am-chart/amcharts.js"></script>
+    <script src="~/plugins/am-chart/serial.js"></script>
+    <!-- Custom scroll bar Js-->
+    <script src="~/plugins/scroll-bar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- Data tables -->
+    <script src="~/plugins/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatable/dataTables.bootstrap4.min.js"></script>
+    @*Export to exel ,pdf and csv for Datatable *@
+
+    <link href="~/css/buttons.dataTables.css" rel="stylesheet" />
+    <script src="~/js/jszip.min.js"></script>
+    <script src="~/js/dataTables.buttons.min.js"></script>
+    <script src="~/js/pdfmake.min.js"></script>
+    <script src="~/js/vfs_fonts.js"></script>
+    <script src="~/js/buttons.html5.min.js"></script>
+    <script src="~/js/buttons.print.min.js"></script>
+    @*Export to exel ,pdf and csv for Datatable *@
+    <!-- Select2 js -->
+    <script src="~/plugins/select2/select2.full.min.js"></script>
+    <!-- Custom Js-->
+    <script src="~/js/custom.js"></script>
+    <!-- Inline js -->
+    <script src="~/js/select2.js"></script>
+    <!-- Data table js -->
+    <script type="text/javascript">
+        function setDefaultHeight() {
+            var elmnt = document.getElementById("page-main");
+            var height = 0;
+
+            if (elmnt.scrollHeight) {
+                height = elmnt.scrollHeight;
+            }
+            else {
+                height = $("#page-main").height();
+
+            }
+            ////height = $(".page-main").height();
+            height = height - 62;
+            $("#sidebar").height(height + "px");
+        }
+
+        $(window).on("scroll", function (e) {
+            var elmnt = document.getElementById("page-main");
+            var height = 0;
+            height = elmnt.scrollHeight;
+            if ($(this).scrollTop() > height) {
+                setDefaultHeight();
+            } else {
+                setDefaultHeight();
+            }
+        });
+        $(function (e) {
+            $('#example').dataTable();
+
+        });
+
+        $('#example').dataTable({
+            //  retrieve: true,
+            paging: false,
+            "order": []
+            // "order": [[3, "desc"]]
+        });
+
+
+    </script>
+    <script>
+        $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
+    </script>
+    <!-- Bootstrap DatePicker -->
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" type="text/css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js" type="text/javascript"></script>*@
+    @*<link href="~/css/bootstrap-datepicker.css" rel="stylesheet" />
+        <script src="~/js/bootstrap-datepicker.js"></script>*@
+
+    <link href="~/css/DateTimePickerBL.css" rel="stylesheet" />
+    <script src="~/js/DateTimePickerForBL.js"></script>
+    <link href="~/css/bootstrap-datepicker.css" rel="stylesheet" />
+    <script src="~/js/bootstrap-datepicker.js"></script>
+    <!---Tabs JS-->
+    <script src="~/plugins/tabs/jquery.multipurpose_tabcontent.js"></script>
+
+    <!-- Bootstrap DatePicker -->
+    <script type="text/javascript">
+        $(function () {
+            var currDate = new Date();
+            $('#datePicker')
+                .datepicker({
+                    autoclose: true,
+                    todayHighlight: true,
+                    format: 'dd M yyyy',
+                    language: "tr",
+                    changeMonth: true,
+                    changeYear: true,
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+                    $('.datepicker').hide();
+                });
+
+            $('#txtigmdate')
+                .datepicker({
+                    autoclose: true,
+                    todayHighlight: true,
+                    format: 'dd M yyyy',
+                    language: "tr",
+                    changeMonth: true,
+                    changeYear: true,
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+
+                });
+
+            $('.datePickerPOD')
+                .datepicker({
+                    autoclose: true,
+                    todayHighlight: true,
+                    format: 'dd M yyyy',
+                    language: "tr",
+                    changeMonth: true,
+                    changeYear: true,
+                    //endDate: currDate,
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+                    $('.datePickerPOD').show();
+                });
+
+        });
+    </script>
+    <script>
+        $(function () {
+            var currDate = new Date();
+            $(".form_datetime1").datetimepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy hh:ii',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true,
+                forceParse: true,
+                // endDate: currDate
+            })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+                    $('.datetimepicker').hide();
+                });
+            $(".DepartureDateTime").datetimepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy hh:ii',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true,
+                forceParse: true,
+                // endDate: currDate
+            })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+                    $('.datetimepicker').hide();
+                });
+            $(".RemovalDateTime").datetimepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy hh:ii',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true,
+                forceParse: true,
+                // endDate: currDate
+            })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+                    $('.datetimepicker').hide();
+                });
+
+            $(".form_date2").datetimepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true,
+                forceParse: true,
+                timepicker: false,
+                // endDate: currDate
+            })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+                    $('.datetimepicker').hide();
+                });
+
+        });
+    </script>
+    <!---Tabs scripts-->
+    <script>
+        $(function (e) {
+            $(".first_tab").champ();
+            $(".accordion_example").champ({
+                plugin_type: "accordion",
+                side: "left",
+                active_tab: "3",
+                controllers: "true"
+            });
+
+            $(".second_tab").champ({
+                plugin_type: "tab",
+                side: "right",
+                active_tab: "1",
+                controllers: "false"
+            });
+
+        });
+    </script>
+    <script src="~/Scripts/jquery.sumoselect.min.js"></script>
+    <script>
+        //for jump menue
+        function OpenModelDashboard() {
+            $("#menuModal").modal();
+            $("#menuModal").show();
+            $('#tblMenuTable').hide();
+            $('#TxtSearchMenu').val('');
+
+        }
+        function CloseModelDashboard() {
+            GroupMenuList = [];
+
+        }
+        function FetchMenuListAgainstSearchText() {
+            var SearchText = $('#TxtSearchMenu').val();
+            if (SearchText == undefined || SearchText == null || SearchText == NaN) {
+                SearchText = '';
+            }
+
+            var data = { 'SearchText': SearchText }
+            data = JSON.stringify(data);
+            $("#global-loader").fadeIn();
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/getMenuList",
+
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    $('#tblMenuTable').show();
+                    GroupMenuList = response;
+                    $('#tblMenuTable').DataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": response,
+                        "bPaginate": false,
+                        "bInfo": false,
+                        "paging": false,
+                        "aaSorting": [],
+                        "columnDefs": [{
+                            "targets": 0,
+                            "orderable": false,
+                        }],
+                        "columns": [
+
+
+                            { "data": "MenuName" },
+                            { "data": "SubMenu" },
+
+                            {
+                                "data": "ItemID",
+                                "width": "20%",
+                                "className": "text-center",
+                                "orderable": false,
+                                "render": function (data, type, row, meta) {
+                                    if (row.IsFavourite == '0') {
+                                        return '<a href="' + '/' + row.ControllerName + '/' + row.Action + '" class="btn btn-primary"><i class="fa fa-arrow-right"></i></a> <a href="#" class="btn btn-light" onclick="SetFavoriteMenu(' + row.MenuID + ')"><i class="fa fa-star" style="color:#5ed84f;" ></i></a>';
+
+                                    }
+                                    else {
+
+                                        return '<a href="' + '/' + row.ControllerName + '/' + row.Action + '" class="btn btn-primary"><i class="fa fa-arrow-right"></i></a> <a href="#" class="btn btn-success" onclick="SetFavoriteMenu(' + row.MenuID + ')"><i class="fa fa-star" ></i></a>';
+                                    }
+                                }
+
+                            }
+
+
+                        ]
+                    });
+                    $("#global-loader").fadeOut();
+
+                },
+
+                error: function (error) {
+
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#global-loader").fadeOut();
+
+
+                }
+            });
+
+
+        }
+
+        function SetFavoriteMenu(MenuID) {
+
+            var data = { 'MenuID': MenuID }
+            data = JSON.stringify(data);
+            $("#global-loader").fadeIn();
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/SetFavouriteMenu",
+
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    alert(response);
+                    FetchMenuListAgainstSearchText();
+                    $("#global-loader").fadeOut();
+
+                },
+
+                error: function (error) {
+
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#global-loader").fadeOut();
+
+
+                }
+            });
+
+
+        }
+    </script>
+</body>
+</html>

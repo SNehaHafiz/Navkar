@@ -1,0 +1,186 @@
+﻿<div>
+    <div class="modal-header">
+        <h5 class="modal-title" id="example-Modal3">Trailer Document List : @ViewBag.tRAILERNAME</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+  
+    <label style="visibility:hidden" id="lblLRNo">@ViewBag.tRAILERNAME</label>
+    <input id="Trailernameget" style="visibility:hidden" value=@ViewBag.tRAILERNAME>
+    <div class="modal-body" id="divAttach">
+
+        <form id="myForm">
+
+            <div class="form-group">
+                <div class="table-responsive">
+                    <table id="JOAttachment" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th style="width:5px" class=" sorting">#</th>
+                                <th class="wd-15p sorting">File Name</th>
+                                <th style="visibility:hidden; width:5px"></th>
+                              
+                            </tr>
+                        </thead>
+                        <tbody style="box-sizing :border-box;"></tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" id="btnDone" value="Done" class="btn btn-info pull-right" data-dismiss="modal" aria-label="Close">Done</button>
+    </div>
+</div>
+
+@using (Html.BeginForm("DownLoadFilesVehicle", "VehicleDetails", FormMethod.Post))
+{
+    <input type="hidden" id="hfFileId" name="id" />
+    <input type="hidden" id="hfFileId1" name="id1" />
+    <input type="submit" id="btnDownload" value="Download" style="display:none" />
+}
+
+<script>
+   $(document).ready(function () {
+        $('#JOAttachment').dataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "bPaginate": false,
+                "bFilter": false,
+                "paging": false,
+                "order": [],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [2],
+                    }
+
+                ]
+
+            })
+       var datare = $("#Trailernameget").val();
+      
+       @*var Trailername = @ViewBag.tRAILERNAME ;*@
+       var data1 = { 'Trailername': datare };
+            data = JSON.stringify(data1);
+      
+        $.ajax({
+            url: '/VehicleDetails/ShowVehicleattachments',
+            type: "POST",
+            data: data,
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            contentType: 'application/json; charset=utf-8',
+            dataType: "json",
+            success: function (Data) {
+              
+                $('#JOAttachment').dataTable({
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": Data,
+                    "columns": [
+                        { "data": "SrNo" },
+                        { "data": "FilePath" },
+                        {
+                            "data": "DocID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a  onclick="DownloadAttachment(' + data + ')" href="#" class="btn btn-sm btn-primary" title="View"><i class="fa fa-eye"></i> </a>';
+
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                     
+
+                    ]
+                });
+              
+
+            }
+
+
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function CountRows() {
+        var table = $('#JOAttachment').DataTable();
+
+        var RowCount = table.rows().count()
+        $("#lblCount").text(RowCount);
+        //*****   document.getElementById('lblCount').innerHTML = RowCount;
+        //  alert(RowCount)
+    }
+    function HideColumns() {
+        //  alert($('#hdMode').val())
+        if ($('#hdMode').val() == "ViewMode") {
+            // alert("hi")
+            var table = $('#JOAttachment').DataTable();
+
+            table.column(4).visible(false);
+            $('#divFileUpload').hide()
+        }
+        else {
+
+            table.column(4).visible(true);
+            $('#divFileUpload').show()
+        }
+    }</script>
+<script>
+    //*********************************For Getting Count Document Wise
+    function GetCountDocumentWise() {
+        ShowJobAttachmentTempData();
+
+    }
+    function DownloadAttachment(DocID) {
+        var DriverID = $("#Trailernameget").val() ;
+        $("#hfFileId").val(DocID);
+        $("#hfFileId1").val(DriverID);
+        $("#btnDownload")[0].click();
+       // alert(id)
+    }
+    //*******************************END For Getting Count Document Wise
+</script>
+<script>
+    function DownloadAttachment1(DocID) {
+
+        var DriverID = $("#Trailernameget").val() ;
+        var data1 = { 'DriverID': DriverID, 'DocID': DocID};
+            data = JSON.stringify(data1);
+
+        //$.ajax({
+        //    url: '/ClosedLRList/DownLoadFile',
+        //    type: "POST",
+        //    data: data,
+        //    contentType: false, // Not to set any content header
+        //    processData: false, // Not to process data
+        //    contentType: 'application/json; charset=utf-8',
+        //    dataType: "json",
+        //    success: function (response) {
+        //        // alert(JSON.stringify(Data))
+
+
+        //        // CountRows();
+        //        // HideColumns();
+
+        //    }
+
+
+        //});
+    };
+</script>

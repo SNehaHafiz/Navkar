@@ -1,0 +1,324 @@
+﻿
+@{
+    ViewBag.Title = "Track Codeco Status";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Track Codeco Status : <label id="lblCount">0</label> </h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(0).ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12"></div>
+                        <div class="col-lg-3 col-sm-12"  id="divShipLines">
+                            <div class="form-group">
+                                <label class="form-label"> Shipping Line</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @* @Html.DropDownListFor(model => model.Size, (IEnumerable<SelectListItem>)ViewBag.ContainerSize, "--Select--", new { @class = "form-control", @id = "ddlSize", name = "Size", onblur = "myRequiredValidation('ddlSize')" })*@
+                                        @Html.DropDownList("ddlShipLinesList",
+                                                                               (IEnumerable<SelectListItem>)ViewBag.ShipLines,
+                                                             "--Select--",
+                                                    new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory"> Event</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                       
+                                        @Html.DropDownList("ddlEvent", new List<SelectListItem>
+                        { new SelectListItem { Text = "--All--", Value = ""},
+                             new SelectListItem { Text = "IMPORT IN", Value = "IMPORT IN"},
+                          new SelectListItem { Text = "IMPORT OUT", Value = "IMPORT OUT"},
+                          new SelectListItem { Text = "MTY IN", Value = "MTY IN"},
+                          new SelectListItem { Text = "MTY OUT", Value = "MTY OUT"},
+                          new SelectListItem { Text = "EXP IN", Value = "EXP IN"},
+                          new SelectListItem { Text = "EXP OUT", Value = "EXP OUT"},
+                          new SelectListItem { Text = "IMP OUT DES", Value = "IMP OUT DES"}
+
+                          }, new { @class = "form-control", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="ShowONLine()" type="button"><i class="fe fe-search"></i></button>
+                                        @*<input type="button" value="Search" class="btn btn-primary" onclick="Show()" />*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12"></div>
+                        <div class="col-lg-4 col-sm-12">
+                            <h5> OR</h5>
+                        </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12"></div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> Container No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", style = "text-transform: uppercase", maxlength = 11,Placeholder="Container No." })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="ShowOnContainer()" type="button"><i class="fe fe-search"></i></button>
+                                        @*<input type="button" value="Search" class="btn btn-primary" onclick="Show()" />*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblCodecoStatus" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr No.</th>
+                                            <th>Sent Date</th>
+                                            <th>Container No.</th>
+                                            <th>Shipping Line</th>
+                                            <th>Event</th>
+                                            <th>File Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tblCodecoStatus').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+           
+        });
+
+    });
+</script>
+<script>
+    function ShowONLine()
+    {
+        var SearchCriteria = 1;
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        getCodecoData(SearchCriteria);
+    }
+
+    function ShowOnContainer() {
+        var SearchCriteria = 2;
+        var res = validateContainer();
+        if (res == false) {
+            return false;
+        }
+        getCodecoData(SearchCriteria);
+
+    }
+
+    function getCodecoData( SearchCriteria )
+    {
+       // alert(SearchCriteria);
+        var fromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var ShipLines = $("#ddlShipLinesList").val();
+        var Event = $("#ddlEvent").val();
+        var ContainerNo = $("#txtContainerNo").val();
+
+        var data = JSON.stringify({
+            'FromDate': fromDate,
+            'ToDate': ToDate,
+            'ShipLines': ShipLines,
+            'Event': Event,
+            'ContainerNo': ContainerNo,
+            'SearchCriteria': SearchCriteria
+
+        });
+
+        $.ajax({
+
+            url: '/Report/getCodecoStatusList',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $('#lblCount').text(data.length);
+                //alert(data.length)
+                if (data.length == 0) {
+                    alert("No Record found")
+                }
+                 $('#tblCodecoStatus').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+
+                    "columns": [
+                    { "data": "srno" },
+                    { "data": "SentDate" },
+                    { "data": "ContainerNo" },
+                    { "data": "ShippingLine" },
+                    { "data": "Event" },
+                    { "data": "FileName" }    
+                    ]
+
+                });
+                 
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+
+    }
+</script>
+
+<script>
+
+    function validate() {
+        // alert("hifg");
+
+        var FromDate = document.getElementById('FromDate').value;
+        var ToDate = document.getElementById('ToDate').value;
+        var ddlShipLinesList = document.getElementById('ddlShipLinesList').value;
+
+        var blResult = Boolean;
+        blResult = true;
+        $("#FromDate").removeClass("form-control is-invalid state-invalid")
+        $("#FromDate").addClass("form-control")
+        $("#ToDate").removeClass("form-control is-invalid state-invalid")
+        $("#ToDate").addClass("form-control")
+        $("#ddlShipLinesList").removeClass("form-control is-invalid state-invalid")
+        $("#ddlShipLinesList").addClass("form-control")
+
+        if (FromDate == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#FromDate").removeClass("form-control is-valid state-valid")
+            $("#FromDate").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+        if (ToDate == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ToDate").removeClass("form-control is-valid state-valid")
+            $("#ToDate").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlShipLinesList == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ddlShipLinesList").removeClass("form-control is-valid state-valid")
+            $("#ddlShipLinesList").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+    //$('#btnRemoveCSS').click(function () {
+
+</script>
+
+<script>
+
+    function validateContainer() {
+        // alert("hifg");
+
+        var txtContainerNo = document.getElementById('txtContainerNo').value;
+
+        var blResult = Boolean;
+        blResult = true;
+        $("#txtContainerNo").removeClass("form-control is-invalid state-invalid")
+        $("#txtContainerNo").addClass("form-control")
+
+
+        if (txtContainerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtContainerNo").removeClass("form-control is-valid state-valid")
+            $("#txtContainerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+    //$('#btnRemoveCSS').click(function () {
+
+</script>
+
+
+
+
+
+
+

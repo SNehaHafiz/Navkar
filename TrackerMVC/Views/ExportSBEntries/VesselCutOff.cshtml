@@ -1,0 +1,377 @@
+﻿
+@{
+    ViewBag.Title = "VesselCutOff";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Vessel Cut Offs</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Via No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtViaNo", null, new { @class = "form-control ", onChange = "ViaNo()", @id = "txtViaNo", Placeholder = "Via No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vessel</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlvessel", (IEnumerable<SelectListItem>)ViewBag.VesselList, "--Select--", new { @class = "form-control", @id = "ddlvessel", name = "ddlvessel", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Voyage</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtVoy", null, new { @class = "form-control ", @id = "txtVoy", Placeholder = "Voyage", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Rotation No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtRotation", null, new { @class = "form-control ", @id = "txtRotation", Placeholder = "Rotation No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">POD</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlpod", (IEnumerable<SelectListItem>)ViewBag.PodList, "--Select--", new { @class = "form-control", @id = "podddl", name = "podddl", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Cut Off Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("FromDate", null, new { @id = "FDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="true" id="defaultCheck1">
+                                            <label class="form-check-label" for="defaultCheck1">
+                                                Is Gate Open ?
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Open Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("ToDateDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", onchange = "CheckDate();", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success btn-xs" id="Save" onclick="Save()" title="Save">Save</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-secondary" id="Save" onclick="Clear()" title="Clear"><b>Clear</b></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Vessel Cut Off List</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+</script>
+<script>
+
+    function Save() {
+
+        debugger;
+        var ViaNo = document.getElementById('txtViaNo').value;
+        var VesselID = document.getElementById('ddlvessel').value;
+        var Voyage = document.getElementById('txtVoy').value;
+        var Rotaion = document.getElementById('txtRotation').value;
+        //var PortName = document.getElementById('podddl').value;
+        var PortName = $("#podddl option:selected").text();
+        var Cutoffdate = document.getElementById('FDate').value;
+        var IsGateOpen = $('#defaultCheck1').is(':checked') ? $('#defaultCheck1').val() : false
+        var OpenDate = document.getElementById('ToDate').value;
+
+        
+
+
+        if (ViaNo == "") {
+            document.getElementById("txtViaNo").style.borderColor = "red";
+            alert('Please  Enter  Vai No!')
+            event.preventDefault();
+            return;
+        }
+
+
+        if (VesselID == 0) {
+            document.getElementById("ddlvessel").style.borderColor = "red";
+            alert('Please  Select vessel name!')
+            event.preventDefault();
+            return;
+        }
+
+        if (Voyage == "") {
+            document.getElementById("txtVoy").style.borderColor = "red";
+            alert('Please  enter Voyage!')
+            event.preventDefault();
+            return;
+        }
+
+        if (Rotaion == "") {
+            document.getElementById("txtRotation").style.borderColor = "red";
+            alert('Please  enter rotaion !')
+            event.preventDefault();
+            return;
+        }
+
+        if (PortName == 0) {
+            document.getElementById("podddl").style.borderColor = "red";
+            alert('Please  select Port !')
+            event.preventDefault();
+            return;
+        }
+
+        var Elements = {};
+        Elements.VesselID = VesselID;
+        Elements.ViaNo = ViaNo;
+        Elements.Voyage = Voyage;
+        Elements.RotationNo = Rotaion;
+        Elements.PortName = PortName;
+        Elements.CutofDate = Cutoffdate;
+        Elements.IsOpen = IsGateOpen;
+        Elements.gateopendate = OpenDate;
+
+        var data1 = { 'data': Elements }
+       var data = JSON.stringify(data1);
+        
+     
+        $.ajax({
+
+            url: "/ExportSBEntries/AddVessel",
+          //  data: '{data: ' + JSON.stringify(data) + '}',
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (success) {
+                alert('Record saved successfully')
+                document.location = '@Url.Action("VesselCutOff", "ExportSBEntries")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+</script>
+
+<script>
+    function ViaNo() {
+        debugger;
+
+        var ViaNO = $("#txtViaNo").val().trim();
+        var data1 = { "ViaNO": ViaNO };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ExportSBEntries/FetchVesselDet',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#ToDate').val(data[0].gateopendate);
+                $('#FDate').val(data[0].CutofDate);
+                $('#txtVoy').val(data[0].Voyage);
+                $('#txtRotation').val(data[0].RotationNo);
+                $('#ddlvessel').val(data[0].VesselID);
+                $('#podddl').val(data[0].PortID);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+    function ShowSSRSummary() {
+
+
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ExportSBEntries/Search1",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(jsonResult)
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "tblWorkOrderOpenList", "tblWorkOrderOpenList")
+                //  alert(jsonResult)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+</script>
+

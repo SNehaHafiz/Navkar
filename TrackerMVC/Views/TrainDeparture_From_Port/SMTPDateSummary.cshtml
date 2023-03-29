@@ -1,0 +1,449 @@
+﻿
+@{
+    ViewBag.Title = "SMTPDateSummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">
+            SMTP Received Date
+        </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                   @* <button type="button" class="btn btn-icon btn-teal" onclick="window.location = '@Url.Action("TrainDeparture", "Train")' " name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        @*<div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlTrainDropdown", (IEnumerable<SelectListItem>)ViewBag.TrainList, "--Select-- ", new { @class = "form-control", @id = "ddlTrainDropdown", name = "ddlTrainDropdown", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Port Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlPortDropdown", (IEnumerable<SelectListItem>)ViewBag.portList, "--Select-- ", new { @class = "form-control", @id = "ddlPortDropdown", name = "ddlPortDropdown", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-primary " type="button" id="Add" onclick="ShowItemsList()" name="Add">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="col-lg-7 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-instagram pull-right">Selected TEUS: <span id="selected_count" value="0"></span> </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+
+                    </div>
+                    @*<div class="btn-list text-center">
+                        <div class="row">
+                            <div class=" btn-list col-12">
+                                <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+
+                            </div>
+                        </div>
+
+                    </div>*@
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSMTPDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSMTPDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-success " type="button" id="Save" onclick="Save();" name="Save">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div id="showItems">
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblsmptdate" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th style="width:1px"></th>
+                                                <th style="width:7px">JO No.</th>
+                                                <th style="width:7px">Container No.</th>
+                                                <th style="width:3px">Size</th>
+                                                <th style="width:3px">Type</th>
+                                                <th style="width:3px">BL No.</th>
+                                                <th style="width:3px">Vessel Name</th>
+
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Show the table after click of save button  -->
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+    <!-- section-wrapper -->
+</div>
+
+
+<script type="text/javascript">
+    function ShowItemsList() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+        var Portid = $("#ddlPortDropdown option:selected").val();
+
+
+        var data1 = { 'Portid': Portid };
+        var data = JSON.stringify(data1);
+        //alert(data);
+
+        $.ajax({
+            url: "/TrainDeparture_From_Port/AjaxPortWiseContainerDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+                $('#tblsmptdate').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bPaginate": false,
+                    "aaSorting": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+                    ],
+                    "columns": [
+                        {
+
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+
+
+                                //if (row.selected === 'checked') {
+
+                                //    alert(Number(row.TEUS));
+                                //    TotTUES += Number(row.TEUS);
+                                //}
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"   value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+                        
+                          {
+                              "data": "JONo",
+                              "render": function (data, type, row, meta) {
+
+                                  input = '<input type=\"hidden\" name=\"JONO[]\" class=\" form-control JONO\" id=\"JONO\"  value="' + data + '">';
+                                  return data + input;
+                              }
+                          },
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "ContainerType" },
+                        { "data": "BLNumber" },
+                        { "data": "VesselName" }
+                    ]
+                })
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#tblsmptdate').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "aaSorting": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+            ]
+        })
+
+
+
+       
+    });
+    
+</script>
+
+<script>
+    function Save() {
+        var res = validate();
+        //  alert(res)
+        if (res == false) {
+            return false;
+        }
+
+        var itemcount = checkItemcount();
+        if (itemcount) {
+
+            var SMTPDate = $("#txtSMTPDate").val();
+
+            //  var Trainid = $("#ddlTrainDropdown option:selected").val();
+            
+           // alert(SMTPDate)
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+        //    alert(JSON.stringify(checkboxarray));
+
+
+            var tablearray = [];
+            var table = document.getElementById("tblsmptdate");
+            var row;
+
+
+            //var tablearray = [];
+            //var table = document.getElementById("ContainerList");
+            //var row;
+
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+                    var containerno = row.cells[0].childNodes[0].value;
+
+
+                    if (containerno == checkboxarray[k]) {
+
+                        var jono = row.cells[1].childNodes[1].value;
+                       
+                        
+
+                        tablearray.push({ 'ContainerNo': containerno, 'JONO': jono })
+                    }
+                }
+            }
+           // alert(JSON.stringify(tablearray));
+            ////for (var i = 1; i < table.rows.length; i++) {
+            ////    alert(i);
+            ////    alert(table.rows.length);
+
+            ////    row = table.rows[i];
+
+            ////    for (var k = 0; k < checkboxarray.length; k++) {
+            ////        var containerno = row.cells[0].childNodes[0].value;
+
+            ////        alert(containerno);
+            ////        if (containerno == checkboxarray[k]) {
+
+            ////            var jono = row.cells[1].childNodes[1].value;
+
+            ////           // var size = row.cells[3].childNodes[2].value;
+            ////            alert(jono);
+            ////           // TotTEUS = Number(TotTEUS) + Number(size);
+            ////            tablearray.push({ 'ContainerNo': containerNo, 'JONo': jono })
+            ////        }
+            ////    }
+            ////}
+
+          
+
+            if (tablearray.length == 0) {
+                alert("Please select atleast one container to update SMTP Date!");
+
+               // alert("hi");
+            }
+            else {
+               // alert("hi");
+                var data1 = { 'Containerdata': tablearray, 'SMTPRCVDDate': SMTPDate };
+                var data = JSON.stringify(data1);
+              //  alert(data);
+                $.ajax({
+                    url: "/TrainDeparture_From_Port/UpdateSMTPDate",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        // alert("Record saved successfully!");
+                        var str = response;
+                        alert(str);
+                        ShowItemsList();
+                        @*document.location = '@Url.Action("SMTPDateSummary", "TrainDeparture_From_Port")';*@
+                        @*var str1 = JSON.stringify(response.validationMessage);
+                        var a = JSON.stringify(response.containerList);
+                        //  alert(str1);
+                        // alert(a);
+                        if (str1 != 0) {
+                            var message = "Record saved successfully"
+                            alert(message);
+                            document.location = '@Url.Action("RoadPlanning", "TrainDeparture_From_Port")';
+                        }
+                        else {
+
+                            var message = "Following container(s) has been already planned. Please re-check. \n" + response.containerList
+                            var array = message.split(',').join("\n");
+                            alert(array);
+                            // alert("Following container no \n" + data.ContainerData.JOValidation.containerList + " \n is already in CFS or still on another ICD!")
+
+                        }*@
+
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+        else {
+            alert("Please select atleast one container to add trailer no.!");
+        }
+
+    }
+
+</script>
+
+
+
+<script type="text/javascript">
+    function validate() {
+
+        var port = document.getElementById('ddlPortDropdown').value;
+       
+       
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('ddlPortDropdown').style.borderColor = "Gainsboro";
+      
+
+        if (port == "") {
+            document.getElementById('ddlPortDropdown').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (port == "--Select-- ") {
+            document.getElementById('ddlPortDropdown').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+    //function validateForSave() {
+    //    alert("hi")
+    //    var port = document.getElementById('ddlPortDropdown').value;
+        
+    //    alert(port)
+        
+    //    var blResult = Boolean;
+    //    blResult = true;
+    //    document.getElementById('ddlPortDropdown').style.borderColor = "Gainsboro";
+    //    document.getElementById('txtSMTPDate').style.borderColor = "Gainsboro";
+
+
+    //    if (port == "") {
+    //        document.getElementById('ddlPortDropdown').style.borderColor = "red"
+    //        blResult = blResult && false;
+    //    }
+    //    if (txtSMTPDate == "") {
+    //        document.getElementById('txtSMTPDate').style.borderColor = "red"
+    //        blResult = blResult && false;
+    //    }
+
+    //    if (blResult == false) { alert('Please fill the required fields!'); }
+    //    return blResult;
+
+    //};
+    function checkItemcount() {
+
+        var table = $('#tblsmptdate').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+</script>

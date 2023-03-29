@@ -1,0 +1,1179 @@
+﻿@model TrackerMVCEntities.BusinessEntities.JobOrderMEntities
+
+@{
+    ViewBag.Title = "GenerateBL";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Generate BL</h4>
+
+    </div>
+    @*@using (Html.BeginForm("BL", "GenerateBL", FormMethod.Post))*@
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "BLForm" }))
+{
+        @*@Html.AntiForgeryToken()*@
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                @*<input size="16" type="text" value="2012-06-15 14:45" readonly class="form_datetime1">*@
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">JO No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.JONo, new { htmlAttributes = new { @class = "form-control Number", @id = "JONo", @readonly="Readonly" } })
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">JO Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.JODate, new { htmlAttributes = new { @class = "form-control", @id = "JODate", @readonly = "readonly" ,@Value = DateTime.Now.ToString("dd MMM yyyy")} })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <i class="fa fa-paperclip fa-2x	" style="color:#6c4cbb" aria-hidden="true"></i>
+                                                <span class="custom-switch-description" style="font-size:17px;color:#6c4cbb"><b>3</b></span>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Customer</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                               @* @Html.EditorFor(model => model.AgentID, new { htmlAttributes = new { @class = "form-control", @id = "AgentID" } })*@
+                                                @Html.DropDownListFor(model => model.AgentID, (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select--", new { @class = "form-control", @id = "ddlAgent", name = "AgentID", onblur = "myRequiredValidation('ddlAgent')" })
+
+                                           
+                                             </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Shipping Line</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                               @* @Html.EditorFor(model => model.shipperid, new { htmlAttributes = new { @class = "form-control Number", @id = "shipperid" } })*@
+                                                @Html.DropDownListFor(model => model.SLID, (IEnumerable<SelectListItem>)ViewBag.ShipLines, "--Select--", new { @class = "form-control", @id = "ddlShippinLine", name = "SLID", onblur = "myRequiredValidation('ddlShippinLine')" })
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Shipper</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                               @* @Html.EditorFor(model => model.AgentID, new { htmlAttributes = new { @class = "form-control", @id = "AgentID" } })*@
+                                                @Html.DropDownListFor(model => model.shipperid, (IEnumerable<SelectListItem>)ViewBag.Shippers, "--Select--", new { @class = "form-control", @id = "ddlshipper", name = "shipperid", onblur = "myRequiredValidation('ddlshipper')" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Consignee</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                               @* @Html.EditorFor(model => model.AgentID, new { htmlAttributes = new { @class = "form-control", @id = "AgentID" } })*@
+                                                @Html.DropDownListFor(model => model.Importerid, (IEnumerable<SelectListItem>)ViewBag.Consignee, "--Select--", new { @class = "form-control", @id = "ddlConsignee", name = "ddlConsignee", onblur = "myRequiredValidation('ddlConsignee')" })                              
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">CHA</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @*@Html.EditorFor(model => model.AgentID, new { htmlAttributes = new { @class = "form-control", @id = "AgentID" } })*@
+                                                @Html.DropDownListFor(model => model.Chaid, (IEnumerable<SelectListItem>)ViewBag.CHA, "--Select--", new { @class = "form-control", @id = "ddlCha", name = "Importerid" })
+
+                                             </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Via No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.ViaNo, new { htmlAttributes = new { @class = "form-control", @id = "txtViaNo", onblur = "myRequiredTextValidation('txtViaNo')" } })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Vessel Name</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                
+                                               @* @Html.EditorFor(model => model.AgentID, new { htmlAttributes = new { @class = "form-control", @id = "AgentID" } })*@
+                                                @Html.DropDownListFor(model => model.VesselID, (IEnumerable<SelectListItem>)ViewBag.Vessel, "--Select--", new { @class = "form-control", @id = "ddlVessel", name = "VesselID", onblur = "myRequiredValidation('ddlVessel')", @readonly = "Readonly" })
+
+                                          
+                                              </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Port Name</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.PortID, (IEnumerable<SelectListItem>)ViewBag.Ports, "--Select--", new { @class = "form-control", @id = "ddlPort", name = "PortID", onblur = "myRequiredValidation('ddlPort')", @readonly = "Readonly" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Berthing Date and Time</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.berthingdate, new { htmlAttributes = new { @class = "form-control", @id = "txtBerthingDate", @readonly = "Readonly" } })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">BL No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.BLNumber, new { htmlAttributes = new { @class = "form-control", @id = "txtBLNo", onblur = "myRequiredTextValidation('txtBLNo')" } })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">BL Received Date and Time</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                              
+                                                @Html.EditorFor(model => model.BLReceivedDate, new { htmlAttributes = new { @class = "form-control form_datetime1", @id = "BLdatePicker", @readonly = "readonly", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm"), onblur = "myRequiredTextValidation('BLdatePicker')" } })
+                                               
+                                             </div>
+                                           
+                                        </div>
+                                    </div>
+                                                                       
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Haulage Type</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.Haulage_Type_Id, (IEnumerable<SelectListItem>)ViewBag.Haulage, "--Select--", new { @class = "form-control", @id = "ddlHaulage", name = "Haulage_Type_Id", onblur = "myRequiredValidation('ddlHaulage')" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">IGM File Status</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.File_Status_Id, (IEnumerable<SelectListItem>)ViewBag.IGMFileStatus, "--Select--", new { @class = "form-control", @id = "ddlIGM", name = "Haulage_Type_Id", onblur = "myRequiredValidation('ddlIGM')" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Transport Type</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.Transport_Type_Id, (IEnumerable<SelectListItem>)ViewBag.Transport, "--Select--", new { @class = "form-control", @id = "ddlTransport", name = "Transport_Type_Id", onblur = "myRequiredValidation('ddlTransport')" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">POL</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.POL_ID, (IEnumerable<SelectListItem>)ViewBag.POL, "--Select--", new { @class = "form-control", @id = "ddlPol", name = "POL_ID", onblur = "myRequiredValidation('ddlPol')" })
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Marketing Person</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.Sales_Person_Id, (IEnumerable<SelectListItem>)ViewBag.SalesPersonM, "--Select--", new { @class = "form-control", @id = "ddlSalesPerson", name = "ddlSalesPerson", onblur = "myRequiredValidation('ddlSalesPerson')" })
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="background-color:#f4f5fa !important;font-size:24px">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label >Container Details</label>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="background-color:#f4f5fa !important">
+                               
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Container No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.ContainerNo, new { htmlAttributes = new { @class = "form-control", @id = "ContainerNo", maxlength = 11, onblur = "myRequiredTextValidation('ContainerNo')" } })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> Size</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.Size, (IEnumerable<SelectListItem>)ViewBag.ContainerSize, "--Select--", new { @class = "form-control", @id = "ddlSize", name = "Size", onblur = "myRequiredValidation('ddlSize')" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">FCL/LCL</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @*@Html.EditorFor(model => model.FL, new { htmlAttributes = new { @class = "form-control", @id = "FL" } })*@
+                                                @Html.DropDownListFor(model => model.FL, new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                             new SelectListItem { Text = "FCL", Value = "1"},
+                                           new SelectListItem { Text = "LCL", Value = "2"},
+                                           
+
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlFL", onblur = "myRequiredValidation('ddlFL')" })
+                                                
+                                             </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">ISO Code</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.ISOCode, (IEnumerable<SelectListItem>)ViewBag.ISOCodes, "--Select--", new { @class = "form-control", @id = "ddlISOCode", name = "ISOCode", onblur = "myRequiredValidation('ddlISOCode')" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>
+                            <div class="row">*@
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Cargo Type</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.Cargotypeid, (IEnumerable<SelectListItem>)ViewBag.CargoType, "--Select--", new { @class = "form-control", @id = "ddlCargotype", name = "Cargotypeid", onblur = "myRequiredValidation('ddlCargotype')" })
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Commodity Group</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownListFor(model => model.Commodity_group_id, (IEnumerable<SelectListItem>)ViewBag.CommodityGroup, "--Select--", new { @class = "form-control", @id = "ddlCommodity_group", name = "Commodity_group_id", onblur = "myRequiredValidation('ddlCommodity_group')" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="Add" name="Add" value="Add" onclick="ShowContainerList()" class="btn btn-primary" />
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="background-color:#f4f5fa !important;">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+
+                                                <input type="file" id="fileImport" name="postedFile" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="Button" id="btnImport" value="Import" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                @*<form id="upload" enctype="multipart/form-data" action="@Url.Action("JsonSave", "BL")" method="POST">
+                                    <input type="file" name="fileUpload" id="fileUpload" />
+                                    <button>Upload!</button>
+
+                                </form>*@
+</div>
+                            <div class="row" >
+
+                                <div class="table-responsive" >
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="containerList" style="width:100%;background-color:#f4f5fa !important;" >
+                                        <thead>
+                                            <tr>
+
+                                                <th class="wd-15p sorting">Container No</th>
+                                                <th class="wd-10p sorting">Size</th>
+                                                <th class="wd-10p sorting">FCL/LCL</th>
+                                                <th class="wd-10p sorting">ISO Code</th>
+                                                <th class="wd-10p sorting">Cargo Type</th>
+                                                <th class="wd-10p sorting">Commodity Group</th>
+
+                                                <th class="wd-10p sorting"></th>
+
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" id="btnSave" name="login" value="Save" class="btn btn-success" />
+
+                                       @* <input type="button" id="btnClear" onclick="Clear()" name="login" value="Clear" class="btn btn-secondary" />*@
+                                        <button type="button" class="btn btn-icon btn-gray" onclick="Clear()" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button> 
+                                    </div>
+                                </div>
+
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+    }
+   
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#containerList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false,
+         //   "destroy": true
+           // "bServerSide": true,
+
+
+        })
+    });
+
+</script>
+<script>
+   
+
+    function ShowContainerList() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+      // alert("hi")
+        var txtContainerNo = $("#ContainerNo").val();
+        var Size = $("#ddlSize option:selected").text();
+        var FLid = $("#ddlFL option:selected").text();
+        var ISOCode = $("#ddlISOCode option:selected").val();
+        var Cargotypeid = $("#ddlCargotype option:selected").val();
+        var Commodity_group_id = $("#ddlCommodity_group option:selected").val();
+
+        var ContainerNo = $("#ContainerNo").val() + "<input Name=ContainerNo type=hidden id=ContainerNo   value=" + txtContainerNo + ">";
+        var FL = $("#ddlFL option:selected").text() + "<input Name=FLid type=hidden id=FL   value=" + FLid + ">";
+        var ContainerSize = $("#ddlSize option:selected").text() + "<input Name=Size type=hidden id=Size   value=" + Size + ">";
+        var ISOCodeName = $("#ddlISOCode option:selected").text() + "<input Name=ISOCodeID type=hidden id=ISOCode   value=" + ISOCode + ">";
+        var Cargotype = $("#ddlCargotype option:selected").text() + "<input Name=Cargotypeid type=hidden id=Cargotypeid   value=" + Cargotypeid + ">";
+        var Commodity_group = $("#ddlCommodity_group option:selected").text() + "<input Name=Commodity_group_id type=hidden id=Commodity_group_id   value=" + Commodity_group_id + ">";
+       
+
+      //  var data1 = { 'ContainerNo': ContainerNo, 'ContainerSize': ContainerSize, 'FL': FL, 'ISOCodeName': ISOCodeName, 'Cargotype': Cargotype, 'Commodity_group': Commodity_group };
+        var data1 = { 'ContainerNo': txtContainerNo, 'Size': Size, 'FL': FLid, 'ISOCode': ISOCode, 'Cargotypeid': Cargotypeid, 'Commodity_group_id': Commodity_group_id };
+
+        var data = JSON.stringify(data1);
+       // alert(data)
+        //checks data already exist in table
+        // var exists = $('#ItemList tr > td:contains(' + port1 + ') + td:contains(' + Item1 + ')').length;  
+       // var exists = $('#containerList tr > td:contains(' + ContainerNo + ') + td:contains(' + $("#ddlSize option:selected").text() + ')+ td:contains(' + $("#ddlFL option:selected").text() + ') + td:contains(' + $("#ddlISOCode option:selected").text() + ')+ td:contains(' + $("#ddlCargotype option:selected").text() + ')+ td:contains(' + $("#ddlCommodity_group option:selected").text() + ')').length;
+        var exists = $('#containerList tr > td:contains(' + txtContainerNo + ')').length;
+
+      //  alert(exists)
+        if (exists == 1) {
+
+            alert("Container No. alredy exist!");
+            
+        }
+        else {
+            //    var t = $('#containerList').DataTable();
+            //    t.destroy();
+            //t.row.add([
+
+            //        ContainerNo,
+            //        ContainerSize,
+            //        FL,
+            //        ISOCodeName,
+            //        Cargotype,
+            //        Commodity_group,
+            //        "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + ContainerNo + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+            //]).draw();
+
+            $.ajax({
+                type: 'POST',
+                url: '/BL/AddTempContainerData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                   // alert(JSON.stringify(data))
+                    if (data != "Some Invalid data in File.") {
+                        $('#containerList').dataTable({
+                            "destroy": true,
+                            "bLengthChange": false,
+                            "aaData": data,
+                            "columns": [
+                            { "data": "ContainerNo" },
+                            { "data": "ContainerSize" },
+                            { "data": "FLName" },
+                            { "data": "ISOCodeName" },
+                            { "data": "Cargotype" },
+                            { "data": "Commodity_Group_Name" },
+
+                            {
+                                "data": "TempID",
+                                "render": function (data, type, row, meta) {
+                                    if (type === 'display') {
+
+                                        data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                                        // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                    }
+
+                                    return data;
+                                }
+
+
+                            }
+                            ]
+                        });
+                    }
+                }
+
+            });
+        }
+        document.getElementById('ContainerNo').value = "";
+        document.getElementById('ddlSize').value = "";
+        document.getElementById('ddlFL').value = "";
+        document.getElementById('ddlISOCode').value = "";
+        document.getElementById('ddlCargotype').value = "";
+        document.getElementById('ddlCommodity_group').value = "";
+        $("#ContainerNo").removeClass("form-control is-valid state-valid")
+        $("#ContainerNo").addClass("form-control")
+        $("#ddlSize").removeClass("form-control is-valid state-valid")
+        $("#ddlSize").addClass("form-control")
+        $("#ddlISOCode").removeClass("form-control is-valid state-valid")
+        $("#ddlISOCode").addClass("form-control")
+        $("#ddlCargotype").removeClass("form-control is-valid state-valid")
+        $("#ddlCargotype").addClass("form-control")
+        $("#ddlCommodity_group").removeClass("form-control is-valid state-valid")
+        $("#ddlCommodity_group").addClass("form-control")
+        $("#ddlFL").removeClass("form-control is-valid state-valid")
+        $("#ddlFL").addClass("form-control")
+
+       
+    }
+  
+</script>
+<script>
+   // $("#ContainerNo").on("blur", function () {
+    function myRequiredTextValidation(TextField) {
+       // alert("#" + TextField)
+        if ($("#" + TextField).val() == "") {
+            $("#" + TextField).removeClass("form-control is-valid state-valid")
+            $("#" + TextField).addClass("form-control is-invalid state-invalid")
+            
+        } else {
+           // alert("hi")
+            $("#" + TextField).removeClass("form-control is-invalid state-invalid")
+            $("#" + TextField).addClass("form-control is-valid state-valid")
+            
+        }
+    };
+</script>
+<script>
+    function myRequiredValidation(TextField) {
+
+       // alert("#" + TextField);
+        
+        if ($("#" + TextField).val() == "") {
+            $("#" + TextField).removeClass("form-control is-valid state-valid")
+            $("#" + TextField).addClass("form-control is-invalid state-invalid")
+          //  document.getElementById(TextField).style.borderColor = "red"
+        } else {
+            // alert("hi")
+           $("#" + TextField).removeClass("form-control is-invalid state-invalid")
+            $("#" + TextField).addClass("form-control is-valid state-valid")
+           // document.getElementById(TextField).style.borderColor = "Gainsboro"
+        }
+    };
+</script>
+
+<script>
+    function CancelItem(TempID) {
+
+
+      var r = confirm("Do you want to Delete Entry?");
+      if (r == true) {
+
+          //var table = $('#containerList').DataTable();
+          //$('#containerList tbody').on('click', '.removebutton', function () {
+
+          //    table
+          //        .row($(this).parents('tr'))
+          //        .remove()
+          //        .draw();
+
+          //});
+          var data1 = { 'ContainerId': TempID }
+          var data = JSON.stringify(data1);
+          $.ajax({
+              type: 'POST',
+              url: '/BL/DeleteContainerData',
+
+              data: data,
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              async: true,
+              success: function (data) {
+                  // alert(JSON.stringify(data))
+                  if (data != "Some Invalid data in File.") {
+                      $('#containerList').dataTable({
+                          "destroy": true,
+                          "bLengthChange": false,
+                          "aaData": data,
+                          "columns": [
+                          { "data": "ContainerNo" },
+                          { "data": "ContainerSize" },
+                          { "data": "FLName" },
+                          { "data": "ISOCodeName" },
+                          { "data": "Cargotype" },
+                          { "data": "Commodity_Group_Name" },
+
+                          {
+                              "data": "TempID",
+                              "render": function (data, type, row, meta) {
+                                  if (type === 'display') {
+
+                                      data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                                      // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                  }
+
+                                  return data;
+                              }
+
+
+                          }
+                          ]
+                      });
+                  }
+              }
+          });
+      }
+      else {
+          alert("You Pressed Cancel");
+      }
+  }
+  </script>
+
+
+<script type="text/javascript">
+    function validate() {
+        // alert("hifg");
+       
+        var ContainerNo = document.getElementById('ContainerNo').value;
+        var ddlSize = document.getElementById('ddlSize').value;
+        var ddlISOCode = document.getElementById('ddlISOCode').value;
+        var ddlCargotype = document.getElementById('ddlCargotype').value;
+        var ddlCommodity_group = document.getElementById('ddlCommodity_group').value;
+        var ddlFL = document.getElementById('ddlFL').value;
+
+        var blResult = Boolean;
+        blResult = true;
+        $("#ContainerNo").removeClass("form-control is-invalid state-invalid")
+        $("#ContainerNo").addClass("form-control is-valid state-valid")
+      
+       // document.getElementById('ContainerNo').style.borderColor = "Gainsboro";
+        
+
+        if (ContainerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ContainerNo").removeClass("form-control is-valid state-valid")
+            $("#ContainerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+
+        if (ddlSize == "") {
+            $("#ddlSize").removeClass("form-control is-valid state-valid")
+            $("#ddlSize").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+        if (ddlISOCode == "") {
+            $("#ddlISOCode").removeClass("form-control is-valid state-valid")
+            $("#ddlISOCode").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlCargotype == "") {
+            $("#ddlCargotype").removeClass("form-control is-valid state-valid")
+            $("#ddlCargotype").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlCommodity_group == "") {
+            $("#ddlCommodity_group").removeClass("form-control is-valid state-valid")
+            $("#ddlCommodity_group").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlFL == "") {
+            $("#ddlFL").removeClass("form-control is-valid state-valid")
+            $("#ddlFL").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+    //$('#btnRemoveCSS').click(function () {
+
+</script>
+
+
+<script>
+    $("#txtViaNo").change(function () {
+        //alert("hi");
+        if ($("#txtViaNo").val() != "")
+        {
+            var ViaNo = $("#txtViaNo").val()
+            $.ajax({
+                type: 'POST',
+                url: '/BL/getVesselDetails',
+                data: '{viaNo: ' + JSON.stringify(ViaNo) +'}',
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                   // alert(JSON.stringify(data))
+                    if (data.VesselID == 0) {
+                        $("#ddlVessel").val("");
+                        $("#ddlPort").val("");
+                        $("#txtBerthingDate").val("");
+                       // $("#txtViaNo").val("");
+                       // document.getElementById('txtViaNo').value = "";
+                        $("#txtViaNo").removeClass("form-control is-valid state-valid")
+                        $("#txtViaNo").addClass("form-control is-invalid state-invalid")                       
+                    }
+                    else {
+                      
+                        $("#ddlVessel").val(data.VesselID);
+                        $("#ddlPort").val(data.PortID);
+                        $("#txtBerthingDate").val(data.berthingDateInstring);
+                    }
+                   // Clear()
+                    // document.location = '@Url.Action("GenerateBL", "BL")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    });
+</script>
+<script>
+    
+    $("#ContainerNo").change(function () {
+        ContainerNumberValidation()
+        
+    });
+    function ContainerNumberValidation()
+    {
+        var pass1 = document.getElementById('ContainerNo');
+        // alert(pass1)
+
+        if (pass1.value.length != 11) {
+            alert("Required 11 digits Container No.")
+        }
+        else {
+            var ContainerNo = $("#ContainerNo").val()
+            $.ajax({
+                type: 'POST',
+                url: '/BL/ContainerNoValidation',
+                data: '{ContainerNo: ' + JSON.stringify(ContainerNo) + '}',
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                     //   alert(JSON.stringify(data))
+                    if (JSON.stringify(data) == "false") {
+                        // alert("hi")
+                        $("#ContainerNo").val("")
+                        $("#ContainerNo").removeClass("form-control is-valid state-valid")
+                        $("#ContainerNo").addClass("form-control is-invalid state-invalid")
+                       
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+<script>
+    $("#btnSave").click(function () {
+        var res = validateSaveFunction();
+        if (res == false) {
+            return false;
+        }
+        var itemcount = checkItemcount();
+        if (itemcount) {
+
+            var SelectedData = new Array();
+            $('#containerList tbody tr').each(function (i, row) {
+                var data = {};
+                $(this).find('input').each(function () {
+                    data[this.id] = $(this).val();
+                })
+                SelectedData.push(data);
+
+            });
+         //   alert(SelectedData)
+          
+
+            var viewModel = objectifyForm($('#BLForm').serializeArray());
+          //  alert(JSON.stringify(viewModel))
+            $.ajax({
+                type: 'POST',
+                url: '/BL/SaveBLForm',
+                data: '{viewModel: ' + JSON.stringify(viewModel) + ', containerData: ' + JSON.stringify(SelectedData) + '}',
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    alert(data)
+                    Clear()
+                   // document.location = '@Url.Action("GenerateBL", "BL")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+        return false;
+    });
+    function objectifyForm(formArray) {//serialize data function
+        var returnArray = {};
+        for (var i = 0; i < formArray.length; i++) {
+            returnArray[formArray[i]['name']] = formArray[i]['value'];
+        }
+        return returnArray;
+    }
+
+    function checkItemcount() {
+
+        var table = $('#containerList').DataTable();
+
+        if (table.rows().count() == 0) {
+            alert("Please add Container details!")
+            return false;
+        }
+        return true;
+
+    }
+</script>
+<script>
+    function Clear() {
+        //  alert("hi")
+        $("#ddlAgent").val("");
+        $("#ddlShippinLine").val("");
+        $("#ddlshipper").val("")
+        $("#ddlConsignee").val("")
+        $("#txtViaNo").val("")
+        $("#ddlVessel").val("")
+        $("#txtBLNo").val("")
+        $("#ddlHaulage").val("")
+        $("#ddlIGM").val("")
+        $("#ddlTransport").val("")
+        $("#ddlPol").val("")
+        $("#ddlSalesPerson").val("")
+        $("#txtBLNo").val("")
+        $("#ddlCha").val("")
+        $("#ddlPort").val("")
+
+        $("#ddlAgent").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlShippinLine").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlshipper").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlConsignee").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#txtViaNo").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlVessel").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#txtBLNo").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlHaulage").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlIGM").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlTransport").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlPol").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlSalesPerson").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#txtBLNo").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlCha").removeClass("is-valid state-valid is-invalid state-invalid")
+        $("#ddlPort").removeClass("is-valid state-valid is-invalid state-invalid")
+
+        var table = $('#containerList').DataTable();
+ 
+        table
+            .clear()
+            .draw();
+       
+    }
+</script>
+<script>
+    function validateSaveFunction() {
+        // alert("hifg");
+        var ddlAgent = document.getElementById('ddlAgent').value;
+        var ddlShippinLine = document.getElementById('ddlShippinLine').value;
+        var ddlshipper = document.getElementById('ddlshipper').value;
+        var ddlConsignee = document.getElementById('ddlConsignee').value;
+        var txtViaNo = document.getElementById('txtViaNo').value;
+        var ddlVessel = document.getElementById('ddlVessel').value;
+        var ddlPort = document.getElementById('ddlPort').value;
+        var txtBLNo = document.getElementById('txtBLNo').value;
+        var BLdatePicker = document.getElementById('BLdatePicker').value;
+        var ddlHaulage = document.getElementById('ddlHaulage').value;
+        var ddlIGM = document.getElementById('ddlIGM').value;
+        var ddlTransport = document.getElementById('ddlTransport').value;
+        var ddlPol = document.getElementById('ddlPol').value;
+        var ddlSalesPerson = document.getElementById('ddlSalesPerson').value;
+
+        var blResult = Boolean;
+        blResult = true;
+       
+
+        if (ddlAgent == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ddlAgent").removeClass("form-control is-valid state-valid")
+            $("#ddlAgent").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+
+        if (ddlShippinLine == "") {
+            $("#ddlShippinLine").removeClass("form-control is-valid state-valid")
+            $("#ddlShippinLine").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+        if (ddlshipper == "") {
+            $("#ddlshipper").removeClass("form-control is-valid state-valid")
+            $("#ddlshipper").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlConsignee == "") {
+            $("#ddlConsignee").removeClass("form-control is-valid state-valid")
+            $("#ddlConsignee").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (txtViaNo == "") {
+            $("#txtViaNo").removeClass("form-control is-valid state-valid")
+            $("#txtViaNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlVessel == "") {
+            $("#ddlVessel").removeClass("form-control is-valid state-valid")
+            $("#ddlVessel").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlPort == "") {
+            $("#ddlPort").removeClass("form-control is-valid state-valid")
+            $("#ddlPort").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (txtBLNo == "") {
+            $("#txtBLNo").removeClass("form-control is-valid state-valid")
+            $("#txtBLNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (BLdatePicker == "") {
+            $("#BLdatePicker").removeClass("form-control is-valid state-valid")
+            $("#BLdatePicker").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlHaulage == "") {
+            $("#ddlHaulage").removeClass("form-control is-valid state-valid")
+            $("#ddlHaulage").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlIGM == "") {
+            $("#ddlIGM").removeClass("form-control is-valid state-valid")
+            $("#ddlIGM").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlTransport == "") {
+            $("#ddlTransport").removeClass("form-control is-valid state-valid")
+            $("#ddlTransport").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlPol == "") {
+            $("#ddlPol").removeClass("form-control is-valid state-valid")
+            $("#ddlPol").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlSalesPerson == "") {
+            $("#ddlSalesPerson").removeClass("form-control is-valid state-valid")
+            $("#ddlSalesPerson").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+</script>
+
+<script>
+    $(document).ready(function(){  
+        $('#btnImport').click(function () {  
+  
+            // Checking whether FormData is available in browser  
+            if (window.FormData !== undefined) {  
+  
+                var fileUpload = $("#fileImport").get(0);  
+                var files = fileUpload.files;  
+              
+                // Create FormData object  
+                var fileData = new FormData();  
+  
+                // Looping over all files and add it to FormData object  
+                for (var i = 0; i < files.length; i++) {  
+                    fileData.append(files[i].name, files[i]);  
+                }  
+              
+                // Adding one more key to FormData object  
+                fileData.append('username', 'Manas');  
+                     alert("hi")
+                $.ajax({  
+                    url: '/BL/UploadFiles',  
+                    type: "POST",  
+                    contentType: false, // Not to set any content header  
+                    processData: false, // Not to process data  
+                    data: fileData,
+                    success: function (data) {
+                        // alert(JSON.stringify(data))
+                        if (data != "Some Invalid data in File.") {
+                            $('#containerList').dataTable({
+                                "destroy": true,
+                                "bLengthChange": false,
+                                "aaData": data,
+                                "columns": [
+                                { "data": "ContainerNo" },
+                                { "data": "ContainerSize" },
+                                { "data": "FLName" },
+                                { "data": "ISOCodeName" },
+                                { "data": "Cargotype" },
+                                { "data": "Commodity_Group_Name" },
+
+                                {
+                                    "data": "TempID",
+                                    "render": function (data, type, row, meta) {
+                                        if (type === 'display') {
+
+                                            data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                                            // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                        }
+
+                                        return data;
+                                    }
+
+
+                                }
+                                ]
+                            });
+                        }
+                    }
+                    //success: function (data) {
+                    //     // alert(JSON.stringify(data));
+                    //    if (data != "Some Invalid data in File.") {
+                    //        $('#containerList').dataTable({
+                    //            "destroy": true,
+                    //            "bLengthChange": false,
+                    //            "aaData": data,
+                    //            "columns": [
+                    //            { "data": "Container" },
+                    //            { "data": "ContainerSize" },
+                    //            { "data": "FLName" },
+                    //            { "data": "ISOCodeName" },
+                    //            { "data": "Cargotype" },
+                    //            { "data": "Commodity_Group_Name" },
+
+                    //            {
+                    //                "data": "ContainerNo",
+                    //                "render": function (data, type, row, meta) {
+                    //                    if (type === 'display') {
+
+                    //                        data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                    //                        // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                    //                    }
+
+                    //                    return data;
+                    //                }
+
+
+                    //            }
+                    //            ]
+                    //        });
+                    //    }
+                    //    },  
+                        
+                        });  
+            } 
+        
+            else {  
+                alert("FormData is not supported.");  
+            }  
+        });  
+    });  
+</script>

@@ -1,0 +1,372 @@
+﻿
+@{
+    ViewBag.Title = "ModifyCHAandLine";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify CHA & Line In Invoice</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Invoice No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtinvno", null, new { @class = "form-control ", @id = "txtinvno", Placeholder = "Invoice No", @autocomplete = "off", @maxlength = "11" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Work-Year</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtwy", null, new { @class = "form-control ", @id = "txtwy", Placeholder = "Work Year", @autocomplete = "off", @maxlength = "11" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch(); "><i class="fa fa-check"></i></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Invoice Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtassessdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @readonly = "readonly", @id = "txtassessdate" })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">IGM No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtigmno", null, new { @class = "form-control ", @id = "txtigmno", Placeholder = "IGM No", @autocomplete = "off", @maxlength = "11", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Item No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtitemno", null, new { @class = "form-control ", @id = "txtitemno", Placeholder = "Item No", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Consignee</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcon", null, new { @class = "form-control ", @id = "txtconsignee", autocomplete = "off", Placeholder = "Consignee" })
+                                        <input type="hidden" id="txtentryid" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">CHA Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlcha", (IEnumerable<SelectListItem>)ViewBag.CHAList, "--Select--", new { @class = "form-control", @id = "ddlcha", name = "ddlcha", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Shiplines Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlslid", (IEnumerable<SelectListItem>)ViewBag.SLID, "--Select--", new { @class = "form-control", @id = "ddlslid", name = "ddlslid", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Transport Mode</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select class="form-control" id="Tmode">
+                                            <option value="0">--Select--</option>
+                                            <option value="1">Rail</option>
+                                            <option value="2">Road</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Movement</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select class="form-control" id="ddlmovement">
+                                            <option value="0">--Select--</option>
+                                            <option value="NORMAL">NORMAL</option>
+                                            <option value="RMS">RMS</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Delivery Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select class="form-control" id="ddldeltype">
+                                            <option value="0">--Select--</option>
+                                            <option value="Loaded">Loaded</option>
+                                            <option value="Destuff">Destuff</option>
+                                            <option value="LCL">LCL</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+                                        <input type="hidden" id="txtentryid" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Update</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function Fetch1() {
+
+        debugger;
+        var InvoiceNo = $("#txtinvno").val().trim();
+        var WorkYear = $("#txtwy").val().trim();
+
+        var data1 = { "InvoiceNo": InvoiceNo, "WorkYear": WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetIMPInvDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    return;
+                }
+                $('#ddlslid').val(data[0].slid);
+                $('#ddlcha').val(data[0].chaid);
+                $('#Tmode').val(data[0].transtypeid);
+                $('#ddldeltype').val(data[0].deliverytype);
+                $('#ddlmovement').val(data[0].Movement);
+                $('#txtconsignee').val(data[0].Consignee);
+                $('#txtigmno').val(data[0].IGMNo);
+                $('#txtitemno').val(data[0].ItemNo);
+                $('#txtassessdate').val(data[0].AssessDate);
+                $('#txtremarks').val(data[0].Remarks);
+                $('#Tmode').val(data[0].transtypeid);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function Save() {
+        debugger;
+        var InvoiceNo = $("#txtinvno").val().trim();
+        var WorkYear = $("#txtwy").val().trim();
+        var IGMNo = $("#txtigmno").val().trim();
+        var ItemNo = $("#txtitemno").val().trim();
+        var DelType = $("#ddldeltype").val().trim();
+        var Movement = $("#ddlmovement").val().trim();
+        var TransType = $("#Tmode").val().trim();
+        var CHAID = $("#ddlcha").val().trim();
+        var SLID = $("#ddlslid").val().trim();
+        var Consignee = $("#txtconsignee").val().trim();
+        var Remarks = $("#txtremarks").val().trim();
+
+
+
+        if (InvoiceNo == "") {
+            document.getElementById('txtinvno').style.borderColor = "red";
+            alert("Please Enter Invoiceno !")
+
+            return false;
+        }
+        if (TransType == 0) {
+            document.getElementById('Tmode').style.borderColor = "red";
+            alert("Please select transport type !")
+
+            return false;
+        }
+
+
+
+
+        if (WorkYear == "") {
+            document.getElementById('txtwy').style.borderColor = "red";
+            alert("please enter work year")
+
+            return false;
+        }
+
+
+        if (CHAID == 0) {
+            document.getElementById('ddlcha').style.borderColor = "red";
+            alert("please select CHA Name")
+
+            return false;
+        }
+
+        if (SLID == 0) {
+            document.getElementById('ddlslid').style.borderColor = "red";
+            alert("Please select line name !")
+
+            return false;
+        }
+
+        var data1 = { "InvoiceNo": InvoiceNo, "WorkYear": WorkYear, "IGMNo": IGMNo, "ItemNo": ItemNo, "DelType": DelType, "Movement": Movement, "TransType": TransType, "CHAID": CHAID, "SLID": SLID, "Consignee": Consignee, "Remarks": Remarks };
+
+        var data = JSON.stringify(data1);
+        alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/UpdateLineDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("ModifyCHAandLine", "ModifyModule")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function Fetch() {
+
+        debugger;
+        var InvoiceNo = $("#txtinvno").val().trim();
+        var WorkYear = $("#txtwy").val().trim();
+
+        var data1 = { "InvoiceNo": InvoiceNo, "WorkYear": WorkYear };
+        $.ajax({
+            url: "/ModifyModule/CheckAckDoneOrNot",
+            data: data1,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data == "") {
+                    //if null then update else alert
+                    Fetch1();
+                }
+                else
+                {
+                    alert(data);
+                }
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function cleartextboxes() {
+
+        document.location = '@Url.Action("ModifyCHAandLine", "ModifyModule")';
+    }
+</script>

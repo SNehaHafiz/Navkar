@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "ExternalMovementHistory";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">External Movement History</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Container No</label>
+                                            @Html.TextBox("txtContainerNo", null, new { @id = "txtContainerNo", @class = "form-control",@autocomplete="false", @placeholder="Container No" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-lg-1">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show()" type="button">
+                                                SHOW
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelExtHistory", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Show() {
+        var SearchText;
+        var txtContainerNo = $("#txtContainerNo").val();
+
+        if (txtContainerNo == "") {
+            alert("Please enter Container No.");
+            $("#txtContainerNo").focus();
+            return false;
+        }
+
+        data1 = { 'ContainerNo': txtContainerNo };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/UpdateExternalMovement/GetExtContainerHistory",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (data == "[]" || data == "") {
+                    alert("No Data Found.");
+                }
+                else {
+                    RepTableDataJson($('#reportTable'), data, "", "");
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+    
+</script>

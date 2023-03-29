@@ -1,0 +1,396 @@
+﻿
+@{
+    ViewBag.Title = "ReverseEntry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="content-area overflow-hidden" id="divadddebitDetails">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Voucher & Expenses Entry</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Getsummaryreport();"><i class="fa fa-file-text"></i></button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+
+                        <div class="row">
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Reverse Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlReverseType", new List<SelectListItem>
+                                              {  new SelectListItem { Text = "", Value = "0"},
+                                                  new SelectListItem { Text = "Invoice", Value = "Invoice"},
+                                                new SelectListItem { Text = "Credit Note", Value = "Credit Note"}, 
+                                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlReverseType" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Activity Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlActivityType", new List<SelectListItem>
+                                              {  new SelectListItem { Text = "", Value = "0"},
+                                                  new SelectListItem { Text = "Invoice", Value = "Invoice"},
+                                                new SelectListItem { Text = "Credit Note", Value = "Credit Note"},
+                                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlActivityType" })
+                                        </div>
+                                        @*<div class="col">
+
+            @Html.DropDownList("ddlentryType", (IEnumerable<SelectListItem>)ViewBag.EntryType, "--Select--", new { @class = "form-control", @id = "ddlentryType", name = "ddlentryType", autocomplete = "off" })
+        </div>*@
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">PartName Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlCustomerName" onblur="GetGstnoID()" />
+                                            <input type="hidden" class="form-control" id="hdnCustomerName" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">GST No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtGstno", null, new { @class = "form-control", @id = "TxtGstno", @name = "TxtGstno", @readonly = true, autocomplete = "off", Style = "font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtInvoiceno", null, new { @class = "form-control", @id = "TxtInvoiceno", @name = "TxtInvoiceno" autocomplete = "off", Style = "font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Account Head</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlCustomerName" onblur="GetGstnoID()" />
+                                            <input type="hidden" class="form-control" id="hdnCustomerName" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                          
+                        </div>
+
+ 
+
+                        <div class="row">
+                            
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TXtNewAmount", null, new { @class = "form-control", @id = "TXtNewAmount", @name = "TXtNewAmount", autocomplete = "off", @type = "number", Style = "font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Tax(%)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlTaxName", (IEnumerable<SelectListItem>)ViewBag.TaxName, "--Select--", new { @class = "form-control", @id = "ddlTaxName", name = "ddlTaxName", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Discount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtnetDiscount", null, new { @class = "form-control", @id = "txtnetDiscount", name = "txtnetDiscount", OnChange = "calculateDiscountl()", autocomplete = "off", rows = "1", @maxlength = 250, Style = "font-weight: bold" })
+
+                                        </div>
+                                        <div class="col">
+                                            @Html.TextBox("txtnetDiscountS", null, new { @class = "form-control", @id = "txtnetDiscountS", @readonly = true, name = "txtnetDiscountS", autocomplete = "off", rows = "1", @maxlength = 250, Style = "font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">TDS %</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlparTDS", (IEnumerable<SelectListItem>)ViewBag.PayMode, "--Select--", new { @class = "form-control", @id = "ddlparTDS", name = "ddlparTDS", autocomplete = "off" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">TDS Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txttdsAmount", null, new { @class = "form-control", @id = "txttdsAmount", name = "txttdsAmount", @readonly = true, autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1 col-lg-1">
+                                <label class="form-label" style="visibility:hidden">Save</label>
+                                <div class="form-group label-floating">
+                                    <button class="btn btn-primary " type="button" id="Add" onclick="AddDetails()" name="Add">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered" id="example" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th class="wd-15p sorting">From Date</th>
+                                                <th class="wd-15p sorting">To Date</th>
+
+                                                <th class="wd-15p sorting">Expenses Head</th>
+                                                <th class="wd-15p sorting">HSN Code</th>
+                                                <th class="wd-15p sorting">Description</th>
+                                                <th class="wd-15p sorting">Unit</th>
+
+                                                <th class="wd-10p sorting">Net Amount</th>
+                                                <th class="wd-10p sorting">CGST</th>
+                                                <th class="wd-10p sorting">SGST</th>
+                                                <th class="wd-10p sorting">IGST</th>
+
+                                                <th class="wd-10p sorting">Grand Total</th>
+                                                <th class="wd-10p sorting">Tax(%)</th>
+                                                <th class="wd-10p sorting">Discount</th>
+                                                <th class="wd-10p sorting">Discount Amount</th>
+                                                <th class="wd-10p sorting">TDS %</th>
+                                                <th class="wd-10p sorting ">TDS Amount</th>
+                                                <th type="hidden"></th>
+                                                <th type="hidden"></th>
+                                                <th type="hidden"></th>
+                                                <th></th>
+
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtnetTotalamount", null, new { @class = "form-control", @id = "TxtnetTotalamount", name = "TxtnetTotalamount", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Discount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDiscount", null, new { @class = "form-control", @id = "txtDiscount", name = "txtDiscount", autocomplete = "off", OnChange = "calculateDis()", rows = "1", @maxlength = 250, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                        <div class="col">
+                                            @Html.TextBox("txtDiscounts", null, new { @class = "form-control", @id = "txtDiscounts", name = "txtDiscounts", autocomplete = "off", @readonly = true, rows = "1", @maxlength = 250, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">After Disc Amt</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAfterDiscAmt", null, new { @class = "form-control", @id = "txtAfterDiscAmt", name = "txtAfterDiscAmt", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtCgst", null, new { @class = "form-control", @readonly = true, @id = "TxtCgst", name = "TxtCgst", autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtGST", null, new { @class = "form-control", @readonly = true, @id = "TxtGST", name = "TxtGST", autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtIGST", null, new { @class = "form-control", @readonly = true, @id = "TxtIGST", name = "TxtIGST", autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">Grand Total</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.TextBox("TxtGrandtotal", null, new { @class = "form-control", @id = "TxtGrandtotal", name = "TxtGrandtotal", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">TDS %</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.DropDownList("ddlTDS", (IEnumerable<SelectListItem>)ViewBag.PayMode, "--Select--", new { @class = "form-control", @id = "ddlTDS", name = "ddlTDS", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">TDS Amount</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.TextBox("TxtPayable", null, new { @class = "form-control", @id = "TxtPayable", name = "TxtPayable", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">Remarks</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.TextArea("TxtRemarks", null, new { @class = "form-control", @id = "TxtRemarks", @name = "TxtRemarks", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+                        </div>
+                        <div class="col-lg-3 col-sm-12" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Debit in Account</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="TxtDebitInaccount" />
+                                        <input type="hidden" class="form-control" id="hdnTxtDebitInaccount" />
+                                        <input type="hidden" class="form-control" id="TxtCGSTs" />
+                                        <input type="hidden" class="form-control" id="TxtSGSTs" />
+                                        <input type="text" class="form-control" id="TxtIGSTs" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="divviewSave">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success " type="button" id="Add" onclick="SaveDetails()" name="Add">Save</button>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

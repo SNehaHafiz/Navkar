@@ -1,0 +1,343 @@
+﻿
+@{
+    ViewBag.Title = "UpdateSurvey";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">
+            Update Survey Remarks
+        </h4>
+       
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control ", @id = "txtContainerNo", autocomplete = "off", @maxlength = "11", onblur = "getContainerList()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtRemarks", null, new { @class = "form-control ", @id = "txtRemarks", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success " type="button" id="btnSave" onclick="Save()" name="Add">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblSurveyRemarks" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th style="width:7px">Container No.</th>
+                                            <th style="width:3px">Remarks</th>
+                                            <th style="width:1px"></th>
+                                            
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+            
+        </div>
+       
+    </div>
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tblSurveyRemarks').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "aaSorting": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [2]
+                }
+            ]
+        })
+
+
+
+
+    });
+
+</script>
+
+<script>
+    function Save()
+    {
+        var res = validate();
+        //  alert(res)
+        if (res == false) {
+            return false;
+        }
+        var table = document.getElementById("tblSurveyRemarks");
+        var row;
+        var txtRemarks1 = $("#txtRemarks").val();
+        row = table.rows[1];
+        //alert(JSON.stringify(row));
+
+        if (row.cells[1] == null)
+        {
+            savedata();
+        } else {
+           
+                for (var i = 1; i < table.rows.length; i++) {
+
+                    row = table.rows[i];
+                    // alert(JSON.s row);
+                    var remarks = row.cells[1].childNodes[1].value;
+                    // var remarks = row.cells[1].value;
+                   // alert(remarks);
+                    // alert(txtRemarks1);
+                    if (txtRemarks1 == remarks) {
+                        alert("Same remarks exist")
+                        return false;
+                    }
+
+               
+                }
+
+                if (table.length != 0) {
+                    var result = confirm("Do you want to enter more Remarks for same container?");
+                    if (result) {
+                        savedata();
+                        //var txtContainerNo = $("#txtContainerNo").val();
+                        //var txtRemarks = $("#txtRemarks").val();
+                        //var data1 = { 'ContainerNo': txtContainerNo, 'Remarks': txtRemarks };
+                        //data = JSON.stringify(data1);
+                        //$.ajax({
+                        //    url: "/UpdateSurvey/SaveRemarks",
+                        //    data: data,
+                        //    type: "POST",
+                        //    contentType: "application/json; charset=utf-8",
+                        //    dataType: "json",
+                        //    success: function (response) {
+                        //        alert(response);
+                        //        getContainerList();
+                        //       // $("#txtContainerNo").val("");
+                        //        $("#txtRemarks").val("");
+                        //    },
+                        //    error: function (errormessage) {
+                        //        alert("error");
+                        //        alert(errormessage.responseText);
+                        //    }
+                        //});
+                    }
+                }
+           
+        }
+       
+    }
+</script>
+
+<script type="text/javascript">
+
+    function savedata() {
+
+
+        var txtContainerNo = $("#txtContainerNo").val();
+        var txtRemarks = $("#txtRemarks").val();
+        var data1 = { 'ContainerNo': txtContainerNo, 'Remarks': txtRemarks };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/UpdateSurvey/SaveRemarks",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                alert(response);
+                getContainerList();
+                // $("#txtContainerNo").val("");
+                $("#txtRemarks").val("");
+              
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        
+    }
+
+
+</script>
+
+
+<script>
+    function validate() {
+
+        var txtContainerNo = document.getElementById('txtContainerNo').value;
+        var txtRemarks = document.getElementById('txtRemarks').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('txtContainerNo').style.borderColor = "Gainsboro";
+        document.getElementById('txtRemarks').style.borderColor = "Gainsboro";
+
+
+        if (txtContainerNo == "") {
+            document.getElementById('txtContainerNo').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (txtRemarks == "") {
+            document.getElementById('txtRemarks').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+<script>
+    function getContainerList() {
+     //   alert("hi");
+        var ContainerNo = $("#txtContainerNo").val();
+        if (ContainerNo != "") {
+
+            if (ContainerNo.length != 11) {
+                alert("Please check ContainerNo NO.");
+            }
+            else {
+               
+
+                var data1 = { 'ContainerNo': ContainerNo };
+                var data = JSON.stringify(data1);
+
+
+                //alert(data);
+                $.ajax({
+                    url: "/UpdateSurvey/getContainerRemarksList",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $('#tblSurveyRemarks').dataTable({
+                            "destroy": true,
+                            "bLengthChange": false,
+                            "aaData": data,
+                            "columns": [
+                            { "data": "ContainerNo" },
+                           // { "data": "Remarks" },
+                             {
+                                 "data": "Remarks",
+                                 "render": function (data, type, row, meta) {
+
+                                     input = '<input type=\"hidden\" name=\"Remarks\" class=\" form-control Size\" id=\"Remarks\"  value="' + data + '">';
+                                     
+                                     return data + input ;
+                                 }
+                             },
+                             {
+                                 "data": "ContainerNo",
+                                 "render": function (data, type, row, meta) {
+                                     if (type === 'display') {
+
+                                         data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "','" + row.Remarks + "','" + row.JONo + "','" + row.surveyID + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                                         // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                     }
+
+                                     return data;
+                                 }
+
+
+                             }
+                            
+                            ]
+                        });
+
+                        
+                        //$("#txtContainerNo").val("");
+                        //$("#txtCode").val(response[0].State_Code);
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+
+            }
+        }
+    }
+
+    function CancelItem(container, remarks, jono, surveyID)
+    {
+      //  alert(surveyID);
+        var result = confirm("Do you want to remove Remarks for container no. " + container + " ?");
+        if (result) {
+           
+            var data1 = { 'ContainerNo': container, 'Remarks': remarks, 'jono': jono, 'surveyID': surveyID };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/UpdateSurvey/DeleteRemarks",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    alert(response);
+                    getContainerList();
+                   
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+
+
+    
+</script>

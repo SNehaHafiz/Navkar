@@ -1,0 +1,280 @@
+﻿
+@{
+    ViewBag.Title = "Export Work Order Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Export Work Order Report</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd-MMM-yyyy 00:00") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd-MMM-yyyy 23:59") })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label mandatory">Search Criteria</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.DropDownList("ddlCriteria", new List<SelectListItem>
+                                    { new SelectListItem { Text = "--Select--", Value = ""},
+                                    new SelectListItem { Text = "Vendor", Value = "Vendor"},
+                                    new SelectListItem { Text = "Vehicle No", Value = "Vehicle No"},
+                                    new SelectListItem { Text = "Wo Type", Value = "Wo Type"},
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlCriteria", onchange = "OnCriteriaChange()" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2" id="divWoType" style="display:none">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Wo Type</label>
+                                            @Html.DropDownList("ddlWoType", (IEnumerable<SelectListItem>)ViewBag.WOType, "ALL", new { @class = "form-control custom-select", @id = "ddlWoType", name = "ddlWoType", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2" id="divVendor" style="display:none">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Vendor</label>
+                                            @Html.DropDownList("ddlVendor", (IEnumerable<SelectListItem>)ViewBag.VendorList, "ALL", new { @class = "form-control custom-select", @id = "ddlVendor", name = "ddlVendor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12" id="divSearchText" style="display:none">
+                                        <div class="form-group">
+                                            <label class="form-label mandatory">Search Text</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.TextBox("txtSearchText", null, new { @class = "form-control", @id = "txtSearchText", name = "txtSearchText", autocomplete = "off", placeholder = "Search Text" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-22 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show()" type="button">
+                                                Show
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnPrint" onclick="PrintLabourReport()" type="button">
+                                                Print
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnPrintLatter" onclick="PrintLabourReportLatter()" type="button">
+                                                Print Letter Work
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Sr No.</th>
+                                        <th>Shipping Bill No.</th>
+                                        <th>Stuff Location</th>
+                                        <th>Container No</th>
+                                        <th>Warehouse</th>
+                                        <th>Vehicle No</th>
+                                        <th>Pkgs</th>
+                                        <th>Pkg Type</th>
+                                        <th>Weight</th>
+                                        <th>Equipment</th>
+                                        <th>Vendor</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="box-sizing :border-box;"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function OnCriteriaChange() {
+        var ddlCriteria = $("#ddlCriteria").val();
+        if (ddlCriteria != "") {
+            if (ddlCriteria == "Vendor") {
+                $("#divSearchText").hide();
+                $("#divVendor").show();
+                $("#divWoType").hide();
+            }
+            else if (ddlCriteria == "Vehicle No") {
+                $("#divSearchText").show();
+                $("#divVendor").hide();
+                $("#divWoType").hide();
+            }
+            else if (ddlCriteria == "Wo Type") {
+                $("#divSearchText").hide();
+                $("#divVendor").hide();
+                $("#divWoType").show();
+            }
+        }
+        else {
+            $("#divVendor").hide();
+            $("#divSearchText").hide();
+            $("#divWoType").hide();
+        }
+    }
+    function Show() {
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var ddlCriteria = $("#ddlCriteria").val();
+        var SearchText = "";
+        if (ddlCriteria == "Vendor") {
+            SearchText = $("#ddlVendor").val();
+        }
+        else if (ddlCriteria == "Vehicle No") {
+            SearchText = $("#txtSearchText").val();
+        }
+        else if (ddlCriteria == "Wo Type") {
+            SearchText = $("#ddlWoType").val();
+        }
+        else {
+            SearchText = "";
+        }
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Criteria': ddlCriteria, 'SearchText': SearchText };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: '/WorkOrder/ShowWorkOrderReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $('#reportTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'Work Order Report',
+                        "filename": 'WorkOrderReport'
+                    }
+                    ],
+                    "columns": [
+                        { "data": "SrNo" },
+                        { "data": "SBNo" },
+                        { "data": "StuffLocation" },
+                        { "data": "ContainerNo" },
+                        { "data": "LocationName" },
+                        { "data": "VehicleNo" },
+                        { "data": "PKGSDestuff" },
+                        { "data": "Package" },
+                        { "data": "weight" },
+                        { "data": "Equipment" },
+                        { "data": "Vendor" },
+                        { "data": "Remarks" }
+                    ]
+                })
+            }
+        })
+    }
+</script>
+<script>
+    function PrintLabourReport() {
+        debugger;
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var ddlVendor = $("#ddlVendor").val();
+        var ddlWoType = $("#ddlWoType").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Vendor': ddlVendor, 'WoType': ddlWoType };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/WorkOrder/LabourActivityReportPrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //window.print();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+                //myWindow.print();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+
+    function PrintLabourReportLatter() {
+        debugger;
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var ddlVendor = $("#ddlVendor").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Vendor': ddlVendor };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/WorkOrder/LatterActivityReportPrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //window.print();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+                //myWindow.print();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+</script>

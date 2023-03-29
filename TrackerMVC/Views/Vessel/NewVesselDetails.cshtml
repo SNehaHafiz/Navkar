@@ -1,0 +1,180 @@
+﻿@model TrackerMVCEntities.BusinessEntities.VesselMaster
+
+@{
+    ViewBag.Title = "New Vessel Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+@using (Html.BeginForm("SaveVesselDetails", "Vessel", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="page-header">
+        <h4 class="page-title">Vessel Details</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                 @*   <button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+
+                    <button type="button" class="btn btn-icon btn-success" name="summarylist" title="Summary list" id="summarylist" onclick="window.location = '@Url.Action("GetVesselSummary", "VesselSummary")' "><i class="fa fa-arrow-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                          
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vessel Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.VesselName, new { htmlAttributes = new { @class = "form-control", @id = "vesselName", autocomplete = "on", maxlength = 100 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                @*<label class="form-label">Is Active</label>*@
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.eMailIDs, new { htmlAttributes = new { @class = "form-control", @id = "emailID" } })*@
+                                        @Html.CheckBoxFor(m => m.IsActive, new { @checked = "checked", @id = "isActive" }) Is Active? @*<label class="form-label">Is Active</label>*@
+                                        @* <label>@Html.CheckBoxFor(m => m.IsActive)&nbsp;@Html.DisplayNameFor(m => m.IsActive)</label>*@
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card-footer text-right">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="Save" name="saveProfile" value="Save" class="btn btn-success" />
+                                        @*<input type="button" name="clearProfile" value="Clear" class="btn btn-gray" title="clear" id="clearValue" />*@
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <label id="message" class="display_none"></label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            
+        var message = @Html.Raw(Json.Encode(ViewBag.Message))
+        alert(message);
+ 
+        document.getElementById("vesselName").value = "";
+        document.getElementById("isActive").checked = true;
+    };
+
+    </script>
+}
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#vesselName").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/Vessel/GetNameForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#vesselName").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#vesselName").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/Vessel/GetExisitingVesselName?vesselName=' + $("#vesselName").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#vesselName").removeClass();
+                        if (data == true) {
+                            $("#vesselName").addClass("form-control is-valid state-valid")
+                        } else {
+                            $("#vesselName").addClass("form-control is-invalid state-invalid")
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        
+
+        $("#clearValue").on("click", function () { 
+            document.getElementById("vesselName").value = "";
+            document.getElementById("isActive").checked = true; 
+            $("#vesselName").removeClass();
+             
+            $("#vesselName").addClass("form-control");
+
+        });
+
+
+        
+
+
+    });
+
+    
+</script>
+

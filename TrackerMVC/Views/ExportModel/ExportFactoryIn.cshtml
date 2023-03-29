@@ -1,0 +1,1043 @@
+﻿
+@{
+    ViewBag.Title = "Export Factory In";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJsonPagging.js"></script>
+
+<div id="tracker-loader"></div>
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+<div id="diventryscrren">
+    <div class="page-header">
+        <h4 class="page-title">Export Factory In</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("ExportLoadedGateInSummary", "Report")" target="_blank" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Loaded Container Arrival"></i> </a>
+            </li>
+        </ol>
+
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12 col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">CFS Code</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="TXtgatepassno" placeholder="New" type="text" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">In Date and Time</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtIndate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00"), @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Booking No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="TxtBookingNo" type="text" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Empty Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("TxtEntryType", new List<SelectListItem>
+                                      {
+                                        new SelectListItem { Text = "Factory Stuffed", Value = "Factory Stuffed"},
+
+                                        }, new { @class = "form-control", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Last 4 digits</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                            <label class="form-label">Trailer No </label>
+                            @Html.TextBox("ddlTrailerNo", null, new { @class = "form-control", @id = "ddlTrailerNo", name = "ddlTrailerNo", autocomplete = "off", placeholder = "Trailer No" })
+                            
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Transporter</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddltransname", (IEnumerable<SelectListItem>)ViewBag.TransporterList, "--Select-- ", new { @class = "form-control", @id = "ddltransname", name = "ddltransname", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="txtContainerno" type="text" class="form-control" style="text-transform:uppercase" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Size</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlsize", (IEnumerable<SelectListItem>)ViewBag.Size, "--Select-- ", new { @class = "form-control", @id = "ddlsize", name = "ddlsize", autocomplete = "off", @onchange = "FillDetails()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlcontainertype", (IEnumerable<SelectListItem>)ViewBag.ContainerType, "--Select-- ", new { @class = "form-control", @id = "ddlcontainertype", name = "ddlcontainertype", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">ISO Code</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("dllIsocode", (IEnumerable<SelectListItem>)ViewBag.ISOCodeList, "--Select-- ", new { @class = "form-control", @id = "dllIsocode", name = "dllIsocode", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Tare Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="TxttareWeight" type="number" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+                <div class="col-sm-12 col-lg-6">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6 col-xs-12">
+                            <div class="form-group label-floating" style="padding-top:26px;">
+
+                                @Html.TextBox("TxtContainernoPrint", null, new { @class = "form-control", @id = "TxtContainernoPrint", name = "TxtContainernoPrint", autocomplete = "off", placeholder = "Full/Partial Container No." })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <div class="form-group" style="padding-top:26px;">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" id="btnprintsearch" type="button" onclick="OpenContainerSearchPrint()"><i class="fe fe-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divPrinttableDetails">
+                        <div class="col-sm-12 col-lg-12 col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example13">
+                                    <thead>
+                                        <tr>
+                                            @*<th class="wd-15p sorting"></th>
+                                                <th class="wd-15p sorting">DOCS No.</th>
+                                                <th class="wd-15p sorting">Jo no</th>
+                                                <th class="wd-15p sorting">Container No</th>
+                                                <th class="wd-15p sorting">CFS COde</th>
+                                                <th class="wd-15p sorting">In Date</th>*@
+
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+ 
+            <div class="row">
+
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Gross Weight</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input id="TxtGrossWeight" type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Condition</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("ddlcondition", (IEnumerable<SelectListItem>)ViewBag.Condition, "--Select-- ", new { @class = "form-control", @id = "ddlcondition", name = "ddlcondition", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Location</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("ddlLocation", (IEnumerable<SelectListItem>)ViewBag.LocationList, "--Select-- ", new { @class = "form-control", @id = "ddlLocation", name = "ddlLocation", autocomplete = "off" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">RFID Seal No</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("TxtRfidsealno", null, new { @class = "form-control", @id = "TxtRfidsealno" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Reporting Time</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("TxtreportingTIme", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Factory In Time</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("TxtFactoryIntime", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Factory Out Time</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("TxtOutDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Shipping Line</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("dllship", (IEnumerable<SelectListItem>)ViewBag.ShipLine, "--Select-- ", new { @class = "form-control", @id = "dllship", name = "dllship", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">On Account</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.PortList, "--Select-- ", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Agent Seal No</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("TxtsealNo", null, new { @class = "form-control", @id = "TxtsealNo" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-lg-12">
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Driver No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="TxtDriverNo" type="number" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+
+                 
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Remakrs</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtRemarks", null, new { @class = "form-control", @id = "TxtRemarks" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12 col-xs-12">
+                            <div class="form-group" style="padding-top:25px">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" id="btnAdd" name="Add" onclick="AddContainerDetails()">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                            <thead>
+                                <tr>
+
+                                    <th>Select</th>
+                                    <th class="wd-15p sorting">Container No</th>
+                                    <th class="wd-15p sorting">EntryType</th>
+                                    <th class="wd-15p sorting">booking No</th>
+                                    <th class="wd-15p sorting">Trailer No</th>
+                                    <th class="wd-15p sorting">Transporter</th>
+                                    <th class="wd-15p sorting">Driver No</th>
+                                    <th class="wd-15p sorting">ISO Code</th>
+                                    <th class="wd-15p sorting">Agent seal No</th>
+                                    <th class="wd-15p sorting">Condition</th>
+                                    <th class="wd-15p sorting">Reporting Time</th>
+                                    <th class="wd-15p sorting">Factory In Time</th>
+                                    <th class="wd-15p sorting">Factory Out Date</th>
+                                    <th class="wd-15p sorting">Remark</th>
+                                    <th class="wd-15p sorting">Size</th>
+                                    <th class="wd-15p sorting">container Type</th>
+                                    <th class="wd-15p sorting">Shipper Name</th>
+                                    <th class="wd-15p sorting">On Account</th>
+                                    <th class="wd-15p sorting">Seal No</th>
+                                    <th class="wd-15p sorting">Gross Weight</th>
+                                    <th class="wd-15p sorting">Loaded Form</th>
+                                    <th class="wd-15p sorting">TareWeight</th>
+                                    <th class="wd-15p sorting">Remark</th>
+                                    <th class="wd-15p sorting">Location ID</th>
+                                    <th class="wd-15p sorting">Line id</th>
+                                    <th class="wd-15p sorting">Customer ID</th>
+                                    <th class="wd-15p sorting">Transporter ID</th>
+                                    <th class="wd-15p sorting">ISO ID</th>
+                                    <th class="wd-15p sorting">Container No ID</th>
+
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-1 col-sm-12">
+                    <label class="form-label" style="visibility:hidden"> '</label>
+                    <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="Savedetails();">Save</button>&nbsp;&nbsp;
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+
+    function Showdetails() {
+        $("#Divsummary").show();
+        $("#diventryscrren").hide();
+
+
+    }
+
+    function getBack() {
+
+    }
+
+    function FillDetails() {
+
+        var Size = $("#ddlsize").val();
+
+        if (Size == "20") {
+            $("#ddlcontainertype").val(1);
+            $("#dllIsocode").val(170);
+            $("#TxttareWeight").val(2200);
+        }
+        if (Size == "40") {
+            $("#ddlcontainertype").val(9);
+            $("#dllIsocode").val(11);
+            $("#TxttareWeight").val(3800);
+        }
+        if (Size == "45") {
+            $("#ddlcontainertype").val(9);
+            $("#dllIsocode").val(11);
+            $("#TxttareWeight").val(3800);
+        }
+        if (Size == "") {
+            $("#ddlcontainertype").val(0);
+            $("#dllIsocode").val(0);
+            $("#TxttareWeight").val(0);
+        }
+    }
+
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+        $("#dllship").val(54);
+        $("#ddlcondition").val('Sound');
+        $("#TxtGrossWeight").val(0);
+        $("#TxtsealNo").val(0);
+        $("#ddlLocation").val(19);
+    })
+    $(document).ready(function () {
+        $('#tblViewtodayGPdetails').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            // "bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+        })
+    })
+
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                //var select = $("#ddlTrailerNo");
+                $("#ddlTrailerNo").val(data[0].trailername);
+                
+
+                //select.empty();
+                //select.append($('<option/>', {
+                //    value: "",
+                //    text: "--Select--"
+                //}));
+
+                //$.each(data, function (data, value) {
+
+                //    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                //})
+
+                
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    });
+   
+
+
+    //function AddContainerDetails() {
+    //    var ContainerNo = $("#txtContainerNo").val();
+    //    if (ContainerNo != "") {
+    //        var data = { 'ContainerNo': ContainerNo };
+    //        var data1 = JSON.stringify(data);
+
+    //        $.ajax({
+    //            url: "/Gate/ContainerStatus",
+    //            data: data1,
+    //            type: "POST",
+    //            contentType: "application/json; charset=utf-8",
+    //            dataType: "json",
+    //            success: function (response) {
+    //                if (response[0].ContainerStatus == "0") {
+    //                    AddContainer()
+    //                }
+    //                else {
+    //                    alert(response[0].ContainerStatus);
+    //                }
+    //            },
+    //            error: function (response) {
+    //                alert(response.responseText);
+    //            }
+    //        })
+    //    }
+    //}
+    function AddContainerDetails() {
+        var CTeus = 0;
+        var STeus = 0;
+
+
+        var res = validateAdd();
+        if (res == false) {
+            return false;
+        }
+        var table = document.getElementById("example");
+        var table1 = $('#example').DataTable();
+        var row;
+        if (table1.rows().count() > 0) {
+            if (table != null) {
+                if (table.rows.length > 1) {
+
+
+                    for (var i = 1; i < table.rows.length; i++) {
+                        row = table.rows[i];
+                        var Size = row.cells[5].innerText;
+                        if (Size == "20") {
+                            CTeus = parseInt(parseInt(CTeus) + 1);
+                        }
+                        else {
+                            CTeus = parseInt(parseInt(CTeus) + 2);
+                        }
+                    }
+                }
+            }
+        }
+
+        var CType = $("#ddlcontainertype option:Selected").text();
+        var Size = $("#ddlsize").val();
+        if (Size == "20") {
+            STeus = 1;
+        }
+        else {
+            STeus = 2;
+        }
+        if (CType != "FR") {
+            if (CTeus > 1) {
+                alert('More than 2 Containers are not allowed!');
+                return false;
+            }
+            else {
+                if ((parseFloat(CTeus) + parseFloat(STeus)) > 2) {
+                    alert('Invalid Size!');
+                    return false
+                }
+            }
+        }
+
+
+
+
+
+        var ContainerNo1 = $("#txtContainerno").val();
+        var Entrytype = $("#TxtEntryType option:Selected").text();
+        var BookingNo = $("#TxtBookingNo").val();
+        var TrailerNo = $("#ddlTrailerNo option:Selected").text();
+        var Transporter = $("#ddltransname option:Selected").text();
+        var DriverNo = $("#TxtDriverNo").val();
+        var ISOCOde = $("#dllIsocode").val();
+        var AgentSealNO = $("#TxtsealNo").val();
+        var Condition = $("#ddlcondition").val();
+        var ReportingTime = $("#TxtreportingTIme").val();
+        var FactoryInTime = $("#TxtFactoryIntime").val();
+        var FactoryOut = $("#TxtOutDate").val();
+        var Remark = $("#TxtRemarks").val();
+        var Size = $("#ddlsize option:Selected").text();
+        var containerType = $("#ddlcontainertype option:Selected").text();
+        var ShipperName = $("#dllship option:Selected").text();
+        var OnAccount = $("#ddlcustomer option:Selected").text();
+        var SealNo = $("#TxtsealNo").val();
+        var GrossWeight = $("#TxtGrossWeight").val();
+        var LoadedForm = $("#ddlLocation option:Selected").text();
+        var TareWeight = $("#TxttareWeight").val();
+        var Remark = $("#TxtRemarks").val();
+
+
+        var Locationid = $("#ddlLocation option:Selected").val();
+        var Lineid = $("#dllship option:Selected").val();
+        var Customerid = $("#ddlcustomer option:Selected").val();
+        var Transporterid = $("#ddltransname option:Selected").val();
+        var ISOID = $("#dllIsocode option:Selected").val();
+        var ContainerTypeid = $("#ddlcontainertype option:Selected").val();
+       
+
+        var ContainerNo = ContainerNo1.toUpperCase();
+
+        var t = $('#example').DataTable();
+        t.row.add([
+
+
+            "<input type=\"checkbox\" class=\"checklist\" name=\"checklist[]\"  checked id=\"checklist\" Value=" + ContainerNo +"></input>",
+            ContainerNo,
+            Entrytype,
+            BookingNo,
+            TrailerNo,
+            Transporter,
+            DriverNo,
+            ISOCOde,
+            AgentSealNO,
+            Condition,
+            ReportingTime,
+            FactoryInTime,
+            FactoryOut,
+            Remark,
+            Size,
+            containerType,
+            ShipperName,
+            OnAccount,
+            SealNo,
+            GrossWeight,
+            LoadedForm,
+            TareWeight,
+            Remark,
+            Locationid,
+            Lineid,
+            Customerid,
+            Transporterid,
+            ISOID,
+            ContainerTypeid,
+
+
+
+        ]).draw(false);
+        $("#TxtGrossWeight").val(0);
+        $("#TxtGrossWeight").val(0);
+        //$("#txtContainerNo").val("");
+        //$("#ddlSize").val("");
+        //$("#ddlContainerType").val("");
+        //$("#txtJoNo").val("");
+        //$("#txtSealNo1").val("");
+        //$("#ddlISOCode").val("");
+        //$("#txtTareWeight").val("");
+        //$("#ddlCondition").val("Sound");
+        //$("#ddlLocation").val("");
+        //$("#IsScan").val(false);
+        //$("#LowBed").val(false);
+        //$("#txtWagonNo").val("");
+        //$("#ddlPort").val("");
+        //$("#txtEIRWeight").val("");
+        //$("#txtRemarks").val("");
+        //$("#txtVesselName").val("");
+        //$("#txtViaNo").val("");
+        //$("#txtVoyage").val("");
+    }
+    function validateAdd() {
+        var txtContainerNo = document.getElementById('txtContainerno').value;
+        var ValidateContainertype = document.getElementById('ddlcontainertype').value;
+
+        var valimovement = document.getElementById('TxtDriverNo').value;
+        var valitrailerno = document.getElementById('ddlTrailerNo').value;
+        var valisize = document.getElementById('ddlsize').value;
+        var valiisocode = document.getElementById('dllIsocode').value;
+        var valitransname = document.getElementById('ddltransname').value;
+        var valicondition = document.getElementById('ddlcondition').value;
+        var valitareweight = document.getElementById('TxttareWeight').value;
+        var valigrossweight = document.getElementById('TxtGrossWeight').value;
+        var valiship = document.getElementById('dllship').value;
+        var valicustomer = document.getElementById('ddlcustomer').value;
+        var valisealno = document.getElementById('TxtsealNo').value;
+
+        var blResult = Boolean;
+        blResult = true;
+
+        if (txtContainerNo == "") {
+            document.getElementById('txtContainerno').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (ValidateContainertype == "") {
+            document.getElementById('ddlcontainertype').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valicondition == "") {
+            document.getElementById('ddlcondition').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+      
+        if (valitrailerno == "") {
+            document.getElementById('ddlTrailerNo').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valitareweight < "2200") {
+            alert('Tare weight cannot be less than 2200');
+            return false;
+        }
+        if (valisize == "") {
+            document.getElementById('ddlsize').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valiisocode == "") {
+            document.getElementById('dllIsocode').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valitransname == "") {
+            document.getElementById('ddltransname').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valigrossweight == "") {
+            document.getElementById('TxtGrossWeight').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valiship == "") {
+            document.getElementById('dllship').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valicustomer == "") {
+            document.getElementById('ddlcustomer').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (valisealno == "") {
+            document.getElementById('TxtsealNo').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+    }
+
+
+   function Savedetails() {
+
+       $("#tracker-loader").fadeIn("slow");
+
+       var EntryType = $("#TxtEntryType").val()
+       var Indate = $("#txtIndate").val()
+       var Trailerid = $("#ddlTrailerNo").val()
+    
+
+
+
+
+        var itemcount = checkItemcount();
+        if (itemcount == false) {
+            alert("No details selected for saving. Cannot proceed");
+        }
+        else {
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+            var tablearray = [];
+            var table = document.getElementById("example");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                    var InvoiceNo = row.cells[1].innerText;
+
+                    if (InvoiceNo == checkboxarray[k]) {
+
+
+                      
+
+
+
+                        row = table.rows[i];
+                        ContainerNo = row.cells[1].innerText;
+                        Entrytype = row.cells[2].innerText;
+                        BookingNo = row.cells[3].innerText;
+                        TrailerNo = row.cells[4].innerText;
+
+                        Tranname = row.cells[5].innerText;
+                        DriverNo = row.cells[6].innerText;
+                        ISOCODE = row.cells[7].innerText;
+                        AgentSealNO = row.cells[8].innerText;
+                        Condition1 = row.cells[9].innerText;
+                        ReportingTime = row.cells[10].innerText;
+                        FactoryInTime = row.cells[11].innerText;
+                        FactoryOut = row.cells[12].innerText;
+                        Remarks = row.cells[13].innerText;
+                        Size = row.cells[14].innerText;
+
+
+                        Containertype = row.cells[15].innerText;
+                        ShipLine = row.cells[16].innerText;
+                        Customer1 = row.cells[17].innerText;
+                        SealNo = row.cells[18].innerText;
+                        GrossWeight = row.cells[19].innerText;
+                        Location = row.cells[20].innerText;
+                        tareWeight = row.cells[21].innerText;
+                        Remarks = row.cells[22].innerText;
+                        LocationID = row.cells[23].innerText;
+                        Lineid = row.cells[24].innerText;
+                        Custid = row.cells[25].innerText;
+                        TransID = row.cells[26].innerText;
+                        ISOIDCode = row.cells[27].innerText;
+                        ContainertypeID = row.cells[28].innerText;
+
+                        tablearray.push({
+                            'ContainerNo': ContainerNo, 'Entrytype': Entrytype, 'BookingNo': BookingNo,
+                            'TrailerNo': TrailerNo, 'Tranname': Tranname, 'DriverNo': DriverNo, 'ISOCODE': ISOCODE, 'AgentSealNO': AgentSealNO,
+                            'Condition1': Condition1, 'ReportingTime': ReportingTime, 'FactoryInTime': FactoryInTime, 'FactoryOut': FactoryOut, 'Remarks': Remarks, 'Size': Size,
+                            'Containertype': Containertype, 'ShipLine': ShipLine, 'Customer1': Customer1, 'SealNo': SealNo, 'GrossWeight': GrossWeight, 'Location': Location,
+                            'tareWeight': tareWeight, 'Remarks': Remarks, 'LocationID': LocationID, 'Lineid': Lineid, 'Custid': Custid, 'TransID': TransID, 'ISOIDCode': ISOIDCode, 'ContainertypeID': ContainertypeID
+                        })
+
+
+                    }
+                }
+            }
+
+
+            var data1 = {
+                'Containerdetails': tablearray, 'EntryType': EntryType, 'Indate': Indate
+            };
+            var data = JSON.stringify(data1);
+
+
+            $.ajax({
+                url: "/ExportModel/SaveExportfactoryLoaded",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+
+                    alert(data);
+
+                   document.location = '@Url.Action("ExportFactoryIn", "ExportModel")'
+                    $("#tracker-loader").fadeOut("slow");
+
+
+                },
+
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+
+        }
+    }
+
+    function checkItemcount() {
+
+        var table = $('#example').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+
+
+
+    function GetSummarydetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#TxtFromdate").val();
+        var ToDate = $("#TxtTodate").val();
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExportModel/GetEMptyInsummary',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#tblViewtodayGPdetails").empty();
+                RepTableDataJsonwopaging($("#tblViewtodayGPdetails"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+
+                var table = document.getElementById("tblViewtodayGPdetails");
+                var row;
+
+
+                var TotTEUS1 = 0;
+                var TotTEUS2 = 0;
+                var TotTEUS3 = 0;
+                var TotTEUS = 0;
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[2].innerText;
+
+                    //alert(Size)
+
+                    if (Size == 20) {
+                        TotTEUS1 = Number(TotTEUS1) + 1;
+                    }
+                    if (Size == 40) {
+                        TotTEUS2 = Number(TotTEUS2) + 1;
+                    }
+                    if (Size == 45) {
+                        TotTEUS3 = Number(TotTEUS3) + 1;
+                    }
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = TotTEUS1 + (TotTEUS2 * 2) + (TotTEUS3 * 2)
+                // alert(TotTEUS);
+                $("#lbltwenty").text(TotTEUS1);
+                $("#lblforty").text(TotTEUS2);
+                $("#lblfortyfive").text(TotTEUS3);
+                $("#lblTotal").text(TotTEUS);
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+     function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelEmptyIN", "ExportModel")?';
+
+
+    }
+
+    function OpenContainerSearchPrint() {
+        $("#divPrinttableDetails").show();
+        var Containerno = $("#TxtContainernoPrint").val();
+
+        var data1 = { 'Containerno': Containerno };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            data: data,
+            url: '/ExportModel/GetContainerFactoryWisePrint',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#example13").empty();
+                RepTableDataJsonwopaging($("#example13"), data, "Voucher Details", "VoucherDetails_List");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+
+    }
+
+    function PrintForSelected(Entryid) {
+        var data1 = { 'Entryid': Entryid };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/ExportModel/PrintExportFactoryIndetails",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.document.write(response);
+
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        })
+    }
+</script>

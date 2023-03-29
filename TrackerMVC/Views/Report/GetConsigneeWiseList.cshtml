@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewBag.Title = "GetConsigneeWiseList";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Consignee Wise Report Summary : <label id="lblconsigneeCount"></label></h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input value="28 May 2019 07:59" class="form-control form_datetime1" id="FromDate" name="FromDate" type="text" value="" />
+
+                                           @* @Html.TextBox("datePicker", null, new { @class = "form-control datepicker", @id = "datePicker", autocomplete = "off", @readonly = "readonly" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input value="29 May 2019 08:00" class="form-control form_datetime1" id="ToDate" name="ToDate" type="text" value="" />
+
+                                                @*@Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(1).ToString("dd MMM yyyy 07:59:59") })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowConsigneeDetails()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th class="wd-15p sorting">Importer Name</th>
+                                        <th class="wd-15p sorting">CHA Name</th>
+                                        <th class="wd-15p sorting">Billing Party Name</th>
+                                        <th class="wd-15p sorting">Container No.</th>
+                                        <th class="wd-15p sorting">Mode of Transport</th>
+                                        <th class="wd-15p sorting">IGM No.</th>
+                                        <th class="wd-15p sorting">Item No.</th>
+                                        <th class="wd-15p sorting">ICD Gate In</th>
+                                        <th class="wd-15p sorting">Clearance Date</th>
+                                        <th class="wd-15p sorting">Movement Date to Factory</th>
+                                        <th class="wd-15p sorting">LR No</th>
+                                        <th class="wd-15p sorting">Vehicle No.</th>
+                                        <th class="wd-15p sorting">Reporting Date at Factory</th>
+                                        <th class="wd-15p sorting">Vehicle Released from Factory</th>
+                                        <th class="wd-15p sorting">Valid Till</th>
+                                        <th class="wd-15p sorting">BOE No.</th>
+                                        <th class="wd-15p sorting">Total Hours</th>
+                                       
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'ConsigneeList',
+                "filename": 'ConsigneeList_List'
+
+            }
+            ]
+        });
+    });
+</script>
+
+
+<script type="text/javascript">
+
+
+    function ShowConsigneeDetails() {
+
+        var FromDate = $("#FromDate").val()
+        var ToDate = $("#ToDate").val()
+       
+        var data = { 'FromDate': FromDate, 'ToDate': ToDate };
+        var data1 = JSON.stringify(data);
+
+        if (Date.parse(FromDate) > Date.parse(ToDate)) {
+            alert("Invalid Date Range");
+        }
+        else {
+
+            $.ajax({
+                url: "/Report/ajaxGetConsigneeWiseList",
+                data: data1,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    // alert(JSON.stringify(data));
+                    $('#lblconsigneeCount').text(data.length);
+                    $('#example1').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": data,
+                        "columns": [
+                            { "data": "ImporterName" },
+                            { "data": "CHAName" },
+                            { "data": "BillingPartyName" },
+                            { "data": "ContainerNo" },
+                            { "data": "ModeofTransport" },
+                            { "data": "IGMNo" },
+                            { "data": "ItemNo" },
+                            { "data": "ICDGateIn" },
+                            { "data": "ClearanceDate" },
+                            { "data": "MovementDatetoFactory" },
+                            { "data": "LRNo" },
+                            { "data": "VehicleNo" },
+                            { "data": "ReportingDateatFactory" },
+                            { "data": "VehicleReleasedfromFactory" },
+                            { "data": "ValidTill" },
+                            { "data": "BOENo" },
+                            { "data": "TotalHours" },
+                           
+                        ], "dom": 'Bfrtip',
+
+                        "buttons": [{
+                            "extend": 'excel',
+                            "title": 'ConsigneeList',
+                            "filename": 'ConsigneeList_List'
+
+                        }
+                        ]
+                    })
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+
+
+    }
+</script>

@@ -1,0 +1,716 @@
+﻿@model TrackerMVCEntities.CustodianJson.Custodian
+<div>
+    @if (@Model.FileType == "SF")
+    {
+        <div class="card mt-3">
+            <div class="">
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover w-100 card-table m-0 text-wrap"
+                           id="tblSF" style="width:100%">
+                        <thead class="text-white">
+                            <tr class="bg-primary text-bold-200 text-white">
+                                <th>
+                                </th>
+                                <th>
+                                    Sequence No
+                                </th>
+                                <th>
+                                    SB No.
+                                </th>
+                                <th>
+                                    Qty
+                                </th>
+                                <th>
+                                    MCIN PCIN
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.custodianJsonSF.EGM.master.cargoContainer)
+                            {
+                                foreach (var cargo in item.cargoDetails)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" value="true" onchange="checkactiveSF(@cargo.documentNumber,this)" id="mycheck" class="custom-switch-input test removebutton" checked="">
+                                                <span class="custom-switch-indicator"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.cargoSequenceNo)
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.documentNumber)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.quantity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.mcinPcin)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-primary" onclick="CreateJsonSF()"><i class="fa fa-download" style="font-size:14px"></i></button>
+        </div>
+    }
+    @*----------------------------------------------------------------*@
+    @if (@Model.FileType == "ASR")
+    {
+        <div class="card mt-3">
+            <div class="">
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover w-100 card-table m-0 text-wrap"
+                           id="tblASR" style="width:100%">
+                        <thead class="text-white">
+                            <tr class="bg-primary text-bold-200 text-white">
+                                <th>
+                                </th>
+                                <th>
+                                    Sequence No
+                                </th>
+                                <th>
+                                    Container No
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                                <th>
+                                    Size
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.custodianJsonASR.EGM.master.cargoDetails)
+                            {
+                                foreach (var cargo in item.cargoContainer)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" value="true" onchange="checkactiveASR('@cargo.equipmentID',this)" id="mycheck" class="custom-switch-input test removebutton" checked="">
+                                                <span class="custom-switch-indicator"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.equipmentSequenceNo)
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.equipmentID)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.equipmentType)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.equipmentSize)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-primary" onclick="CreateJsonASR()"><i class="fa fa-download" style="font-size:14px"></i></button>
+        </div>
+    }
+    @*----------------------------------------------------------------*@
+    @if (@Model.FileType == "DP")
+    {
+        <div class="card mt-3">
+            <div class="">
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover w-100 card-table m-0 text-wrap"
+                           id="tblDP" style="width:100%">
+                        <thead class="text-white">
+                            <tr class="bg-primary text-bold-200 text-white">
+                                <th>
+                                </th>
+                                <th>
+                                    Sequence No
+                                </th>
+                                <th>
+                                    Document No
+                                </th>
+                                <th>
+                                    Package Type
+                                </th>
+                                <th>
+                                    MCIN PCIN
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.custodianJsonDP.EGM.master.cargoContainer)
+                            {
+                                foreach (var cargo in item.cargoDocument)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" value="true" onchange="checkactiveDP(@cargo.documentNumber,this)" id="mycheck" class="custom-switch-input test removebutton" checked="">
+                                                <span class="custom-switch-indicator"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.cargoSequenceNo)
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.documentNumber)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.packageType)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.MCINPCIN)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-primary" onclick="CreateJsonDP()"><i class="fa fa-download" style="font-size:14px"></i></button>
+        </div>
+    }
+    @*----------------------------------------------------------------*@
+    @if (@Model.FileType == "DT")
+    {
+        <div class="card mt-3">
+            <div class="">
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover w-100 card-table m-0 text-wrap"
+                           id="tblDP" style="width:100%">
+                        <thead class="text-white">
+                            <tr class="bg-primary text-bold-200 text-white">
+                                <th>
+                                </th>
+                                <th>
+                                    Sequence No
+                                </th>
+                                <th>
+                                    Document No
+                                </th>
+                                <th>
+                                    Package Type
+                                </th>
+                                <th>
+                                    MCIN PCIN
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.custodianJsonDT.EGM.master.cargoContainer)
+                            {
+                                foreach (var cargo in item.cargoDocument)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" value="true" onchange="checkactiveDP(@cargo.documentNumber,this)" id="mycheck" class="custom-switch-input test removebutton" checked="">
+                                                <span class="custom-switch-indicator"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.cargoSequenceNo)
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.documentNumber)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.packageType)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => cargo.MCINPCIN)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-primary" onclick="CreateJsonDT()"><i class="fa fa-download" style="font-size:14px"></i></button>
+        </div>
+    }
+</div>
+<script>
+
+    if ('@Model.FileType' == 'SF')
+    {
+        var MasterCargo = @Html.Raw(Json.Encode(@Model.custodianJsonSF.EGM.master.cargoContainer));
+        var MasterList = @Html.Raw(Json.Encode(@Model.custodianJsonSF));
+        var ContainerCargo = MasterCargo[0].cargoDetails;
+    }
+    else if('@Model.FileType'== 'ASR')
+    {
+        var MasterCargo = @Html.Raw(Json.Encode(@Model.custodianJsonASR.EGM.master.cargoDetails));
+        var MasterList = @Html.Raw(Json.Encode(@Model.custodianJsonASR));
+        var ContainerCargo = MasterCargo[0].cargoContainer;
+        console.log(ContainerCargo);
+
+    }
+    else if ('@Model.FileType' == 'DP')
+    {
+        var MasterCargo = @Html.Raw(Json.Encode(@Model.custodianJsonDP.EGM.master.cargoContainer));
+        var MasterList = @Html.Raw(Json.Encode(@Model.custodianJsonDP));
+        var ContainerCargo = MasterCargo[0].cargoDocument;
+        console.log(ContainerCargo);
+
+    }
+     else if ('@Model.FileType' == 'DT')
+    {
+        var MasterCargo = @Html.Raw(Json.Encode(@Model.custodianJsonDT.EGM.master.cargoContainer));
+        var MasterList = @Html.Raw(Json.Encode(@Model.custodianJsonDT));
+        var ContainerCargo = MasterCargo[0].cargoDocument;
+        console.log(ContainerCargo);
+
+    }
+
+    function checkactiveSF(ID, element) {
+                    if (element.checked == false) {
+
+                    ContainerCargo = ContainerCargo.filter((list) => list.documentNumber != ID);
+                    var RowNo = 1;
+                    for (var i = 0; i < ContainerCargo.length; i++) {
+                        ContainerCargo.filter((list) => {
+                            if (list.documentNumber == ContainerCargo[i].documentNumber) {
+                                ContainerCargo[i].cargoSequenceNo = RowNo;
+                                RowNo = RowNo + 1;
+                            }
+                        });
+                    }
+
+            $('#tblSF').dataTable({
+                        "destroy": true,
+                "bLengthChange": false,
+                "aaData": ContainerCargo,
+                "bPaginate": false,
+                "bFilter": true,
+                "paging": false,
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                ],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [0]
+        }
+                ],
+                "columns": [
+                    {
+                        "data": "documentNumber",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+
+                            return "<label class='custom-switch'><input type='checkbox' name='custom-switch-checkbox' value='true' onchange='checkactiveSF(" + data + ",this)'  id='mycheck' class='custom-switch-input ' checked=''>" +
+                                "<span class='custom-switch-indicator' ></span></label>"
+                        }
+
+
+                    },
+                    { "data": "cargoSequenceNo" },
+                    { "data": "documentNumber" },
+                    { "data": "quantity" },
+                    { "data": "mcinPcin" }
+                ]
+            });
+        }
+    }
+    function CreateJsonSF() {
+        MasterCargo[0].cargoDetails = ContainerCargo;
+        //MasterList.custodianJsonSF.EGM.master.cargoContainer = MasterCargo;
+        console.log(MasterList);
+        var ConainterNo = document.getElementById("searchText").value;
+        if (ConainterNo == "") {
+            alert("Please enter valid input");
+            return false;
+        }
+        var FileType = document.getElementById("ddlFileType").value
+        if (FileType == "") {
+            alert("Please enter valid file type");
+            return false;
+        }
+        $("#global-loader").fadeIn("slow");
+
+        var data = { 'custodian':MasterList,'Container':MasterCargo,'FileType': FileType,'ContainerNo': ConainterNo };
+    data = JSON.stringify(data);
+        $.ajax({
+        url: "/CustodianJson/CreateJsonSF",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            async: true,
+            success: function (response) {
+            if (response.fileName != "") {
+                //use window.location.href for redirect to download action for download the file
+                data = { 'file': response.fileName, 'filePath': response.filePath };
+                data = JSON.stringify(data);
+
+                var id = 0;
+                    $("#hfFileId").val(id);
+                $("#btnDownload")[0].click();
+            }
+                $("#global-loader").fadeOut("slow");
+                //console.log(response);
+                //$('#divJson').html(response);
+                //$('#divJson').show();
+        $("#global-loader").fadeOut("slow");
+
+        },
+            error: function (error) {
+            let str = error.responseText;
+            var a = str.indexOf("<title>") + 7;
+            var b = str.indexOf("</title>");
+            str = str.substring(a, b);
+            alert("Something went wrong: " + str);
+                $("#global-loader").fadeOut("slow");
+
+        }
+    });
+    }
+
+    function checkactiveASR(ID, element) {
+        console.log(ID);
+        if (element.checked == false) {
+
+                ContainerCargo = ContainerCargo.filter((list) => list.equipmentID != ID);
+                var RowNo = 1;
+                for (var i = 0; i < ContainerCargo.length; i++) {
+                    ContainerCargo.filter((list) => {
+                        if (list.equipmentID == ContainerCargo[i].equipmentID) {
+                            ContainerCargo[i].equipmentSequenceNo = RowNo;
+                            RowNo = RowNo + 1;
+                        }
+                    });
+                }
+
+            $('#tblASR').dataTable({
+                    "destroy": true,
+                "bLengthChange": false,
+                "aaData": ContainerCargo,
+                "bPaginate": false,
+                "bFilter": true,
+                "paging": false,
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                ],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [0]
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "equipmentID",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+
+                            return "<label class='custom-switch'><input type='checkbox' name='custom-switch-checkbox' value='true' onchange='checkactiveASR(`" + data + "`,this)'  id='mycheck' class='custom-switch-input ' checked=''>" +
+                                "<span class='custom-switch-indicator' ></span></label>"
+                        }
+
+
+                    },
+                    { "data": "equipmentSequenceNo" },
+                    { "data": "equipmentID" },
+                    { "data": "equipmentType" },
+                    { "data": "equipmentSize" }
+                ]
+            });
+        }
+    }
+    function CreateJsonASR() {
+        MasterCargo[0].cargoContainer = ContainerCargo;
+        //MasterList.custodianJsonSF.EGM.master.cargoContainer = MasterCargo;
+        console.log(ContainerCargo);
+        var ConainterNo = document.getElementById("searchText").value;
+        if (ConainterNo == "") {
+            alert("Please enter valid input");
+            return false;
+        }
+        var FileType = document.getElementById("ddlFileType").value
+        if (FileType == "") {
+            alert("Please enter valid file type");
+            return false;
+        }
+        $("#global-loader").fadeIn("slow");
+
+        var data = { 'custodian':MasterList,'Container':MasterCargo,'FileType': FileType,'ContainerNo': ConainterNo };
+    data = JSON.stringify(data);
+        $.ajax({
+        url: "/CustodianJson/CreateJsonASR",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            async: true,
+            success: function (response) {
+            if (response.fileName != "") {
+                //use window.location.href for redirect to download action for download the file
+                data = { 'file': response.fileName, 'filePath': response.filePath };
+                data = JSON.stringify(data);
+
+                var id = 0;
+                    $("#hfFileId").val(id);
+                $("#btnDownload")[0].click();
+            }
+                $("#global-loader").fadeOut("slow");
+                //console.log(response);
+                //$('#divJson').html(response);
+                //$('#divJson').show();
+        $("#global-loader").fadeOut("slow");
+
+        },
+            error: function (error) {
+            let str = error.responseText;
+            var a = str.indexOf("<title>") + 7;
+            var b = str.indexOf("</title>");
+            str = str.substring(a, b);
+            alert("Something went wrong: " + str);
+                $("#global-loader").fadeOut("slow");
+
+        }
+    });
+    }
+
+     function checkactiveDP(ID, element) {
+        if (element.checked == false) {
+
+                ContainerCargo = ContainerCargo.filter((list) => list.documentNumber != ID);
+                var RowNo = 1;
+                for (var i = 0; i < ContainerCargo.length; i++) {
+                    ContainerCargo.filter((list) => {
+                        if (list.documentNumber == ContainerCargo[i].documentNumber) {
+                            ContainerCargo[i].cargoSequenceNo = RowNo;
+                            RowNo = RowNo + 1;
+                        }
+                    });
+                }
+
+            $('#tblDP').dataTable({
+                    "destroy": true,
+                "bLengthChange": false,
+                "aaData": ContainerCargo,
+                "bPaginate": false,
+                "bFilter": true,
+                "paging": false,
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                ],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [0]
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "documentNumber",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+
+                            return "<label class='custom-switch'><input type='checkbox' name='custom-switch-checkbox' value='true' onchange='checkactiveDP(" + data + ",this)'  id='mycheck' class='custom-switch-input ' checked=''>" +
+                                "<span class='custom-switch-indicator' ></span></label>"
+                        }
+
+
+                    },
+                    { "data": "cargoSequenceNo" },
+                    { "data": "documentNumber" },
+                    { "data": "packageType" },
+                    { "data": "MCINPCIN" }
+                ]
+            });
+        }
+    }
+    function CreateJsonDP() {
+        MasterCargo[0].cargoDocument = ContainerCargo;
+        //MasterList.master.cargoContainer = MasterCargo;
+        //console.log(MasterCargo[0].cargoDocument);
+        var ConainterNo = document.getElementById("searchText").value;
+        if (ConainterNo == "") {
+            alert("Please enter valid input");
+            return false;
+        }
+        var FileType = document.getElementById("ddlFileType").value
+        if (FileType == "") {
+            alert("Please enter valid file type");
+            return false;
+        }
+        $("#global-loader").fadeIn("slow");
+
+        var data = { 'custodian':MasterList,'Container':MasterCargo,'FileType': FileType,'ContainerNo': ConainterNo };
+    data = JSON.stringify(data);
+        $.ajax({
+        url: "/CustodianJson/CreateJsonDP",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            async: true,
+            success: function (response) {
+            if (response.fileName != "") {
+                //use window.location.href for redirect to download action for download the file
+                data = { 'file': response.fileName, 'filePath': response.filePath };
+                data = JSON.stringify(data);
+
+                var id = 0;
+                    $("#hfFileId").val(id);
+                $("#btnDownload")[0].click();
+            }
+                $("#global-loader").fadeOut("slow");
+                //console.log(response);
+                //$('#divJson').html(response);
+                //$('#divJson').show();
+        $("#global-loader").fadeOut("slow");
+
+        },
+            error: function (error) {
+            let str = error.responseText;
+            var a = str.indexOf("<title>") + 7;
+            var b = str.indexOf("</title>");
+            str = str.substring(a, b);
+            alert("Something went wrong: " + str);
+                $("#global-loader").fadeOut("slow");
+
+        }
+    });
+    }
+
+
+
+
+    function checkactiveDT(ID, element) {
+        if (element.checked == false) {
+
+            ContainerCargo = ContainerCargo.filter((list) => list.documentNumber != ID);
+            var RowNo = 1;
+            for (var i = 0; i < ContainerCargo.length; i++) {
+                ContainerCargo.filter((list) => {
+                    if (list.documentNumber == ContainerCargo[i].documentNumber) {
+                        ContainerCargo[i].cargoSequenceNo = RowNo;
+                        RowNo = RowNo + 1;
+                    }
+                });
+            }
+
+            $('#tblDP').dataTable({
+                "destroy": true,
+                "bLengthChange": false,
+                "aaData": ContainerCargo,
+                "bPaginate": false,
+                "bFilter": true,
+                "paging": false,
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                ],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [0]
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "documentNumber",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+
+                            return "<label class='custom-switch'><input type='checkbox' name='custom-switch-checkbox' value='true' onchange='checkactiveDT(" + data + ",this)'  id='mycheck' class='custom-switch-input ' checked=''>" +
+                                "<span class='custom-switch-indicator' ></span></label>"
+                        }
+
+
+                    },
+                    { "data": "cargoSequenceNo" },
+                    { "data": "documentNumber" },
+                    { "data": "packageType" },
+                    { "data": "MCINPCIN" }
+                ]
+            });
+        }
+    }
+    function CreateJsonDT() {
+        MasterCargo[0].cargoDocument = ContainerCargo;
+        //MasterList.master.cargoContainer = MasterCargo;
+        //console.log(MasterCargo[0].cargoDocument);
+        var ConainterNo = document.getElementById("searchText").value;
+        if (ConainterNo == "") {
+            alert("Please enter valid input");
+            return false;
+        }
+        var FileType = document.getElementById("ddlFileType").value
+        if (FileType == "") {
+            alert("Please enter valid file type");
+            return false;
+        }
+        $("#global-loader").fadeIn("slow");
+
+        var data = { 'custodian': MasterList, 'Container': MasterCargo, 'FileType': FileType, 'ContainerNo': ConainterNo };
+        data = JSON.stringify(data);
+        $.ajax({
+            url: "/CustodianJson/CreateJsonDT",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            async: true,
+            success: function (response) {
+                if (response.fileName != "") {
+                    //use window.location.href for redirect to download action for download the file
+                    data = { 'file': response.fileName, 'filePath': response.filePath };
+                    data = JSON.stringify(data);
+
+                    var id = 0;
+                    $("#hfFileId").val(id);
+                    $("#btnDownload")[0].click();
+                }
+                $("#global-loader").fadeOut("slow");
+                //console.log(response);
+                //$('#divJson').html(response);
+                //$('#divJson').show();
+                $("#global-loader").fadeOut("slow");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#global-loader").fadeOut("slow");
+
+            }
+        });
+    }
+
+</script>

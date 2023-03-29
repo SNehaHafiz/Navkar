@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "Diesel Slip Summary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Diesel Slip Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowVoucherDetails()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2">
+                                <thead>
+                                    <tr>
+                                        <th class="wd-15p sorting">diesel Slip(Full No.).</th>
+                                        <th class="wd-15p sorting">diesel Slip No.</th>
+                                        <th class="wd-15p sorting">diesel Slip Date</th>
+                                        <th class="wd-15p sorting">Trailer Name</th>
+                                        <th class="wd-15p sorting">Driver Name</th>
+                                        <th class="wd-15p sorting">Transporter Name</th>
+                                        <th class="wd-15p sorting">Fuel</th>
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'DieselSlipDetails',
+                "filename": 'DieselSlipDetails_List'
+
+            }
+            ]
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+    function ShowVoucherDetails() {
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            url: "/LoadingPlan/AJAXGetDieselSlip",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'DieselSlipDetails',
+                        "filename": 'DieselSlipDetails_List'
+
+                    }
+                    ],
+                    "columns": [
+
+                        { "data": "SlipID" },
+                        { "data": "SlipNo" },
+                        { "data": "SlipDate" },
+                        { "data": "TrailerNo" },
+                        { "data": "Drivername" },
+                        { "data": "Transpoter" },
+                        { "data": "Fuel" }
+                    
+
+
+                    ]
+                });
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>

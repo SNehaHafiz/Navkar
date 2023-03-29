@@ -1,0 +1,373 @@
+﻿
+@{
+    ViewBag.Title = "IssuesTicket";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+    <div class="page-header">
+        <h4 class="page-title">Issues Ticket</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewReceiptSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "ReceiptForm" }))
+    {
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">To :</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label id="mailid">support.navkar@digidisruptors.com</label><br /><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Subject :</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("Subject", null, new { @class = "form-control ", @id = "Subject", autocomplete = "off", @Value = "", @placeholder = "Subject" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Description :</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextArea("Description", null, new { @class = "form-control", @id = "Description", name = "Description", autocomplete = "off", placeholder = "Description", rows = "5", style = "width : 400px;" })
+                                            <br />
+                                            <input type="file" id="fileticketattachment" name="postedFile" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success " type="button" id="savedetails" onclick="GetcompanyticketDetails()">Send</button>
+                                            <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<div class="row" style="display:none" id="divsammry">
+    <div class=" content-area">
+        <div class="page-header">
+            <h4 class="page-title">Company Ticket Summary</h4>
+
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a onclick="GoBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label"></label>
+                        <div class="input-group">
+                            @* <input type="text" class="form-control" placeholder="Search for...">*@
+                            <span class="input-group-append " id="tabPurpose">
+                                <button class="btn btn-primary active" id="import" style="text-transform: uppercase;" type="button" onclick="ShowOpen()">Open</button>
+                                <button class="btn btn-primary" id="export" style="text-transform: uppercase;" type="button" onclick="showclose()">Close </button>
+                                <label id="selectedImportORExport" class="display_none"></label>
+                                @*<span class="text-center user-semi-title text-dark">@ViewBag["Userid"].ToString()</span>*@
+                            </span>
+                        </div>
+                    </div>
+                     
+                    <div id="divshow">
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                <thead>
+                                    @*<tr>
+                            <th class="wd-15p sorting"></th>
+                            <th>Category.</th>
+                            <th>Assess No.</th>
+                            <th>Work Year.</th>
+                            <th>Invoice No.</th>
+                            <th>Invoice Date.</th>
+                            <th>Grand Total</th>
+                            <th></th>
+
+                        </tr>*@
+                                </thead>
+                                <tbody style="box-sizing :border-box;"></tbody>
+                            </table>
+                        </div>
+                        <!-- table-wrapper -->
+                    </div>
+
+                    <div id="divshow1" style="display:none">
+                        <div class="row" style="display:none" id="divfrom">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                <thead>
+                                    @*<tr>
+                        <th class="wd-15p sorting"></th>
+                        <th>Category.</th>
+                        <th>Assess No.</th>
+                        <th>Work Year.</th>
+                        <th>Invoice No.</th>
+                        <th>Invoice Date.</th>
+                        <th>Grand Total</th>
+                        <th></th>
+
+                    </tr>*@
+                                </thead>
+                                <tbody style="box-sizing :border-box;"></tbody>
+                            </table>
+                        </div>
+                        <!-- table-wrapper -->
+                    </div>
+                </div>
+                <!-- section-wrapper -->
+            </div>
+        </div>
+        <div class="row" style="display:none; color:red">
+            <input id="txtUser" value="@ViewBag.Userid" />
+        </div>
+    </div></div>
+
+
+
+
+
+    <script>
+
+        function showclose() {
+            debugger;
+            $('#divshow1').show();
+            $('#divshow').hide();
+            $('#divfrom').show();
+          
+        }
+
+        function ShowOpen() {
+            $('#divshow').show();
+            $('#divshow1').hide();
+            $('#divfrom').hide();
+           
+        }
+     
+        function ShowOpen() {
+            $('#divshow').show();
+            $('#divshow1').hide();
+            $('#divfrom').hide();
+           
+            debugger;
+            var search = document.getElementById('txtUser').value;
+            var data1 = { 'search': search };
+            data = JSON.stringify(data1);
+                $.ajax({
+                    url: "/IssuesTicket/Search",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        //alert(jsonResult)
+                        $("#reportTable").empty();
+                        RepTableDataJson($("#reportTable"), data, "IssuesTicket", "IssuesTicket")
+                        //  alert(jsonResult)
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+
+            
+        }
+
+        function Show() {
+            $('#divshow').hide();
+            $('#divshow1').show();
+            $('#divfrom').show();
+            debugger;
+            var FromDate = $("#txtFromDate").val();
+            var ToDate = $("#txtToDate").val()
+            var data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/IssuesTicket/SearchClosed",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //alert(jsonResult)
+                    $("#example1").empty();
+                    RepTableDataJson($("#example1"), data, "IssuesTicket", "IssuesTicket")
+                    //  alert(jsonResult)
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+        }
+
+    function GoBack() {
+        $("#DivReceiptGenDet").show();
+        $("#divsammry").hide();
+
+    }
+    function ViewReceiptSummary() {
+        $("#DivReceiptGenDet").hide();
+        $("#divsammry").show();
+    }
+    function GetcompanyticketDetails() {
+
+          var formData = new FormData();
+        var file = document.getElementById("fileticketattachment").files[0];
+        formData.append("Subject", $("#Subject").val());
+            formData.append("Description", $("#Description").val());
+             formData.append("MailID", $("#mailid").text());
+            formData.append("file", file);
+
+            var fileUpload = $("#fileticketattachment").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+            //if (files.length == 0) {
+            //    alert("Please select file!")
+            //    return false;
+            //}
+            //else {
+
+                $.ajax({
+                    url: "/IssuesTicket/AddCompanyTicket",
+                    data: formData,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        alert("Ticket generated successfully!");
+                        document.location = '@Url.Action("IssuesTicket", "IssuesTicket")';
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+           
+            $("#fileticketattachment").val('');
+            $("#Description").val('');
+
+        }
+
+        function deleteticket(ID) {
+            var r = confirm("Do you want to closed selected Ticket?");
+            if (r == true) {
+
+                var search = document.getElementById('txtUser').value;
+                var data1 = { 'ID': ID, 'search': search};
+
+                var data = JSON.stringify(data1);
+                // alert(data)
+                $.ajax({
+                    url: "/IssuesTicket/SaveClear",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+
+                        alert("Ticket Closed Successfully!");
+                        //  alert(response);
+                        //  JOSummary()
+                    },
+                    error: function (errormessage) {
+                        //  alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+
+            }
+            else {
+                // alert("You Pressed Cancel");
+            }
+        }
+
+    </script>

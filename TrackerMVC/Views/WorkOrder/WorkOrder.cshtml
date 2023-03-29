@@ -1,0 +1,1551 @@
+﻿@{
+    ViewBag.Title = "Work Order";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area" id="divWorkOrder">
+    <div class="page-header">
+        <h4 class="page-title">Generate Work Order (Export) </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">WO No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWorkOrder", null, new { @class = "form-control", @id = "txtWorkOrder", name = "txtWorkOrder", disabled = "disabled", autocomplete = "off", placeholder = "NEW", @Value = ViewBag.WONO })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                @*<div class="input-group">*@
+                                <div class="form-group label-floating">
+
+                                    <label class="form-label mandatory">WO Date</label>
+                                    @Html.TextBox("txtWODate", null, new { @class = "form-control  form_datetime1 ", @id = "txtWODate", name = "txtWODate", Value = DateTime.Now.ToString("dd MMM yyyy HH:mm"), autocomplete = "off", @maxlength = 100 })
+                                </div>
+                                @*</div>*@
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Category</label>
+                                    @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                                    { new SelectListItem { Text = "General", Value = "General"},
+                                    new SelectListItem { Text = "RePacking", Value = "RePacking"},
+                                    new SelectListItem { Text = "Stuff-Destuff", Value = "Stuff-Destuff"},
+                                    new SelectListItem { Text = "Shifting", Value = "Shifting"},
+                                    new SelectListItem { Text = "BTT", Value = "BTT"},
+                                    new SelectListItem { Text = "Train Domestic", Value = "Train Domestic"},
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategory", onchange = "OnCategoryChange()" })
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">WO Type</label>
+                                    @*@Html.TextBox("txtOrigin", null, new { @class = "form-control", @id = "txtOrigin", name = "txtOrigin", autocomplete = "off", rows = "2", @maxlength = 500 })*@
+                                    @Html.DropDownList("ddlWOType", (IEnumerable<SelectListItem>)ViewBag.WOType, "--Select--", new { @class = "form-control", @id = "ddlWOType", name = "ddlWOType", autocomplete = "off", onchange = "ChangeWOType()" })
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12" id="divSBNo">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SB No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSBNo", null, new { @class = "form-control", @id = "txtSBNo", name = "txtSBNo", autocomplete = "off", placeholder = "SB No", @Value = ViewBag.WONO })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divInvoiceNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtInvoiceNo", null, new { @class = "form-control", @id = "txtInvoiceNo", name = "txtInvoiceNo", autocomplete = "off", placeholder = "Invoice No", @Value = ViewBag.WONO })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divSBAdd">
+                                <div class="form-group" style="padding-top:25px">
+                                    @*<label class="form-label" style="visibility:hidden">.</label>*@
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="OnAddSBNo()"><i class="fa fa-check"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divInvoiceAdd" style="display:none">
+                                <div class="form-group" style="padding-top:25px">
+                                    @*<label class="form-label" style="visibility:hidden">.</label>*@
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnAddInvoiceNo" name="Add" onclick="OnAddInvoiceNo()"><i class="fa fa-check"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <b>CHA :</b><label id="lblCHAName"></label>
+                                <label id="lblCHAID" style="display:none"></label>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <b>Shipper Name :</b><label id="lblShipperName"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <b>On Account :</b><label id="lblOnAccountName"></label>
+                                <label id="lblOnAccountID" style="display:none"></label>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <b>Manifest Qty :</b><label id="lblManiFestQty"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <b>Cargo Description :</b><label id="lblCargoDescription"></label>
+                                <label id="lblSBEntryID" style="display:none"></label>
+                                <label id="lblTotStuffPkgs" style="display:none"></label>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10"></div>
+                            <div class="col-lg-2 col-sm-2 float-right">
+                                <b>Unit Weight :</b><label id="lblUnitWt"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10"></div>
+                            <div class="col-lg-2 col-sm-2 float-right">
+                                <b>Previous Pkgs :</b><label id="lblPrevPkgs"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10"></div>
+                            <div class="col-lg-2 col-sm-2 float-right">
+                                <b>Cont. Previous Pkgs :</b><label id="lblContPrevPkgs"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Stuff Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlStuffLocation", new List<SelectListItem>
+                            { new SelectListItem { Text = "--Select--", Value = ""},
+                            new SelectListItem { Text = "Container", Value = "Container"},
+                            new SelectListItem { Text = "Warehouse", Value = "Warehouse"},
+                              }, new { @class = "form-control", autocomplete = "off", @id = "ddlStuffLocation", onchange = "OnStuffLocationChange()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divContainerNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off", placeholder = "Container No", @maxlength = 11, onblur = "BlurCOntainerNo()" })
+                                            @*<select id="ddlContainerNo" class="form-control" onchange="GetTotalPkgsContainerWise()">
+                                <option value="">--Select--</option>
+                            </select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3" id="divWarehouse" style="display:none">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Warehouse</label>
+                                    @*@Html.TextBox("txtOrigin", null, new { @class = "form-control", @id = "txtOrigin", name = "txtOrigin", autocomplete = "off", rows = "2", @maxlength = 500 })*@
+                                    @Html.DropDownList("ddlWarehouse", (IEnumerable<SelectListItem>)ViewBag.WHList, "--Select--", new { @class = "form-control", @id = "ddlWarehouse", name = "ddlWarehouse", autocomplete = "off" })
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divVehicle">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vehicle No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select id="ddlVehicleNo" class="form-control" onchange="GetTotalPkgsVehicleWise()">
+                                                <option value="">--Select--</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Total Pkgs</label>
+                                    @Html.TextBox("txtTotalPkgs", null, new { @class = "form-control", @disabled = "disabled", @id = "txtTotalPkgs", name = "txtTotalPkgs", autocomplete = "off", placeholder = "Total Pkgs" })
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Total Weight</label>
+                                    @Html.TextBox("txtTotalWeight", null, new { @class = "form-control", @disabled = "disabled", @id = "txtTotalWeight", name = "txtTotalWeight", autocomplete = "off", placeholder = "Total Weight" })
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Pkgs</label>
+                                    @Html.TextBox("txtStuffDStuffPkgs", null, new { @class = "form-control", @id = "txtStuffDStuffPkgs", name = "txtStuffDStuffPkgs", autocomplete = "off", placeholder = "Pkgs" })
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Weight</label>
+                                    @Html.TextBox("txtWeight", null, new { @class = "form-control", @id = "txtWeight", name = "txtWeight", autocomplete = "off", placeholder = "Weight" })
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Pkg Type</label>
+                                    @*@Html.TextBox("txtOrigin", null, new { @class = "form-control", @id = "txtOrigin", name = "txtOrigin", autocomplete = "off", rows = "2", @maxlength = 500 })*@
+                                    @Html.DropDownList("ddlPkgType", (IEnumerable<SelectListItem>)ViewBag.PKGList, "--Select--", new { @class = "form-control", @id = "ddlPkgType", name = "ddlPkgType", autocomplete = "off" })
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Vendor Name</label>
+                                    @*@Html.TextBox("txtOrigin", null, new { @class = "form-control", @id = "txtOrigin", name = "txtOrigin", autocomplete = "off", rows = "2", @maxlength = 500 })*@
+                                    @Html.DropDownList("ddlVendor", (IEnumerable<SelectListItem>)ViewBag.VendorList, "--Select--", new { @class = "form-control", @id = "ddlVendor", name = "ddlVendor", autocomplete = "off" })
+                                    <input type="hidden" id="hdnVendorId" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Equipment Type</label>
+                                    @*@Html.TextBox("txtOrigin", null, new { @class = "form-control", @id = "txtOrigin", name = "txtOrigin", autocomplete = "off", rows = "2", @maxlength = 500 })*@
+                                    @Html.DropDownList("ddlEQType", (IEnumerable<SelectListItem>)ViewBag.EQType, "--Select--", new { @class = "form-control", @id = "ddlEQType", name = "ddlEQType", autocomplete = "off" })
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtRemarks", null, new { @class = "form-control", @id = "txtRemarks", name = "txtRemarks", rows = "2", textmode = "MultiLine", autocomplete = "off", placeholder = "Remarks", @Value = ViewBag.Remarks })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group" style="padding-top:25px">
+                                    @*<label class="form-label" style="visibility:hidden">.</label>*@
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnAdd" name="Add" onclick="ShowWorkOrderList()">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderDets">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-15p sorting"></th>
+                                                <th class="wd-15p sorting">Stuff Location</th>
+                                                <th class="wd-15p sorting">Container No</th>
+                                                <th class="wd-15p sorting">Warehouse</th>
+                                                <th class="wd-15p sorting">Vehicle No</th>
+                                                <th class="wd-15p sorting">Pkgs</th>
+                                                <th class="wd-15p sorting">Pkg Type</th>
+                                                <th class="wd-15p sorting">Weight</th>
+                                                <th class="wd-15p sorting">Vendor</th>
+                                                <th class="wd-15p sorting">Equipment Type</th>
+                                                <th class="wd-15p sorting">Remarks</th>
+
+                                                <th class="wd-10p sorting" style="display:none">EQID</th>
+                                                <th class="wd-10p sorting" style="display:none">VendorID</th>
+                                                <th class="wd-15p sorting" style="display:none">WarehouseID</th>
+                                                <th class="wd-15p sorting" style="display:none">PackageID</th>
+                                                <th class="wd-15p sorting" style="display:none">CartingAllowId</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3" style="margin-top:20px;">
+                                <div class="form-group">
+
+                                    <button id="btnsave" class="btn btn-success btn-xs" onclick="Save()">Save</button>
+                                    <input type="button" name="clearProfile" value="Clear" class="btn cursor" title="clear" id="clearValue" onclick="Clear()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divEditWorkOrder" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Edit Export Work Order </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrderEdit();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">WO No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtEWorkOrder", null, new { @class = "form-control", @id = "txtEWorkOrder", name = "txtEWorkOrder", disabled = "disabled", autocomplete = "off", placeholder = "NEW", @Value = ViewBag.WONO })
+                                            <input type="hidden" id="hdnSrNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">WO No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtEWODate", null, new { @class = "form-control  form_datetime1 ", @id = "txtEWODate", name = "txtEWODate", @disabled = "disabled", Value = DateTime.Now.ToString("dd MMM yyyy HH:mm"), autocomplete = "off", @maxlength = 100 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Total Pkgs</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtETotalPkgs", null, new { @class = "form-control", @id = "txtETotalPkgs", name = "txtETotalPkgs", autocomplete = "off", placeholder = "Total Pkgs" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Total Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtETotalWeight", null, new { @class = "form-control", @id = "txtETotalWeight", name = "txtETotalWeight", autocomplete = "off", placeholder = "Total Weight" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vendor Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlEVendor", (IEnumerable<SelectListItem>)ViewBag.VendorList, "--Select--", new { @class = "form-control", @id = "ddlEVendor", name = "ddlEVendor", autocomplete = "off" })
+                                            <input type="hidden" id="hdnVendorId" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" type="button" id="btnEdit" name="Modify" onclick="EditWorkOrder()">Midify</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divOpenWorkOrderSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List of Open Work Orders </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th class="wd-15p sorting">Sr No</th>
+                                                <th class="wd-15p sorting">Work Order No</th>
+                                                <th class="wd-15p sorting">Sequence No</th>
+                                                <th class="wd-15p sorting">Work Order Date</th>
+                                                <th class="wd-15p sorting">WO Type</th>
+                                                <th class="wd-15p sorting">Shipping Bill No</th>
+                                                <th class="wd-15p sorting">On Account</th>
+                                                <th class="wd-15p sorting">CHA</th>
+                                                <th class="wd-15p sorting">Vehicle No</th>
+                                                <th class="wd-15p sorting">Container No</th>
+                                                <th class="wd-15p sorting">Warehouse</th>
+                                                <th class="wd-15p sorting">Pkgs</th>
+                                                <th class="wd-15p sorting">Vendor</th>
+                                            </tr>
+                                        </thead>                                        
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+    <script>
+        $(document).ready(function () {
+            $('#tblWorkOrderDets').dataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "bPaginate": true,
+                // "bFilter": false,
+                "paging": true,
+                "order": [],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [0]
+                    }
+
+                ]
+            })
+        });
+        function OnStuffLocationChange() {
+            var ddlStuffLocation = $("#ddlStuffLocation").val();
+
+            if (ddlStuffLocation != "") {
+                if (ddlStuffLocation == "Container") {
+                    $("#divWarehouse").hide();
+                    $("#divContainerNo").show();
+                    if ($("#ddlWOType").val() == "Stuffing") {
+                        $("#divVehicle").hide();
+                        try {
+                            GetCartTotalPkgs();
+                        }
+                        catch (ex) {}
+                    }
+                    else { $("#divVehicle").show();}
+                }
+                else if (ddlStuffLocation == "Warehouse") {
+                    $("#divWarehouse").show();
+                    $("#divContainerNo").hide();
+                    $("#divVehicle").show();
+                }
+            }
+            else {
+                $("#divContainerNo").hide();
+                $("#divWarehouse").hide();
+                $("#divVehicle").show();
+            }
+        }
+        function OnAddSBNo() {
+            Sub_CLear()
+            var txtSBNo = document.getElementById('txtSBNo').value;
+            var ddlWOType = document.getElementById('ddlWOType').value;
+
+
+            if (txtSBNo == "") {
+                alert('Please enter SB No first!');
+                document.getElementById('txtSBNo').focus();
+                return false;
+            }
+            if (ddlWOType == "") {
+                alert('Please select work order type first!');
+                document.getElementById('ddlWOType').focus();
+                return false;
+            }
+            var data1 = { 'SBNO': txtSBNo, 'WorkType': ddlWOType };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/ShowSBNODets",
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    debugger;
+                    if (response == "") {
+                        alert("Record(s) not found")
+                        document.getElementById("lblCHAName").innerHTML = "";
+                        document.getElementById("lblShipperName").innerHTML = "";
+                        document.getElementById("lblOnAccountName").innerHTML = "";
+                        document.getElementById("lblManiFestQty").innerHTML = "";
+                        document.getElementById("lblCargoDescription").innerHTML = "";
+                        document.getElementById("lblSBEntryID").innerHTML = "";
+                        document.getElementById("lblCHAID").innerHTML = "";
+                        document.getElementById("lblOnAccountID").innerHTML = "";
+                        document.getElementById('txtSBNo').focus();
+                        return false;
+                    }
+                    else {
+                        document.getElementById("lblCHAName").innerHTML = response[0].CHAName;
+                        document.getElementById("lblShipperName").innerHTML = response[0].ShipperName;
+                        document.getElementById("lblOnAccountName").innerHTML = response[0].OnAccount;
+                        document.getElementById("lblManiFestQty").innerHTML = response[0].ManifestQty;
+                        document.getElementById("lblCargoDescription").innerHTML = response[0].CargoDescription;
+                        document.getElementById("lblSBEntryID").innerHTML = response[0].SBEntryID;
+                        document.getElementById("lblCHAID").innerHTML = response[0].CHAID;
+                        document.getElementById("lblOnAccountID").innerHTML = response[0].OnAccountID;
+                        $("#ddlPkgType").val(response[0].Unit);
+                        GetVehicleNos(response[0].SBEntryID);
+                        GetCartTotalPkgs();
+                    }
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        }
+        function GetVehicleNos(SBEntryID) {
+            var data1 = { 'SBEntryID': SBEntryID, 'SBNO': $("#txtSBNo").val() };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                url: "/WorkOrder/VehicleNos",
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var select = $("#ddlVehicleNo");
+                    select.empty();
+                    select.append($('<option/>', {
+                        value: "",
+                        text: "--Select--"
+                    }));
+                    debugger;
+                    $.each(response, function (data, value) {
+                        debugger;
+                        select.append($("<option></option>").val(value.CartingId).html(value.VehicleNo));
+                    })
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        }
+        function ShowWorkOrderList() {
+            debugger;
+            var data = [];
+            var sumpkgs = 0;
+            var sumwt = 0;
+            var StuffPkgs = $("#txtStuffDStuffPkgs").val();
+            var StuffWt = $("#txtWeight").val();
+            var Totpkgs = $("#txtTotalPkgs").val();
+            var TotWt = $("#txtTotalWeight").val();
+            var table = document.getElementById("tblPaymentDet");
+
+            if ($("#txtContainerNo").val() != "") {
+                if (StuffWt == "") {
+                    StuffWt = 0;
+                }
+
+                if (parseInt(StuffWt) > 27000) {
+                    alert("Total Stuff Wt cannot be greater then 27 Ton.");
+                    $("#txtWeight").val("");
+                    document.getElementById('txtWeight').focus();
+                    return false;
+                }
+            }
+
+            if (table != null) {
+                if (table.rows.length > 1) {
+                    for (var i = 1; i < table.rows.length; i++) {
+                        row = table.rows[i];
+                        var VehNo = "";
+                        var Pkgs = 0;
+                        var Weight = 0;
+                        VehNo = row.cells[5].innerHTML;
+                        Pkgs = row.cells[6].innerHTML;
+                        Weight = row.cells[8].innerHTML;
+                        if (VehNo == $("#ddlVehicleNo option:selected").text()) {
+                            sumpkgs = parseFloat(sumpkgs) + parseFloat(Pkgs);
+                            sumwt = parseFloat(sumwt) + parseFloat(Weight);
+                        }
+                    }
+                }
+            }  
+            sumpkgs = parseFloat(sumpkgs) + parseFloat(StuffPkgs);
+            sumwt = parseFloat(sumwt) + parseFloat(StuffWt);
+            if (parseFloat(sumpkgs) > parseFloat(Totpkgs)) {
+                alert('Pkgs should not be greater than Total Pkgs')
+                $("#txtStuffDStuffPkgs").val("");
+                document.getElementById('txtStuffDStuffPkgs').focus();
+                return false;
+            }
+            if (parseFloat(sumwt) > parseFloat(TotWt)) {
+                alert('Weight should not be greater than Total Weight')
+                $("#txtWeight").val("");
+                document.getElementById('txtWeight').focus();
+                return false;
+            }
+            var TotalPkgs = document.getElementById("lblTotStuffPkgs").innerHTML;
+            var ManifestPkgs = document.getElementById("lblManiFestQty").innerHTML;
+
+            if ((parseFloat(TotalPkgs) + parseFloat($("#txtStuffDStuffPkgs").val())) > parseFloat(ManifestPkgs)) {
+                alert("Stuffing Qty should not be greater than Manifest Qty")
+                document.getElementById('txtStuffDStuffPkgs').focus();
+                return false;
+            }
+
+            debugger;
+
+            if ($("#txtContainerNo").val() != "") {
+                if (ValidateVendor($("#txtContainerNo").val(), $("#ddlVendor").val(), parseInt(StuffWt), parseInt(StuffPkgs)) == false) {
+                    return;
+                }
+            }
+
+            var pvendor = $("#ddlVendor").val();
+            var pvendorId = $("#hdnVendorId").val();
+            var pvendorName = $("#ddlVendor option:selected").text();
+
+            if (pvendorId != "" && pvendorId > 0) {
+                if (pvendor != pvendorId) {
+                    alert('Please select valid vendor id');
+                    return false;
+                }
+            }
+            
+           
+            
+
+            TotalPkgs = parseFloat(TotalPkgs) + parseFloat($("#txtStuffDStuffPkgs").val());
+            document.getElementById("lblTotStuffPkgs").innerHTML = TotalPkgs;
+
+
+            var res = validate();
+            if (res == false) {
+                return false;
+            }
+            var ddlStuffLocation = $("#ddlStuffLocation option:selected").text();
+            var ddlCategory = $("#ddlCategory").val();
+
+            if (ddlCategory !="General") {
+                ddlStuffLocation = ddlCategory;
+            }
+
+            var ddlWarehouseID = $("#ddlWarehouse option:selected").val();
+            if (ddlWarehouseID == "") {
+                var ddlWarehouse = "";
+            }
+            else {
+                var ddlWarehouse = $("#ddlWarehouse option:selected").text();
+            }
+            var txtContainerNo = $("#txtContainerNo").val();
+            var ddlVehicleNo = $("#ddlVehicleNo option:selected").text();
+            if (ddlCategory != "General") {
+                ddlVehicleNo = $("#txtInvoiceNo").val();
+            }
+            var CartingAllowId = $("#ddlVehicleNo").val();
+            var txtStuffDStuffPkgs = $("#txtStuffDStuffPkgs").val();
+            var ddlVendorID = $("#ddlVendor option:selected").val();
+            var ddlVendor = $("#ddlVendor option:selected").text();
+            var ddlEQTypeID = $("#ddlEQType option:selected").val();
+            var ddlEQType = $("#ddlEQType option:selected").text();
+            var txtRemarks = $("#txtRemarks").val();
+            var ddlPkgTypeID = $("#ddlPkgType option:selected").val();
+            var ddlPkgType = $("#ddlPkgType option:selected").text();
+            var txtWeight = $("#txtWeight").val();
+            
+
+            var StuffLocation = ddlStuffLocation + "<input Name=StuffLocation type=hidden id=StuffLocation   value='" + ddlStuffLocation + "'>";
+            var WareHouse = ddlWarehouse + "<input Name=ddlWarehouse type=hidden id=ddlWarehouse   value=" + ddlWarehouse + ">";
+            var WareHouseID = ddlWarehouseID + "<input Name=WareHouseID type=hidden id=WareHouseID   value=" + ddlWarehouseID + ">";
+            var ContainerNo = txtContainerNo + "<input Name=ContainerNo type=hidden id=ContainerNo   value='" + txtContainerNo + "'>";
+            var VehicleNo = ddlVehicleNo + "<input Name=VehicleNo type=hidden id=VehicleNo   value='" + ddlVehicleNo + "'>";
+            var StuffPkgs = txtStuffDStuffPkgs + "<input Name=StuffPkgs type=hidden id=StuffPkgs   value='" + txtStuffDStuffPkgs + "'>";
+            var Vendor = ddlVendor + "<input Name=Vendor type=hidden id=Vendor   value='" + ddlVendor + "'>";
+            var VendorID = ddlVendorID + "<input Name=VendorID type=hidden id=VendorID   value='" + ddlVendorID + "'>";
+            var Equipment = ddlEQType + "<input Name=ddlEQType type=hidden id=ddlEQType   value='" + ddlEQType + "'>";
+            var EquipmentID = ddlEQTypeID + "<input Name=EquipmentID type=hidden id=EquipmentID   value='" + ddlEQTypeID + "'>";
+            var Remarks = txtRemarks + "<input Name=Description type=hidden id=Description   value='" + txtRemarks + "'>";
+            var Package = ddlPkgType + "<input Name=ddlEQType type=hidden id=ddlEQType   value='" + ddlPkgType + "'>";
+            var PackageID = ddlPkgTypeID + "<input Name=PkgTypeID type=hidden id=PkgTypeID   value='" + ddlPkgTypeID + "'>";
+            var Weight = txtWeight + "<input Name=Weight type=hidden id=Weight value='" + txtWeight + "'>";
+            var CartingAllowId = CartingAllowId + "<input Name=CartingAllowId type=hidden id=CartingAllowId   value='" + CartingAllowId + "'>";
+
+            var t = $('#tblWorkOrderDets').DataTable();
+            t.row.add([
+                "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem()\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>",
+                StuffLocation,
+                ContainerNo,
+                WareHouse,
+                VehicleNo,
+                StuffPkgs,
+                Package,
+                Weight,
+                Vendor,
+                Equipment,
+                Remarks,
+                EquipmentID,
+                VendorID,
+                WareHouseID,
+                PackageID,
+                CartingAllowId
+
+            ]).draw(false);
+
+            document.getElementById('ddlStuffLocation').value = "";
+            document.getElementById('txtContainerNo').value = "";
+            document.getElementById('ddlWarehouse').value = "";
+            document.getElementById('ddlVehicleNo').value = "";
+            document.getElementById('txtStuffDStuffPkgs').value = "";
+            document.getElementById('ddlPkgType').value = "";
+            document.getElementById('txtWeight').value = "";
+            if ($("#ddlCategory").val() == "General") {
+                document.getElementById('txtTotalPkgs').value = "";
+                document.getElementById('txtTotalWeight').value = "";
+            }
+            document.getElementById('ddlVendor').value = "";
+            document.getElementById('ddlEQType').value = "";
+            document.getElementById('txtRemarks').value = "";
+            $("#divWarehouse").hide();
+            $("#divContainerNo").hide();
+        }
+        function validate() {
+            debugger;
+            var ddlStuffLocation = document.getElementById('ddlStuffLocation').value;
+            var txtContainerNo = document.getElementById('txtContainerNo').value;
+            var ddlWarehouse = document.getElementById('ddlWarehouse').value;
+            var ddlVehicleNo = document.getElementById('ddlVehicleNo').value;
+            var txtStuffDStuffPkgs = document.getElementById('txtStuffDStuffPkgs').value;
+            var ddlVendor = document.getElementById('ddlVendor').value;
+            var ddlEQType = document.getElementById('ddlEQType').value;
+            var ddlPkgType = document.getElementById('ddlPkgType').value;
+            var txtWeight = document.getElementById('txtWeight').value;
+            var ddlWOType = document.getElementById('ddlWOType').value;
+            var ddlCategory = document.getElementById('ddlCategory').value;
+
+
+            var blResult = Boolean;
+            blResult = true;
+            document.getElementById('ddlStuffLocation').style.borderColor = "Gainsboro";
+            document.getElementById('txtContainerNo').style.borderColor = "Gainsboro";
+            document.getElementById('ddlWarehouse').style.borderColor = "Gainsboro";
+            document.getElementById('ddlVehicleNo').style.borderColor = "Gainsboro";
+            document.getElementById('txtStuffDStuffPkgs').style.borderColor = "Gainsboro";
+            document.getElementById('ddlVendor').style.borderColor = "Gainsboro";
+            document.getElementById('ddlEQType').style.borderColor = "Gainsboro";
+            document.getElementById('ddlPkgType').style.borderColor = "Gainsboro";
+            document.getElementById('txtWeight').style.borderColor = "Gainsboro";
+
+
+            if (ddlStuffLocation == "" && ddlCategory =="General" ) {
+                document.getElementById('ddlStuffLocation').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+
+            if (ddlStuffLocation != "") {
+                if (ddlStuffLocation == "Container") {
+                    if (txtContainerNo == "") {
+                        document.getElementById('txtContainerNo').style.borderColor = "red"
+                        blResult = blResult && false;
+                    }
+                }
+                else if (ddlStuffLocation == "Warehouse") {
+                    if (ddlWarehouse == "") {
+                        document.getElementById('ddlWarehouse').style.borderColor = "red"
+                        blResult = blResult && false;
+                    }
+                }
+            }
+            if (ddlVehicleNo == "" && ddlWOType != "Stuffing" && ddlCategory == "General") {
+                document.getElementById('ddlVehicleNo').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (txtStuffDStuffPkgs == "") {
+                document.getElementById('txtStuffDStuffPkgs').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (ddlVendor == "") {
+                document.getElementById('ddlVendor').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (ddlEQType == "") {
+                document.getElementById('ddlEQType').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (txtWeight == "") {
+                document.getElementById('txtWeight').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (ddlPkgType == "") {
+                document.getElementById('ddlPkgType').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (blResult == false) { alert('Please fill the required fields!'); }
+            return blResult;
+        }
+        function CancelItem() {
+            var table = $('#tblWorkOrderDets').DataTable();
+            $('#tblWorkOrderDets tbody').on('click', '.removebutton', function () {
+                table
+                    .row($(this).parents('tr'))
+                    .remove()
+                    .draw();
+
+            });
+        }
+        function GetTotalPkgsVehicleWise() {
+            var ddlCartingId = document.getElementById('ddlVehicleNo').value;
+            var ddlVehicleNo = $("#ddlVehicleNo option:selected").text();
+            var lblSBEntryID = document.getElementById("lblSBEntryID").innerHTML;
+
+            if (ddlVehicleNo == "") {
+                $("#txtTotalPkgs").val("");
+                $("#txtTotalWeight").val("");
+                document.getElementById("lblUnitWt").innerHTML = "";
+                document.getElementById("lblPrevPkgs").innerHTML = "";
+                return false
+            }
+            var data1 = { 'SBEntryID': lblSBEntryID, 'SBNO': $("#txtSBNo").val(), 'VehicleNo': ddlVehicleNo, 'CartingId': ddlCartingId };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/TotalPkgsVehicleWise",
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#txtTotalPkgs").val(response[0].TotPkgs);
+                    $("#txtTotalWeight").val(response[0].TotWeight);
+                    document.getElementById("lblUnitWt").innerHTML = response[0].UnitWt;
+                    document.getElementById("lblPrevPkgs").innerHTML = response[0].PrevPkgs;
+                    
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        }
+
+        function GetCartTotalPkgs() {
+            var txtSBNo = document.getElementById('txtSBNo').value;
+            var ddlWOType = document.getElementById("ddlWOType").value;
+
+           
+            var data1 = { 'SBNO': txtSBNo, 'WorkType': ddlWOType };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/ShowCartWeightDets",
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    debugger;
+                    $("#txtTotalPkgs").val(response.TotPkgs);
+                    $("#txtTotalWeight").val(response.TotWeight);
+                    document.getElementById("lblUnitWt").innerHTML = response.UnitWt;
+
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        }
+
+        function GetCartTotalPkgsInvoice() {
+            var txtInvoiceNo = document.getElementById('txtInvoiceNo').value;
+            var ddlWOType = document.getElementById("ddlWOType").value;
+
+
+            var data1 = { 'InvoiceNo': txtInvoiceNo, 'WorkType': ddlWOType };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/ShowCartWeightDetsByInvoice",
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    debugger;
+                    $("#txtTotalPkgs").val(response.TotPkgs);
+                    $("#txtTotalWeight").val(response.TotWeight);
+                    document.getElementById("lblUnitWt").innerHTML = response.UnitWt;
+
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        }
+
+        function Save() {
+            
+            var res1 = validateSave();
+            var lblSBEntryID = document.getElementById('lblSBEntryID').innerHTML;
+            var lblCHAID = document.getElementById('lblCHAID').innerHTML;
+            var lblOnAccountID = document.getElementById('lblOnAccountID').innerHTML;
+            var txtSBNo = document.getElementById('txtSBNo').value;
+            var ddlWOType = document.getElementById('ddlWOType').value;
+            var ddlCategory = document.getElementById('ddlCategory').value;
+
+            if (ddlCategory == "General") {
+                if (lblSBEntryID == "") {
+                    alert("Please validate SB No first")
+                }
+            }
+            
+            if (res1 == false) {
+                $("#tracker-loader").fadeOut("slow");
+                return false;
+            }
+            var itemcount = checkItemcount();
+            if (itemcount) {
+                $("#btnsave").attr('disabled', 'disabled');
+                var SelectedData = new Array();
+                $('#tblWorkOrderDets tbody tr').each(function (i, row) {
+                    var data = {};
+
+                    $(this).find('input').each(function () {
+
+                        data[this.id] = $(this).val();
+                    })
+                    SelectedData.push(data);
+
+                });
+                var data1 = { 'WOdata': SelectedData, 'WODate': $("#txtWODate").val(), 'WOType': ddlWOType, 'SBNo': txtSBNo, 'SBEntryID': lblSBEntryID, 'CHAID': lblCHAID, 'OnAccountID': lblOnAccountID };
+
+                var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/WorkOrder/WorkOrderSave",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        
+                        if (response == "1") {
+                            alert("Record saved successfully");
+                           
+                            Clear();
+                        }
+                        else {
+                            alert("Record not saved successfully. Try Again!");
+                            $("#btnsave").removeAttr('disabled');
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                })
+            }
+            else {
+                alert("Please Add Work Order details");
+            }
+        }
+        function checkItemcount() {
+
+            var table = $('#tblWorkOrderDets').DataTable();
+
+            if (table.rows().count() == 0) {
+
+                return false;
+            }
+            return true;
+        }
+        function validateSave() {
+            var txtWODate = document.getElementById('txtWODate').value;
+            var ddlWOType = document.getElementById('ddlWOType').value;
+            var txtSBNo = document.getElementById('txtSBNo').value;
+            var txtInvoiceNo = document.getElementById('txtInvoiceNo').value;
+            var ddlCategory = document.getElementById('ddlCategory').value;
+
+            var blResult = Boolean;
+            blResult = true;
+            document.getElementById('txtWODate').style.borderColor = "Gainsboro";
+            document.getElementById('ddlWOType').style.borderColor = "Gainsboro";
+            document.getElementById('txtSBNo').style.borderColor = "Gainsboro";
+
+            if (txtWODate == "") {
+                document.getElementById('txtWODate').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (ddlWOType == "") {
+                document.getElementById('ddlWOType').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (ddlCategory == "General") {
+                if (txtSBNo == "") {
+                    document.getElementById('txtSBNo').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+            }
+            else {
+                if (txtInvoiceNo == "") {
+                    document.getElementById('txtInvoiceNo').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+            }
+            
+
+            if (blResult == false) { alert('Please fill the required fields!'); }
+            return blResult;
+        }
+        function Sub_CLear() {
+            document.getElementById("lblCHAName").innerHTML = "";
+            document.getElementById("lblShipperName").innerHTML = "";
+            document.getElementById("lblOnAccountName").innerHTML = "";
+            document.getElementById("lblManiFestQty").innerHTML = "";
+            document.getElementById("lblCargoDescription").innerHTML = "";
+            document.getElementById("lblSBEntryID").innerHTML = "";
+            document.getElementById("lblCHAID").innerHTML = "";
+            document.getElementById("lblOnAccountID").innerHTML = "";
+            document.getElementById("lblTotStuffPkgs").innerHTML = "";
+            document.getElementById("lblUnitWt").innerHTML = "";
+            document.getElementById('lblContPrevPkgs').innerHTML = "";
+            document.getElementById('lblPrevPkgs').innerHTML = "";
+            $("#ddlStuffLocation").val("")
+            $("#txtContainerNo").val("")
+            $("#ddlWarehouse").val("")
+            $("#ddlVehicleNo").val("")
+            $("#txtTotalPkgs").val("")
+            $("#txtTotalWeight").val("")
+            $("#txtStuffDStuffPkgs").val("")
+            $("#ddlVendor").val("")
+            $("#ddlEQType").val("")
+            $("#txtRemarks").val("")
+
+            var table = $('#tblWorkOrderDets').DataTable();
+            table
+                .clear()
+                .draw();
+        }
+        function Clear() {
+            $("#txtWorkOrder").val("")
+            $("#ddlWOType").val("")
+            $("#txtSBNo").val("")
+            $("#btnsave").removeAttr('disabled');
+            document.getElementById("lblCHAName").innerHTML = "";
+            document.getElementById("lblShipperName").innerHTML = "";
+            document.getElementById("lblOnAccountName").innerHTML = "";
+            document.getElementById("lblManiFestQty").innerHTML = "";
+            document.getElementById("lblCargoDescription").innerHTML = "";
+            document.getElementById("lblSBEntryID").innerHTML = "";
+            document.getElementById("lblCHAID").innerHTML = "";
+            document.getElementById("lblOnAccountID").innerHTML = "";
+            document.getElementById("lblTotStuffPkgs").innerHTML = "";
+            document.getElementById("lblUnitWt").innerHTML = "";
+            document.getElementById('hdnVendorId').value = "";
+            $("#ddlStuffLocation").val("")
+            $("#txtContainerNo").val("")
+            $("#ddlWarehouse").val("")
+            $("#ddlVehicleNo").val("")
+            $("#txtTotalPkgs").val("")
+            $("#txtTotalWeight").val("")
+            $("#txtStuffDStuffPkgs").val("")
+            $("#ddlVendor").val("")
+            $("#ddlEQType").val("")
+            $("#txtRemarks").val("")
+
+            var table = $('#tblWorkOrderDets').DataTable();
+            table
+                .clear()
+                .draw();
+        }
+        function OpenWOSummary() {
+            $("#divOpenWorkOrderSummary").show();
+            $("#divWorkOrder").hide();
+
+            $.ajax({
+                url: "/WorkOrder/ListOpenWorkOrder",
+                //data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+                    $('#tblWorkOrderOpenList').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": data,
+                        "paging": true,
+                        "aaSorting": [[0, 'asc']],
+                        "order": [],
+                        "aoColumnDefs": [
+                            {
+                                'bSortable': false,
+                                'aTargets': [0],
+                            },
+
+                        ],
+                        "dom": 'Bfrtip',
+                        "buttons": [{
+                            "extend": 'excel',
+                            "title": 'List of Open Work Orders',
+                            "filename": 'OpenWorkOrders'
+                        }
+                        ],
+                        "columns": [
+                            {
+                                "data": "data",
+                                "render": function (data, type, row, meta) {
+                                    data = "<a href=\"#\" class=\"btn btn-sm btn-info\" title=\"Close\" onclick=\"CloseWO('" + row.WONo + '~' + row.SequenceNo + "')\">Close</a>";
+                                    return data;
+                                }
+                            },
+                            {
+                                "data": "data",
+                                "render": function (data, type, row, meta) {
+                                    data = "<a href=\"#\" class=\"btn btn-sm btn-primary\" title=\"Edit\" onclick=\"EditWO('" + row.WONo + '~' + row.SequenceNo + "')\">Edit</a>";
+                                    return data;
+                                }
+                            },
+                            { "data": "SrNo" },
+                            { "data": "WONo" },
+                            { "data": "SequenceNo" },
+                            { "data": "WODate" },
+                            { "data": "WOType" },
+                            { "data": "SBNo" },
+                            { "data": "OnAccount" },
+                            { "data": "CHA" },
+                            { "data": "VehicleNo" },
+                            { "data": "ContainerNo" },
+                            { "data": "Warehouse" },
+                            { "data": "Pkgs" },
+                            { "data": "Vendor"},
+                        ]
+                    })
+                },
+
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+        function BackToWorkOrder() {
+            $("#divOpenWorkOrderSummary").hide();
+            $("#divWorkOrder").show();
+        }
+        function CloseWO(WONo) {
+            debugger;
+            var splData = WONo.split('~');
+            var WorkNo = splData[0];
+            var SequenceNo = splData[1];
+
+            var data1 = { 'WONo': WorkNo , 'SequenceNo': SequenceNo };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                url: "/WorkOrder/CloseWorkOrder",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    OpenWOSummary()
+                    alert(data);
+                    
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        }
+        function BlurCOntainerNo() {
+            var txtContainerNo = document.getElementById('txtContainerNo').value;
+            var data1 = { 'ContainerNo': txtContainerNo };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/ContainerValidation",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    if (data[0].ContainerNo == "0") {
+                        alert('Container No not in Inventory! Please Check')
+                        document.getElementById('txtContainerNo').value = "";
+                        document.getElementById('lblContPrevPkgs').innerHTML = "";
+                        document.getElementById('hdnVendorId').value = "";
+                    }
+                    else {
+                        document.getElementById('lblContPrevPkgs').innerHTML = data[0].ContPrevPkgs;
+                        document.getElementById('hdnVendorId').value=data[0].VendorID;
+                    }
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        }
+        function ChangeWOType() {
+            var ddlWOType = $("#ddlWOType").val();
+            if (ddlWOType == "Stuffing") {
+
+            }
+            else if (ddlWOType == "Carting") {
+
+            }
+        }
+
+        function OnCategoryChange() {
+            if ($("#ddlCategory").val() == "General") {
+                $("#divSBNo").show();
+                $("#divSBAdd").show();
+                $("#divInvoiceAdd").hide();
+                $("#divInvoiceNo").hide();
+
+            }
+            else {
+                $("#divSBNo").hide();
+                $("#divSBAdd").hide();
+                $("#divInvoiceAdd").show();
+                $("#divInvoiceNo").show();
+            }
+        }
+        //function PrintWO(WONo) {
+        //    //alert(trailerno);
+        //    //alert(tpNo);
+        //    data1 = { 'WONo': WONo};
+        //    data = JSON.stringify(data1);
+        //    $.ajax({
+        //        url: "/WorkOrder/PrintWorkOrder",
+        //        data: data,
+        //        type: "POST",
+        //        contentType: "application/json; charset=utf-8",
+        //        // dataType: "json",
+        //        success: function (response) {
+
+        //            var myWindow = window.open("", "MsgWindow1");
+        //            myWindow.close();
+        //            var myWindow = window.open("", "MsgWindow1");
+        //            myWindow.document.write(response);
+        //        },
+
+        //        error: function (errormessage) {
+        //            alert(errormessage.responseText);
+        //        }
+        //    });
+
+        //}
+
+        function OnAddInvoiceNo(){
+            Sub_CLear()
+            var txtInvoiceNo = document.getElementById('txtInvoiceNo').value;
+            var ddlWOType = document.getElementById('ddlWOType').value;
+            var ddlCategory = document.getElementById('ddlCategory').value;
+
+            if (ddlCategory == "General") {
+                alert("Special work order not allowed for General Category");
+                return;
+            }
+            else {
+                if (txtInvoiceNo == "") {
+                    alert('Please enter Invoice No first!');
+                    document.getElementById('txtInvoiceNo').focus();
+                    return false;
+                }
+                if (ddlWOType == "") {
+                    alert('Please select work order type first!');
+                    document.getElementById('ddlWOType').focus();
+                    return false;
+                }
+                var data1 = { 'InvoiceNo': txtInvoiceNo, 'WorkType': ddlWOType };
+                var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/WorkOrder/ShowSBNODetsByInvoice",
+                    type: 'Post',
+                    data: data,
+                    async: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        debugger;
+                        if (response == "") {
+                            alert("Record(s) not found")
+                            document.getElementById("lblCHAName").innerHTML = "";
+                            document.getElementById("lblShipperName").innerHTML = "";
+                            document.getElementById("lblOnAccountName").innerHTML = "";
+                            document.getElementById("lblManiFestQty").innerHTML = "";
+                            document.getElementById("lblCargoDescription").innerHTML = "";
+                            document.getElementById("lblSBEntryID").innerHTML = "";
+                            document.getElementById("lblCHAID").innerHTML = "";
+                            document.getElementById("lblOnAccountID").innerHTML = "";
+                            document.getElementById('txtSBNo').focus();
+                            return false;
+                        }
+                        else {
+                            document.getElementById("lblCHAName").innerHTML = response[0].CHAName;
+                            document.getElementById("lblShipperName").innerHTML = response[0].ShipperName;
+                            document.getElementById("lblOnAccountName").innerHTML = response[0].OnAccount;
+                            document.getElementById("lblManiFestQty").innerHTML = response[0].ManifestQty;
+                            document.getElementById("lblCargoDescription").innerHTML = response[0].CargoDescription;
+                            document.getElementById("lblSBEntryID").innerHTML = response[0].SBEntryID;
+                            document.getElementById("lblCHAID").innerHTML = response[0].CHAID;
+                            document.getElementById("lblOnAccountID").innerHTML = response[0].OnAccountID;
+                            $("#ddlPkgType").val(response[0].Unit);
+                            //GetCartTotalPkgsInvoice(response[0].SBEntryID);
+                            GetCartTotalPkgsInvoice();
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response);
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            }
+        }
+
+        $(document).ready(function () {
+            $("#txtStuffDStuffPkgs").change(function () {
+                debugger;
+                var txtStuffDStuffPkgs = $("#txtStuffDStuffPkgs").val();
+                var lblUnitWt = document.getElementById("lblUnitWt").innerHTML;
+
+                if (txtStuffDStuffPkgs > "0" && lblUnitWt > "0") {
+                    $("#txtWeight").val(parseInt(txtStuffDStuffPkgs) * parseInt(lblUnitWt));
+                }
+
+            });
+        });
+
+        function EditWO(WorkOrder) {
+
+            var WoNo = WorkOrder.split('~')[0];
+            var SrNo = WorkOrder.split('~')[1];
+
+            var data1 = { 'WorkOrder': WoNo, 'SrNo': SrNo };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/ViewWorkOrderEdit",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (response) {
+                    if (response.VendorID > 0) {
+                        $("#txtEWorkOrder").val(response.WoNo);
+                        $("#txtEWODate").val(response.WoDate);
+                        $("#txtETotalPkgs").val(response.StuffPkgs);
+                        $("#txtETotalWeight").val(response.Weight);
+                        $("#ddlEVendor").val(response.VendorID);
+                        $("#hdnSrNo").val(response.SrNo);
+                    }
+                    else {
+                        ClearEditData();
+                        alert("No Data Found.");
+                    }
+                   
+                },  
+
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+
+            $("#divEditWorkOrder").show();
+            $("#divOpenWorkOrderSummary").hide();
+        }
+
+        function BackToWorkOrderEdit() {
+            $("#divEditWorkOrder").hide();
+            $("#divOpenWorkOrderSummary").show();
+            ClearEditData();
+        }
+
+        function ClearEditData() {
+            $("#txtEWorkOrder").val('');
+            $("#txtEWODate").val('');
+            $("#txtETotalPkgs").val('');
+            $("#txtETotalWeight").val('');
+            $("#ddlEVendor").val('');
+        }
+
+        function EditWorkOrder() {
+            debugger;
+            var WorkOrder = $("#txtEWorkOrder").val();
+            var SrNo = $("#hdnSrNo").val();
+            var TotalPkgs = $("#txtETotalPkgs").val();
+            var TotalWeight = $("#txtETotalWeight").val();
+            var Vendor = $("#ddlEVendor").val();
+            var SelectedData = [];
+
+            if (WorkOrder == "") {
+                alert("Please Enter Work Order No");
+                return;
+            }
+
+            if (TotalPkgs == "" || TotalPkgs=="0") {
+                alert("Package cannot be less then or Zero.");
+                return;
+            }
+
+            if (TotalWeight == "" || TotalWeight=="0") {
+                alert("Weight cannot be less then or Zero.");
+                return;
+            }
+
+            if (Vendor == "") {
+                alert("Please select Vendor Name");
+                return;
+            }
+
+            var confirm = window.confirm("Are you want to update existing Record ?");
+
+            if (confirm) {
+
+                var data1 = { 'WoNo': WorkOrder, 'SrNo': SrNo, 'StuffPkgs': TotalPkgs, 'Weight': TotalWeight, 'VendorID': Vendor };
+
+                data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/WorkOrder/WorkOrderEdit",
+                    data: data ,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    // dataType: "json",
+                    success: function (response) {
+                        if (response > "0") {
+                            alert("Record Updated Successfully.");
+                            ClearEditData();
+                            OpenWOSummary();
+                            $("#divEditWorkOrder").hide();
+                        }
+                        else {
+                            "Record Not Updated Successfully.";
+                        }
+                    },
+
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+
+            }
+
+        }
+
+        function ValidateVendor(ContainerNo,VendorId,StuffWt,StuffPkgs) {
+            var result = true;
+            var data1 = { 'ContainerNo': ContainerNo, 'VendorId': VendorId, 'Package': StuffPkgs, 'Weight': StuffWt};
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/ValidateVendor",
+                data: data,
+                async: false,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (response) {  
+                    if (response != "") {
+                        result = false;
+                        alert(response);
+                        return result;
+                    }
+                },
+
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+
+            return result;
+        }
+
+    </script>

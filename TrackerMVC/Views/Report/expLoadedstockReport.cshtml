@@ -1,0 +1,251 @@
+﻿
+@{
+    ViewBag.Title = "expLoadedstockReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Export Loaded Inventory</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Customer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.customer, "ALL", new { @class = "form-control custom-select", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> AS On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-sm-2 col-md-2">
+            <div class="form-group label-floating">
+                <label class="control-label">Diesel Rate</label>
+                <input type="text" class="form-control" name="example-text-input" placeholder="Diesel rate" id="Dieselrate" value="69">
+            </div>
+        </div>*@
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" name="login" value="Show" class="btn btn-primary" />
+
+                                        </div>
+                 
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.ActionLink("Export To Excel", "ExportToExcelexpLoadedstockReport", null, new { @class = "btn btn-primary btn-md" })
+
+                                        </div>
+                  
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                   
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">20's</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txt20", null, new { @class = "form-control", @id = "txt20", name = "txt20", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#9F78FF;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">40's</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txt40", null, new { @class = "form-control", @id = "txt40", name = "txt40", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#FDB901;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">45's</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txt45", null, new { @class = "form-control", @id = "txt45", name = "txt45", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#9F78FF;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Teus</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txtteus", null, new { @class = "form-control", @id = "txtteus", name = "txtteus", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#5ED84F;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr>
+
+                                            @*<th class="wd-10p sorting">Sr No</th>
+                                <th class="wd-10p sorting">Paid ID</th>*@
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+
+<script type="text/javascript">
+
+    $("#btnShow").click(function () {
+
+        $("#tracker-loader").fadeIn("slow");
+        var DepartmentID = $("#DepartmentID").val();
+        var FromDate = $("#FromDate").val();
+
+
+        data1 = { 'DepartmentID': DepartmentID, 'FromDate': FromDate };
+        data = JSON.stringify(data1);
+        TeusDetails(DepartmentID, FromDate)
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetexpLoadedstockReport',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJson($("#example2"), jsonResult, "exp Loaded stock Report", "expLoadedstockReport");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    });
+    function TeusDetails(DepartmentID, FromDate) {
+        //alert('hii')
+
+        debugger;
+
+        var data1 = { 'DepartmentID': DepartmentID, 'FromDate': FromDate };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/teusSearchLoaded",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                //debugger;
+                //alert(JSON.stringify(data[0].AssessNo))
+                //alert(JSON.stringify(data))
+                $("#txt20").val(data[0].txt20);
+                $("#txt40").val(data[0].txt40);
+                $("#txt45").val(data[0].txt45);
+                $("#txtteus").val(data[0].Teus);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        })
+    }
+</script>
+
+
+
+

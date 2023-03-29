@@ -1,0 +1,531 @@
+﻿
+@{
+    ViewBag.Title = "Modify Lorry Receipt";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<script src="~/js/sweet-alert.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Modify Lorry Receipt</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">LR No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtlrno", null, new { @class = "form-control ", @id = "txtlrno", Placeholder = "LR No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch1(); "><i class="fa fa-check"></i></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">LR Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtdate", null, new { @class = "form-control ", @id = "txtdate", Placeholder = "In Date", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Agency Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.CustomerList, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div>
+                                @*<label class="form-label">Details </label>*@
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap mt-lg-5" id="example1" style="width:100%">
+                                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                        <tr>
+
+                                            <th style="width:1px;color: white;text-align:center">Select</th>
+                                            <th style="width:1px;color: white;text-align:center">Sr No</th>
+                                            <th style="width:80px;color: white;text-align:center">LR No</th>
+                                            <th style="width:80px;color: white;text-align:center">LR Date</th>
+                                            <th style="width:80px;color: white;text-align:center">Activity</th>
+                                            <th style="width:80px;color: white;text-align:center">Container No</th>
+                                            <th style="width:80px;color: white;text-align:center">Vehicle No</th>
+                                            <th style="width:80px;color: white;text-align:center">Booking No</th>
+                                            <th style="width:80px;color: white;text-align:center">POD/BOE No</th>
+                                            <th style="width:80px;color: white;text-align:center">From Location</th>
+                                            <th style="width:80px;color: white;text-align:center">To Location</th>
+                                            <th style="width:80px;color: white;text-align:center">EntryID</th>
+                                            <th style="width:80px;color: white;text-align:center">Consignee</th>
+
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Modify Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+                                        <input type="hidden" id="txtentryid" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" title="Update" onclick="return Update();">Update</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //get details in text box
+    function Fetch1() {
+        debugger;
+
+        debugger;
+        var LRNo = document.getElementById('txtlrno').value;
+
+
+        var data1 = { 'LRNo': LRNo };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetSubLRDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (data == "") {
+                    alert("No data found")
+                    return false;
+                }
+                $('#ddlcustomer').val(data[0].AGID);
+                $('#txtdate').val(data[0].EntryDate);
+                $('#txtindate').val(data[0].IsOpen);
+                $('#txtcancel').val(data[0].IsCancel);
+
+
+                var Status1 = data[0].IsOpen;
+
+                var Can = data[0].IsCancel;
+                if (Status1 == 0) {
+                    alert("LR is Closed cannot modify");
+                    cleartextboxes();
+                }
+
+                else if (Can == 1) {
+                    alert("LR cancelled cannot modify");
+                    cleartextboxes();
+                }
+
+                else {
+                    Fetch();
+                }
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+      var EquipmentL = [];
+
+    EquipmentLs = @Html.Raw(Json.Encode(@ViewBag.Location));
+    EquipmentL = JSON.parse(EquipmentLs);
+
+
+</script>
+
+<script type="text/javascript">
+    var ItemData = [];
+    //$(document).ready(function () {
+    //    Fetch();
+    //});
+
+    function Fetch() {
+        debugger;
+        debugger;
+        var LRNo = document.getElementById('txtlrno').value;
+
+
+        var data1 = { 'LRNo': LRNo };
+
+        data = JSON.stringify(data1);
+        //  alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetMainGridLRDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                ItemData = data;
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+
+                    return;
+                }
+
+                $('#example1').dataTable({
+
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+
+                            "data": "Series",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.Series + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "Series" },
+                        { "data": "LRNo" },
+                        { "data": "LRDate" },
+                        { "data": "Activity" },
+
+
+
+                        {
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:200px\" id=\"txtcontainerno_" + row.Series + "\" value=\"" + row.ContainerNo + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "VehicleNo",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:200px\" id=\"VehicleNo_" + row.Series + "\" value=\"" + row.VehicleNo + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "BookingNo",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:200px\" id=\"BookingNo_" + row.Series + "\" value=\"" + row.BookingNo + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "BOENo",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:200px\" id=\"BOENo_" + row.Series + "\" value=\"" + row.BOENo + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        //end
+
+
+                        {
+                            "data": "FromLocationID",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<select  class="form-control" id="FromID_' + row.Series + '"  style="width:180px">'
+                                for (j = 0; j < EquipmentL.length; j++) {
+                                    if (row.FromLocationID == EquipmentL[j].LocationID) {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '" selected> ' + EquipmentL[j].Location + '</option>'
+                                    } else {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '"> ' + EquipmentL[j].Location + '</option>'
+                                    }
+
+                                }
+
+                                data += '</selected>';
+                                return data;
+
+                            }
+
+                        },
+
+                        {
+                            "data": "ToLocationID",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<select  class="form-control" id="ToID_' + row.Series + '"  style="width:180px">'
+                                for (j = 0; j < EquipmentL.length; j++) {
+                                    if (row.ToLocationID == EquipmentL[j].LocationID) {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '" selected> ' + EquipmentL[j].Location + '</option>'
+                                    } else {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '"> ' + EquipmentL[j].Location + '</option>'
+                                    }
+
+                                }
+
+                                data += '</selected>';
+                                return data;
+
+                            }
+
+                        },
+                        { "data": "EntryID" },
+
+                        {
+                            "data": "consignee",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:800px\" id=\"consignee_" + row.Series + "\" value=\"" + row.consignee + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
+
+
+
+<script>
+    function Update() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var AGID = $("#ddlcustomer").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        var r = confirm("Are you sure to update LR details?");
+        if (r == true) {
+
+
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+
+                        var Series = row.cells[1].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (Series == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                            row = table.rows[i];
+                            var isValid = true;
+
+                            LRNo = row.cells[2].innerText;
+
+
+
+                            ContainerNo = $("#txtcontainerno_" + (k + 1)).val();
+
+                            if (ContainerNo == 0) {
+                                isValid = isValid && false;
+                                $("#txtcontainerno_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#txtcontainerno_").removeClass("is-invalid state-invalid");
+                            }
+
+                            VehicleNo = $("#VehicleNo_" + (k + 1)).val();
+                            if (VehicleNo == "") {
+                                isValid = isValid && false;
+                                $("#VehicleNo_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#VehicleNo_").removeClass("is-invalid state-invalid");
+                            }
+
+                            BookingNo = $("#BookingNo_" + (k + 1)).val();
+                            if (BookingNo == "") {
+                                isValid = isValid && false;
+                                $("#BookingNo_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#BookingNo_").removeClass("is-invalid state-invalid");
+                            }
+
+                            BOENo = $("#BOENo_" + (k + 1)).val();
+                            if (BOENo == "") {
+                                isValid = isValid && false;
+                                $("#BOENo_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#BOENo_").removeClass("is-invalid state-invalid");
+                            }
+
+
+
+                            FromLocationID = $("#FromID_" + (k + 1)).val();
+                            ToLocationID = $("#ToID_" + (k + 1)).val();
+
+                            consignee = $("#consignee_" + (k + 1)).val();
+
+                            if (consignee == "") {
+                                isValid = isValid && false;
+                                $("#consignee_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#consignee_").removeClass("is-invalid state-invalid");
+                            }
+
+                            if (isValid == false) {
+                                alert("Please fill all required field");
+                                $("#global-loader").fadeOut("slow");
+                                return;
+                            }
+                            tablearray.push({
+                                'LRNo': LRNo, 'ContainerNo': ContainerNo,
+                                'VehicleNo': VehicleNo, 'BookingNo': BookingNo, 'BOENo': BOENo, 'FromLocationID': FromLocationID, 'ToLocationID': ToLocationID, 'consignee': consignee
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+        }
+        var data1 = {
+            'Debitdata': tablearray, 'Remarks': Remarks, 'AGID': AGID
+        };
+        if (tablearray.length == 0) {
+            alert("Please select record for update");
+            return false;
+        }
+               var data = JSON.stringify(data1);
+               alert(data);
+                  $.ajax({
+                      url: "/ModifyModule/UpdateLorryReceiptdetails",
+               data: data,
+            type: "POST",
+     contentType: "application/json; charset=utf-8",
+        dataType: "json",
+             success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                 {
+                     alert(response);
+                     cleartextboxes();
+                }
+
+            },
+           error: function (errormessage) {
+                       alert(errormessage.responseText);
+                            }
+           });
+    }//end of main called function
+
+
+
+</script>
+
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+
+        document.location = '@Url.Action("ModifyLorryReceipt", "ModifyModule")';
+    }
+</script>
+
+
+

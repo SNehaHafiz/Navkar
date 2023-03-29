@@ -1,0 +1,335 @@
+﻿
+@{
+    ViewBag.Title = "Upload Domestic HUB Cargo Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="page-header">
+    <h4 class="page-title">
+        Upload Domestic HUB Cargo Details
+    </h4>
+    <div class="form-group">
+        <label class="form-label"></label>
+        <div class="row gutters-xs">
+            <div class="col" style="display:none">
+                <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12">
+                <div class="form-group">
+                    <label class="form-label mandatory">select .xls file from which to be imported</label>
+                    <div class="row gutters-xs">
+                        <div class="col">
+                            <input type="file" id="fileImport" name="postedFile" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-12">
+                <div class="form-group">
+                    <label class="form-label mandatory" style="visibility:hidden">s</label>
+                    <div class="row gutters-xs">
+                        <div class="col">
+                            <button type="button" class="btn btn-primary __web-inspector-hide-shortcut__ mb-1" id="btnImport">Import <i class="fa fa-upload ml-2"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ExcelDataTable" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th class="wd-10p sorting">Select</th>
+                                        <th class="wd-10p sorting">Wagon No.</th>
+                                        <th class="wd-10p sorting">Container No.</th>
+                                        <th class="wd-10p sorting">Size</th>
+                                        <th class="wd-10p sorting">Stats</th>
+                                        <th class="wd-10p sorting">Stack</th>
+                                        <th class="wd-10p sorting">Triff Type</th>
+                                        <th class="wd-10p sorting">Seal</th>
+                                        <th class="wd-10p sorting">LR NO.</th>
+                                        <th class="wd-10p sorting">Tare Wt. (MT)</th>
+                                        <th class="wd-10p sorting">Cargo Wt. (MT)</th>
+                                        <th class="wd-10p sorting">Destination</th>
+                                        <th class="wd-10p sorting">ORDER NO.</th>
+                                        <th class="wd-10p sorting">SHIPMENT</th>
+                                        <th class="wd-10p sorting">DES.</th>
+                                        <th class="wd-10p sorting">GRADE</th>
+                                        <th class="wd-10p sorting">TAX INV.NO.</th>
+                                        <th class="wd-10p sorting">TAX.INV. DATE</th>
+                                        <th class="wd-10p sorting">DELIVERY NO.</th>
+                                        <th class="wd-10p sorting">DCPI NO.</th>
+                                        <th class="wd-10p sorting">E-WAY BIL NO</th>
+                                        <th class="wd-10p sorting">E-WAY BILL VALID UP TO</th>
+                                        <th class="wd-10p sorting">SHIP TO PARTY</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-1 col-xs-4">
+                <div class="form-group">
+                    <div class="row gutters-xs">
+                        <div class="col">
+                            <button class="btn btn-success btn-xs" id="btndriverholdpayment" onclick="SaveDetails();">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var importData = [];
+    $(document).ready(function () {
+        $('#btnImport').click(function () {
+            $("#global-loader").fadeIn("slow");
+
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#fileImport").get(0);
+                var files = fileUpload.files;
+
+
+                var fileData = new FormData();
+                if (files.length == 0) {
+                    alert("Please select File!")
+                    $("#global-loader").fadeOut("slow");
+                    return false;
+                }
+                else {
+                    for (var i = 0; i < files.length; i++) {
+
+                        fileData.append(files[i].name, files[i]);
+
+                    }
+
+                    $.ajax({
+                        url: '/DomesticSalesRegister/AjaxImportDomesticHUBData',
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (data) {
+                            console.log(data);
+                            importData = [];
+                            importData = data.ListForDomesticHub;
+                            if (data.DuplicateMsg != "") {
+                                if (data.DuplicateMsg == "Please Check the Excel File Empty Rows are present!") {
+                                    swal.fire({
+                                        title: "Please check!",
+                                        text: data.ListForDomesticHub,
+                                        icon: "warning",
+                                        buttons: true,
+
+                                    })
+                                } else {
+                                    swal.fire({
+                                        title: "Already Saved!",
+                                        text: data.DuplicateMsg,
+                                        icon: "warning",
+                                        buttons: true,
+
+                                    })
+                                }
+
+                                $("#global-loader").fadeOut("slow");
+                            } else {
+
+                                $('#ExcelDataTable').dataTable({
+                                    "destroy": true,
+                                    "bLengthChange": false,
+                                    "bPaginate": true,
+                                    "bFilter": true,
+                                    "paging": false,
+                                    "aaData": data.ListForDomesticHub,
+                                    "columns": [
+                                        {
+                                            "data": "SrNo",
+                                            "render": function (data, type, row, meta) {
+                                                if (type === 'display') {
+
+                                                    data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\" checked  value="' + row.SrNo + '">';
+                                                }
+
+                                                return data;
+                                            }
+                                        },
+                                        { "data": "WagonNo" },
+                                        { "data": "ContainerNo" },
+                                        { "data": "DisplaySize" },
+                                        { "data": "Stats" },
+                                        { "data": "Stack" },
+                                        { "data": "TriffType" },
+                                        { "data": "SealNo" },
+                                        { "data": "LRNo" },
+                                        { "data": "DisplayTareWt" },
+                                        { "data": "DisplayCargoWt" },
+
+                                        { "data": "Destination" },
+                                        { "data": "OrderNo" },
+                                        { "data": "Shipment" },
+
+                                        { "data": "DES" },
+                                        { "data": "Grade" },
+                                        { "data": "TaxInvNo" },
+                                        { "data": "DisplayTaxInvDate" },
+                                        { "data": "DeliveryNo" },
+                                        { "data": "DCPINo" },
+                                        { "data": "EWayBillNo" },
+                                        { "data": "DisplayEWayBillValidUpTo" },
+                                        { "data": "ShipToParty" }
+                                    ],
+                                })
+                                $("#global-loader").fadeOut("slow");
+                            }
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                        }
+
+                    });
+                }
+
+            }
+            else {
+                alert("FormData is not supported.");
+                $("#global-loader").fadeOut("slow");
+            }
+            $("#fileImport").val('');
+
+        });
+
+    });
+</script>
+
+<script>
+
+    var _importDomesticHUBData = [];
+
+    //For Saving of Data
+    function SaveDetails() {
+        var itemcount = checkItemcount();
+        if (itemcount == false) {
+            alert("No details selected for saving. Cannot proceed");
+        }
+        else {
+            var ArrayForDataTable = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+                    ArrayForDataTable.push($(this).val());
+                }
+            });
+            console.log(_importDomesticHUBData);
+            console.log(importData);
+            console.log(ArrayForDataTable);
+            var temp = [];
+            //for (var i = 0; i < ArrayForDataTable.length; i++) {
+            //    _importDomesticHUBData.push(importData[i]);
+            //}
+
+
+            for (var j = 0; j < ArrayForDataTable.length; j++) {
+
+                    var element = {};
+                    console.log(j, importData[j]);
+                element.WagonNo = importData[j].WagonNo;
+                element.ContainerNo = importData[j].ContainerNo;
+                element.Size = importData[j].DisplaySize;
+                element.Stats = importData[j].Stats;
+                element.Stack = importData[j].Stack;
+                element.TriffType = importData[j].TriffType;
+                element.SealNo = importData[j].SealNo;
+                element.LRNo = importData[j].LRNo;
+                element.TareWt = importData[j].DisplayTareWt;
+                element.CargoWt = importData[j].DisplayCargoWt;
+                element.Destination = importData[j].Destination;
+                element.OrderNo = importData[j].OrderNo;
+                element.Shipment = importData[j].Shipment;
+                element.DES = importData[j].DES;
+                element.Grade = importData[j].Grade;
+                element.TaxInvNo = importData[j].TaxInvNo;
+                element.DisplayTaxInvDate = importData[j].DisplayTaxInvDate;
+                element.DeliveryNo = importData[j].DeliveryNo;
+                element.DCPINo = importData[j].DCPINo;
+                element.EWayBillNo = importData[j].EWayBillNo;
+                element.DisplayEWayBillValidUpTo = importData[j].DisplayEWayBillValidUpTo;
+                element.ShipToParty = importData[j].ShipToParty;
+                element.AddedOn = new Date();
+
+                temp.push(element);
+
+            }
+
+            var AddedOn = new Date();
+            var data1 = {
+                'DomesticHubDataList': temp, 'AddedON': AddedOn
+            }
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/DomesticSalesRegister/InsertExcelDomesticHubData",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    $("#global-loader").fadeOut("slow");
+                    swal.fire({
+                        title: "Success!",
+                        text: data.Message,
+                        icon: "success",
+
+
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                document.location = '@Url.Action("UploadDomesticHUBCargoDetails", "DomesticSalesRegister")'
+                            }
+                        });
+                },
+
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#global-loader").fadeOut("slow");
+                }
+            });
+
+        }
+    }
+
+
+    function checkItemcount() {
+        var table = $('#ExcelDataTable').DataTable();
+        if (table.rows().count() == 0) {
+            return false;
+        }
+        return true;
+    }
+</script>

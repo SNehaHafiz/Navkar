@@ -1,0 +1,714 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.ContainerDetails>
+@{
+    ViewBag.Title = "TrainDeparture_From_Port";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+<link href="~/css/DateTimePickerBL.css" rel="stylesheet" />
+<script src="~/js/DateTimePickerForBL.js"></script>
+
+
+
+<div class=" content-area overflow-hidden" id="AddItems">
+    <div class="page-header">
+        <h4 class="page-title">
+            Train Planning
+        </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    <button type="button" class="btn btn-icon btn-teal" onclick="window.location = '@Url.Action("TrainDeparture", "Train")' " name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Train No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlTrainDropdown", (IEnumerable<SelectListItem>)ViewBag.TrainList, "--Select-- ", new { @class = "form-control", @id = "ddlTrainDropdown", name = "ddlTrainDropdown", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Port Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlPortDropdown", (IEnumerable<SelectListItem>)ViewBag.portList, "--Select-- ", new { @class = "form-control", @id = "ddlPortDropdown", name = "ddlPortDropdown", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-primary " type="button" id="Add" onclick="ShowItemList()" name="Add">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-instagram pull-right">Selected TEUS: <span id="selected_count" value="0"></span> </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div class="btn-list text-center">
+                        <div class="row">
+                            <div class=" btn-list col-12">
+                                <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <div id="showItems">
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th style="width:1px"></th>
+                                                <th style="width:5px"  >JO No</th>
+                                                <th  style="width:7px"  >Container No</th>
+                                                <th style="width:3px"  >Size</th>
+                                                <th style="width:3px" >Discharge Date</th>
+                                                <th>Wagon No</th>
+                                                <th>Remarks</th>
+
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="btn-list text-center">
+                            <div class="row">
+                                <div class=" btn-list col-12">
+                                    <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+
+
+
+
+
+            <!-- Show the table after click of save button  -->
+           
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+    <!-- section-wrapper -->
+</div>
+
+
+
+
+
+<script type="text/javascript">
+
+    function ShowItemList() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+        var Portid = $("#ddlPortDropdown option:selected").val();
+        var Trainid = $("#ddlTrainDropdown option:selected").val();
+
+        var data1 = { 'Portid': Portid, 'Trainid': Trainid };
+        var data = JSON.stringify(data1);
+        //alert(data);
+
+        $.ajax({
+            url: "/TrainDeparture_From_Port/AjaxPortwiseContainerList",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+                var ItemList = JSON.stringify(data.ContainerList);
+                //var ExistingContainerlist = JSON.stringify(data.ExistingContainerlist);
+
+                
+             
+               
+                //alert(JSONstringyfy(data.ContainerList));
+
+
+
+              
+
+                //var obj1 = JSON.stringify(JSON.parse(ExistingContainerlist));
+              
+                //var materialarray = [];
+                //$.each(data.ExistingContainerlist, function (index, value) {
+
+                //    //alert(JSON.stringify(value));
+
+                //    var t = JSON.stringify(value);
+                //    var ret = t.replace(/["']/g, "");
+                //    var res = ret.replace("{JONO:0,", "");
+                //   // var res1 = res.replace(",Name:null,ItemImage:null}", "");
+                   
+                //    s = res.substring(0, res.indexOf(','));
+                //    var test = res.replace("ContainerNo:", "");
+                //    alert(test);
+                //    materialarray.push(test);
+
+                //});
+
+               // alert(materialarray);
+                
+
+              
+                $('#ContainerList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+                     
+                    ],
+
+                    "aaData": data.ContainerList,
+                    "columns": [
+                        {
+                           
+                            "data": "ContainerNO",
+                            "render": function (data, type, row, meta) {
+
+                              
+                                //if (row.selected === 'checked') {
+                                   
+                                //    alert(Number(row.TEUS));
+                                //    TotTUES += Number(row.TEUS);
+                                //}
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  onclick=\" CalculateTUES(' + row.TEUS + ')  \"         ' + row.selected +' value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+                        
+                        {
+                            "data": "JONO",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"JONO[]\" class=\" form-control JONO\" id=\"JONO\"  value="' + data + '">';
+                                return data + input;
+                            }
+                        },
+
+
+
+                        { "data": "ContainerNO" },
+                        
+                        {
+                            "data": "Size",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"Size[]\" class=\" form-control Size\" id=\"Size\"  value="' + data + '">';
+                                input1 = '<input type=\"hidden\" name=\"TEUS[]\" class=\" form-control TEUS\" id=\"TEUS\"  value="' + row.TEUS + '">';
+                                return data + input + input1;
+                            }
+                        },
+                        { "data": "DischargeDate" },
+
+                        {
+                            "data": "WagonNo",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"text\" name=\"WagonNo[]\" class=\" form-control WagonNo\" id=\"WagonNo\"  maxlength=15 value="' + data + '">';
+                                return  input;
+                            }
+                        },
+                        {
+                            "data": "Remarks",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"text\" name=\"Remarks[]\" class=\" form-control Remarks\" id=\"Remarks\"  value="' + data + '">';
+                                return input;
+                            }
+                        }
+
+                    ]
+
+                })
+
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+
+                var tablearray = [];
+                var table = document.getElementById("ContainerList");
+                var row;
+
+                var TotTEUS = 0;
+                for (var i = 1; i < table.rows.length; i++) {
+
+                    row = table.rows[i];
+
+                    for (var k = 0; k < checkboxarray.length; k++) {
+                        var containerno = row.cells[0].childNodes[0].value;
+
+
+                        if (containerno == checkboxarray[k]) {
+                            
+                            
+                            var size = row.cells[3].childNodes[2].value;
+                          
+                            TotTEUS = Number(TotTEUS) + Number(size);
+                           
+                        }
+                    }
+                }
+
+                $("#selected_count").text(TotTEUS);
+                
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function CalculateTUES(Size) {
+
+        //var count = $("#selected_count").text();
+        //var revisedCount = +count + +Size;
+        //$("#selected_count").text(revisedCount);
+
+
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("ContainerList");
+        var row;
+
+        var TotTEUS = 0;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                var containerno = row.cells[0].childNodes[0].value;
+
+
+                if (containerno == checkboxarray[k]) {
+
+
+                    var size = row.cells[3].childNodes[2].value;
+
+                    TotTEUS = Number(TotTEUS) + Number(size);
+
+                }
+            }
+        }
+
+        $("#selected_count").text(TotTEUS);
+
+    }
+
+    function checkItem() {
+
+        //alert("In checkitem");
+
+        var portid = $("#ddlPortDropdown option:selected").val();
+        var categoryid = $("#ddlItemsCategory option:selected").val();
+
+        var datac1 = { 'port': portid,'Category': categoryid };
+        var datac = JSON.stringify(datac1);
+        var status = "";
+
+        //alert(datac);
+
+        $.ajax({
+            url: "/Vendor/CheckVendorItems",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+
+                return (response);
+            }
+
+        });
+    }
+
+
+
+    function Save() {
+
+        var itemcount = checkItemcount();
+        if (itemcount) {
+
+            var portid = $("#ddlPortDropdown option:selected").val();
+            var Trainid = $("#ddlTrainDropdown option:selected").val();
+
+
+
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+            //alert(JSON.stringify(checkboxarray));
+
+
+            var tablearray = [];
+            var table = document.getElementById("ContainerList");
+            var row;
+           
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+               
+                for (var k = 0; k < checkboxarray.length; k++) {
+                    var containerno       = row.cells[0].childNodes[0].value;
+                    
+                 
+                    if (containerno == checkboxarray[k]) {
+                         
+                        var jono = row.cells[1].childNodes[1].value;
+                        var size = row.cells[3].childNodes[1].value; 
+                        var wagonno = row.cells[5].childNodes[0].value; 
+                        var remark = row.cells[6].childNodes[0].value; 
+
+                        if (wagonno== "") {
+                            alert("Wagon number cannot be left blank for Container No.: " + containerno + "")
+                            return false;
+                        }
+                       
+                        tablearray.push({ 'PortID': portid, 'TrainID': Trainid, 'JONO': jono, 'ContainerNo': containerno, 'Size': size, 'WagonNo': wagonno, 'Remarks': remark })
+                    }
+                }
+            }
+            //alert(JSON.stringify(tablearray));
+
+            if ($("#selected_count").text() > 90) {
+                alert("TEUS cannot be greater than 90")
+                return false;
+            }
+
+           
+            var Traintext = $("#ddlTrainDropdown option:selected").text();
+            $.ajax({
+                url: "/ManualPortOut/GetTEUSCalculation",
+                data: JSON.stringify({ 'TrainNo': Traintext }),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (Data) {
+
+                    //alert(Data);
+
+                    if (Data == 'New') {
+
+                        
+                        SaveDetails(tablearray, portid, Trainid);
+                    }
+                    else {
+                       
+                        alert(Data);
+                      
+
+                    }
+                    
+                                       
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        }
+        else {
+            alert("Please select atleast one container to add wagon no!");
+        }
+
+    }
+
+
+    function SaveDetails(tablearray, portid, Trainid) {
+       
+
+        if (tablearray.length == 0) {
+                    alert("Please select atleast one container to add wagon no!");
+
+
+                }
+        else {
+
+
+
+
+
+
+
+             var data1 = { 'Containerdata': tablearray, 'PortID': portid, 'TrainID': Trainid };
+            var data = JSON.stringify(data1);
+
+            //alert(data);
+
+                    $.ajax({
+                        url: "/TrainDeparture_From_Port/SaveContainerList",
+                        data: data,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                             var str = response;
+                    
+                                var str1 = JSON.stringify(response.validationMessage);
+                                var a = JSON.stringify(response.containerList);
+                              //  alert(str1);
+                               // alert(a);
+                                if (str1 != 0) {
+                                    var message = "Record saved successfully"
+                                    alert(message);
+                                    document.location = '@Url.Action("TrainDepartureFromPort", "TrainDeparture_From_Port")';
+                                }
+                                else {
+
+                                    var message = "Following container(s) has been already planned. Please re-check. \n" + response.containerList;
+                                    var array = message.split(',').join("\n");
+                                    alert(array);
+                                    // alert("Following container no \n" + data.ContainerData.JOValidation.containerList + " \n is already in CFS or still on another ICD!")
+                    
+                                }
+
+                           
+                        },
+                        error: function (errormessage) {
+                            alert("error");
+                            alert(errormessage.responseText);
+                        }
+                    });
+                }
+
+
+
+    }
+
+    function checkItemcount() {
+
+        var table = $('#ContainerList').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+    //function FillVendorItems() {
+
+
+    //    document.getElementById('ddlPortDropdown').style.borderColor = "Gainsboro";
+    //    document.getElementById('ddlItemsCategory').style.borderColor = "Gainsboro";
+
+    //    $('#showmaterial').hide();
+    //    $('#AddItems').show();
+
+    //}
+    //function getBack() {
+    //    $('#showmaterial').show();
+    //    $('#AddItems').hide();
+    //}
+</script>
+<script>
+
+    $(document).ready(function () {
+
+        $('#ContainerList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+
+
+
+        })
+    });
+
+    //var table = $('#ItemList').DataTable({
+    //    columnDefs: [
+    //        {
+    //            targets: [3],
+    //            render: function (data, type, full, meta) {
+    //                if (type === 'filter' || type === 'sort') {
+    //                    var api = new $.fn.dataTable.Api(meta.settings);
+    //                    var td = api.cell({ row: meta.row, column: meta.col }).node();
+    //                    data = $('select', td).val();
+    //                }
+
+    //                return data;
+    //            }
+    //        }
+    //    ]
+    //});
+
+    //$('tbody select, tbody input', table.table().node()).on('change', function () {
+    //    table.row($(this).closest('tr')).invalidate();
+    //});
+
+
+
+
+
+    //$('#ItemList').on('click', 'input[type="checkbox"]', function () {
+
+    //    var Itemid = $(this).val();
+
+    //    var element = $(this);
+    //    var portid = $("#ddlPortDropdown option:selected").val();
+    //    var categoryid = $("#ddlItemsCategory option:selected").val();
+
+    //    var data1 = { 'port': portid, 'Item': Itemid,'Category': categoryid };
+    //    var data = JSON.stringify(data1);
+
+    //    //alert(data);
+    //            $.ajax({
+    //            url: "/Vendor/CheckVendorItems",
+    //            data: data,
+    //            type: "POST",
+    //            contentType: "application/json; charset=utf-8",
+    //            dataType: "json",
+    //            success: function (response) {
+
+    //                if (response >= 1) {
+    //                    alert("Record already exists!");
+    //                    element.prop('checked', false);
+    //                }
+    //                else {
+    //                }
+
+    //            },
+    //            error: function (errormessage) {
+    //               // alert("error");
+    //                alert(errormessage.responseText);
+    //            }
+    //        });
+
+
+    //});
+
+
+
+
+</script>
+<script type="text/javascript">
+    function validate() {
+
+        var port = document.getElementById('ddlPortDropdown').value;
+        var Train = document.getElementById('ddlTrainDropdown').value;
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('ddlPortDropdown').style.borderColor = "Gainsboro";
+        document.getElementById('ddlTrainDropdown').style.borderColor = "Gainsboro";
+
+        if (port == "") {
+            document.getElementById('ddlPortDropdown').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+
+        if (Train == "") {
+            document.getElementById('ddlTrainDropdown').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+
+</script>
+
+

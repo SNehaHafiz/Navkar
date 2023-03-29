@@ -1,0 +1,1822 @@
+﻿
+@{
+    ViewBag.Title = "ExpensesEntryMaster";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<style>
+    .table th {
+        background-color: #7bc144 !important;
+        color: white;
+    }
+</style>
+<script src="~/js/GetTableJsonwopaging.js"></script>
+ 
+
+<div class="content-area overflow-hidden" id="divadddebitDetails">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Voucher & Expenses Entry</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Getsummaryreport();"><i class="fa fa-file-text"></i></button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Voucher No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtVoucherno", null, new { @class = "form-control", @id = "TxtVoucherno", @placeholder = "New", @name = "TxtVoucherno", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Voucher Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtVoucherDate", null, new { @class = "form-control form_datetime1", @id = "TxtVoucherDate", name = "TxtVoucherDate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Entry Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlentryType", (IEnumerable<SelectListItem>)ViewBag.EntryType, "--Select--", new { @class = "form-control", @id = "ddlentryType", name = "ddlentryType", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bill No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtBillno", null, new { @class = "form-control", @id = "TxtBillno", @name = "TxtBillno", autocomplete = "off", Style = "text-transform:uppercase;font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bill Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBilldate", null, new { @class = "form-control form_datetime1", @id = "txtBilldate", name = "txtBilldate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vendor Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlCustomerName" onblur="GetGstnoID()"  />
+                                            <input type="hidden" class="form-control" id="hdnCustomerName" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">GST No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtGstno", null, new { @class = "form-control", @id = "TxtGstno", @name = "TxtGstno", @readonly = true, autocomplete = "off", Style = "font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtfromDate", null, new { @class = "form-control form_datetime1", @id = "txtfromDate", name = "txtfromDate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">TO Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTOdate", null, new { @class = "form-control form_datetime1", @id = "txtTOdate", name = "txtTOdate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Expenses Head</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlExpensesHead" onblur="GetGstno()" />
+                                            <input type="hidden" class="form-control" id="hdnExpensesHead" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Expenses Head</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlExpensesHead", (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select--", new { @class = "form-control", @id = "ddlExpensesHead", name = "ddlExpensesHead", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Expenses Group</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtExpensesGroup", null, new { @class = "form-control", @id = "txtExpensesGroup", @readonly = true, @name = "txtExpensesGroup", autocomplete = "off", Style = "text-transform:uppercase;font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Sub Expenses Head</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSubExpensesHead", null, new { @class = "form-control", @id = "txtSubExpensesHead", @readonly = true, @name = "txtSubExpensesHead", autocomplete = "off", Style = "text-transform:uppercase;font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Expenses Entry Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtExpensesEntryID", null, new { @class = "form-control", @id = "txtExpensesEntryID", @readonly = true, @name = "txtExpensesEntryID", autocomplete = "off", Style = "text-transform:uppercase;font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">HSN Code</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtHSNCode", null, new { @class = "form-control", @id = "txtHSNCode", @maxlength ='5', @name = "txtHSNCode", autocomplete = "off", Style = "text-transform:uppercase;font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">HSN Code</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlHSNCode"   />
+                                            <input type="hidden" class="form-control" id="hdnHSNCode" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtDescription", null, new { @class = "form-control", @id = "TxtDescription", @name = "TxtDescription", autocomplete = "off", Style = "font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Unit</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtunit", null, new { @class = "form-control", @id = "txtunit", @name = "txtunit", autocomplete = "off", Style = "font-weight: bold" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TXtNewAmount", null, new { @class = "form-control", @id = "TXtNewAmount", @name = "TXtNewAmount", autocomplete = "off", @type = "number", Style = "font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Tax(%)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlTaxName", (IEnumerable<SelectListItem>)ViewBag.TaxName, "--Select--", new { @class = "form-control", @id = "ddlTaxName", name = "ddlTaxName", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Discount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtnetDiscount", null, new { @class = "form-control", @id = "txtnetDiscount", name = "txtnetDiscount", OnChange = "calculateDiscountl()", autocomplete = "off", rows = "1", @maxlength = 250, Style = "font-weight: bold" })
+
+                                        </div>
+                                        <div class="col">
+                                            @Html.TextBox("txtnetDiscountS", null, new { @class = "form-control", @id = "txtnetDiscountS", @readonly = true, name = "txtnetDiscountS", autocomplete = "off", rows = "1", @maxlength = 250, Style = "font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">TDS %</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlparTDS", (IEnumerable<SelectListItem>)ViewBag.PayMode, "--Select--", new { @class = "form-control", @id = "ddlparTDS", name = "ddlparTDS", autocomplete = "off" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">TDS Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txttdsAmount", null, new { @class = "form-control", @id = "txttdsAmount", name = "txttdsAmount", @readonly = true, autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1 col-lg-1">
+                                <label class="form-label" style="visibility:hidden">Save</label>
+                                <div class="form-group label-floating">
+                                    <button class="btn btn-primary " type="button" id="Add" onclick="AddDetails()" name="Add">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered" id="example" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th class="wd-15p sorting">From Date</th>
+                                                <th class="wd-15p sorting">To Date</th>
+
+                                                <th class="wd-15p sorting">Expenses Head</th>
+                                                <th class="wd-15p sorting">HSN Code</th>
+                                                <th class="wd-15p sorting">Description</th>
+                                                <th class="wd-15p sorting">Unit</th>
+
+                                                <th class="wd-10p sorting">Net Amount</th>
+                                                <th class="wd-10p sorting">CGST</th>
+                                                <th class="wd-10p sorting">SGST</th>
+                                                <th class="wd-10p sorting">IGST</th>
+
+                                                <th class="wd-10p sorting">Grand Total</th>
+                                                <th class="wd-10p sorting">Tax(%)</th>
+                                                <th class="wd-10p sorting">Discount</th>
+                                                <th class="wd-10p sorting">Discount Amount</th>
+                                                <th class="wd-10p sorting">TDS %</th>
+                                                <th class="wd-10p sorting ">TDS Amount</th>
+                                                <th type="hidden"></th>
+                                                <th type="hidden"></th>
+                                                <th type="hidden"></th>
+                                                <th></th>
+
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtnetTotalamount", null, new { @class = "form-control", @id = "TxtnetTotalamount", name = "TxtnetTotalamount", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Discount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDiscount", null, new { @class = "form-control", @id = "txtDiscount", name = "txtDiscount", autocomplete = "off", OnChange = "calculateDis()", rows = "1", @maxlength = 250, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                        <div class="col">
+                                            @Html.TextBox("txtDiscounts", null, new { @class = "form-control", @id = "txtDiscounts", name = "txtDiscounts", autocomplete = "off", @readonly = true, rows = "1", @maxlength = 250, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">After Disc Amt</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAfterDiscAmt", null, new { @class = "form-control", @id = "txtAfterDiscAmt", name = "txtAfterDiscAmt", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtCgst", null, new { @class = "form-control", @readonly = true, @id = "TxtCgst", name = "TxtCgst", autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtGST", null, new { @class = "form-control", @readonly = true, @id = "TxtGST", name = "TxtGST", autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtIGST", null, new { @class = "form-control", @readonly = true, @id = "TxtIGST", name = "TxtIGST", autocomplete = "off", rows = "2", @maxlength = 500, OnChange = "calculateGrandtotal()", @type = "number", Style = "font-weight: bold;text-align:right" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">Grand Total</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.TextBox("TxtGrandtotal", null, new { @class = "form-control", @id = "TxtGrandtotal", name = "TxtGrandtotal", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">TDS %</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.DropDownList("ddlTDS", (IEnumerable<SelectListItem>)ViewBag.PayMode, "--Select--", new { @class = "form-control", @id = "ddlTDS", name = "ddlTDS", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">TDS Amount</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.TextBox("TxtPayable", null, new { @class = "form-control", @id = "TxtPayable", name = "TxtPayable", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-8"></div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label">Remarks</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <div class="form-group label-floating">
+                                    @Html.TextArea("TxtRemarks", null, new { @class = "form-control", @id = "TxtRemarks", @name = "TxtRemarks", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            
+                        </div>
+                        <div class="col-lg-3 col-sm-12"  style="display:none" >
+                            <div class="form-group">
+                                <label class="form-label mandatory">Debit in Account</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="TxtDebitInaccount" />
+                                        <input type="hidden" class="form-control" id="hdnTxtDebitInaccount" />
+                                        <input type="hidden" class="form-control" id="TxtCGSTs" />
+                                        <input type="hidden" class="form-control" id="TxtSGSTs" />
+                                        <input type="text" class="form-control" id="TxtIGSTs" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" id="divviewSave">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success " type="button" id="Add" onclick="SaveDetails()" name="Add">Save</button>
+                                           
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divviewsummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Voucher & Expenses Summary</h4>
+
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-xs-12">
+            <div class="form-group">
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="Pending();">Pending For Approval</button>
+                        <button class="btn btn-info btn-xs" id="btnSaveDriver" onclick="PartyWise();">Pending For Payment</button>
+                        <button class="btn btn-yellow btn-xs" id="btnSaveDriver" onclick="CategoryWiseSummary();">Expenses Summary</button>
+                        <button class="btn btn-green btn-xs" id="btnSearchDriver" onclick="Search();">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row" id="divPendingApproval" style="display:none">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">As On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAsons", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="PendingfroApp()" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelPendingForApprovel", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example3" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="divPendingPayment" style="display:none">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">As On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAson", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="Pendinfopaymen()" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelPendinfopaymen", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example5" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="divExpensesSummary" style="display:none">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ViewSummaryreport()" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelDebitBillDetails", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="divsearch" style="display:none">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control", @id = "txtsearch", @name = "txtsearch", autocomplete = "off", Style = "text-transform:uppercase;font-weight: bold" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnsearch" value="Search" class="btn btn-primary" onclick="ViewSearch()" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="exampleSearch" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function editt(VO_No, EntryTypeID, BILL_NO, VendorName, VENDOR_ID, VOUCHER_DATE, bill_date) {
+        debugger;
+        $("#divviewsummary").hide();
+        $("#divadddebitDetails").show();
+        
+        $("#ddlentryType").val(EntryTypeID);
+        
+        $("#TxtVoucherno").val(VO_No)
+        
+        $("#TxtBillno").val(BILL_NO)
+        
+        $("#ddlCustomerName").val(VendorName)
+        $("#hdnCustomerName").val(VENDOR_ID)
+        $("#TxtVoucherDate").val(VOUCHER_DATE)
+        $("#txtBilldate").val(bill_date)
+        
+        editts(VO_No);
+        
+    }
+
+    function View(VOUCHER_NO, EntryTypeID, BILL_NO, VendorName) {
+        debugger;
+        $("#divviewsummary").hide();
+        $("#divadddebitDetails").show();
+
+        $("#ddlentryType").val(EntryTypeID);
+        
+        $("#TxtVoucherno").val(VOUCHER_NO)
+
+        $("#TxtBillno").val(BILL_NO)
+
+        $("#ddlCustomerName").val(VendorName)
+        Views(VOUCHER_NO);
+        
+        $("#divviewSave").hide();
+    }
+
+    function editts(VO_No) {
+        debugger;
+        $("#divviewsummary").hide();
+        $("#divadddebitDetails").show();
+        
+        //Var.DEbitRefernceno = $("#TxtBillno").val();
+        var data1 = { 'VO_No': VO_No};
+
+        var data = JSON.stringify(data1);
+        
+        try {
+            $.ajax({
+                url: "/ExpensesHead/ModifyExistingJo",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    storeAddedItem = data;
+                   
+                    //alert(storeAddedItem);
+                            $('#example').dataTable({
+                                "destroy": true,
+                                "paging": false,
+                                "bLengthChange": false,
+                                "aaData": data,
+                                //"aaSorting": [[0, 'desc']],
+                                "columns": [
+
+                                    { "data": "FromDate" },
+                                    { "data": "ToDate" },
+                                    { "data": "ExpensesHead" },
+                                    { "data": "HSNCode1" },
+                                    { "data": "Description" },
+                                    { "data": "HSNCode" },
+
+                                    { "data": "Netamount" },
+                                    { "data": "CGST1" },
+                                    { "data": "SGST1" },
+                                    { "data": "SIGST1" },
+                                    { "data": "Grandtotal" },
+                                    { "data": "TaxName1" },
+                                    { "data": "netDiscount" },
+                                    { "data": "netDiscountS" },
+                                    { "data": "ddlparTDS" },
+                                    { "data": "tdsAmount" },
+                                    { "data": "ExpensesHeadID" },
+                                    { "data": "TaxName" },
+
+                                    {
+                                        "data": "ExpensesHead",
+                                        "orderable": false,
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+                                                data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"deletess('" + row.ExpensesHead + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+                                            }
+                                            return data;
+                                        }
+                                    }
+                                ]
+                            });
+                   GetGstnoID();
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            })
+            //CalculateTotalAmount
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+        setTimeout(function () {
+            CalculateTotalAmount() = true;
+        }, 100);
+
+      
+    }
+
+    function Views(VOUCHER_NO) {
+        debugger;
+        $("#divviewsummary").hide();
+        $("#divadddebitDetails").show();
+
+        //Var.DEbitRefernceno = $("#TxtBillno").val();
+        var data1 = { 'VOUCHER_NO': VOUCHER_NO };
+
+        var data = JSON.stringify(data1);
+
+        try {
+            $.ajax({
+                url: "/ExpensesHead/ModifyExistingJo",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+
+
+                    $('#example').dataTable({
+                        "destroy": true,
+                        "paging": false,
+                        "bLengthChange": false,
+                        "aaData": data,
+                        //"aaSorting": [[0, 'desc']],
+                        "columns": [
+                            //{
+                            //    "data": "VoucherNo",
+                            //    "render": function (data, type, row, meta) {
+                            //        if (type === 'display') {
+
+                            //            data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem(this)\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>";
+                            //        }
+
+                            //        return data;
+                            //    }
+                            //},
+                            { "data": "FromDate" },
+                            { "data": "ToDate" },
+                            { "data": "ExpensesHead" },
+                            { "data": "HSNCode1" },
+                            { "data": "Description" },
+                            { "data": "HSNCode" },
+                            
+                            { "data": "Netamount" },
+                            { "data": "CGST1" },
+                            { "data": "SGST1" },
+                            { "data": "Grandtotal" },
+                            { "data": "TaxName" },
+                            { "data": "netDiscount" },
+                            { "data": "netDiscountS" },
+                            { "data": "ddlparTDS" },
+                            { "data": "tdsAmount" },
+                            //{ "data": "ExpensesHeadID" },
+
+                            //{
+                            //    "data": "VoucherNo",
+                            //    "orderable": false,
+                            //    "render": function (data, type, row, meta) {
+                            //        if (type === 'display') {
+                            //            data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"deletess('" + row.VoucherNo + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+                            //        }
+                            //        return data;
+                            //    }
+                            //}
+                        ]
+                    });
+
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            })
+            //CalculateTotalAmount
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+        setTimeout(function () {
+            CalculateTotalAmount() = true;
+        }, 100);
+
+
+    }
+    function deletess(ExpensesHead) {
+        debugger;
+        for (i = 0; i < storeAddedItem.length; i++) {
+            if (this.storeAddedItem[i].ExpensesHead == ExpensesHead) {
+                storeAddedItem.splice(i, 1);
+            }
+        }
+        $('#example').DataTable({
+            "destroy": true,
+            "bLengthChange": false,
+            "aaData": storeAddedItem,
+            "bPaginate": false,
+            "bInfo": false,
+            "paging": false,
+            "columns": [
+
+                { "data": "FromDate" },
+                { "data": "ToDate" },
+                { "data": "ExpensesHead" },
+                { "data": "HSNCode1" },
+                { "data": "Description" },
+                { "data": "HSNCode" },
+
+                { "data": "Netamount" },
+                { "data": "CGST1" },
+                { "data": "SGST1" },
+                { "data": "SIGST1" },
+                { "data": "Grandtotal" },
+                { "data": "TaxName1" },
+                { "data": "netDiscount" },
+                { "data": "netDiscountS" },
+                { "data": "ddlparTDS" },
+                { "data": "tdsAmount" },
+                { "data": "ExpensesHeadID" },
+                { "data": "TaxName" },
+
+                {
+                    "data": "ExpensesHead",
+                    "orderable": false,
+                    "render": function (data, type, row, meta) {
+                        if (type === 'display') {
+                            data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"deletess('" + row.ExpensesHead + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+                        }
+                        return data;
+                    }
+                }
+            ]
+        });
+        setTimeout(function () {
+            CalculateTotalAmount() = true;
+        }, 500);
+
+    }
+    
+
+        $("#ddlparTDS").change(function () {
+        debugger;
+        var parTDS = $("#ddlparTDS").val();
+        var NEWNetamount = $("#TXtNewAmount").val();
+        var netDiscountd = $("#txtnetDiscountS").val();
+
+
+        totalDiscountss = parseFloat(NEWNetamount - netDiscountd) / 100 * parseFloat(parTDS);
+        $("#txttdsAmount").val(totalDiscountss);
+
+    });
+    $("#ddlTDS").change(function () {
+        debugger;
+        var paTDS = $("#ddlTDS").val();
+        var AfterNetamount = $("#txtAfterDiscAmt").val();
+        //var netDiscountd = $("#txtnetDiscountS").val();
+
+
+        totalDiscou = parseFloat(AfterNetamount) / 100 * parseFloat(paTDS);
+        $("#TxtPayable").val(totalDiscou);
+
+    });
+
+    
+    function calculateDiscountl() {
+        debugger;
+        var NEWNetamount = $("#TXtNewAmount").val();
+        var netDiscount = $("#txtnetDiscount").val();
+  
+
+        totalDiscount = parseFloat(NEWNetamount )/ 100 * parseFloat(netDiscount);
+        $("#txtnetDiscountS").val(totalDiscount);
+
+
+    }
+
+    function calculateDis() {
+        debugger;
+        var NetamountTotal = $("#TxtnetTotalamount").val();
+        var netDiscountTotal = $("#txtDiscount").val();
+
+
+        total = parseFloat(NetamountTotal) / 100 * parseFloat(netDiscountTotal);
+        $("#txtDiscounts").val(total);
+
+        AfterAmount = parseFloat(NetamountTotal) - total
+        $("#txtAfterDiscAmt").val(AfterAmount);
+    }
+
+
+    function Pending() {
+       
+        $("#divPendingApproval").show();
+        $("#divPendingPayment").hide();
+        $("#divExpensesSummary").hide();
+        $("#divsearch").hide();
+        //Showdetails();
+    }
+
+    function PartyWise() {
+
+        $("#divPendingApproval").hide();
+        $("#divPendingPayment").show();
+        $("#divExpensesSummary").hide();
+        $("#divsearch").hide();
+        //Showdetails();
+    }
+
+    function CategoryWiseSummary() {
+
+        $("#divPendingApproval").hide();
+        $("#divPendingPayment").hide();
+        $("#divExpensesSummary").show();
+        $("#divsearch").hide();
+        //Showdetails();
+    }
+
+    function Search() {
+
+        $("#divPendingApproval").hide();
+        $("#divPendingPayment").hide();
+        $("#divExpensesSummary").hide();
+        $("#divsearch").show();
+        //Showdetails();
+    }
+    function Getsummaryreport() {
+        $("#divviewsummary").show();
+        $("#divadddebitDetails").hide();
+    }
+
+    function getBack() {
+        $("#divviewsummary").hide();
+        $("#divadddebitDetails").show();
+    }
+
+    function PendingfroApp() {
+        $("#tracker-loader").fadeIn("slow");
+        var Ason = $("#txtAsons").val();
+        
+        debugger;
+        data1 = { 'Ason': Ason };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExpensesHead/PendingForApprovel',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example3").empty();
+                RepTableDataJsonwopaging($("#example3"), jsonResult, "ExpensesEntryMaster", "ExpensesHead");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function Pendinfopaymen() {
+        $("#tracker-loader").fadeIn("slow");
+        var Ason = $("#txtAson").val();
+
+        debugger;
+        data1 = { 'Ason': Ason };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExpensesHead/Pendinfopaymen',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example5").empty();
+                RepTableDataJsonwopaging($("#example5"), jsonResult, "ExpensesEntryMaster", "ExpensesHead");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    function ViewSummaryreport() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExpensesHead/AjaxGetDebitDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "ExpensesEntryMaster", "ExpensesHead");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function ViewSearch() {
+        $("#tracker-loader").fadeIn("slow");
+        var Search = $("#txtsearch").val();
+
+        debugger;
+        data1 = { 'Search': Search };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ExpensesHead/SearchView',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#exampleSearch").empty();
+                RepTableDataJsonwopaging($("#exampleSearch"), jsonResult, "ExpensesEntryMaster", "ExpensesHead");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    $(document).ready(function () {
+        debugger;
+        $("#ddlCustomerName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ExpensesHead/getPartyNameReceipt",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //debugger;
+                        response($.map(data, function (item) {
+                            //debugger;
+                            return {
+                                label: item.AGName,
+                                val: item.AGID,
+
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                debugger;
+
+                $("#hdnCustomerName").val(i.item.val);
+            },
+            minLength: 1
+        });
+
+        $("#ddlExpensesHead").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ExpensesHead/GetautpcompleteDebitDetails",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //debugger;
+                        response($.map(data, function (item) {
+                            //debugger;
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                //debugger;
+                $("#hdnExpensesHead").val(i.item.val);
+            },
+            minLength: 1
+        });
+
+        $("#ddlHSNCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ExpensesHead/GetautpcompleteHSnCode",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //debugger;
+                        response($.map(data, function (item) {
+                            //debugger;
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                //debugger;
+                $("#hdnHSNCode").val(i.item.val);
+            },
+            minLength: 1
+        });
+    });
+    var storeAddedItem = [];
+    function AddDetails() {
+
+        var taxname = $("#ddlTaxName").val();
+        var Amountset = $("#TXtNewAmount").val();
+        var partyname = $("#hdnCustomerName").val();
+        var DiscountAmount = $("#txtnetDiscountS").val();
+
+        var checkExpensesHead = $("#ddlExpensesHead").val();
+        var checkExpensesHead1 = checkExpensesHead.toString(50);
+        //alert(checkExpensesHead1)
+        var Hnscode2 = $("#ddlHSNCode").val();
+        var data1 = { 'Taxname': taxname, 'partyID': partyname, 'netamount': Amountset, 'DiscountAmount': DiscountAmount };
+        var data = JSON.stringify(data1);
+
+        var exists = $('#example tr > td:contains(' + checkExpensesHead1 + ') + td:contains(' + Hnscode2 + ')').length;
+     
+
+
+        if (exists == 1) {
+
+            alert("Expenses Head alredy Added!");
+
+        }
+        else {
+            $.ajax({
+                url: '/ExpensesHead/GetIGSTCGST',
+                type: 'Post',
+                data: data,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+
+                    $("#TxtCGSTs").val(data[0].cgst);
+                    $("#TxtSGSTs").val(data[0].sgst);
+                    $("#TxtIGSTs").val(data[0].igst);
+
+
+
+                    setTimeout(function () {
+                        getdate() = true;
+                    }, 500);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+    }            
+
+
+        
+    
+  
+
+    function getdate() {
+        
+        debugger;
+        Netamount1 = $("#TXtNewAmount").val();
+        Distotaamount = $("#txtnetDiscountS").val()
+        var Netamount2 = Number(Netamount1) - Number(Distotaamount)
+        CGST = $("#TxtCGSTs").val();
+        SGST = $("#TxtSGSTs").val(); 
+        IGST = $("#TxtIGSTs").val();
+        
+        CGST1 = parseInt(CGST);
+        SGST1 = parseInt(SGST);
+        IGST1 = parseInt(IGST);
+    
+        var Amount = Netamount2 + ((CGST1) + (SGST1) + (IGST1));
+
+        var Price = parseInt(Amount);
+        ///alert(Price, Amount);
+
+        var element = {};
+
+        element.DEbitRefernceno = $("#TxtBillno").val();
+        element.debitdate = $("#txtBilldate").val()
+        element.Customername = $("#ddlCustomerName").val();
+
+        element.GSTNo = $("#TxtGstno").val();
+        element.FromDate = $("#txtfromDate").val();
+        element.ToDate = $("#txtTOdate").val();
+        element.ExpensesHead = $("#ddlExpensesHead").val();
+        element.Description = $("#TxtDescription").val();
+
+        element.HSNCode = $("#txtunit").val();
+        element.HSNCode1 = $("#ddlHSNCode").val();
+        element.Netamount = $("#TXtNewAmount").val();
+        element.Grandtotal = parseInt(Price);
+        element.CGST1 = parseInt(CGST1);
+        element.SGST1 = parseInt(SGST1);
+        element.SIGST1 = parseInt(IGST1);
+        element.TaxName1 = $("#ddlTaxName option:selected").text();
+        
+        element.HSNCodeID = $("#hdnHSNCode").val();
+        element.netDiscount = $("#txtnetDiscount").val();
+        element.netDiscountS = $("#txtnetDiscountS").val();
+        element.ddlparTDS = $("#ddlparTDS").val();
+        element.tdsAmount = $("#txttdsAmount").val();
+        element.ExpensesHeadID = $("#hdnExpensesHead").val();
+        element.CustomerNameID = $("#hdnCustomerName").val();
+        element.TaxName = $("#ddlTaxName").val();
+        
+        storeAddedItem.push(element);
+
+       
+            $('#example').DataTable({
+                "destroy": true,
+                "bLengthChange": false,
+                "aaData": storeAddedItem,
+                "bPaginate": false,
+                "bInfo": false,
+                "paging": false,
+                "columns": [
+
+                    { "data": "FromDate" },
+                    { "data": "ToDate" },
+                    { "data": "ExpensesHead" },
+                    { "data": "HSNCode1" },
+                    { "data": "Description" },
+                    { "data": "HSNCode" },
+                    
+                    { "data": "Netamount" },
+                    { "data": "CGST1" },
+                    { "data": "SGST1" },
+                    { "data": "SIGST1" },
+                    { "data": "Grandtotal" },
+                    { "data": "TaxName1" },
+                    { "data": "netDiscount" },
+                    { "data": "netDiscountS" },
+                    { "data": "ddlparTDS" },
+                    { "data": "tdsAmount" },
+                    { "data": "ExpensesHeadID" },
+                    { "data": "TaxName" },
+
+
+                    {
+                        "data": "ExpensesHeadID",
+                        "orderable": false,
+                        "render": function (data, type, row, meta) {
+                            if (type === 'display') {
+                                data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"deleteSelecetedItem('" + row.ExpensesHeadID + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+                            }
+                            return data;
+                        }
+                    }
+                ]
+            });
+        
+
+
+    
+
+        CalculateTotalAmount();
+    }
+
+    function deleteSelecetedItem(ExpensesHeadID) {
+        for (i = 0; i < storeAddedItem.length; i++) {
+            if (this.storeAddedItem[i].ExpensesHeadID == ExpensesHeadID) {
+                storeAddedItem.splice(i, 1);
+            }
+        }
+        $('#example').DataTable({
+            "destroy": true,
+            "bLengthChange": false,
+            "aaData": storeAddedItem,
+            "bPaginate": false,
+            "bInfo": false,
+            "paging": false,
+            "columns": [
+
+                { "data": "FromDate" },
+                { "data": "ToDate" },
+                { "data": "ExpensesHead" },
+                { "data": "HSNCode1" },
+                { "data": "Description" },
+                { "data": "HSNCode" },
+
+                { "data": "Netamount" },
+                { "data": "CGST1" },
+                { "data": "SGST1" },
+                { "data": "SIGST1" },
+                { "data": "Grandtotal" },
+                { "data": "TaxName1" },
+                { "data": "netDiscount" },
+                { "data": "netDiscountS" },
+                { "data": "ddlparTDS" },
+                { "data": "tdsAmount" },
+                { "data": "ExpensesHeadID" },
+                { "data": "TaxName" },
+
+
+                {
+                    "data": "ExpensesHeadID",
+                    "orderable": false,
+                    "render": function (data, type, row, meta) {
+                        if (type === 'display') {
+                            data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"deleteSelecetedItem('" + row.ExpensesHeadID + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+                        }
+                        return data;
+                    }
+                }
+            ]
+        });
+        CalculateTotalAmount();
+    }
+</script>
+<script>
+    function CalculateTotalAmount() {
+        $("#TxtnetTotalamount").val('');
+        $("#TxtCgst").val('');
+        $("#TxtGST").val('');
+        $("#TxtIGST").val('');
+        
+        $("#TxtGrandtotal").val('');
+        $("#txtDiscount").val('');
+        $("#txtDiscounts").val('');
+        $("#TxtPayable").val('');
+        var table = document.getElementById("example");
+        //alert(JSON.stringify(table));
+        var row;
+        var COunt4 = 0;
+        var COunt5 = 0;
+        var COunt6 = 0;
+        var COunt7 = 0;
+        var COunt8 = 0;
+        var Discaountpercent1 = 0;
+        var Discoutamount1 = 0;
+        var Tdsamount = 0;
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            var Size = row.cells[6].innerText;
+            var Size2 = row.cells[7].innerText;
+            var Size5 = row.cells[8].innerText;
+            var Size12 = row.cells[9].innerText;
+            var Size8 = row.cells[10].innerText;
+            var Discaount = row.cells[13].innerText;
+            var Discaountpercent = row.cells[12].innerText;
+            var Tds = row.cells[15].innerText;
+            var size1 = Size;
+            var size3 = Size2;
+            var size6 = Size5;
+            var size9 = Size8;
+            var size10 = Size12;
+
+            var Discoutamounts = Discaount;
+            var Discoutamountss = Discaountpercent;
+            var Tdss = Tds;
+
+            COunt4 = COunt4 + Number(size1);
+            COunt5 = COunt5 + Number(size3);
+            COunt6 = COunt6 + Number(size6);
+            COunt7 = COunt7 + Number(size9);
+            COunt8 = COunt8 + Number(size10);
+            Discaountpercent1 = Discaountpercent1 + Number(Discoutamounts);
+            Discoutamount1 = Discoutamount1 + Number(Discoutamountss);
+            Tdsamount = Tdsamount + Number(Tdss);
+        }
+        $("#TxtnetTotalamount").val(COunt4);
+        $("#TxtCgst").val(COunt5);
+        $("#TxtGST").val(COunt6);
+        $("#TxtIGST").val(COunt8);
+        $("#TxtGrandtotal").val(COunt7);
+       
+        $("#txtDiscount").val(Discoutamount1);
+        $("#txtDiscounts").val(Discaountpercent1);
+        $("#TxtPayable").val(Tdsamount);
+        Aftersamount = COunt4 - Discaountpercent1
+        $("#txtAfterDiscAmt").val(Aftersamount)
+
+        
+
+    }
+
+    function edittext(VOUCHER_NO) {
+        var r = confirm("Are you sure want to Approved this Vouchar No?");
+        if (r == true) {
+
+            debugger;
+            var data = JSON.stringify({
+                'VOUCHER_NO': VOUCHER_NO
+            });
+
+            $.ajax({
+
+                type: "POST",
+                url: "/ExpensesHead/CancelJO",
+                data: data,
+                 type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                              success: function (data) {
+                                  alert('Record Approved successfully')
+                                  window.location.href = '@Url.Action("ExpensesEntryMaster", "ExpensesHead")';
+                            },
+                            error: function (errormessage) {
+                                alert(errormessage.responseText);
+                            }
+            });
+
+        }
+        else {
+            // alert("You Pressed Cancel");
+        }
+
+
+
+    }
+     function SaveDetails() {
+ 
+         debugger;
+         ///ddlentryType
+
+         var entryTypeID= $("#ddlentryType").val();
+         var Billno = $("#TxtBillno").val();
+         var Billdate = $("#txtBilldate").val();
+         var  VendorID = $("#hdnCustomerName").val();
+         var netTotalamount = $("#TxtnetTotalamount").val();
+         var VoucherDate = $("#TxtVoucherDate").val();
+         var Cgst = $("#TxtCgst").val();
+         var IGST = $("#TxtIGST").val();
+         var Sgst = $("#TxtGST").val();
+         var Grandtotal = $("#TxtGrandtotal").val();
+         var Remarks = $("#TxtRemarks").val();
+         var VOUCHER_NO = $("#TxtVoucherno").val();
+         var NetAmounts  = $("#TXtNewAmount").val();
+         //$("#TxtVoucherno").val(VOUCHER_NO)
+         if (VOUCHER_NO == "") {
+             VOUCHER_NO = 0;
+         }
+        var itemcount = checkItemcount();
+         //if (ddlentryType == "0") {
+         //    document.getElementById("ddlentryType").style.borderColor = "red";
+         //    alert('Please  Enter  Expenses Head Name!')
+         //    event.preventDefault();
+         //    return;
+         //}
+        if (itemcount == false) {
+        alert("please add atleast one row in table")}
+           else{
+
+            var SelectedData = new Array();
+            var tablearray = new Array();
+
+            var table = document.getElementById("example");
+
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+                FromDate = row.cells[0].innerText;
+                ToDate = row.cells[1].innerText;
+                ExpensesHead = row.cells[16].innerText;
+                Description = row.cells[4].innerText;
+                HSNCode = row.cells[5].innerText;
+                HSNCode1 = row.cells[3].innerText;
+                Netamount = row.cells[6].innerText;
+                CGST1 = row.cells[7].innerText;
+                SGST1 = row.cells[8].innerText;
+                IGST1 = row.cells[9].innerText;
+                TaxName = row.cells[17].innerText;
+                netDiscount = row.cells[12].innerText;
+                netDiscountS = row.cells[13].innerText;
+                ddlparTDS = row.cells[14].innerText;
+                tdsAmount = row.cells[15].innerText;
+
+
+                SelectedData.push({
+                    'FromDate': FromDate, 'ToDate': ToDate, 'ExpensesHead': ExpensesHead, 'Description': Description,
+                    'HSNCode': HSNCode, 'HSNCode1': HSNCode1, 'Netamount': Netamount, 'CGST1': CGST1, 'SGST1': SGST1, 'IGST1': IGST1, 'TaxName': TaxName, 'netDiscount': netDiscount,
+                    'netDiscountS': netDiscountS, 'ddlparTDS': ddlparTDS, 'tdsAmount': tdsAmount
+                })
+            }
+
+            var data1 = {
+                'Debitdata': SelectedData, 'Billno': Billno, 'Billdate': Billdate, 'VendorID': VendorID, 'netTotalamount': netTotalamount,
+                'Cgst': Cgst, 'IGST': IGST, 'Sgst': Sgst, 'Grandtotal': Grandtotal, 'Remarks': Remarks, 'entryTypeID': entryTypeID, 'NetAmounts': NetAmounts, 'VOUCHER_NO': VOUCHER_NO, 'VoucherDate': VoucherDate
+            };
+            var data = JSON.stringify(data1);
+
+
+                          $.ajax({
+                              url: "/ExpensesHead/SavePartyDebitEntryDetails",
+                            data: data,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                              success: function (data) {
+                                  alert(data);
+                                  document.location = '@Url.Action("ExpensesEntryMaster", "ExpensesHead")';
+                            },
+                            error: function (errormessage) {
+                                alert(errormessage.responseText);
+                            }
+                        });
+
+        }
+    }
+    function checkItemcount() {
+
+        var table = $('#example').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+
+    function GetGstno() {
+        debugger;
+        var gstID = $("#hdnExpensesHead").val();
+        var data1 = { 'gstID': gstID };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ExpensesHead/GetGSTNOForCustomer",
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                $("#txtExpensesGroup").val(data[0].Group_Name);
+                $("#txtSubExpensesHead").val(data[0].Sub_Exp_Head);
+                $("#txtExpensesEntryID").val(data[0].ExpType);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function GetGstnoID() {
+        debugger;
+        var gstID = $("#hdnCustomerName").val();
+        var data1 = { 'gstID': gstID };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ExpensesHead/GetGSTNOForVendor",
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                $("#TxtGstno").val(data[0].GSTNo);
+            
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

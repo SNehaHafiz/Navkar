@@ -1,0 +1,329 @@
+﻿
+@{
+    ViewBag.Title = "Transport Fuel Vendor Master";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    th, td {
+        text-align: center;
+    }
+</style>
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+
+<script src="~/js/sweet-alert.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Transport Fuel Vendor Master</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Entry ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtentryid", null, new { @class = "form-control ", @readonly = "readonly", @id = "txtentryid", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vendor Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtvendor", null, new { @class = "form-control ", @id = "txtvendor", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Party Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.GSTParty, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label mandatory">&nbsp;</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="custom-switch ">
+                                            <input type="checkbox" name="custom-switch-checkbox" id="isactive" value="True" checked class="custom-switch-input">
+                                            <span class="custom-switch-indicator"></span>
+                                            <span class="custom-switch-description">Is Active ?</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" title="Save" onclick="return UpdateJOM();">Save</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="Clear();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Transport Fuel Vendor Master Summary</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Vendor Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", autocomplete = "off", Placeholder = "" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.ActionLink("Export To Excel", "ExportToExcelScanningGPINReport", null, new { @class = "btn btn-primary btn-md" })
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="card1">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+</script>
+
+<script>
+    function UpdateJOM() {
+        $("#global-loader").fadeIn("slow");
+        debugger;
+        var element = {};
+
+        element.Vendor = $("#txtvendor").val().trim();
+        element.Party = $("#ddlcustomer").val().trim();
+        
+        element.IsActive = $('#isactive').is(':checked') ? $('#isactive').val() : false;
+        element.EntryID = $("#txtentryid").val().trim();
+
+        
+
+        var isValid = true;
+
+
+
+        if (element.Vendor == "") {
+            isValid = isValid && false;
+            $("#txtvendor").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtvendor").removeClass("is-invalid state-invalid");
+        }
+
+
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+
+
+
+
+
+        var data = { 'Master': element };
+        data = JSON.stringify(data);
+     //  alert(data);
+        $.ajax({
+            type: 'post',
+            url: '/ModifyModule/SaveFuelVendor',
+            data: data,
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                if (response.ResponseMessage != '') {
+                    alert(response.ResponseMessage);
+                    document.location = '@Url.Action("TransportFuelVendorMaster", "ModifyModule")';
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.Message,
+                        icon: 'error'
+                    })
+                }
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: str,
+                    icon: 'error'
+                });
+            }
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+
+        document.location = '@Url.Action("TransportFuelVendorMaster", "ModifyModule")';
+    }
+</script>
+
+
+
+<script>
+
+    function Show() {
+
+
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ModifyModule/FuelVendorSummary",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(jsonResult)
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "ExpensesTypeMaster", "ExpensesTypeMaster")
+                //  alert(jsonResult)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+</script>
+
+<script>
+    function Edit(fuel_VendorID, fuel_VendorName, purchase_vendor_id) {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+        $("#txtentryid").val(fuel_VendorID);
+        $("#txtvendor").val(fuel_VendorName);
+        $("#ddlcustomer").val(purchase_vendor_id);
+    }
+</script>

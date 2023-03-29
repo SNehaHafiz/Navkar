@@ -1,0 +1,590 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.ReadyVehicleMovementEntities>
+@{
+    ViewBag.Title = "Ready Vehicle For Movement";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area" id="DivReadyVehicle">
+    <div class="page-header">
+        <h4 class="page-title">Ready Vehicle For Movement : @Model.Count()</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                   
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="wd-15p sorting">SR No</th>
+                                            <th class="wd-15p sorting">trailer name</th>
+                                            <th class="wd-15p sorting">Trailer Size</th>
+                                            <th class="wd-15p sorting">Grade</th>
+
+                                            <th class="wd-15p sorting">From Location</th>
+                                            <th class="wd-15p sorting">Drivername</th>
+                                            <th class="wd-15p sorting">contactno</th>
+                                            <th class="wd-15p sorting">Indate & Time</th>
+                                            <th class="wd-15p sorting">Reported On</th>
+                                            <th class="wd-15p sorting">Dwell Hours</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                            <tr>
+                                                <td><a href="#" class="btn btn-sm btn-primary" title="Movement" onclick="MovementVehicleReady('@d.trailername')">Movement</a></td>
+
+                                                <td>@Html.DisplayFor(m => d.SrNo)</td>
+                                                <td>@Html.DisplayFor(m => d.trailername)</td>
+                                                <td>@Html.DisplayFor(m => d.TrailerSize)</td>
+                                                <td>@Html.DisplayFor(m => d.Grade)</td>
+
+                                                <td>@Html.DisplayFor(m => d.FromLocation)</td>
+                                                <td>@Html.DisplayFor(m => d.Drivername)</td>
+                                                <td>@Html.DisplayFor(m => d.contactno)</td>
+                                                <td>@Html.DisplayFor(m => d.TransDate)</td>
+                                                <td>@Html.DisplayFor(m => d.reportedon)</td>
+                                                <td>@Html.DisplayFor(m => d.DwellHours)</td>
+                                            </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- table-wrapper -->
+        </div>
+        <!-- section-wrapper -->
+    </div>
+</div>
+
+
+
+<div class=" content-area overflow-hidden" id="AddReadyVehicle" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Loading Plan: @ViewBag.ReturnCount
+        </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "txtTrailerno", name = "txtTrailerno", autocomplete = "off", placeholder = "Trailer No", @readonly= true})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                            <label class="form-label">Trailer No </label>
+                            <select id="ddlTrailerNo" class="form-control">
+                                <option value="">--Select--</option>
+                            </select>
+                        </div>*@
+                        <div class="col-lg-3 col-sm-12" style="display:none" id="divTrailerno">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerNoFull", null, new { @class = "form-control", @id = "TrailerNoFull", name = "TrailerNoFull", autocomplete = "off", placeholder = "Trailer No.", @maxlength = 100 })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "on", placeholder = "Container No.", @maxlength = 11 })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary  " type="button" id="btnUpdate" onclick="UpdateContainer()" name="Add">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="showItems">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th>JO No.</th>
+                                                <th>Container No.</th>
+                                                <th>Size</th>
+                                                <th>GP No.</th>
+                                                <th>Customer Name</th>
+                                                <th>Destination</th>
+                                                <th>Trailer No.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in ViewBag.LoadingPlan as List<TrackerMVCEntities.BusinessEntities.LoadingPlanEntities>)
+                                            {
+                                                <tr>
+                                                    <td>@Html.DisplayFor(m => d.JONo)</td>
+                                                    <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                                    <td>@Html.DisplayFor(m => d.Size)</td>
+                                                    <td>@Html.DisplayFor(m => d.GPNo)</td>
+                                                    <td>@Html.DisplayFor(m => d.CustomerName)</td>
+                                                    <td>@Html.DisplayFor(m => d.Destination)</td>
+                                                    <td>@Html.DisplayFor(m => d.TrailerNo)</td>
+
+                                                </tr>
+
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Show the table after click of save button  -->
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+    <!-- section-wrapper -->
+</div>
+
+
+<script>
+    function MovementVehicleReady(trailername) {
+
+      
+        $("#DivReadyVehicle").hide();
+        $("#AddReadyVehicle").show();
+        var member = trailername;
+
+        var last4 = member.slice(-4);
+        $("#txtTrailerno").val(trailername);
+
+        //GetTrailername();
+       // alert(last2);
+       // alert(res);
+    }
+
+    function getBack() {
+        $("#DivReadyVehicle").show();
+        $("#AddReadyVehicle").hide();
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ContainerList').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+        });
+
+        $("#txtContainerNo").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //alert(request.term);
+
+                $.ajax({
+                    url: "/LoadingPlan/GetContainerForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { ContainerNo: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#txtContainerNo").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+    });
+</script>
+
+<script>
+  
+    //function GetTrailername() {
+    //    var trailerno = $("#txtTrailerno").val();
+    //    // alert(trailerno.length);
+    //    if (trailerno.length != 4) {
+    //        alert("Trailer number should be four digits");
+    //        return false;
+
+    //    }
+    //    $.ajax({
+    //        url: "/ManualPortOut/AjaxGetTrailerNo",
+    //        data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+    //        type: "POST",
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        success: function (data) {
+    //            //alert(data);
+    //            var select = $("#ddlTrailerNo");
+
+    //            if (data == "") {
+
+    //                $('#divTrailerno').show();
+    //                $('#divtrailernodrop').hide();
+    //            } else {
+    //                $('#divTrailerno').hide();
+    //                $('#divtrailernodrop').show();
+    //            }
+    //            select.empty();
+    //            select.append($('<option/>', {
+    //                value: "",
+    //                text: "--Select--"
+    //            }));
+
+    //            $.each(data, function (data, value) {
+
+    //                select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+    //            })
+
+
+
+    //        },
+
+    //        error: function (errormessage) {
+    //            alert(errormessage.responseText);
+    //        }
+    //    });
+    //}
+    //$('#txtTrailerno').change(function (e) {
+    //    var trailerno = $("#txtTrailerno").val();
+    //    // alert(trailerno.length);
+    //    if (trailerno.length != 4) {
+    //        alert("Trailer number should be four digits");
+    //        return false;
+
+    //    }
+    //    $.ajax({
+    //        url: "/ManualPortOut/AjaxGetTrailerNo",
+    //        data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+    //        type: "POST",
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        success: function (data) {
+    //            //alert(data);
+    //            var select = $("#ddlTrailerNo");
+
+    //            if (data == "") {
+
+    //                $('#divTrailerno').show();
+    //                $('#divtrailernodrop').hide();
+    //            } else {
+    //                $('#divTrailerno').hide();
+    //                $('#divtrailernodrop').show();
+    //            }
+    //            select.empty();
+    //            select.append($('<option/>', {
+    //                value: "",
+    //                text: "--Select--"
+    //            }));
+
+    //            $.each(data, function (data, value) {
+
+    //                select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+    //            })
+
+
+
+    //        },
+
+    //        error: function (errormessage) {
+    //            alert(errormessage.responseText);
+    //        }
+    //    });
+
+    //});
+
+
+
+
+    //function onservice() {
+    //    alert("Under revision..!")
+    //}
+
+
+</script>
+
+<script>
+    function UpdateContainer()
+    {
+
+        var res = validate();
+        //  alert(res)
+        if (res == false) {
+            return false;
+        }
+        var containerNo = $("#txtContainerNo").val();
+
+      //  alert(containerNo);
+        var tablearray = [];
+        var table = document.getElementById("ContainerList");
+        if (containerNo.length != 11) {
+            alert("Container number should be 11 digits!");
+            return false;
+
+        }
+        var row;
+        var IsExist = 0;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            var containerNo1 = row.cells[1].innerText;
+            var jono = row.cells[0].innerText;
+
+            if (containerNo == containerNo1) {
+
+                var IsExist = 1;
+
+            }
+        }
+
+        if (IsExist == 0)
+        {
+            alert("Container number not available!");
+            return false;
+        }
+
+        var row;
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            var containerNo1 = row.cells[1].innerText;
+            var jono = row.cells[0].innerText;
+
+            if (containerNo == containerNo1) {
+
+                var jono1 = row.cells[0].innerText;
+                var TOdegistaton = row.cells[5].innerText;
+                var Size = row.cells[2].innerText;
+               
+
+            }
+        }
+
+
+        var TrailerNo = $("#txtTrailerno").val();
+        //if (TrailerNo == "--Select--") {
+        //    var TrailerNo = $("#TrailerNoFull").val();
+
+        //}
+
+        var data1 = { 'containerNo': containerNo, 'TrailerNo': TrailerNo, 'JONO': jono1, 'TOdegistaton': TOdegistaton, 'Size': Size};
+        var data = JSON.stringify(data1);
+       //alert(data);
+        $.ajax({
+            url: "/TrailerTransport/SaveVehicleReporting",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                // alert("Record saved successfully!");
+                var str = response;
+
+                alert(str);
+                document.location = '@Url.Action("ReadyVehicleForMovement", "TrailerTransport")';
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+      
+
+        // Codes For Print
+        $.ajax({
+            url: "/TrailerTransport/PrintVehicleLoading",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+</script>
+
+<script>
+    function validate() {
+
+        var txtContainerno = document.getElementById('txtContainerNo').value;
+
+
+
+
+        document.getElementById("txtContainerNo").style.borderColor = "gainsboro";
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (txtContainerno == "") {
+
+            document.getElementById("txtContainerNo").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+@*<script>
+    function validateForSave() {
+        //  alert("hi")
+        var blResult = Boolean;
+        blResult = true;
+        var TrailerNo = document.getElementById('txtTrailerno').value;
+      
+        var txtContainerNo = document.getElementById('txtContainerNo').value;
+
+        $("#txtTrailerno").removeClass("form-control is-invalid state-invalid");
+        $("#txtTrailerno").addClass("form-control");
+
+      
+
+        $("#txtContainerNo").removeClass("form-control is-invalid state-invalid");
+        $("#txtContainerNo").addClass("form-control");
+
+        var el = document.getElementById("divtrailernodrop");
+        var style = window.getComputedStyle(el);
+
+        //   alert('e1' + style.display);
+        if (style.display != 'none') {
+
+            if (TrailerNo == "") {
+
+
+                $("#txtTrailerno").removeClass("form-control is-valid state-valid");
+                $("#txtTrailerno").addClass("form-control is-invalid state-invalid");
+                // alert('Please fill the required fields!');
+                blResult = blResult && false;
+
+            }
+
+        }
+
+        var e2 = document.getElementById("txtTrailerno");
+
+        var style1 = window.getComputedStyle(e2);
+        // alert('e2' + style1.display);
+        if (style1.display != 'none') {
+
+
+            if (TrailerFullNo == "") {
+
+
+                $("#TrailerNoFull").removeClass("form-control is-valid state-valid");
+                $("#TrailerNoFull").addClass("form-control is-invalid state-invalid");
+                // alert('Please fill the required fields!');
+                blResult = blResult && false;
+
+
+            }
+        }
+
+        if (txtContainerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtContainerNo").removeClass("form-control is-valid state-valid")
+            $("#txtContainerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) {
+            alert('Please fill the required fields!');
+        }
+        return blResult;
+    }
+</script>*@

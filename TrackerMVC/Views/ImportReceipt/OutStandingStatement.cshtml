@@ -1,0 +1,632 @@
+﻿
+@{
+    ViewBag.Title = "OutStandingStatement";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<style>
+    .table th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .table td.first.row {
+        text-align: left
+    }
+
+    .table td.second.row {
+        text-align: left
+    }
+
+    .table td.row {
+        text-align: right
+    }
+</style>
+<div id="tracker-loader"></div>
+
+
+
+
+
+
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">OutStanding Statement</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-xs-12">
+            <div class="form-group">
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="ALL();">Display All</button>
+                        <button class="btn btn-info btn-xs" id="btnSaveDriver" onclick="PartyWise();">Customer Wise Details</button>
+                        <button class="btn btn-yellow btn-xs" id="btnSaveDriver" onclick="CategoryWiseSummary('CustomerWise');">Category Wise Summary</button>
+                        <button class="btn btn-instagram btn-xs" id="btnSaveDriver" onclick="PartyWiseSummary('ParytWise');">Customer Wise Summary</button>
+                        <button type="button" class="btn btn-primarys __web-inspector-hide-shortcut__" title="Ageing Outstanding" onclick="ViewOutstanding();">Ageing Wise Details</button>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+</div>
+
+<div class=" content-area" id="divDisplayAll" style="display:none">
+    <div class="row" >
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCategory", (IEnumerable<SelectListItem>)ViewBag.Category, "All", new { @class = "form-control", @id = "ddlCategory", name = "ddlCategory", autocomplete = "off" })
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="ShowAll();">Show</button>
+                                    </div>
+                                    <div class="row" style="display:none" id="divexceldiv">
+                                        @Html.ActionLink("Export To Excel", "ExportToExcelOutStandingStatement", null, new { @class = "btn btn-primary btn-md" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                               
+                                <table id="example1" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="DIvpartyWise" style="display:none">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Customer Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="ddlpartyname" placeholder="ALL Customer" />
+                                        <input type="hidden" class="form-control" id="hdnPayFromId" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12" id="divCategory1">
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCategory1", (IEnumerable<SelectListItem>)ViewBag.Category, "All", new { @class = "form-control", @id = "ddlCategory1", name = "ddlCategory1", autocomplete = "off" })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As On</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-4">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">To</label>
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="Showdetails();">Show</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divShowdetails">
+                        @Html.ActionLink("Export To Excel", "ExportToExcelOutStandingStatement", null, new { @class = "btn btn-primary btn-md" })
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" style="display:none" id="divCategoryWiseSummary">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As On</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFrom", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-4">
+                            <div class="form-group">
+
+                                <label class="form-label" style="visibility:hidden">To</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="showcateorywisesummary('CustomerWise');"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divshowcateorywisesummary">
+                        @Html.ActionLink("Export To Excel", "ExportToExcelOutStandingStatement", null, new { @class = "btn btn-primary btn-md" })
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example3" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" style="display:none" id="divPartyWiseSummary">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As On</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFrom12", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-4">
+                            <div class="form-group">
+
+                                <label class="form-label" style="visibility:hidden">To</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="showPartyWiseSummarysummary('ParytWise');"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="display:none" id="divPartyWiseSummarysummary">
+                        @Html.ActionLink("Export To Excel", "ExportToExcelOutStandingStatement", null, new { @class = "btn btn-primary btn-md" })
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example4" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="DivAgeingOutStanding" style="display:none">
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As On</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate12", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-4">
+                            <div class="form-group">
+
+                                <label class="form-label" style="visibility:hidden">To</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="ShowAgeingOutstanding();"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="display:none" id="divShowAgeingOutstanding">
+                        @Html.ActionLink("Export To Excel", "ExportToExcelOutStandingStatement", null, new { @class = "btn btn-primary btn-md" })
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+
+                            <div class="table-responsive">
+                                <table id="tblAgeingOutstanding" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+    function ViewOutstanding() {
+        $("#DivAgeingOutStanding").show();
+        $("#DivOutstandingReport").hide();
+
+    }
+
+    function ALL() {
+
+        $("#divDisplayAll").show();
+        $("#DIvpartyWise").hide();
+        $("#divCategoryWiseSummary").hide();
+        $("#divPartyWiseSummary").hide();
+        $("#DivAgeingOutStanding").hide();
+    }
+
+    function PartyWise() {
+        $("#DIvpartyWise").show();
+        $("#divCategoryWiseSummary").hide();
+        $("#divDisplayAll").hide();
+        $("#divPartyWiseSummary").hide();
+        $("#DivAgeingOutStanding").hide();
+    }
+    function CategoryWiseSummary() {
+        $("#divCategoryWiseSummary").show();
+        $("#DIvpartyWise").hide()
+        $("#divDisplayAll").hide();
+        $("#divPartyWiseSummary").hide();
+        $("#DivAgeingOutStanding").hide();
+    }
+    function PartyWiseSummary() {
+
+        $("#divPartyWiseSummary").show();
+        $("#DIvpartyWise").hide()
+        $("#divDisplayAll").hide();
+        $("#divCategoryWiseSummary").hide();
+        $("#DivAgeingOutStanding").hide();
+    }
+    function ViewOutstanding() {
+
+        $("#DivAgeingOutStanding").show();
+        $("#divPartyWiseSummary").hide();
+        $("#DIvpartyWise").hide()
+        $("#divDisplayAll").hide();
+        $("#divCategoryWiseSummary").hide();
+    }
+    function showcateorywisesummary(CustomerWise) {
+
+
+        $("#tracker-loader").fadeIn("slow");
+        $("#hdnPayFromId").val(0);
+        $("#ddlpartyname").val(0);
+        $("#DIvpartyWise").hide();
+        $("#DivAgeingOutStanding").hide();
+        $("#divshowcateorywisesummary").show()
+
+        var ason = $("#txtFrom").val();
+        var data1 = { 'Status': CustomerWise, 'ason': ason };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetOutStandingStatementSummary',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example3").empty();
+                RepTableDataJsonwopaging($("#example3"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function showPartyWiseSummarysummary(ParytWise) {
+        $("#tracker-loader").fadeIn("slow");
+        $("#hdnPayFromId").val(1);
+        $("#ddlpartyname").val('');
+        $("#DIvpartyWise").hide();
+        $("#divcatrgoryshowParty").show();
+        $("#DivAgeingOutStanding").hide();
+        $("#divPartyWiseSummarysummary").show()
+        var ason = $("#txtFrom12").val();
+        var data1 = { 'Status': ParytWise, 'ason': ason };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetOutStandingStatementSummary',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example4").empty();
+                RepTableDataJsonwopaging($("#example4"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        AutomCom();
+
+    });
+    function AutomCom() {
+        debugger;
+        $("#ddlpartyname").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ImportReceipt/getPartyNameReceipt",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //debugger;
+                        response($.map(data, function (item) {
+                            //debugger;
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                //debugger;
+                $("#ddlpartyname").val(i.item.label);
+                $("#hdnPayFromId").val(i.item.val);
+            },
+            minLength: 1
+        });
+    };
+    function ShowAll() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var hdnPayFromId = $("#hdnPayFromId").val();
+        var partyfullname = $("#ddlpartyname").val();
+        var Category = $("#ddlCategory option:selected").text();
+        var ason = $("#txtFromDate").val();
+        if (partyfullname == "") {
+            hdnPayFromId = "";
+        }
+        $("#divexceldiv").show()
+        var data1 = { 'hdnPayFromId': hdnPayFromId, 'ason': ason, 'partyfullname': partyfullname, 'Category': Category };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetOutStandingStatement',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example1").empty();
+                RepTableDataJsonwopaging($("#example1"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function Showdetails() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var hdnPayFromId = $("#hdnPayFromId").val();
+        var partyfullname = $("#ddlpartyname").val();
+        var Category = $("#ddlCategory1 option:selected").text();
+        var ason = $("#txtFromDate").val();
+        if (partyfullname == "") {
+            hdnPayFromId = "0";
+        }
+        $("#divShowdetails").show()
+        var data1 = { 'hdnPayFromId': hdnPayFromId, 'ason': ason, 'Category': Category, 'partyfullname': partyfullname };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetOutStandingStatement1',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function ShowAgeingOutstanding() {
+        $("#btnAgeingOutstanding").show();
+        var Number = "999999";
+        $("#divShowAgeingOutstanding").show()
+        var ason = $("#txtFromDate12").val();
+
+        var data1 = { 'Number': Number, 'ason': ason };
+        var data = JSON.stringify(data1);
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetAgeingOutstanding',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+
+                $("#tblAgeingOutstanding").empty();
+                RepTableDataJsonwopaging($("#tblAgeingOutstanding"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function EdiAgeing(fromS, tos) {
+        $("#DivAgeingOutStanding").hide();
+        $("#DivOS_Summary_Details").show();
+        $("#btnEditAgeing").show();
+        var Number = "999999";
+
+        var ason = $("#txtFromDate").val();
+
+        var data1 = { 'Number': Number, 'ason': ason, 'fromS': fromS, 'tos': tos };
+        var data = JSON.stringify(data1);
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetEdiAgeing',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+
+                $("#tblEditAgeing").empty();
+                RepTableDataJson($("#tblEditAgeing"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

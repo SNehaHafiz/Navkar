@@ -1,0 +1,271 @@
+﻿
+@{ ViewBag.Title = "Import Empty Inventory";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml"; }
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div class=" content-area overflow-hidden" id="showview">
+    <div class="page-header">
+        <h4 class="page-title">Cargo Lying Summary(LCL)</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Inventory As On</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "txtFromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label" style="visibility:hidden">On</label>
+                                            <button class=" btn btn-primary" id="btnSearch" onclick="ShowImportEmptyInventory('')" type="button">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                            <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+                                <div class="input-group">
+
+                                    <span class="input-group-append " id="tabPurpose">
+                                        <button class="btn btn-success active btn-lg m-0" id="BtnTotal" style="width: 120px !important;font-weight:bold" value="" type="button" onclick="ShowImportEmptyInventoryCount('20')">Total:  <span id="lbltotal" style="font-weight:bold"></span></button>
+                                        <button class="btn btn-success btn-lg m-0" id="Btn20" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowImportEmptyInventoryCount('20')">20:  <span id="lbl20" style="font-weight:bold"></span> </button>
+                                        <button class="btn btn-success btn-lg m-0" id="Btn40" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowImportEmptyInventoryCount('40')">40:  <span id="lbl40" style="font-weight:bold"></span></button>
+                                        <button class="btn btn-success btn-lg m-0" id="Btn45" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowImportEmptyInventoryCount('45')">45:  <span id="lbl45" style="font-weight:bold"></span></button>
+                                        <button class="btn btn-success btn-lg m-0" id="BtnTEUS" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowImportEmptyInventoryCount('45')">TEUS:  <span id="lblTeus" style="font-weight:bold"></span></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>*@
+                    <br />
+                    @*<div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <button class="btn btn-teal" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                <button class=" btn btn-cyan" id="btnSearch" type="button"><i class="fa fa-file-pdf-o"></i></button>
+
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <button class="btn btn-orange" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                <button class=" btn btn-yellow" id="btnSearch" type="button"><i class="fa fa-file-pdf-o"></i></button>
+
+                            </div>
+                        </div>*@
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <button class="btn btn-orange" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            @* <button class=" btn btn-yellow" id="btnSearch" type="button"><i class="fa fa-file-pdf-o"></i></button>*@
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblImportEmptyInventory" style="width:100%">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>$("#BtnTotal").click(function () {
+        $("#BtnTotal").addClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn20").click(function () {
+        $("#Btn20").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn40").click(function () {
+        $("#Btn40").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn45").click(function () {
+        $("#Btn45").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#BtnTEUS").click(function () {
+        $("#BtnTEUS").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+
+    });
+
+    $(document).ready(function () {
+        $("#tracker-loader").fadeOut("slow");
+
+
+    });
+
+
+    function ShowImportEmptyInventory(size) {
+
+        $("#BtnTotal").addClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+        $("#tracker-loader").fadeIn("slow");
+
+        var FromDate = document.getElementById("txtFromDate").value;
+        var data = { 'FromDate': FromDate, 'size': size };
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetCargoLyingSummaryLCL',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (jsonResult) {
+                $("#tblImportEmptyInventory").empty();
+                RepTableDataJson($("#tblImportEmptyInventory"), jsonResult, "SupplierBill Details", "SupplierBillDetails_List");
+
+                $("#tracker-loader").fadeOut("slow");
+                var table = document.getElementById("tblImportEmptyInventory");
+                var row;
+
+
+                var TotTEUS1 = 0;
+                var TotTEUS2 = 0;
+                var TotTEUS3 = 0;
+                var TotTEUS = 0;
+                var Total = 0;
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[1].innerText;
+
+                    //alert(Size)
+
+                    if (Size == 20) {
+                        TotTEUS1 = Number(TotTEUS1) + 1;
+                    }
+                    if (Size == 40) {
+                        TotTEUS2 = Number(TotTEUS2) + 1;
+                    }
+                    if (Size == 45) {
+                        TotTEUS3 = Number(TotTEUS3) + 1;
+                    }
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = TotTEUS1 + (TotTEUS2 * 2) + (TotTEUS3 * 2)
+                Total = TotTEUS1 + (TotTEUS2  ) + (TotTEUS3  )
+                // alert(TotTEUS);
+                $("#lbl20").text(TotTEUS1);
+                $("#lbl40").text(TotTEUS2);
+                $("#lbl45").text(TotTEUS3);
+                $("#lbltotal").text(Total);
+                $("#lblTeus").text(TotTEUS);
+
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+
+            }
+        });
+
+    }
+
+
+
+    function ShowImportEmptyInventoryCount(size) {
+
+
+        $("#tracker-loader").fadeIn("slow");
+
+        var FromDate = document.getElementById("txtFromDate").value;
+        var data = { 'FromDate': FromDate, 'size': size };
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetCargoLyingSummaryLCL',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (jsonResult) {
+                $("#tblImportEmptyInventory").empty();
+                RepTableDataJson($("#tblImportEmptyInventory"), jsonResult, "SupplierBill Details", "SupplierBillDetails_List");
+
+
+
+
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+
+            }
+        });
+
+    }</script>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelCargoLyingSummaryLCL", "report")?';
+
+
+    }
+
+
+</script>

@@ -1,0 +1,662 @@
+﻿
+@{
+        ViewBag.Title = "TrainmasterEntry";
+        Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area" id="TrainRemoval">
+    <div class="page-header">
+        <h4 class="page-title">Train Master</h4>
+        <div class="ibox-content text-right">
+            <a onclick="Summary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Train Removal Summary"></i> </a>
+        </div>
+    </div>
+    <div class="row" id="DashBoard">
+        <div class="col-sm-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Train No</label>
+                                @Html.TextBox("txtTrainNo", null, new { @class = "form-control", @id = "txtTrainNo", name = "txtTrainNo", autocomplete = "off", @maxlength = 500 })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Noc No.</label>
+                                @Html.TextBox("TxtNocNo", null, new { @class = "form-control", @id = "TxtNocNo", name = "TxtNocNo", autocomplete = "off", @maxlength = 500 })
+                                <input id="hdnNocNo" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Train Type</label>
+                                @Html.DropDownList("ddlTrainType", new List<SelectListItem>
+                                { new SelectListItem { Text = "--Select--", Value = ""},
+                                new SelectListItem { Text = "In Bond", Value = "InBond"},
+                                new SelectListItem { Text = "Out Bond", Value = "OutBond"},
+                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlTrainType" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Owner Status</label>
+                                @Html.DropDownList("ddlOwnerstatus", (IEnumerable<SelectListItem>)ViewBag.OwnerStatus, "--Select--", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Rake Operator</label>
+                                @Html.DropDownList("RankOperator", (IEnumerable<SelectListItem>)ViewBag.OperatorList, "--Select--", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Party Name</label>
+                                @Html.DropDownList("PartyId", (IEnumerable<SelectListItem>)ViewBag.PartyList, "--Select--", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <div class="form-group label-floating">
+                                <label class="form-label " style="text-align:center;font-weight: bold;font-size:20px">In Bound</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Origin</label>
+                                @Html.DropDownList("FromLocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Origin Departure Date</label>
+                                @Html.TextBox("OriginDepartureDate", null, new { @class = "form-control  form_datetime1 ", @id = "OriginDepartureDate", name = "OriginDepartureDate", autocomplete = "off", @maxlength = 100 })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">ETA</label>
+                                @Html.TextBox("TXTETA", null, new { @class = "form-control  form_datetime1 ", @id = "TXTETA", name = "TXTETA", autocomplete = "off", @maxlength = 100 })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">ATA</label>
+                                @Html.TextBox("TXtAta", null, new { @class = "form-control  form_datetime1 ", @id = "TXtAta", name = "TXtAta", autocomplete = "off", @maxlength = 100 })
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">UnLoading Start Date</label>
+                                @Html.TextBox("UnLoadinstartdate", null, new { @class = "form-control  form_datetime1 ", @id = "UnLoadinstartdate", name = "UnLoadinstartdate", autocomplete = "off", @maxlength = 100 })
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">UnLoading Complete Date</label>
+                                @Html.TextBox("Unloadingcompletedate", null, new { @class = "form-control  form_datetime1 ", @id = "Unloadingcompletedate", name = "Unloadingcompletedate", autocomplete = "off", @maxlength = 100 })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <div class="form-group label-floating">
+                                <label class="form-label " style="text-align:center;font-weight: bold;font-size:20px">Out Bound</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Destination</label>
+                                @Html.DropDownList("Tolocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">ETD</label>
+                                @Html.TextBox("TXtETD", null, new { @class = "form-control  form_datetime1 ", @id = "TXtETD", name = "TXtETD", autocomplete = "off", @maxlength = 100 })
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">ATD</label>
+                                @Html.TextBox("TxtATd", null, new { @class = "form-control  form_datetime1 ", @id = "TxtATd", name = "TxtATd", autocomplete = "off", @maxlength = 100 })
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Loading Start Date</label>
+                                @Html.TextBox("Loadingstartdate", null, new { @class = "form-control  form_datetime1 ", @id = "Loadingstartdate", name = "Loadingstartdate", autocomplete = "off", @maxlength = 100 })
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Loading Complete Date</label>
+                                @Html.TextBox("Loadingcomletedate", null, new { @class = "form-control  form_datetime1 ", @id = "Loadingcomletedate", name = "Loadingcomletedate", autocomplete = "off", @maxlength = 100 })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Line No Allotted</label>
+                                @Html.TextBox("TxtLineno", null, new { @class = "form-control", @id = "TxtLineno", name = "TxtLineno", autocomplete = "off", @maxlength = 500 })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Train Status</label>
+                                @Html.TextBox("TXtTrainstatus", null, new { @class = "form-control", @id = "TXtTrainstatus", name = "TXtTrainstatus", autocomplete = "off", @maxlength = 500 })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Status Updated Date</label>
+                                @Html.TextBox("TxtStatusUpdated", null, new { @class = "form-control  form_datetime1 ", @id = "TxtStatusUpdated", name = "TxtStatusUpdated", autocomplete = "off", @maxlength = 100 })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Remarks</label>
+                                @Html.TextBox("TXtRemarks", null, new { @class = "form-control", @id = "TXtRemarks", name = "TXtRemarks", autocomplete = "off", @maxlength = 500 })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-3" id="divShowButton">
+                            <div class="form-group" style="float:left">
+                                <div class="row gutters-xs">
+                                    <div class="col" style="float:left">
+                                        <input type="button" id="btnShow" value="Save" class="btn btn-primary" onclick="Save()" />
+                                        <input type="button" id="btnClear" value="Clear" class="btn btn-dark" onclick="Clear()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divTrainSummary" class="content-area" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Train Summary</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @id = "txtFromDate", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @id = "txtToDate", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" onclick="TrainSummary();" id="btnShowSummary">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "BCNTrainSummaryExport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblTrainSummaryDet"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    function Summary() {
+        $("#TrainRemoval").hide();
+        $("#divTrainSummary").show();
+    }
+
+    function getBack() {
+        $("#TrainRemoval").show();
+        $("#divTrainSummary").hide();
+    }
+</script>
+
+<script>
+    function Save() {
+
+        var res = validateSaveFunction();
+        if (res == false) {
+            return false;
+        }
+     
+        var TrainNo = $("#txtTrainNo").val()
+        var NoCno = $("#TxtNocNo").val()
+        var OwnerStatus = $("#ddlOwnerstatus option:selected").val()
+        var RankOperator = $("#RankOperator option:selected").val()
+        var PartyId = $("#PartyId option:selected").val()
+        var FromLocation = $("#FromLocation option:selected").val()
+        var Tolocation = $("#Tolocation option:selected").val()
+        var OriginDepartureDate = $("#OriginDepartureDate").val()
+        var ETA = $("#TXTETA").val()
+        var ETD = $("#TXtETD").val()
+        var ATA = $("#TXtAta").val()
+        var ATD = $("#TxtATd").val()
+        var LoadingStartDate = $("#Loadingstartdate").val()
+        var LoadingCompleteDate = $("#Loadingcomletedate").val()
+        var Unloadingstartdate = $("#UnLoadinstartdate").val()
+        var unloadingcompletedate = $("#Unloadingcompletedate").val()
+        var LIneNoalloated = $("#TxtLineno").val()
+        var Trainstatus = $("#TXtTrainstatus").val()
+        var StatusUpdatedDate = $("#TxtStatusUpdated").val()
+        var Remarks = $("#TXtRemarks").val()
+
+
+        var data1 = {
+            'TrainNo': TrainNo, 'NoCno': NoCno, 'OwnerStatus': OwnerStatus,
+            'RankOperator': RankOperator, 'FromLocation': FromLocation, 'Tolocation': Tolocation, 'OriginDepartureDate': OriginDepartureDate,
+            'ETA': ETA, 'ETD': ETD, 'ATA': ATA, 'ATD': ATD, 'LoadingStartDate': LoadingStartDate, 'LoadingCompleteDate': LoadingCompleteDate,
+            'Unloadingstartdate': Unloadingstartdate, 'unloadingcompletedate': unloadingcompletedate, 'LIneNoalloated': LIneNoalloated, 'Trainstatus': Trainstatus,
+            'StatusUpdatedDate': StatusUpdatedDate, 'Remarks': Remarks, 'PartyId': PartyId,
+        }
+        data = JSON.stringify(data1);
+        //alert(data);
+            $.ajax({
+                url: "/Train/SaveTrainMasterEntry",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert("Record save successfully.")
+                    window.location = "/Train/TrainmasterEntry";
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        
+    }
+
+    function TrainSummary() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+
+        var txtFromDate = $("#txtFromDate").val();
+        var txtToDate = $("#txtToDate").val();
+
+        var data1 = { "FromDate": txtFromDate, "ToDate": txtToDate };
+
+        var data = JSON.stringify(data1);
+
+        try {
+            $.ajax({
+                type: 'POST',
+                url: '/Train/BCNTrainSummary',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    RepTableDataJson($("#tblTrainSummaryDet"), data.DocumentList, "BCN Train Summary", "BCNTrainSummary");
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+        catch (ex) {
+            $("#tracker-loader").fadeOut("slow");
+            alert(ex.message);
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#TxtNocNo").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Train/getAutoNOCList",
+                    data: "{ 'prefixText': '" + request.term + "','CustomerType': '" + 0 + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        debugger;
+                        response($.map(data, function (item) {
+                            debugger;
+                            return {
+                                label: item.NOCRefNo,
+                                val: item.NOCNo,
+                                val1: item.OrginStationId,
+                                val2: item.SLid,
+                                val3: item.CommodityId,
+                                val4: item.PlannedDate,
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                debugger;
+                $("#TxtNocNo").val(i.item.label);
+                $("#HdnNocNo").val(i.item.val);
+                $("#PartyId").val(i.item.val2);
+                $("#FromLocation").val(i.item.val1);
+                $("#OriginDepartureDate").val(i.item.val4);
+            },
+            minLength: 1
+        });
+    });
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#ddlTrainType").change(function () {
+            //alert('ok');
+            debugger;
+            var TrainType = document.getElementById('ddlTrainType').value;
+
+            //===============In Bond=============
+            var FromLocation = $("FromLocation");
+            var OriginDepartureDate = $("OriginDepartureDate");
+            var TXTETA = $("TXTETA");
+            var TXtAta = $("TXtAta");
+            var UnLoadinstartdate = $("UnLoadinstartdate");
+            var Unloadingcompletedate = $("Unloadingcompletedate");
+
+            //===============Out Bond=============
+            var Tolocation = $("Tolocation");
+            var TXtETD = $("TXtETD");
+            var TxtATd = $("TxtATd");
+            var Loadingstartdate = $("Loadingstartdate");
+            var Loadingcomletedate = $("Loadingcomletedate");
+
+            if (TrainType == "") {
+                alert("Please select Train Type");
+                document.getElementById('ddlTrainType').focus();
+                return false;
+            }
+
+            if (TrainType == "InBond") {
+                FromLocation.removeAttr('disabled');
+                OriginDepartureDate.removeAttr('disabled');
+                TXTETA.removeAttr('disabled');
+                TXtAta.removeAttr('disabled');
+                UnLoadinstartdate.removeAttr('disabled');
+                Unloadingcompletedate.removeAttr('disabled');
+
+                Tolocation.attr('disabled');
+                Tolocation.val('');
+                TXtETD.attr('disabled');
+                TXtETD.val('');
+                TxtATd.attr('disabled');
+                TxtATd.val('');
+                Loadingstartdate.attr('disabled');
+                Loadingstartdate.val('');
+                Loadingcomletedate.attr('disabled');
+                Loadingcomletedate.val('');
+            }
+            else {
+                FromLocation.attr('disable');
+                FromLocation.val('');
+                OriginDepartureDate.attr('disable');
+                OriginDepartureDate.val('');
+                TXTETA.attr('disable');
+                TXTETA.val('');
+                TXtAta.attr('disable');
+                TXtAta.val('');
+                UnLoadinstartdate.attr('disable');
+                UnLoadinstartdate.val('');
+                Unloadingcompletedate.attr('disable');
+                Unloadingcompletedate.val('');
+
+                Tolocation.removeAttr('disable');
+                TXtETD.removeAttr('disable');
+                TxtATd.removeAttr('disable');
+                Loadingstartdate.removeAttr('disable');
+                Loadingcomletedate.removeAttr('disable');
+            }
+
+            var FromLocation = document.getElementById('FromLocation').value;
+            var Tolocation = document.getElementById('Tolocation').value;
+            var OriginDepartureDate = document.getElementById('OriginDepartureDate').value;
+            var ETA = document.getElementById('TXTETA').value;
+            var ETD = document.getElementById('TXtETD').value;
+            var ATA = document.getElementById('TXtAta').value;
+            var ATD = document.getElementById('TxtATd').value;
+            var LoadingStartDate = document.getElementById('Loadingstartdate').value;
+            var LoadingCompleteDate = document.getElementById('Loadingcomletedate').value;
+            var Unloadingstartdate = document.getElementById('UnLoadinstartdate').value;
+            var unloadingcompletedate = document.getElementById('Unloadingcompletedate').value;
+            var LIneNoalloated = document.getElementById('TxtLineno').value;
+            var Trainstatus = document.getElementById('TXtTrainstatus').value;
+            var StatusUpdatedDate = document.getElementById('TxtStatusUpdated').value;
+            var Remarks = document.getElementById('TXtRemarks').value;
+        });
+    });
+    
+    function validateSaveFunction() {
+        var TrainNo = document.getElementById('txtTrainNo').value;
+
+        var NoCno = document.getElementById('TxtNocNo').value;
+        var OwnerStatusID = document.getElementById('ddlOwnerstatus').value;
+        var RankOperator = document.getElementById('RankOperator').value;
+
+        //var FromLocation = document.getElementById('FromLocation').value;
+        //var Tolocation = document.getElementById('Tolocation').value;
+        //var OriginDepartureDate = document.getElementById('OriginDepartureDate').value;
+        //var ETA = document.getElementById('TXTETA').value;
+        //var ETD = document.getElementById('TXtETD').value;
+        //var ATA = document.getElementById('TXtAta').value;
+        //var ATD = document.getElementById('TxtATd').value;
+        //var LoadingStartDate = document.getElementById('Loadingstartdate').value;
+        //var LoadingCompleteDate = document.getElementById('Loadingcomletedate').value;
+        //var Unloadingstartdate = document.getElementById('UnLoadinstartdate').value;
+        //var unloadingcompletedate = document.getElementById('Unloadingcompletedate').value;
+        //var LIneNoalloated = document.getElementById('TxtLineno').value;
+        //var Trainstatus = document.getElementById('TXtTrainstatus').value;
+        //var StatusUpdatedDate = document.getElementById('TxtStatusUpdated').value;
+        var Remarks = document.getElementById('TXtRemarks').value;
+
+
+
+        document.getElementById("txtTrainNo").style.borderColor = "gainsboro";
+        document.getElementById("TxtNocNo").style.borderColor = "gainsboro";
+        document.getElementById("ddlOwnerstatus").style.borderColor = "gainsboro";
+        document.getElementById("RankOperator").style.borderColor = "gainsboro";
+        //document.getElementById("FromLocation").style.borderColor = "gainsboro";
+        //document.getElementById("Tolocation").style.borderColor = "gainsboro";
+        //document.getElementById("OriginDepartureDate").style.borderColor = "gainsboro";
+        //document.getElementById("TXTETA").style.borderColor = "gainsboro";
+        //document.getElementById("TXtETD").style.borderColor = "gainsboro";
+        //document.getElementById("TXtAta").style.borderColor = "gainsboro";
+        //document.getElementById("TxtATd").style.borderColor = "gainsboro";
+    
+        //document.getElementById("Loadingstartdate").style.borderColor = "gainsboro";
+        //document.getElementById("Loadingcomletedate").style.borderColor = "gainsboro";
+        //document.getElementById("UnLoadinstartdate").style.borderColor = "gainsboro";
+        //document.getElementById("Unloadingcompletedate").style.borderColor = "gainsboro";
+        //document.getElementById("TxtLineno").style.borderColor = "gainsboro";
+        //document.getElementById("TXtTrainstatus").style.borderColor = "gainsboro";
+        //document.getElementById("TxtStatusUpdated").style.borderColor = "gainsboro";
+        document.getElementById("TXtRemarks").style.borderColor = "gainsboro";
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (TrainNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            document.getElementById("txtTrainNo").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+      
+
+        if (NoCno == "") {
+            document.getElementById("TxtNocNo").style.borderColor = "red";
+
+            blResult = blResult && false;
+        }
+        if (OwnerStatusID == "") {
+            document.getElementById("ddlOwnerstatus").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (RankOperator == "") {
+            document.getElementById("RankOperator").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+      
+        //if (FromLocation == "") {
+        //    document.getElementById("FromLocation").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (Tolocation == "") {
+        //    document.getElementById("Tolocation").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (OriginDepartureDate == "") {
+        //    document.getElementById("OriginDepartureDate").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (ETA == "") {
+        //    document.getElementById("TXTETA").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (ETD == "") {
+        //    document.getElementById("TXtETD").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (ATD == "") {
+        //    document.getElementById("TxtATd").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (ATA == "") {
+        //    document.getElementById("TXtAta").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (LoadingStartDate == "") {
+        //    document.getElementById("Loadingstartdate").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (LoadingCompleteDate == "") {
+        //    document.getElementById("Loadingcomletedate").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+
+        //if (Unloadingstartdate == "") {
+        //    document.getElementById("UnLoadinstartdate").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (unloadingcompletedate == "") {
+        //    document.getElementById("Unloadingcompletedate").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (LIneNoalloated == "") {
+        //    document.getElementById("TxtLineno").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (Trainstatus == "") {
+        //    document.getElementById("TXtTrainstatus").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        //if (StatusUpdatedDate == "") {
+        //    document.getElementById("TxtStatusUpdated").style.borderColor = "red";
+        //    blResult = blResult && false;
+        //}
+        if (Remarks == "") {
+            document.getElementById("TXtRemarks").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+

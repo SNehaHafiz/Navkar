@@ -1,0 +1,450 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.JobOrderMEntities>
+
+@{
+    ViewBag.Title = "BLSummaryForPODETA";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">BL wise POD ETA: @Model.Count()</h4>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        @*<div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <input type="Button" id="btnSave" value="Update" class="btn btn-success btnUpdatePODETA" />
+                                <button type="button" class="btn btn-instagram pull-right">Selected: <span id="selected_count"></span> </button>
+                                <br />
+                            </div>
+                        </div>*@
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                   
+                                    <table class="table table-striped table-bordered" style="width:100%" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                @*<th></th>*@
+                                                <th class="wd-10p sorting" style="width:1px;">Sr No.</th>
+                                                <th class="wd-10p sorting">JO No.</th>
+                                                <th class="wd-10p sorting">BL No.</th>
+                                                <th class="wd-10p sorting">HBL No.</th>
+                                                <th class="wd-10p sorting ">Shipping Line</th>
+                                                <th class="wd-10p sorting ">Customer</th>
+                                                <th>POD ETA <label style="visibility:hidden">..............................</label></th>
+                                                <th class="wd-10p sorting ">Vessel</th>
+                                                <th class="wd-10p sorting ">IGM File Status</th>
+                                                <th class="wd-10p sorting ">IGM NO</th>
+                                                <th class="wd-10p sorting">TEUS</th>
+                                                <th class="wd-10p sorting ">Dwell Days</th>
+
+                                                @*<th>POD ETA</th>*@
+                                                <th></th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+
+                                            <tr>
+                                                @*<td> <input type="checkbox" name="chkPOD" id="chkPOD" value="@d.JONo" onchange="getcount()"></td>*@
+                                                <td>@d.SRNO</td>
+                                                <td>@d.JONo <input name=hdTrailerName type=hidden id=trailerName value='@d.JONo'></td>
+                                                <td>@d.BLNumber</td>
+                                                <td>@d.HBLNumber</td>
+                                                <td>@d.shippingLineName </td>
+                                                <td>@d.CustomerName </td>
+                                                <td>@d.PODETADateString </td>
+                                                @*<td><input name=txtPODETA class="form-control datePicker1" type="text" value=''>  </td>*@
+                                                <td>@d.VesselName </td>
+                                                <td>@d.File_status_Name </td>
+                                                <td>@d.IGMNo </td>
+                                                <td>@d.TEUS </td>
+                                                <td>@d.Dwell_Days </td>
+                                                @*<td>@d.PODETADateString </td>*@
+
+                                                <td> <a class="btn btn-sm btn-info" onclick="UpdateBL('@d.JONo','@d.HBLNumber','@d.BLNumber','@d.SLID','@d.PODETADateString',@d.VesselID,'@d.VesselName',@d.File_Status_Id,'@d.IGMNo','@d.shippingLineName')" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit"><i class="fa fa-edit"></i> </a></td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <input type="Button" id="btnSave" value="Update" class="btn btn-success btnUpdatePODETA" />
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade">
+    <div class="modal fade show" id="exampleModal3" tabindex="-1" role="dialog" style="display: block; padding-right: 5px;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="example-Modal3">BL Wise POD ETA/IGM Updation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" tabindex=-1>
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">BL NO</label>
+                            <input type="text" class="form-control" id="txtBLNO" readonly tabindex=-1>
+                            <input type="hidden" class="form-control" id="txtJONO">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">HBL NO</label>
+                            <input type="text" class="form-control" id="txtHBLNO" readonly tabindex=-1>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">Line</label>
+                            <input type="text" class="form-control" id="txtLine" readonly tabindex=-1>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">POD ETA Date & Time</label>
+                            @Html.TextBox("datePicker1", null, new { @class = "form-control datepicker1", @id = "datePicker1", autocomplete = "off", placeholder = "POD ETA Date" })
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">Vessel</label>
+                            
+                            @Html.DropDownList("ddlVesselName", (IEnumerable<SelectListItem>)ViewBag.ddlVesselName, "--Select--", new { @class = "form-control", @id = "ddlVesselName", name = "ddlVesselName", autocomplete = "off" })
+
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">IGM File Status</label>
+                            @Html.DropDownList("ddlIGMFileStatus", (IEnumerable<SelectListItem>)ViewBag.ddlIGMFileStatus, "--Select--", new { @class = "form-control", @id = "ddlIGMFileStatus", name = "ddlIGMFileStatus", autocomplete = "off" })
+
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="form-control-label">IGM NO</label>
+                            <input type="text" class="form-control" id="txtIGMNO" maxlength="50",@tabindex="4">
+                        </div>
+
+
+                        @*<div class="form-group">
+            <label for="message-text" class="form-control-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+        </div>*@
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  @*  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                    <button type="button" class="btn btn-primary" onclick="SaveUpdatedBL();">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<script>
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [6, 12]
+                }
+
+            ]
+
+
+        })
+
+        $(function () {
+            //  var today = new Date();
+            var currDate = new Date();
+            //$('#datePicker1').datetimepicker({
+            //    autoclose: true,
+            //    todayHighlight: true,
+            //    format: 'dd M yyyy hh:ii',
+            //    language: "tr",
+            //    changeMonth: true,
+            //    changeYear: true,
+            //    forceParse: true,
+            //     endDate: currDate
+            //})
+            //    .on('changeDate', function (e) {
+            //        // Revalidate the date field
+            //        // $('#eventForm').formValidation('revalidateField', 'date');
+            //        $('.datePicker').hide();
+            //    });
+
+            $('#datePicker1').datetimepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy hh:ii',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true,
+                forceParse: true,
+                // endDate: currDate
+            })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    // $('#eventForm').formValidation('revalidateField', 'date');
+                    $('.datetimepicker').hide();
+                });
+
+
+
+
+
+
+        });
+    });
+</script>
+<script>
+
+
+    //functions by Arti
+
+    function SaveUpdatedBL() {
+
+
+        var JONO = $('#txtJONO').val();
+        var PODETADate = document.getElementById('datePicker1').value;
+        var VesselID = $('#ddlVesselName').val();
+        var File_Status_Id = $('#ddlIGMFileStatus').val();
+        var IGMNo = $('#txtIGMNO').val();
+
+
+        //var r = confirm("Do you want to Update BL details ?");
+        //if (r == true) {
+
+
+        var data1 = { 'JONO': JONO, 'PODETADate': PODETADate, 'VesselID': VesselID, 'File_Status_Id': File_Status_Id, 'IGMNo': IGMNo };
+        var data = JSON.stringify(data1);
+
+        // alert(data);
+
+        var search = "";
+
+        var table = $('#example1').DataTable();
+        search = table.search();
+
+       // alert(search);
+
+        $.ajax({
+            url: "/BL/AjaxUpdateBLdetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                
+
+                alert("BL details updated successfully");
+                $('#myModal').modal('hide');
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "search": {
+                        "search": search
+                    },
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [6,12]
+                        }
+
+                    ],
+                    "aaData": data,
+                    "columns": [
+                        { "data": "SRNO" },
+                        { "data": "JONo" },
+                        { "data": "BLNumber" },
+                        { "data": "HBLNumber" },
+                        { "data": "shippingLineName" },
+                        { "data": "CustomerName" },
+                        { "data": "PODETADateString" },
+                        //{
+                        //    "data": "PODETADate",
+                        //    "render": function (data, type, row, meta) {
+                        //        if (type === 'display') {
+
+                        //            data = '<input name=txtPODETA class="form-control datePicker1" type="text" value="' + row.PODETADate + '"> ';
+                        //        }
+
+                        //        return data;
+                        //    }
+
+
+                        //},
+                        { "data": "VesselName" },
+                        { "data": "File_status_Name" },
+                        { "data": "IGMNo" },
+                        { "data": "TEUS" },
+                        { "data": "Dwell_Days" },
+
+                        {
+                            "data": "JONo",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a class="btn btn-sm btn-info" onclick="UpdateBL(' + row.JONo + ',\'' + row.HBLNumber + '\',\'' + row.BLNumber + '\',' + row.SLID + ',\'' + row.PODETADateString + '\', ' + row.VesselID + ',\'' + row.VesselName + '\',' + row.File_Status_Id + ',\'' + row.IGMNo + '\',\'' + row.shippingLineName  + '\' )" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit"><i class="fa fa-edit"></i> </a></td>';
+
+                        }
+
+                            return data;
+                        }
+
+
+                    }
+
+            ]
+        })
+
+
+
+
+        },
+        error: function (errormessage) {
+        alert("error");
+        alert(errormessage.responseText);
+        }
+        });
+
+        // }
+
+
+
+        }
+
+    function UpdateBL(JONO, HBL, BLNumber, SLID, PODETADate, VesselID, VesselName, File_Status_Id, IGMNo, shippingLineName) {
+
+                $('#myModal').modal('show');
+                $('#txtBLNO').val(BLNumber);
+                $('#txtJONO').val(JONO);
+                $('#txtHBLNO').val(HBL);
+               
+                $('#txtLine').val(shippingLineName);
+                document.getElementById('datePicker1').value = PODETADate;
+                $('#ddlVesselName').val(VesselID);
+                $('#ddlIGMFileStatus').val(File_Status_Id);
+                $('#txtIGMNO').val(IGMNo);
+
+        }
+
+
+//functions by Arti
+
+function getcount() {
+// alert("hi")
+var checkboxarray = [];
+
+
+$('input[type=checkbox]').each(function () {
+if (this.checked) {
+
+checkboxarray.push($(this).val());
+}
+});
+var count = checkboxarray.length;
+$("#selected_count").text(count);
+}
+</script>
+<script>
+    $(".btnUpdatePODETA").click(function () {
+        var BLList = new Array();
+
+
+        //for (var i = 1; i < table.rows.length; i++) {
+        //    //  alert("hi")
+        //    row = table.rows[i];
+
+        //    var y = row.cells[1].childNodes[1].value;
+        //    var z = row.cells[4].childNodes[0].value; // select option field
+        //    // alert(x);
+        //    BLList.push({ 'JONo': y, 'PODETADate': z })
+
+        //}
+
+        var checkboxarray = [];
+
+
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+            if (checkboxarray == "")
+            {
+                alert("Please check at list one BL number for POD ETA date modify!")
+                return false;
+            }
+
+            var BLList = [];
+            var table = document.getElementById("example1");
+            var row;
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+                var x = row.cells[0].childNodes[1].value;
+                var y = row.cells[1].childNodes[1].value;
+                var z = row.cells[5].childNodes[0].value;
+
+
+                if (x == checkboxarray[k]) {
+
+                    BLList.push({ 'JONo': y, 'PODETADate': z })
+                  //  tablearray.push({ 'CountryID': Countryid, 'PortID': x })
+                }
+            }
+        }
+
+       // alert(JSON.stringify(BLList));
+
+        $.ajax({
+            type: 'POST',
+            url: '/BL/ModifyPODETA',
+            data: '{ BLPODlist: ' + JSON.stringify(BLList) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                alert(data);
+              //  document.location = '@Url.Action("BLSummaryForPODETA", "BL")';
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        this.checked=false
+                    }
+                    $("#selected_count").text(0);
+                });
+            }
+        })
+
+    });
+</script>

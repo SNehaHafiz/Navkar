@@ -1,0 +1,705 @@
+﻿@*@model TrackerMVCEntities.BusinessEntities.Trolleytransport*@
+@{
+    ViewBag.Title = "InvoiceChangesRequest";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="addinvoice">
+    <div class="page-header">
+        <h4 class="page-title">Invoice Changes Request</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();"><i class="fa fa-file-text"></i></button>*@
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlActivity", (IEnumerable<SelectListItem>)ViewBag.InvoiceList, "--Select--", new { @class = "form-control", @id = "ddlActivity", name = "ddlActivity", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtassessno" type="text" placeholder="Invoice No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" id="btnShow" onclick="ShowDetails()" title="Show" type="button"><i class="fe fe-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtInvoiceDate" type="text" placeholder="Invoice Date" class="form-control" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Grand Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtGrandTotal" type="text" placeholder="Grand Total" class="form-control" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Billing Party</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtBilledTo" type="text" placeholder="Billing Party" class="form-control" disabled />
+                                            <input ID="BilledToID" type="hidden" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <textarea ID="txtremarks" type="text" placeholder="Remarks" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                @*<div class="form-group">
+                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="file" id="fileImport" accept="image/*,.pdf" />
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                <div class="form-group label-floating">
+                                    <a href="#" onclick="AddAttachment()">
+                                        <i class="fa fa-paperclip fa-2x	" style="color:#070884" aria-hidden="true" title="Upload Attachments"></i>
+                                        <span class="custom-switch-description" style="font-size:17px;color:#6c4cbb"><b><label id="fileImport">0</label></b></span>
+                                    </a>
+                                </div>
+                                <label class="form-label">Upload Attachments</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+                                    <button id="btnSave" class="btn btn-success btn-xs" title="Save" onclick="return Addsave();"><i class="fa fa-floppy-o"></i></button>
+                                    <button type="button" name="clear" value="Clear" class="btn btn-default" title="clear" onclick="return Reload();" id="clearValue"><i class="fa fa-refresh"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div id="summaryList">
+    </div>
+</div>
+
+
+
+@using (Html.BeginForm("DownLoadFile", "InvoiceChangesRequest", FormMethod.Post))
+{
+    <input type="hidden" id="hfFileId" name="id" />
+    <input type="submit" id="btnDownload" value="Download" style="display:none" />
+}
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContent'>
+            <div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="example-Modal3"> Attachments </h5><label id="MSNoFile" style="visibility:hidden"></label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="divAttach">
+                    <form id="myForm">
+                        <div class="form-group" id="divFileUpload">
+                            <input type="file" id="fileJOAttachment" name="postedFile" />
+                            <input type="Button" id="btnUpload" value="Upload" class="btn btn-primary" />
+                        </div>
+                        <div class="form-group">
+                            <div class="table-responsive">
+                                <table id="JOAttachment" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-15p sorting">File Name</th>
+                                            <th style="width:15px"></th>
+                                            <th style="width:15px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnDone" value="Done" class="btn btn-info pull-right" data-dismiss="modal" aria-label="Close">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function ShowDetails() {
+        debugger;
+        var Activity = document.getElementById('ddlActivity').value;
+        var AssessNo = document.getElementById('txtassessno').value;
+        if (Activity == "" || Activity == undefined || Activity == "0") {
+            alert("Please select activity.");
+            return false;
+        }
+        if (txtassessno == "") {
+            alert("Please enter Invoice No.");
+            return false;
+        }
+        var data = { 'Activity': Activity, 'AssessNo': AssessNo };
+         data = JSON.stringify(data);
+        $.ajax({
+            url: "/InvoiceChangesRequest/InvoiceChangesValidate",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async:false,
+            success: function (data) {
+
+                debugger;
+                if (data.length ==0) {
+
+                    alert('Specified invoice no not found again selected activity. Cannot proceed.');
+                    $('#txtInvoiceDate').val('');
+                    $('#txtBilledTo').val('');
+                    $('#txtGrandTotal').val('');
+                    $('#txtBilledTo').val('');
+
+                    return ('Not found return!')
+                }
+                else {
+                    $('#txtInvoiceDate').val(data[0].InvoiceDate);
+                    $('#txtBilledTo').val(data[0].BillTo);
+                    $('#txtGrandTotal').val(data[0].GrandTotal);
+                    $('#BilledToID').val(data[0].BillToID);
+
+                }
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+    function Addsave() {
+
+        var fileData = new FormData();
+        var InvoiceNo = document.getElementById('txtassessno').value;
+        var InvoiceDate = document.getElementById('txtInvoiceDate').value;
+        var txtremarks = document.getElementById('txtremarks').value;
+        debugger;
+       // txtremarks = JSON.stringify(txtremarks)
+        var BilledTo = document.getElementById('BilledToID').value;
+        var Activity = document.getElementById('ddlActivity').value;
+        if (Activity == "") {
+            document.getElementById("ddlActivity").style.borderColor = "red";
+            alert('Please select activity.')
+            event.preventDefault();
+            return;
+        }
+        if (InvoiceNo == "") {
+            document.getElementById("txtassessno").style.borderColor = "red";
+            alert('Please enter Invoice No.')
+            event.preventDefault();
+            return;
+        }
+        if (BilledTo == "") {
+            document.getElementById("BilledToID").style.borderColor = "red";
+            alert('Billing party cannot left blank.')
+            event.preventDefault();
+            return;
+        }
+
+        if (txtremarks == "") {
+            document.getElementById("txtremarks").style.borderColor = "red";
+                alert('Please enter Remarks.')
+                event.preventDefault();
+                return;
+            }
+        //var fileUpload = $("#fileImport").get(0);
+        //debugger;
+        //var files = fileUpload.files;
+        //for (var i = 0; i < files.length; i++) {
+        //    debugger;
+
+        //    fileData.append(files[i].name, files[i]);
+
+        //}
+
+
+        fileData.append('InvoiceNo', InvoiceNo);
+        fileData.append('InvoiceDate', InvoiceDate);
+        fileData.append('txtremarks', txtremarks);
+        fileData.append('BilledTo', BilledTo);
+        fileData.append('Activity', Activity);
+        fileData.append("table", JSON.stringify(table));
+
+
+    $.ajax({
+        url: "/InvoiceChangesRequest/Save",
+        type: "POST",
+        contentType: false, // Not to set any content header
+        processData: false, // Not to process data
+        data: fileData,
+        dataType: "JSON",
+        success: function (result) {
+        if (result.Status == 1) {
+            alert('Record saved successfully.');
+            window.location.href = '@Url.Action("InvoiceChangesRequest", "InvoiceChangesRequest")';
+        } else {
+             if (result.Status==2)
+
+        {
+                 alert(result.Message);
+            window.location.href = '@Url.Action("InvoiceChangesRequest", "InvoiceChangesRequest")';
+        }
+        }
+
+
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+        }
+
+
+</script>
+
+<script>
+    //$('#txtassessno').change(function (e) {
+    //    var txtassessno = $("#txtassessno").val();
+
+
+    //});
+   function Reload()
+    {
+    window.location.href = '@Url.Action("InvoiceChangesRequest", "InvoiceChangesRequest")';
+    }
+
+</script>
+<script>
+
+    function ViewSummaryTrolley() {
+        //alert("hi");
+
+        $.ajax({
+            url: "/InvoiceChangesRequest/InvoiceChangesSummary",
+            // data: data,
+
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+
+            //  dataType: "json",
+            success: function (response) {
+                $("#addinvoice").hide()
+                $('#summaryList').show()
+                $('#summaryList').html(response);
+            }
+        });
+
+
+
+    }
+</script>
+<script>
+    function AddAttachment() {
+        var InvoiceNo = document.getElementById('txtassessno').value;
+     //   $('#myModalContent').html(response);
+        $('#myModal').modal('show');
+        $('#attachemnt').show();
+       // attachemnt
+        //AddAttachmentNoWise(InvoiceNo);
+       // attachemnt
+        //var data = { 'InvoiceNo': InvoiceNo };
+        //data = JSON.stringify(data);
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/InvoiceChangesRequest/AddAttachmentInvoiceRequest",
+        //    data: data,
+        //    contentType: "application/json; charset=utf-8",
+        //    success: function (response) {
+        //        $('#myModalContent').html(response);
+        //        $('#myModal').modal('show');
+
+
+        //    },
+        //    failure: function (response) {
+        //        alert(response);
+        //        alert(response.responseText);
+        //    },
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    }
+
+        //})
+    }
+
+</script>
+<script>
+    //var type = '@ViewBag.InvoiceNo';
+    var runningno = 1;
+    var table = [];
+    var BillAttachment = [];
+    $(document).ready(function () {
+        $('#JOAttachment').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false
+
+        })
+        debugger;
+        table = BillAttachment;
+
+
+        if (table.length != 0) {
+            $('#JOAttachment').dataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "bPaginate": false,
+                "bFilter": false,
+                "paging": false,
+                "destroy": true,
+                "bLengthChange": false,
+                "aaData": table,
+                "columns": [
+                    { "data": "DocFileName" },
+                    {
+                        "data": "FilePath",
+                        "render": function (data, type, row, meta) {
+                            if (type === 'display') {
+
+                                data = '<a   onclick="DownloadAttachment(' + row.RunningID + ')"  href="#" class="btn btn-primary"  title="Download"><i class="fa fa-download"></i></a>';
+                            }
+
+                            return data;
+                        }
+
+
+                    },
+                    {
+                        "data": "FilePath",
+                        "render": function (data, type, row, meta) {
+                            if (type === 'display') {
+
+                                data = '<a   onclick="DeleteAttachment(' + row.RunningID + ')"  href="#" class="btn btn-danger"  title="Download"><i class="fa fa-trash-o"></i></a>';
+                            }
+
+                            return data;
+                        }
+
+
+                    }
+
+                ]
+            });
+            CountRows();
+        }
+
+
+
+    });
+
+    $(document).ready(function () {
+        $('#btnUpload').click(function () {
+            var MSNoFile1 = "";
+            // Checking whether FormData is available in browser
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#fileJOAttachment").get(0);
+                var files = fileUpload.files;
+
+                var ext = $('#fileJOAttachment').val().split('.').pop().toLowerCase();
+                if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg', 'pdf', 'xlsx', 'xls','msg']) == -1) {
+                    alert('invalid extension!');
+                    return false;
+                }
+
+                // Create FormData object
+                var fileData = new FormData();
+                if (files.length == 0) {
+                    alert("Please select File!")
+                    return false;
+                }
+                else {
+                    AddAttachmentNoWise();
+                }
+            }
+            else {
+                alert("FormData is not supported");
+            }
+        });
+
+
+    });
+
+    function AddAttachmentNoWise() {
+
+        $("#global-loader").fadeIn("slow");
+        var fileUpload = $("#fileJOAttachment").get(0);
+        var files = fileUpload.files;
+        var fileData = new FormData();
+        var UploadType = document.getElementById('txtassessno').value;
+        //End Of maximum meetin number
+        var iSize = document.getElementById('fileJOAttachment').files[0].size / 1024
+        iSize = (Math.round((iSize / 1024) * 100) / 100)
+        if (iSize > 25) {
+            alert("Selected file size more than 25 MB");
+            $("#global-loader").fadeOut("slow");
+            return false;
+        }
+        // Looping over all files and add it to FormData object
+        for (var i = 0; i < files.length; i++) {
+
+            fileData.append(files[i].name, files[i]);
+
+        }
+        fileData.append('AssessNo', UploadType);
+        runningno++;
+        $.ajax({
+            url: '/InvoiceChangesRequest/UploadVoucherAttachment',
+            type: "POST",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            data: fileData,
+            success: function (Data) {
+                $("#global-loader").fadeOut("slow");
+
+                var element = {};
+                element.DocFileName = Data.DocName;
+                element.RunningID = runningno;
+                element.FilePath = Data.FilePath;
+                element.ContentType = Data.ContentType;
+              //  element.UploadType = type;
+                BillAttachment.push(element);
+                table = BillAttachment;
+
+
+                $('#JOAttachment').dataTable({
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": table,
+                    "columns": [
+                        { "data": "DocFileName" },
+                        {
+                            "data": "FilePath",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a   onclick="DownloadAttachment(' + row.RunningID + ')"  href="#" class="btn btn-primary"  title="Download"><i class="fa fa-download"></i></a>';
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "ContentType",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a   onclick="DeleteAttachment(' + row.RunningID + ')"  href="#" class="btn btn-danger removebutton"  title="Download"><i class="fa fa-trash-o"></i></a>';
+                                }
+                                return data;
+                            }
+                        }
+                    ]
+                });
+                CountRows();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                console.log(errormessage.responseText)
+                $("#global-loader").fadeOut("slow");
+            }
+
+
+        });
+        $("#fileJOAttachment").val('');
+    }
+
+    function DownloadAttachment(runningNo) {
+        var no = runningno;
+        var docname, Filepath, contentType;
+        for (i = 0; i < table.length; i++) {
+            if (table[i].RunningID == no) {
+                docname = table[i].DocFileName;
+                Filepath = table[i].FilePath;
+                contentType = table[i].ContentType;
+            }
+        }
+        var id = 0;
+        var data = { 'DocName': docname, 'Filepath': Filepath, 'ContentType': contentType }
+        data = JSON.stringify(data);
+        $.ajax({
+            url: '/InvoiceChangesRequest/StoreFileDataInTemp',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+
+            data: data,
+            success: function (Data) {
+                id = Data;
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+        $("#hfFileId").val(id);
+        $("#btnDownload")[0].click();
+    }
+
+    function DeleteAttachment(id) {
+
+
+
+        //-- for insert delete
+
+            var r = confirm("Are you sure want to delete this file!");
+            if (r == true) {
+
+                var no = id;
+                for (i = 0; i < table.length; i++) {
+                    if (table[i].RunningID == no) {
+                        table.splice(i, 1);
+                    }
+                }
+                $('#JOAttachment').dataTable({
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": table,
+                    "columns": [
+                        { "data": "DocFileName" },
+                        {
+                            "data": "FilePath",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a   onclick="DownloadAttachment(' + row.RunningID + ')"  href="#" class="btn btn-primary"  title="Download"><i class="fa fa-download"></i></a>';
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "ContentType",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a   onclick="DeleteAttachment(' + row.RunningID + ')"  href="#" class="btn btn-danger removebutton"  title="Download"><i class="fa fa-trash-o"></i></a>';
+                                }
+                                return data;
+                            }
+                        }
+                    ]
+                });
+                CountRows();
+            }
+
+
+
+
+
+
+
+    }
+
+
+
+    function CountRows() {
+        var table = $('#JOAttachment').DataTable();
+
+        var RowCount = table.rows().count();
+        document.getElementById('fileImport').innerHTML = RowCount;
+
+    }
+    function HideColumns() {
+        if ($('#hdMode').val() == "ViewMode") {
+            var table = $('#JOAttachment').DataTable();
+
+            table.column(3).visible(false);
+            $('#divFileUpload').hide()
+        }
+        else {
+
+            table.column(3).visible(true);
+            $('#divFileUpload').show()
+        }
+    }</script>

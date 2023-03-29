@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewBag.Title = "Passing";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Passing</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No(Last 4 digits)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                            <label class="form-label">Trailer No </label>
+                            <select id="ddlTrailerNo" class="form-control">
+                                <option value="">--Select--</option>
+                            </select>
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group label-floating">
+                                <label class="form-label"> New Trailer No.</label>
+                                @Html.TextBox("txtNewTrailerNo", null, new { @class = "form-control", @id = "txtNewTrailerNo", name = "txtNewTrailerNo", placeholder = "New Trailer No" })
+                            </div>
+                        </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group label-floating">
+                                <label class="form-label"> Remarks</label>
+                                @Html.TextArea("txtRemarks", null, new { @class = "form-control", @id = "txtRemarks", name = "txtRemarks" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="btnSave" onclick="save()" name="save" value="Save" class="btn btn-success" />                                      
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- table-wrapper -->
+            </div>
+            <!-- section-wrapper -->
+        </div>
+    </div>
+
+
+<script>
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlTrailerNo");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+</script>
+<script>
+    function save() {
+        //alert("hi");
+        var res = validateForSave();
+        if (res == false) {
+            return false;
+        }
+
+        var TrailerID = $("#ddlTrailerNo").val();       
+        var TrailerNo = $("#ddlTrailerNo option:selected").text();
+        var txtNewTrailerNo = document.getElementById('txtNewTrailerNo').value;
+        var txtRemarks = document.getElementById('txtRemarks').value;
+
+        var data1 = { 'trailerNo': TrailerNo, 'NewtrailerNo': txtNewTrailerNo, 'Remarks': txtRemarks, 'trailerID': TrailerID };
+        var data = JSON.stringify(data1);
+         // alert(data);
+          $.ajax({
+
+              url: "/Passing/UpdatePassing",
+              data: data,
+              type: "POST",
+              contentType: "application/json; charset=utf-8",
+              // dataType: "json",
+              success: function (data) {
+                  alert(data);
+              },
+
+              error: function (errormessage) {
+                  alert(errormessage.responseText);
+              }
+          });
+    }
+</script>
+
+<script>
+    function validateForSave() {
+        //  alert("hi")
+        var blResult = Boolean;
+        blResult = true;
+        var TrailerNo = document.getElementById('ddlTrailerNo').value;
+        var txtNewTrailerNo = document.getElementById('txtNewTrailerNo').value;
+        var txtRemarks = document.getElementById('txtRemarks').value;
+
+
+        $("#ddlTrailerNo").removeClass("form-control is-invalid state-invalid");
+        $("#ddlTrailerNo").addClass("form-control");
+        $("#txtNewTrailerNo").removeClass("form-control is-invalid state-invalid");
+        $("#txtNewTrailerNo").addClass("form-control");
+        $("#txtRemarks").removeClass("form-control is-invalid state-invalid");
+        $("#txtRemarks").addClass("form-control");
+
+        if (TrailerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ddlTrailerNo").removeClass("form-control is-valid state-valid")
+            $("#ddlTrailerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (txtNewTrailerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtNewTrailerNo").removeClass("form-control is-valid state-valid")
+            $("#txtNewTrailerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (txtRemarks == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtRemarks").removeClass("form-control is-valid state-valid")
+            $("#txtRemarks").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (blResult == false) {
+            alert('Please fill the required fields!');
+        }
+        return blResult;
+    }
+</script>

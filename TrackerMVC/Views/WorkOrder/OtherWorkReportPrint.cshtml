@@ -1,0 +1,130 @@
+﻿<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Other Work Order Report Prints</title>
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+    <style>
+        body {
+            color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .box {
+            float: left;
+            width: 100%;
+            padding: 0px;
+        }
+
+        .tblBox {
+            border-collapse: collapse; 
+            width: 100%;
+            padding: 0px;
+            float: left;
+        }
+
+        .headingh3 {
+            font-size: 11pt;
+            font-family: 'verdana(batlic)';
+            padding: 2px;
+            text-decoration: underline;
+        }
+
+        th {
+            border: 1px solid black;
+            font-size: 15px;
+            font-family: verdana(batlic);
+            background-color: #ede5e5;
+        }
+
+        td {
+            border: 1px solid black;
+            font-size: 12px;
+            font-family: 'Segoe UI';
+        }
+
+        h5, h4 {
+            font-size: 10pt;
+            font-family: 'Segoe UI';
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-family: 'verdana(batlic)';
+        }
+
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    @foreach (var dr1 in ViewBag.LabourVendorList)
+    {
+        int counter3 = 1;
+
+        <div style="width:100%; text-align:center; height:100%;">
+            <div style="width:100%;height:100%;">
+                <div class="row">
+                    <h3 class="headingh3">From Date:- @ViewBag.FromDate ToDate :- @ViewBag.ToDate</h3>
+                </div>
+                <div class="row">
+                    <h3 class="headingh3">Location Name:- @ViewBag.Code</h3>
+                </div>
+                <div class="row">
+                    <h3 class="headingh3">Code:- @dr1["Name"]</h3>
+                </div>
+                <div>
+                    <span style="font-size:15pt;font-weight:700">Other Work</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:5%;">Sr No.</th>
+                                <th style="width:10%;">Work Order Date</th>
+                                <th style="width:40%;">Place Name</th>
+                                <th style="width:30%;">Assign By</th>
+                                <th style="width:10%;">Date</th>
+                                <th style="width:5%;">Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr2 in ViewBag.LabourLatterReport)
+                            {
+                                if (@dr1["VendorId"] == @dr2["Vendor"])
+                                {
+                                    <tr>
+                                        <td style="text-align:left">@counter3</td>
+                                        <td style="text-align:left">@dr2["WorkOrderDate"]</td>
+                                        <td style="text-align:left">@dr2["PlaceName"]</td>
+                                        <td style="text-align:left">@dr2["AssignBy"]</td>
+                                        <td style="text-align:left">@dr2["Date"]</td>
+                                        <td style="text-align:right">@dr2["Weight"]</td>
+                                    </tr>
+                                    counter3 = counter3 + 1;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

@@ -1,0 +1,537 @@
+﻿
+@{
+    ViewBag.Title = "SearchOnIGMNumber";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table th {
+        background-color: white;
+        color: black;
+    }
+</style>
+
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="tracker-loader"></div>
+<div class="content-area overflow-hidden" id="divDriver">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Search On IGM-Item No.</h4>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">IGM No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtItemNo", null, new { @class = "form-control", @id = "txtItemNo", name = "txtItemNo", @maxlength = 15, autocomplete = "on" })
+                                        </div>
+                                        <div class="row gutters-xs" style="margin-top:8px;">
+                                            <div class="col">
+                                                <b>-</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Item No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtItemNo1", null, new { @class = "form-control", @id = "txtItemNo1", name = "txtItemNo1", @maxlength = 15, autocomplete = "on" })
+                                        </div>
+                                        <div class="row gutters-xs" style="margin-top:8px;">
+                                            <div class="col">
+                                                <b>OR</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> BL Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBLnumber", null, new { @class = "form-control", @id = "txtBLnumber", name = "txtBLnumber", @maxlength = 15, autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group" style="padding-top:26px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button type="button" class="btn btn-primary" name="clearProfile" title="Search" id="clearValue" onclick="ShowIGMDetails()"><i class="fe fe-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-1" style="margin-top:25px;">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.ActionLink("Export To Excel", "ExportToExcelSearchOnIGMItemNo", null, new { @class = "btn btn-primary btn-md" })
+                                            @*<i class="fa fa-file-excel-o" aria-hidden="true"></i>*@
+                                            @*<i class="fa fa-file-excel-o"style="font-size:40px;background:#9f78ff;margin-left:200px;" type="button" data-toggle="tooltip" data-placement="bottom" title="Export To Excel" data-original-title="Export To Excel"></i>*@
+                                            @*<button class="btn btn-primary" id="btnShow" style="background:#9f78ff;margin-left:200px;" type="button" onclick="ShowPOSummary()"><i class="fa fa-file-excel-o" style="font-size: 1rem;"></i></button>*@
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:90px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-JoArrival" type="button" id="btnSearch" title="IGM Details" onclick="JoDetails()"><i class="fa fa-pencil"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-Timeline" type="button" id="btnSearch" title="Summary" onclick="TimeLines()"><i class="fa fa-car"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-primarys" type="button" id="btnSearch" title="Invoice Details" onclick="InvoiceDetails()"><i class="fa fa-rupee"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-IgmDeatls" type="button" id="btnSearch" title="Container List" onclick="igmdetails()"><i class="fa fa-th-list"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <br />
+                        <div>
+                            <div class="col-lg-3 col-sm-12">
+                                <label id="lblason" style="background-color:yellow;color:blue;display:none;font-size:0.875rem;font-weight: 600;"></label>
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card" id="divInvoicedetails">
+            <div class="card-header bg-primary br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">IGM Details</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+
+            <div class="row" style="">
+                <div class="col-sm-12 col-md-6 col-lg-6 table-responsive">
+
+                    <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                        <tbody>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Via Number</strong></td>
+                                <td><label id="txtvianumber" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Port Name</strong></td>
+                                <td><label id="txtportname" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Vessel</strong></td>
+                                <td><label id="txtvessel" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Voyage</strong></td>
+                                <td><label id="txtvoyage" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>BOE No</strong></td>
+                                <td><label id="txtBoeNo" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>BOE Date</strong></td>
+                                <td><label id="txtBoeDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>OOC No</strong></td>
+                                <td><label id="txtOOCNo" style="font-weight: bold"></label></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6 table-responsive">
+                    <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                        <tbody>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>IGM Date</strong></td>
+                                <td><label id="txtIGMDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Consignee</strong></td>
+                                <td><label id="txtConsignee" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Notify Consignee</strong></td>
+                                <td><label id="txtnotifyconsignee" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Cargo Description</strong></td>
+                                <td><label id="txtcargo" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Shipping Line</strong></td>
+                                <td><label id="txtShipping" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>CHA Name</strong></td>
+                                <td><label id="txtchaName" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>OOC Date</strong></td>
+                                <td><label id="txtoocdate" style="font-weight: bold"></label></td>
+                            </tr>
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card" id="divsummary">
+            <div class="card-header bg-primary br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">Summary</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="row mt-3">
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example3Bond">
+                            <thead style="color:black">
+                                <tr></tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card" id="divinvocdetails">
+            <div class="card-header bg-primary br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">Invoice Details</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="row mt-3">
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="exampleBond">
+                            <thead>
+
+
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card" id="divcontainerlist">
+            <div class="card-header bg-primary br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">Container List</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="row mt-3">
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="exampleContainer">
+                            <thead>
+
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    function JoDetails() {
+        $("#divInvoicedetails").show();
+        $("#divsummary").hide();
+        $("#divinvocdetails").hide();
+        $("#divcontainerlist").hide();
+    }
+    function TimeLines() {
+        $("#divInvoicedetails").hide();
+        $("#divsummary").show();
+        $("#divinvocdetails").hide();
+        $("#divcontainerlist").hide();
+
+
+    }
+    function InvoiceDetails() {
+        $("#divInvoicedetails").hide();
+        $("#divsummary").hide();
+        $("#divinvocdetails").show();
+        $("#divcontainerlist").hide();
+
+
+    }
+    function igmdetails() {
+        $("#divInvoicedetails").hide();
+        $("#divsummary").hide();
+        $("#divinvocdetails").hide();
+        $("#divcontainerlist").show();
+
+
+    }
+
+</script>
+<script type="text/javascript">
+
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+    $('#txtBLnumber').change(function (e) {
+        var BLNumber = $("#txtBLnumber").val();
+        $.ajax({
+            url: "/UpdateDischarge/GetBLWiseIGMdetails",
+            data: '{BLNumber: ' + JSON.stringify(BLNumber) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+
+                $("#txtItemNo").val(data.IGMNo)
+                $("#txtItemNo1").val(data.ItemNo)
+                ShowIGMDetails();
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+</script>
+
+
+
+
+<script type="text/javascript">
+
+    function ShowIGMDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var IGMNumber = $("#txtItemNo").val()
+        var BLNumber = $("#txtItemNo1").val()
+
+
+
+
+    var data = { 'IGMNumber': IGMNumber, 'BLNumber': BLNumber };
+        var data1 = JSON.stringify(data);
+
+
+
+        $.ajax({
+            url: "/UpdateDischarge/AjaxGetItemDetails",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $("#txtportname").text(data.IGMData.PortName);
+                $("#txtIGMDate").text(data.IGMData.IGMDate)
+                // $("#txtshippingline").val(data.IGMData.PortName)
+                $("#txtnotifyconsignee").text(data.IGMData.NConsignee);
+                $("#txtConsignee").text(data.IGMData.Consignee);
+                $("#txtvessel").text(data.IGMData.vesselName);
+                $("#txtvoyage").text(data.IGMData.IGM_Voy)
+                $("#txtvianumber").text(data.IGMData.ViaNo);
+                $("#txtcargo").text(data.IGMData.IGM_GoodsDesc);
+                $("#txtShipping").text(data.IGMData.Slname);
+
+                $("#txtBoeNo").text(data.IGMData.BOENo)
+                $("#txtBoeDate").text(data.IGMData.BOEDate);
+                $("#txtOOCNo").text(data.IGMData.OOCNo);
+                $("#txtchaName").text(data.IGMData.OOCDate);
+                $("#txtoocdate").text(data.IGMData.CHAName);
+
+
+                btnsummary(IGMNumber, BLNumber);
+                btninvoiceDe(IGMNumber, BLNumber);
+                btninvoiceContainer(IGMNumber, BLNumber);
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+</script>
+
+<script type="text/javascript">
+
+    function btnsummary(IGMNumber, BLNumber) {
+
+
+        //var IGMNumber = IGMNumber1 + IGMNumber2
+
+        //var BLNumber = $("#txtBLnumber").val()
+        var data1 = { 'IGMNumber': IGMNumber, 'BLNumber': BLNumber };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            url: "/UpdateDischarge/AjaxITemSearchSummarydetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+
+                $("#example3Bond").empty();
+                RepTableDataJsonwopaging($("#example3Bond"), data, "SearchOnIGMNumber", "SearchOnIGMNumber");
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    function btninvoiceDe(IGMNumber, BLNumber) {
+
+
+        //var IGMNumber = IGMNumber1 + IGMNumber2
+
+        //var BLNumber = $("#txtBLnumber").val()
+        var data1 = { 'IGMNumber': IGMNumber, 'BLNumber': BLNumber };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            url: "/UpdateDischarge/AjaxItemInvoicedetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+
+                $("#exampleBond").empty();
+                RepTableDataJsonwopaging($("#exampleBond"), data, "SearchOnIGMNumber", "SearchOnIGMNumber");
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    function btninvoiceContainer(IGMNumber, BLNumber) {
+
+
+        //var IGMNumber = IGMNumber1 + IGMNumber2
+
+        //var BLNumber = $("#txtBLnumber").val()
+        var data1 = { 'IGMNumber': IGMNumber, 'BLNumber': BLNumber };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            url: "/UpdateDischarge/AjaxItemInvoicontainer",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (data) {
+
+
+                $("#exampleContainer").empty();
+                RepTableDataJsonwopaging($("#exampleContainer"), data, "SearchOnIGMNumber", "SearchOnIGMNumber");
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>

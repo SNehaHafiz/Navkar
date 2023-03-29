@@ -1,0 +1,433 @@
+﻿
+@{
+    ViewBag.Title = "Release Request";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="mainContent">
+    <div class="page-header">
+        <h4 class="page-title">Release Request (Credit limit)</h4>
+        <div class="form-group">
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="showList();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col-lg-4 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Request Date</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("RequestDate", null, new { @class = "form-control", @Value = DateTime.Now.AddDays(0).ToString("dd MMM yyyy H:mm"), @readonly = "true" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Customer</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @*@Html.DropDownList("Customer", (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select--",
+                                    new { @class = "form-control" })*@
+
+                                <input type="text" class="form-control" id="CustomerName" />
+                                <input type="hidden" class="form-control" id="CustomerID" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Days For</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("DaysFor", null, new { @class = "form-control", @placeholder = "Days For" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label">Remarks</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextArea("Remarks", null, new { @class = "form-control", @placeholder = "Remarks" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-lg-12">
+                    <div class="form-group" style="float:right">
+                        <div class="row gutters-xs">
+                            <div class="col" style="float:right">
+                                <input type="button" id="btnSave" name="Save" value="Save" class="btn btn-success btnShow" onclick="Save()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Pending Request to approve(Credit Limit)</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="getBack" title="Back" onclick="getBack()"><i class="fa fa-arrow-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">As On</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("AsOn", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="button" id="btnShow" value="Show" class="btn btn-primary " onclick="ShowSummary()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-sm-12">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="tblReleaseRequest" style="width:100%">
+                                <thead>
+                                    <tr>
+
+                                        <th class="bg-primary text-white wd-15p sorting">Sr No.</th>
+                                        <th class="bg-primary text-white wd-15p sorting">Customer</th>
+                                        <th class="bg-primary text-white wd-15p sorting">Requested By</th>
+                                        <th class="bg-primary text-white wd-15p sorting">Request On</th>
+                                        <th class="bg-primary text-white wd-15p sorting">Request Limit Days</th>
+                                        <th class="bg-primary text-white wd-15p sorting">Status</th>
+
+
+
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var CRData = [];
+
+
+    $(document).ready(function () {
+        AutomCom();
+
+    });
+
+    function AutomCom() {
+        $("#CustomerName").autocomplete({
+
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ReceiptTally/GetCustomerDDL",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //
+                        console.log(data);
+                        response($.map(data, function (item) {
+                            //
+                            return {
+                                label: item.CustomerName,
+                                val: item.CustomerID
+                            };
+                        }))
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                    }
+                })
+            },
+            select: function (e, i) {
+
+                $("#CustomerName").val(i.item.label);
+                $("#CustomerID").val(i.item.val);
+            },
+
+            minLength: 1
+
+        });
+
+
+
+    }
+
+    function Save() {
+        var FormData = {};
+        FormData.RequestDate = $("#RequestDate").val();
+        FormData.CustomerID = $("#CustomerID").val();
+        FormData.DaysFor = $("#DaysFor").val();
+        FormData.Remarks = $("#Remarks").val();
+
+        var isValid = true;
+        if (FormData.RequestDate == "") {
+            $("#RequestDate").addClass("form-control is-invalid state-invalid");
+            isValid = isValid && false;
+        } else {
+            $("#RequestDate").removeClass("is-invalid state-invalid");
+        }
+
+        if (FormData.CustomerID == "") {
+            $("#Customer").addClass("form-control is-invalid state-invalid");
+            isValid = isValid && false;
+        } else {
+            $("#Customer").removeClass("is-invalid state-invalid");
+        }
+
+        if (FormData.DaysFor == "") {
+            $("#DaysFor").addClass("form-control is-invalid state-invalid");
+            isValid = isValid && false;
+        } else {
+            $("#DaysFor").removeClass("is-invalid state-invalid");
+        }
+
+        if (FormData.DaysFor > 2) {
+            alert("Request days should not be more than 2 days")
+            $("#DaysFor").addClass("form-control is-invalid state-invalid");
+            $("#DaysFor").val('');
+            isValid = isValid && false;
+        } else {
+            $("#DaysFor").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid) {
+            var data = { 'Data': FormData };
+            data = JSON.stringify(data);
+            console.log(data);
+            $.ajax({
+                url: "/ReceiptTally/SaveReleaseRequest",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data.Status == 1) {
+                        alert(data.Message);
+                        window.location = "/ReceiptTally/ReleaseRequest";
+                        $("#tracker-loader").fadeOut("slow");
+                    } else {
+                        alert(data.Message);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                },
+                error: function (errormessage) {
+                    let str = errormessage.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            }
+            );
+        } else {
+            alert("Please fill all fields");
+        }
+
+    }
+
+    function showList(){
+        $("#divSummary").show()
+        $("#mainContent").hide()
+    }
+
+    function getBack() {
+        $("#divSummary").hide()
+        $("#mainContent").show()
+    }
+
+    function ShowSummary() {
+        var asOn = $("#AsOn").val();
+        var data = { 'asOn': asOn };
+        data = JSON.stringify(data);
+        $.ajax({
+            url: '/ReceiptTally/GetreleaseRequestSatus',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                CRData = data;
+                $('#tblReleaseRequest').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bPaginate": true,
+                    "bInfo": false,
+                    "paging": true,
+                    order: [],
+                    "searching": true,
+
+                    "columns": [
+                        {
+                            "data": "SrNo",
+                        },
+                        {
+                            "data": "CustomerName",
+                        },
+                        { "data": "RequestedBy" },
+                        { "data": "RequestOn" },
+                        {
+                            "data": "DaysFor",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" id=\"DaysFor_" + row.SrNo + "\" value=\"" + row.DaysFor + "\"  onchange=\"UpdateConditionalApprove(" + row.SrNo + ")\" autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "IsApproved",
+                            "render": function (data, type, row, meta) {
+
+                                data = "<div class=\"btn-list\"><button class=\"btn btn-info btn-sm \" title=\"Approve Release Request\" onclick=\"ApproveReleaseRequest('" + row.CRLimitID + "','" + row.SrNo +"')\">Pending</button></div>";
+
+                                return data;
+                            }
+                        },
+
+
+
+                    ],
+                    mark: true
+                });
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function ApproveReleaseRequest(CRID, SrNo) {
+        var confirmation = confirm("Are you sure want to Approve?");
+        if (confirmation) {
+            var date = new Date();
+            var limitDays = $("#DaysFor_" + SrNo).val();
+            var data = { 'limitDays': limitDays, 'CRID': CRID, 'AddedOn': date };
+            data = JSON.stringify(data);
+            console.log(data);
+            $.ajax({
+                url: "/ReceiptTally/ApproveReleaseRequest",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data.Status == 1) {
+                        alert(data.Message);
+                        ShowSummary();
+                        $("#tracker-loader").fadeOut("slow");
+                    } else {
+                        alert(data.Message);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                },
+                error: function (errormessage) {
+                    let str = errormessage.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            }
+            );
+        }
+    }
+
+
+    function DeclineReleaseRequest(CRID, SrNo) {
+        var confirmation = confirm("Are you sure want to decline?");
+        if (confirmation) {
+            var date = new Date();
+            var limitDays = $("#DaysFor_" + SrNo).val();
+            var data = { 'limitDays': limitDays, 'CRID': CRID, 'AddedOn': date };
+            data = JSON.stringify(data);
+            console.log(data);
+            $.ajax({
+                url: "/ReceiptTally/DeclineReleaseRequest",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data.Status == 1) {
+                        alert(data.Message);
+                        ShowSummary();
+                        $("#tracker-loader").fadeOut("slow");
+                    } else {
+                        alert(data.Message);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                },
+                error: function (errormessage) {
+                    let str = errormessage.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            }
+            );
+        }
+    }
+</script>

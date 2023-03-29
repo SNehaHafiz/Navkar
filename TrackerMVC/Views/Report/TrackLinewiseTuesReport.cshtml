@@ -1,0 +1,194 @@
+﻿
+@{
+    ViewBag.Title = "Line wise Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Line Wise Inventory Summary</h4>
+        <div class="ibox-content  text-right">
+            <a  href="@Url.Action("TrackLinewiseTuesReportCFS", "Report")" target="_blank"  class="btn btn-primary btn-success" style="color:white;align-content:center;">CFS Report</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Line Wise Inventory Summary . (Inventory As On)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col-2">
+                                        @Html.TextBox("FromDate", null, new { @id = "SelectedDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                    <div class="col-2">
+                                        @Html.DropDownList("ddlTypeOrSize", new List<SelectListItem>
+                                    { new SelectListItem { Text = "Size Wise", Value = "Size"},
+                                    new SelectListItem { Text = "Type Wise", Value = "Type"},
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlTypeOrSize" })
+                                    </div>
+                                    <div class="col-2">
+                                        @Html.DropDownList("ddlCFSLocation", new List<SelectListItem>
+                                    { new SelectListItem { Text = "NCL-III", Value = "NCL-3"},
+                                    new SelectListItem { Text = "NCL-II", Value = "NCL-2"},
+                                    new SelectListItem { Text = "NCL-I", Value = "NCL-1"},
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlCFSLocation" })
+                                    </div>
+
+                                    <div class="col-6">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('ALL')" type="button">ALL</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EMPTY')" type="button">EMPTY</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('IMPORT')" type="button">IMPORT</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EXPORT EMPTY')" type="button">EXPORT EMPTY</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EXPORT lOADED')" type="button">EXPORT lOADED</button>
+                                    </div>
+                                </div>
+                                </div>
+                        </div>
+                      
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12" id="divSizeWise">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>LINE.</th>
+                                                <th>size 20</th>
+                                                <th>size 40.</th>
+                                                <th>size 45 .</th>
+                                                <th>Total</th>
+                                                <th>Tues</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-12 col-lg-12" id="divTypeWise" style="display:none">
+                            <div class="row">
+                                @Html.ActionLink("Export To Excel", "TrackLineNTypeWiseTEUSReport", null, new { @class = "btn btn-primary btn-md" })
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="TypeTable" style="width:100%">
+                                   
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [5]
+            }
+            ]
+        });
+
+    });
+
+    function Show(type) {
+        var date = document.getElementById("SelectedDate").value;
+        var CFSLocation = document.getElementById("ddlCFSLocation").value;
+        var data1 = { 'Activity': type, 'Date': date, 'Yard': CFSLocation }
+        var data = JSON.stringify(data1);
+        var SizeOrType = $("#ddlTypeOrSize").val();
+        if (SizeOrType == "Size") {
+            $("#divTypeWise").hide()
+            $("#divSizeWise").show()
+
+            $.ajax({
+
+                url: '/Report/GetTrackLinewiseTuesReport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // alert(JSON.stringify(data))
+                    $('#reportTable').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": data,
+                        "bInfo": false,
+                        "bPaginate": false,
+                        "bFilter": true,
+                        "paging": false,
+                        "order": [],
+                        "dom": 'Bfrtip',
+                        "buttons": [{
+                            "extend": 'excel',
+                            "title": 'Line & Size Wise Inventory Summary',
+                            "filename": 'LineNSizeWiseInventorySummary'
+                        }],
+                        "columns": [
+
+                            { "data": "Lines" },
+                            { "data": "Size20" },
+                            { "data": "Size40" },
+                            { "data": "Size45" },
+                            { "data": "Total" },
+                            { "data": "Tues" }
+
+
+
+
+
+                        ],
+
+                    });
+
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            });
+        }
+        else if (SizeOrType == "Type") {
+            $("#divTypeWise").show()
+            $("#divSizeWise").hide()
+            $.ajax({
+
+                url: '/Report/GetTypeWiseRegister',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    RepTableDataJsonwopaging($("#TypeTable"), data, "Line & Type Wise Inventory Summary", "LineNTypeWiseInventorySummary");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            });
+        }
+        
+    }
+</script>

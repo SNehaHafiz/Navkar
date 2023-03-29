@@ -1,0 +1,136 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.VehicleReportingEntities>
+@{
+    ViewBag.Title = "PendingVehicleSummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden" id="showview">
+    <div class="page-header">
+        <h4 class="page-title">List Of Pending Vehicle For Reporting : @Model.Count()</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelPendingVehicle", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th></th>
+                                            <th class="wd-15p sorting">Trailer No.</th>
+                                            <th class="wd-15p sorting">From Location</th>
+                                            <th class="wd-15p sorting">To Location.</th>
+                                            <th class="wd-15p sorting">Trans Date</th>
+                                            <th class="wd-15p sorting">Trailer Size</th>
+                                            <th class="wd-15p sorting">Drivername</th>
+                                            <th class="wd-15p sorting">Transporter</th>
+                                            <th class="wd-15p sorting">Mobile No</th>
+                                            <th class="wd-15p sorting">Trolley No</th>
+                                            <th class="wd-15p sorting">Dwell Hours</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                            <tr>
+                                                <td><a href="#" class="btn btn-sm btn-primary" title="Submit" onclick="Submit('@d.TrailerNO','@d.Driverid')">Submit</a></td>
+
+                                                <td>@Html.DisplayFor(m => d.TrailerNO)</td>
+                                                <td>@Html.DisplayFor(m => d.FromLocation)</td>
+                                                <td>@Html.DisplayFor(m => d.ToLocation)</td>
+                                                <td>@Html.DisplayFor(m => d.TransDate)</td>
+                                                <td>@Html.DisplayFor(m => d.Size)</td>
+                                                <td>@Html.DisplayFor(m => d.DriverName)</td>
+                                                <td>@Html.DisplayFor(m => d.Transporter)</td>
+                                                @*<td>@Html.EditorFor(m => d.MobileNo)</td>*@
+                                                <td><input id="contactno" name="contactno" value="@d.MobileNo" /></td>
+                                                <td>@Html.DisplayFor(m => d.TrolleyNo)</td>
+                                                <td>@Html.DisplayFor(m => d.DWellHours)</td>
+                                                @*<td><input id="iddriver" name="iddriver" style="visibility:hidden" value="@d.Driverid" /></td>*@
+
+                                            </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'Export Loaded Out Report',
+                "filename": 'ExportLoadedOutReport_List'
+
+            }]
+           
+        });
+
+    });
+    //function Submit(TrailerNO) {
+        
+    //    var Number = $("#contactno").val();
+    //    alert(TrailerNO);
+    //    alert(MobileNo);
+    //    alert(Number);
+    //}
+
+    function Submit(TrailerNO, Driverid) {
+        var Reprtingdate = '';
+         var Trailerno = TrailerNO;
+        var Driverid = Driverid;
+        var Contactno = $("#contactno").val();
+        var Remakes = '';
+
+        if (Contactno == "") {
+            alert("Please Enter Mobile Number ")
+            return;
+        };
+
+        var data1 = { 'Reprtingdate': Reprtingdate, 'Trailerno': Trailerno, 'Driverid': Driverid, 'Contactno': Contactno, 'Remakes': Remakes };
+        var data = JSON.stringify(data1);
+       //alert(data);
+
+        $.ajax({
+            url: "/TrailerTransport/SaveVehiclePendency",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("PendingVehicleSummary", "TrailerTransport")';
+    }
+</script>
+

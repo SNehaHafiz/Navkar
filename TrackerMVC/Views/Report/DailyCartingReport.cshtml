@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewBag.Title = "DailyCartingReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Daily Carting Report</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> Search Criteria</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                                            { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                new SelectListItem { Text = "ALL", Value = "ALL"},
+                                                new SelectListItem { Text = "Customer", Value = "Customer"},
+                                              new SelectListItem { Text = "Shipping Line", Value = "Shipping Line"},
+                                              }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtName", null, new { @class = "form-control", @id = "txtName", name = "txtName" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+
+                                    <button class=" btn btn-primary" style="margin-top: -7px" title="Show" id="btnShow" type="button">
+                                        <i class="fe fe-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr>
+
+                                            @*<th class="wd-10p sorting">Sr No</th>
+                                <th class="wd-10p sorting">Paid ID</th>*@
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+
+<script type="text/javascript">
+
+    $("#btnShow").click(function () {
+
+        $("#tracker-loader").fadeIn("slow");
+        var fromdate = $("#txtFromDate").val();
+        var TOdate = $("#txtToDate").val();
+        var Search = $("#ddlSearch").val();
+        var name = $("#txtName").val();
+    
+        data1 = { 'fromdate': fromdate, 'TOdate': TOdate, 'Search': Search, 'name': name };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: '/Report/GETDailyCartingReport',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJson($("#example2"), jsonResult, "Daily Carting Report", "DailyCartingReport");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelDailyCartingReports", "report")?';
+
+
+    }
+
+
+</script>

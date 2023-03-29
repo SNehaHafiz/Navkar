@@ -1,0 +1,776 @@
+﻿
+@{
+    ViewBag.Title = "Import Update Charges Remarks";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="divForm">
+    <div class="page-header">
+        <h4 class="page-title">
+            Update Additional Charges
+        </h4>
+        <button class="btn btn-primary" style="float:right" onclick="ToGoSummary()"><i class="fe fe-file-text"></i></button>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Search On</label>
+                                @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                         { new SelectListItem { Text = "--Select--", Value = ""},
+                           new SelectListItem { Text = "Container No", Value = "Container No"},
+                           new SelectListItem { Text = "IGM - Item No", Value = "IGM No - Item No"},
+                           new SelectListItem { Text = "BL No", Value = "BL No"},
+                           }, new { @class = "form-control ", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" id="divContainer">
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Container No  </label>
+                                @Html.TextBox("Container", null, new { @class = "form-control", @id = "txtContainer", name = "txtTrainID", autocomplete = "off", onChange = "GetJoNoForDDL()", style = "text-transform:uppercase" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">JO No</label>
+                                <select id="ddlContainer" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3" id="divBtnContainer">
+                            <div class="form-group label-floating">
+
+                                <button class="btn btn-primary" onclick="ShowRemarksData()" style="margin-top: 25px"><i class="fe fe-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="divIGM">
+
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">IGM No  </label>
+                                @Html.TextBox("ItemNo", null, new { @class = "form-control", @id = "txtItemNo", name = "txtItemNo", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label"> Item No </label>
+                                @Html.TextBox("ItemValue", null, new { @class = "form-control", @id = "txtItemValue", name = "txtItemValue", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3" id="divBtnIGM" style="display:none">
+                            <div class="form-group label-floating">
+
+                                <button class="btn btn-primary" onclick="ShowRemarksData()" style="margin-top: 25px"><i class="fe fe-search"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-6 col-lg-3" id="divBL">
+                            <div class="form-group label-floating">
+                                <label class="form-label">BL NO.</label>
+                                @Html.TextBox("BLNo", null, new { @class = "form-control", @id = "txtBLNo", name = "txtBLNo", autocomplete = "off" })
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-sm-6 col-lg-3" id="divBtnBLNo" style="display:none">
+                            <div class="form-group label-floating">
+
+                                <button class="btn btn-primary" onclick="ShowRemarksData()" style="margin-top: 25px"><i class="fe fe-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row" id="divSummary">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Line Name</label>
+                                @Html.TextBox("LineName", null, new { @class = "form-control", @id = "txtLineName", name = "txtLineName", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Port Name</label>
+                                @Html.TextBox("PortName", null, new { @class = "form-control", @id = "txtPortName", name = "txtPortName", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-6 col-lg-6">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Account Head</label>
+                                @Html.DropDownList("ddlAccountHead", (IEnumerable<SelectListItem>)ViewBag.AccountHead, "--Select--", new { @class = "form-control", @id = "ddlAccountHead", name = "ddlAccountHead", autocomplete = "off" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Amount to Collect</label>
+                                @Html.TextBox("AmountToCollect", null, new { @class = "form-control", @id = "txtAmountToCollect", name = "txtAmountToCollect", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">First Party Name</label>
+                                @Html.TextBox("FirstPartyName", null, new { @class = "form-control", @id = "txtFirstPartyName", name = "txtFirstPartyName", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Second Party Name</label>
+                                @Html.TextBox("SecondPartyName", null, new { @class = "form-control", @id = "txtSecondPartyName", name = "txtSecondPartyName", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-12">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Remarks</label>
+                                @Html.TextArea("Remarks", null, new { @class = "form-control", @id = "txtRemarks", name = "txtRemarks", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-12" id="divShowButton">
+                            <div class="form-group" style="float:right">
+                                <div class="row gutters-xs">
+                                    <div class="col" style="float:right">
+                                        <input type="button" id="btnSave" name="Save" value="Save" class="btn btn-primary btnShow" onclick="Save()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divSummaryCharges" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title"><i class="fe fe-arrow-left" onclick="GoBackToForm()"></i>List of Update Additional Charges</h4>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-sm-6">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("FromDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(-7).ToString("dd-MMM-yyyy"), @id = "FromDate" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="form-group">
+                <label class="form-label">To Date </label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("ToDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(1).ToString("dd-MMM-yyyy"), @id = "ToDate" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="form-group">
+                <label class="form-label" style="display:none">* </label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button id="btnTarriffRemarksSummary" class="btn btn-primary" style="margin-top:25px" onclick="tarriffRemarksSummary()">Update Tarriff Remarks Summary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="form-group">
+                <label class="form-label" style="display:none">*</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button id="btnPendingSummary" class="btn btn-primary" style="margin-top:25px" onclick="pendingSummary()">View Pending Summary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divTarriffRemarksDetails" style="display:none">
+        <div class="row">
+            <label class="form-label" style="margin-left:15px">List of Update Tariff Remarks</label>
+
+        </div>
+        <div class="col-lg-12 col-sm-12">
+            <div class="table-responsive">
+                <table id="example3" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                    <thead>
+
+                        <tr></tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="divTarriffRemarksPendency" style="display:none">
+
+        <div class="row">
+
+            <label class="form-label" style="margin-left:15px">List of Pending Remarks</label>
+        </div>
+        <div class="col-lg-12 col-sm-12">
+            <div class="table-responsive">
+                <table id="example4" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                    <thead>
+
+                        <tr></tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script>
+        // Apply readonly according ddl values changes
+        $('#ddlCategory').change(function () {
+            var value = $('#ddlCategory').val();
+            if (value == "Container No") {
+                $("#txtBLNo").prop('readonly', true);
+
+                $("#txtItemNo").prop('readonly', true);
+                $("#txtItemValue").prop('readonly', true);
+
+                $("#txtContainer").prop('readonly', false);
+                $("#ddlCategory").prop('readonly', false);
+
+                $("#divIGM").hide();
+
+                $("#divBtnContainer").show();  // For Seach buttons
+                $("#divBtnIGM").hide();
+                $("#divBtnBLNo").hide();
+
+            } else if (value == "IGM No - Item No") {
+                $("#txtBLNo").prop('readonly', true);
+
+                $("#txtItemNo").prop('readonly', false);
+                $("#txtItemValue").prop('readonly', false);
+                $("#divBL").hide();
+
+                $("#divIGM").show();
+
+                $("#divBtnContainer").hide();   // For Seach buttons
+                $("#divBtnIGM").show();
+                $("#divBtnBLNo").hide();
+            } else if (value == "BL No") {
+                $("#txtBLNo").prop('readonly', false);
+
+                $("#txtItemNo").prop('readonly', true);
+                $("#txtItemValue").prop('readonly', true);
+                $("#divIGM").hide();
+                $("#divBL").show();
+
+                $("#divBtnContainer").hide();  // For Seach buttons
+                $("#divBtnIGM").hide();
+                $("#divBtnBLNo").show();
+            }
+        })
+
+
+
+        function ShowRemarksData() {
+            var SearchBy = $("#ddlCategory").val();
+            var SearchDetails = "";
+            var JO_Itemno = "";
+
+            var isValid = true;
+
+            if (SearchBy == "" || SearchBy == undefined) {
+                $("#ddlCategory").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else {
+                $("#ddlCategory").removeClass("is-invalid state-invalid");
+            }
+
+
+            //Filter Search details according to Search On ddl
+            if (SearchBy == "Container No") {
+                SearchDetails = $("#txtContainer").val();
+                JO_Itemno = $("#ddlContainer").val();
+
+                if (SearchDetails == "" || SearchDetails == undefined) {
+                    $("#txtContainer").addClass("is-invalid state-invalid");
+                    isValid = isValid && false;
+                } else if (JO_Itemno == "" || JO_Itemno == undefined) {
+                    $("#ddlContainer").addClass("is-invalid state-invalid");
+                    isValid = isValid && false;
+                } else {
+                    $("#txtContainer").removeClass("is-invalid state-invalid");
+                    $("#ddlContainer").removeClass("is-invalid state-invalid");
+                }
+
+                if (SearchDetails != "" && JO_Itemno != "") {
+                    GetRemarksDetail(); // Retrive Value form import_tariffRemarks
+                }
+
+            } else if (SearchBy == "IGM No - Item No") {
+                SearchDetails = $("#txtItemNo").val();
+                JO_Itemno = $("#txtItemValue").val();
+
+                if (SearchDetails == "" || SearchDetails == undefined) {
+                    $("#txtItemNo").addClass("is-invalid state-invalid");
+                    isValid = isValid && false;
+                } else if (JO_Itemno == "" || JO_Itemno == undefined) {
+                    $("#txtItemValue").addClass("is-invalid state-invalid");
+                    isValid = isValid && false;
+                } else {
+                    $("#txtItemNo").removeClass("is-invalid state-invalid");
+                    $("#txtItemValue").removeClass("is-invalid state-invalid");
+                }
+
+            } else if (SearchBy == "BL No") {
+                SearchDetails = $("#txtBLNo").val();
+                JO_Itemno = '0';
+
+                if (SearchDetails == "" || SearchDetails == undefined) {
+                    $("#txtItemNo").addClass("is-invalid state-invalid");
+                    isValid = isValid && false;
+                } else {
+                    $("#txtItemNo").removeClass("is-invalid state-invalid");
+                }
+            }
+
+
+
+
+            if (isValid) {
+
+                data1 = { 'SearchBy': SearchBy, 'SearchDetails': SearchDetails, 'JO_Itemno': JO_Itemno };
+                data = JSON.stringify(data1);
+                console.log(data);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/CreditNote/ShowTariffRemarkDetail',
+                    data: data,
+
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: true,
+                    success: function (jsonResult) {
+
+                        var d = JSON.parse(jsonResult);
+
+
+                        $("#txtContainer").val(d[0].Container_No);
+                        $("#txtLineName").val(d[0].SL_Name);
+                        $("#txtPortName").val(d[0].Port_Name);
+                        $("#txtItemNo").val(d[0].IGM_No);
+                        $("#txtItemValue").val(d[0].Item_NO);
+                        $("#txtBLNo").val(d[0].BL_No);
+
+                        console.log(d[0].Size);
+                        $("#example2").empty();
+                        BindDataTable($("#example2"), jsonResult, "Remark Data", "RemarkData");
+
+
+
+
+
+                        $("#tracker-loader").fadeOut("slow");
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                });
+
+
+            }
+
+        }
+
+        function GetRemarksDetail() {
+
+            var ContainerNo = $("#txtContainer").val();
+            var JO_Itemno = $("#ddlContainer").val();
+
+
+            data1 = { 'ContainerNo': ContainerNo, 'JONo': JO_Itemno };
+            data = JSON.stringify(data1);
+            console.log(data);
+
+            $.ajax({
+                type: 'POST',
+                url: '/CreditNote/GetAdditionalRemarksDetails',
+                data: data,
+
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+
+                    $("#txtFirstPartyName").val(data.FirstPartyName);
+                    $("#txtSecondPartyName").val(data.SecondPartyName);
+                    $("#txtAmountToCollect").val(data.AmountCollect);
+                    $("#ddlAccountHead").val(data.AccountID);
+                    $("#txtRemarks").val(data.Remarks);
+
+                    if (data.IsChecked == 1) {
+                        alert("Tariff Remark is checked for containerno : " + data.ContainerNo + " so can not allow to Modify")
+                    }
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+        function GetJoNoForDDL() {
+            var ContainerNo = $("#txtContainer").val();
+            data1 = { 'ContainerNo': ContainerNo };
+            data = JSON.stringify(data1);
+            console.log(data);
+
+            $.ajax({
+                type: 'POST',
+                url: '/CreditNote/ShowJONoForDDL',
+                data: data,
+
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (jsonResult) {
+
+
+                    console.log(jsonResult);
+                    var select = $("#ddlContainer");
+
+                    select.empty();
+                    select.append($('<option/>', {
+                        value: "",
+                        text: "--Select--"
+                    }));
+
+                    $.each(jsonResult, function (dataJoNo, value) {
+
+                        select.append($("<option></option>").val(value.JONo).html(value.JONo));
+                    })
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+
+        function BindDataTable(tableName, data, title, fileName) {
+            //debugger;
+            //Check if table dose not exist then return error message.
+            console.log(data);
+            try {
+                if (tableName == null) {
+                    alert("table not exist.");
+                }
+
+                //Check Data Table has if already initialize then need to destroy first!
+                if ($.fn.DataTable.isDataTable(tableName)) {
+                    tableName.DataTable().destroy();
+                    tableName.empty();
+                }
+
+                var parseJSONResult = jQuery.parseJSON(data);
+
+                if (parseJSONResult != null && parseJSONResult.length > 0) {
+                    //Get dynmmic column.
+                    var dynamicColumns = [];
+                    var i = 0;
+                    $.each(parseJSONResult[0], function (key, value) {
+                        var obj = { sTitle: key };
+                        dynamicColumns[i] = obj;
+                        i++;
+                    });
+                    //fetch all records from JSON result and make row data set.
+                    var rowDataSet = [];
+                    var i = 0;
+                    $.each(parseJSONResult, function (key, value) {
+                        var rowData = [];
+                        var j = 0;
+                        $.each(parseJSONResult[i], function (key, value) {
+                            rowData[j] = value;
+                            j++;
+                        });
+                        rowDataSet[i] = rowData;
+
+                        i++;
+                    });
+                    tableName.dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": rowDataSet,
+                        "bInfo": false,
+                        "bPaginate": false,
+                        "bFilter": false,
+                        "paging": false,
+                        "showNEntries": false,
+                        "columns": dynamicColumns,
+                        "deferRender": true,
+                        "ordering": false
+
+                    });
+
+
+
+                }
+            }
+            catch (ex) {
+                alert(ex.message);
+            }
+        }
+
+
+
+        function Save() {
+            formData = {};
+            formData.ContainerNo = $("#txtContainer").val();
+            formData.JONo = $("#ddlContainer option:selected").text();
+            formData.FirstPartyName = $("#txtFirstPartyName").val();
+            formData.SecondPartyName = $("#txtSecondPartyName").val();
+            formData.AmountCollect = $("#txtAmountToCollect").val();
+            formData.AccountID = $("#ddlAccountHead").val();
+            formData.Remarks = $("#txtRemarks").val();
+            formData.IGMNo = $("#txtItemNo").val();
+            formData.ItemNo = $("#txtItemValue").val();
+            formData.BLNo = $("#txtBLNo").val();
+            formData.AddedOn = new Date();
+
+            var isValid = true;
+
+            if (formData.ContainerNo == "" || formData.ContainerNo == undefined || parseInt(formData.ContainerNo.length) != 11) {
+                $("#txtContainer").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else if (formData.JONo == "" || formData.JONo == undefined) {
+                $("#ddlContainer").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else if (formData.Remarks == "" || formData.Remarks == undefined) {
+                $("#txtRemarks").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else if (formData.IGMNo == "" || formData.IGMNo == undefined) {
+                $("#txtItemNo").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else if (formData.AmountCollect == "" || formData.AmountCollect == undefined) {
+                $("#txtAmountToCollect").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else if (formData.AccountID == "" || formData.AccountID == undefined) {
+                $("#ddlAccountHead").addClass("is-invalid state-invalid");
+                isValid = isValid && false;
+            } else {
+                $("#txtContainer").removeClass("is-invalid state-invalid");
+                $("#ddlContainer").removeClass("is-invalid state-invalid");
+                $("#txtRemarks").removeClass("is-invalid state-invalid");
+                $("#txtItemNo").removeClass("is-invalid state-invalid");
+                $("#txtAmountToCollect").removeClass("is-invalid state-invalid");
+                $("#ddlAccountHead").removeClass("is-invalid state-invalid");
+            }
+
+            if (isValid && parseInt(formData.ContainerNo.length) == 11) {
+                data1 = { 'FormData': formData };
+                data = JSON.stringify(data1);
+                console.log(data);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/CreditNote/SaveRemarksData',
+                    data: data,
+
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: true,
+                    success: function (result) {
+                        if (result.Status == 1) {
+                            alert(result.Message);
+                            window.location = "/TrainTrip/ImportUpdateChargesRemarks";
+                        } else {
+                            alert(result.Message);
+                        }
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                });
+            }
+        }
+
+
+        function ToGoSummary() {
+            $("#divForm").hide();
+            $("#divSummaryCharges").show();
+        }
+
+        function GoBackToForm() {
+            $("#divForm").show();
+            $("#divSummaryCharges").hide();
+        }
+
+
+        function tarriffRemarksSummary() {
+            $("#divTarriffRemarksDetails").show();
+            $("#divTarriffRemarksPendency").hide();
+
+            var FromDate = $("#FromDate").val();
+            var toDate = $("#ToDate").val();
+
+            data1 = { 'fromDate': FromDate, 'toDate': toDate };
+            data = JSON.stringify(data1);
+
+            $.ajax({
+                type: 'POST',
+                url: '/CreditNote/getTarriffRemarksDetailsSummary',
+                data: data,
+
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (jsonResult) {
+
+                    var d = JSON.parse(jsonResult);
+
+                    $("#example3").empty();
+                    BindDataTable($("#example3"), jsonResult, "Remarks Summary", "RemarksSummary");
+
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+        function pendingSummary() {
+            $("#divTarriffRemarksDetails").hide();
+            $("#divTarriffRemarksPendency").show();
+
+            var FromDate = $("#FromDate").val();
+            var toDate = $("#ToDate").val();
+
+            data1 = { 'fromDate': FromDate, 'toDate': toDate };
+            data = JSON.stringify(data1);
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/CreditNote/getTarriffRemarksPendencySummary',
+                data: data,
+
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (jsonResult) {
+
+                    var d = JSON.parse(jsonResult);
+                    $("#example4").empty();
+                    BindDataTable($("#example4"), jsonResult, "pending Summary", "pendingSummary");
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+</script>

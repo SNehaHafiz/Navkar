@@ -1,0 +1,301 @@
+﻿
+@{
+    ViewBag.Title = "ModifyVehicleNo";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify Vehicle No</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Location</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select class="form-control" id="ddllocation">
+                                            <option value="0">--Select--</option>
+                                            <option value="Yard I">NCL-I</option>
+                                            <option value="Yard II">NCL-II</option>
+                                            <option value="Yard III">NCL-III</option>
+                                            <option value="Aryan">Aryan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Activity</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlactivity", (IEnumerable<SelectListItem>)ViewBag.ActivityList, "--Select--", new { @class = "form-control", @id = "ddlactivity", name = "ddlactivity", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcontainerno", null, new { @class = "form-control ", @id = "txtcontainerno", Placeholder = "Container No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Activity Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtactivitydate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtactivitydate", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch();"><i class="fa fa-check"></i></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Old Vehicle No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtoldvehicleno", null, new { @class = "form-control ", @id = "txtoldvehicleno", Placeholder = "Old Vehicle No", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">New Vehicle No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtnewvehicleno", null, new { @class = "form-control ", @id = "txtnewvehicleno", Placeholder = "New Vehicle No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", Placeholder = "Remarks", @autocomplete = "off" })
+                                        <input type="hidden" id="txtentryid" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                    </div>
+                    <div class="col-lg-2 col-sm-8">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+
+                                    <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Update() {
+         debugger;
+         var Location = document.getElementById('ddllocation').value;
+            var ContainerNo = document.getElementById('txtcontainerno').value;
+            var Activity = document.getElementById('ddlactivity').value;
+        var Vehicleno = document.getElementById('txtnewvehicleno').value;
+        var EntryID = document.getElementById('txtentryid').value;
+        var OldVehicleno = document.getElementById('txtoldvehicleno').value;
+         // var ToDate = document.getElementById('txtactivitydate').value;
+         var Remarks = document.getElementById('txtremarks').value;
+
+
+        if (Location == 0) {
+            document.getElementById("ddllocation").style.borderColor = "red";
+             alert('Please select location!')
+             event.preventDefault();
+             return;
+         }
+
+
+            if (Activity == "") {
+             document.getElementById("ddlactivity").style.borderColor = "red";
+            alert('Please select activity!')
+            event.preventDefault();
+            return;
+        }
+
+        if (ContainerNo == "") {
+            document.getElementById("txtcontainerno").style.borderColor = "red";
+            alert('Please enter container no!')
+            event.preventDefault();
+            return;
+        }
+
+        if (Vehicleno == "") {
+            document.getElementById("txtnewvehicleno").style.borderColor = "red";
+            alert('Please enter vehicle no!')
+            event.preventDefault();
+            return;
+        }
+
+            if (Remarks == "") {
+                document.getElementById("txtremarks").style.borderColor = "red";
+             alert('Please enter remarks !')
+             event.preventDefault();
+             return;
+         }
+
+
+        var data1 = {
+            'Location': Location, 'Activity': Activity, 'ContainerNo': ContainerNo, 'EntryID': EntryID, 'Vehicleno': Vehicleno, 'OldVehicleno': OldVehicleno, 'Remarks': Remarks
+            };
+
+        var data = JSON.stringify(data1);
+
+        // alert(data);
+
+
+     $.ajax({
+         url: "/ModifyModule/UpdateVehicleNo",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+         success: function (data) {
+             alert(data)
+                window.location.href = '@Url.Action("ModifyVehicleNo", "ModifyModule")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+</script>
+
+
+<script>
+
+    function Fetch() {
+        debugger;
+
+
+
+        var Location = document.getElementById('ddllocation').value;
+        var ContainerNo = document.getElementById('txtcontainerno').value;
+        var Activity = document.getElementById('ddlactivity').value;
+
+        if (Location == 0) {
+            document.getElementById("ddllocation").style.borderColor = "red";
+            alert('Please select location!')
+            event.preventDefault();
+            return;
+        }
+
+
+        if (Activity == "") {
+            document.getElementById("ddlactivity").style.borderColor = "red";
+            alert('Please select activity!')
+            event.preventDefault();
+            return;
+        }
+
+        if (ContainerNo == "") {
+            document.getElementById("txtcontainerno").style.borderColor = "red";
+            alert('Please enter container no!')
+            event.preventDefault();
+            return;
+        }
+
+
+        var data1 = { 'Location': Location, 'Activity': Activity, 'ContainerNo': ContainerNo };
+        var data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetAllVehicle',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    return;
+                }
+                $('#txtoldvehicleno').val(data[0].VehicleNo);
+                $('#txtactivitydate').val(data[0].Date);
+                $('#txtentryid').val(data[0].JONo);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+

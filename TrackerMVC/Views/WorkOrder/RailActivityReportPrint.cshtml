@@ -1,0 +1,143 @@
+﻿<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Rail Activity Report</title>
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+    <style>
+        body {
+            color: black;
+        }
+
+        .marginTop{
+            margin-top:10px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .tblBox {
+            border-collapse: collapse; 
+            width: 100%;
+        }
+
+        .headingh3 {
+            font-size: 11pt;
+            font-family: 'verdana(batlic)';
+            text-decoration: underline;
+        }
+
+        th {
+            border: 1px solid black;
+            font-size: 15px;
+            font-family: verdana(batlic);
+            background-color: #ede5e5;
+        }
+
+        td {
+            border: 1px solid black;
+            font-size: 12px;
+            font-family: 'Segoe UI';
+        }
+
+        h5, h4 {
+            font-size: 10pt;
+            font-family: 'Segoe UI';
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-family: 'verdana(batlic)';
+        }
+
+    </style>
+</head>
+<body>
+    @foreach (var dr1 in ViewBag.LabourVendorList)
+    {
+        double TotalPkgs = 0;
+        double TotalWeight = 0;
+        double TotalExamedPkgs = 0;
+        double TotalExamedWeight = 0;
+        int checkData1 = 0;
+        int counter = 1;
+
+        <div style="width:100%; text-align:center; height:100%;">
+            <div style="width:100%;height:100%;">
+                <div class="row marginTop">
+                    <h3 class="headingh3">From Date:- @ViewBag.FromDate ToDate :- @ViewBag.ToDate</h3>
+                </div>
+                <div class="row marginTop">
+                    <h3 class="headingh3">Code:- @dr1["Name"]</h3>
+                    <h3 class="headingh3">Location:- @ViewBag.Location</h3>
+                </div>
+                <div class="row" style="border:1px">
+                    <h3>Rail Work Order</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr.No.</th>
+                                <th style="width:80px;">RR No</th>
+                                <th style="width:100px;">RR Date</th>
+                                <th style="width:80px;">Cont No</th>
+                                <th style="width:50px;">Size</th>
+                                <th style="width:100px;">Commodity Desc</th>
+                                <th style="width:100px;">Pkgs Type</th>
+                                <th style="width:100px;">No. Pkgs</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Total Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.LabourList)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData1 = checkData1 + 1;
+
+                                    TotalPkgs = TotalPkgs + @dr["Package"];
+                                    TotalWeight = TotalWeight + @dr["Weight"];
+                                    TotalExamedPkgs = TotalExamedPkgs + @dr["TotalWeight"];
+                                    <tr>
+                                        <td style="text-align:left">@counter &nbsp;</td>
+                                        <td style="text-align:left">@dr["RRNo"]&nbsp;</td>
+                                        <td style="text-align:left">@dr["RRDate"]&nbsp;</td>
+                                        <td style="text-align:left">@dr["ContNo"]&nbsp;</td>
+                                        <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                        <td style="text-align:left">@dr["Commodity"]&nbsp;</td>
+                                        <td style="text-align:right">@dr["PackageType"]&nbsp;</td>
+                                        <td style="text-align:right">@dr["Package"]&nbsp;</td>
+                                        <td style="text-align:right">@dr["Weight"] &nbsp;</td>
+                                        <td style="text-align:right">@dr["TotalWeight"] &nbsp;</td>
+                                    </tr>
+
+                                    counter = counter + 1;
+                                }
+                            }
+                                    @if (checkData1 > 0)
+                                    {
+                                    <tr>
+                                        <td style="text-align:left">&nbsp; </td>
+                                        <td style="text-align:left">&nbsp; </td>
+                                        <td style="text-align:left">&nbsp; </td>
+                                        <td style="text-align:left">&nbsp; </td>
+                                        <td style="text-align:left">&nbsp; </td>
+                                        <td style="text-align:left">&nbsp; </td>
+                                        <td style="text-align:left;font-weight:700;font-size:medium">Total &nbsp; </td>
+                                        <td style="text-align:right;font-weight:700;font-size:medium">@TotalPkgs &nbsp;</td>
+                                        <td style="text-align:right;font-weight:700;font-size:medium">@TotalWeight &nbsp;</td>
+                                        <td style="text-align:right;font-weight:700;font-size:medium">@TotalExamedPkgs &nbsp;</td>
+                                    </tr>
+                                    }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+           
+        </div>
+    }
+</body>
+</html>

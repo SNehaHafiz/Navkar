@@ -1,0 +1,525 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrainExportEntities>
+
+@{
+    ViewBag.Title = "Train Planning Export";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden" id="AddItems">
+    <div class="page-header">
+        <h4 class="page-title">
+            Train Planning Export: <label id="lblcount"></label>
+        </h4>
+        @*<div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                  
+                    <button type="button" class="btn btn-icon btn-teal" onclick="window.location = '@Url.Action("TrainDeparture", "Train")' " name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>*@
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Train No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlTrainDropdown", (IEnumerable<SelectListItem>)ViewBag.TrainList, "--Select-- ", new { @class = "form-control", @id = "ddlTrainDropdown", name = "ddlTrainDropdown", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Port Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlPortDropdown", (IEnumerable<SelectListItem>)ViewBag.portList, "--Select-- ", new { @class = "form-control", @id = "ddlPortDropdown", name = "ddlPortDropdown", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-primary " type="button" id="Add" onclick="ShowItemList()" name="Add">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-instagram pull-right">Selected TEUS: <span id="selected_count" value="0"></span> </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-list text-center">
+                        <div class="row">
+                            <div class=" btn-list col-12">
+                                <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div id="showItems">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:1px"></th>
+                                                <th style="width:5px">Status</th>
+                                                <th style="width:7px">Container No</th>
+                                                <th style="width:3px">Size</th>
+                                                <th style="width:3px">Container Type</th>
+                                                <th>Shipping Line</th>
+                                                @*<th>ICD In Date and Time</th>
+                                                <th>Document Date</th>*@
+                                                <th>Wagon No.</th>
+                                                <th>Remarks</th>
+                                                <th>Dwell Days</th>
+                                            </tr>
+                                        </thead>
+                                        @*<tbody>
+                                            @foreach (var d in Model)
+                                                {
+                                                    <tr>
+                                                        <td><input type="checkbox" id="chkContainer" /></td>
+                                                        <td>@Html.DisplayFor(m => d.Status)</td>
+                                                        <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                                        <td>@Html.DisplayFor(m => d.Size)</td>
+                                                        <td>@Html.DisplayFor(m => d.ContainerType)</td>
+                                                        <td>@Html.DisplayFor(m => d.LineName)</td>
+                                                        <td><input type="text" id="txtwagon" class="form-control" value='@d.wagonNo'/></td>
+                                                        <td>@Html.DisplayFor(m => d.Remarks)</td>
+                                                        <td>@Html.DisplayFor(m => d.DwellDays)</td>
+                                                    </tr>
+                                                }
+                                        </tbody>*@
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-list text-center">
+                            <div class="row">
+                                <div class=" btn-list col-12">
+                                    <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <!-- Show the table after click of save button  -->
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+    <!-- section-wrapper -->
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $('#ContainerList').dataTable({
+            "destroy": true,
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "aaSorting": [],
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+
+
+        })
+    });
+    </script>
+<script type="text/javascript">
+
+    function ShowItemList() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+        var Portid = $("#ddlPortDropdown option:selected").val();
+        var Trainid = $("#ddlTrainDropdown option:selected").val();
+
+        var data1 = { 'Portid': Portid, 'Trainid': Trainid };
+        var data = JSON.stringify(data1);
+        //alert(data);
+
+        $.ajax({
+            url: "/Train/TrainExportContainerList",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                var count = Object.keys(data).length;
+                $("#lblcount").text(count);
+                var ItemList = JSON.stringify(data.ContainerList);
+                
+                $('#ContainerList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+
+                    "aaData": data,
+                    "columns": [
+                        {
+
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  onclick=\" CalculateTUES(' + row.TEUS + ')  \"    ' + row.selected + '   value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+
+                      { "data": "Status" },
+                      { "data": "ContainerNo" },
+                           {
+                               "data": "Size",
+                               "render": function (data, type, row, meta) {
+
+                                   input = '<input type=\"hidden\" name=\"Size[]\" class=\" form-control Size\" id=\"Size\"  value="' + data + '">';
+                                   input1 = '<input type=\"hidden\" name=\"TEUS[]\" class=\" form-control TEUS\" id=\"TEUS\"  value="' + row.TEUS + '">';
+                                   return data + input + input1;
+                               }
+                           },
+                            { "data": "ContainerType" },
+                            { "data": "LineName" },
+                            
+                          
+                            {
+                                "data": "wagonNo",
+                                "render": function (data, type, row, meta) {
+
+                                    input = '<input type=\"text\" name=\"WagonNo[]\" class=\" form-control WagonNo\" id=\"WagonNo\"  maxlength=15 value="' + data + '">';
+                                    input1 = '<input type=\"hidden\" name=\"entryid[]\" class=\" form-control entryid \" id=\"entryid\"  value="' + row.entryid + '">';
+                                    input2 = '<input type=\"hidden\" name=\"process[]\" class=\" form-control process\" id=\"process\"  value="' + row.process + '">';
+
+                                    return input + input1 + input2;
+                                }
+                            },
+                          
+                             {
+                                 "data": "Remarks",
+                                 "render": function (data, type, row, meta) {
+
+                                     input = '<input type=\"text\" name=\"Remarks[]\" class=\" form-control Remarks\" id=\"Remarks\"   value="' + data + '">';
+                                     return input;
+                                 }
+                             },
+                            { "data": "DwellDays" }
+                    ],
+                    "rowCallback": function (row, data, dataIndex) {
+                        var TrailerNo = $(row).attr('data-trainId', data.TrailerNo);
+                        if (data.TrailerNo == "") {
+                            // alert(trainId);
+                            $(row).attr('style', 'background-color: white');
+                        }
+                        else {
+                            $(row).attr('style', 'background-color: yellow');
+
+                        }
+                    }
+
+                })
+
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+
+                var tablearray = [];
+                var table = document.getElementById("ContainerList");
+                var row;
+
+                var TotTEUS = 0;
+                for (var i = 1; i < table.rows.length; i++) {
+
+                    row = table.rows[i];
+
+                    for (var k = 0; k < checkboxarray.length; k++) {
+                        var containerno = row.cells[0].childNodes[0].value;
+
+                        if (containerno == checkboxarray[k]) {
+
+                            var size = row.cells[3].childNodes[2].value;
+
+                            TotTEUS = Number(TotTEUS) + Number(size);
+
+                        }
+                    }
+                }
+
+                $("#selected_count").text(TotTEUS);
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function CalculateTUES(Size) {
+
+        //alert("hi");
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("ContainerList");
+        var row;
+
+        var TotTEUS = 0;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                var containerno = row.cells[0].childNodes[0].value;
+               // alert(containerno);
+               // alert(checkboxarray[k]);
+
+                if (containerno == checkboxarray[k]) {
+
+
+                    var size = row.cells[3].childNodes[2].value;
+
+                    
+
+                    TotTEUS = Number(TotTEUS) + Number(size);
+
+                }
+            }
+        }
+
+        $("#selected_count").text(TotTEUS);
+
+    }
+
+   
+
+    function Save() {
+
+        var itemcount = checkItemcount();
+        if (itemcount) {
+
+            var portid = $("#ddlPortDropdown option:selected").val();
+            var Trainid = $("#ddlTrainDropdown option:selected").val();
+
+
+
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+            //alert(JSON.stringify(checkboxarray));
+
+
+            var tablearray = [];
+            var table = document.getElementById("ContainerList");
+            var row;
+
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+                    var containerno = row.cells[0].childNodes[0].value;
+
+
+                    if (containerno == checkboxarray[k]) {
+
+                        var EntryID = row.cells[6].childNodes[1].value;
+                        var process = row.cells[6].childNodes[2].value;
+                        var wagonno = row.cells[6].childNodes[0].value;
+                        var remark = row.cells[7].childNodes[0].value.replace(/'/g, "''");
+
+                        if (wagonno == "") {
+                            alert("Wagon number cannot be left blank for Container No.: " + containerno + "")
+                            return false;
+                        }
+
+                        tablearray.push({ 'portId': portid, 'trainId': Trainid, 'entryid': EntryID, 'ContainerNo': containerno, 'process': process, 'wagonNo': wagonno, 'Remarks': remark })
+                    }
+                }
+            }
+         //   alert(JSON.stringify(tablearray));
+
+            if ($("#selected_count").text() > 90) {
+                alert("TEUS cannot be greater than 90")
+                return false;
+            }
+
+
+            var Traintext = $("#ddlTrainDropdown option:selected").text();
+            var data1 = { 'Containerdata': tablearray, 'PortID': portid, 'TrainID': Trainid };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/Train/AddExportTrainPlanning",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (Data) {
+
+                    alert(Data);
+
+                    ////if (Data == 'New') {
+
+
+                    ////    SaveDetails(tablearray, portid, Trainid);
+                    ////}
+                    ////else {
+
+                    ////    alert(Data);
+
+
+                    ////}
+
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        }
+        else {
+            alert("Please select atleast one container to add wagon no!");
+        }
+
+    }
+
+
+    function SaveDetails(tablearray, portid, Trainid) {
+
+
+        if (tablearray.length == 0) {
+            alert("Please select atleast one container to add wagon no!");
+
+
+        }
+        else {
+
+
+
+            var data1 = { 'Containerdata': tablearray, 'PortID': portid, 'TrainID': Trainid };
+            var data = JSON.stringify(data1);
+
+            //alert(data);
+
+           
+        }
+
+
+
+    }
+
+    function checkItemcount() {
+
+        var table = $('#ContainerList').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+    
+</script>
+
+<script type="text/javascript">
+    function validate() {
+
+        var port = document.getElementById('ddlPortDropdown').value;
+        var Train = document.getElementById('ddlTrainDropdown').value;
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('ddlPortDropdown').style.borderColor = "Gainsboro";
+        document.getElementById('ddlTrainDropdown').style.borderColor = "Gainsboro";
+
+        if (port == "") {
+            document.getElementById('ddlPortDropdown').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+
+        if (Train == "") {
+            document.getElementById('ddlTrainDropdown').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+
+</script>

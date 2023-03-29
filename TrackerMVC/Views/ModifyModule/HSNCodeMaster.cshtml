@@ -1,0 +1,230 @@
+﻿
+@{
+    ViewBag.Title = "HSN Code Master";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    th, td {
+        text-align: center;
+    }
+</style>
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">HSN Code Master</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+
+    <div class="row" id="Summary">
+        <div class="col-sm-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-sm-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label">New</label>
+                                @Html.TextBox("ID", null, new { @class = "form-control", @id = "ID", name = "HSNCode", autocomplete = "off", @readonly = "Readonly", @placeholder = "New" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <div class="form-group">
+                                <label class="form-label">HSN/SAC Code</label>
+                                @Html.TextBox("HSNCode", null, new { @class = "form-control", @id = "txthsn", name = "HSNCode", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <div class="form-group">
+                                <label class="form-label">Descriptions</label>
+                                @Html.TextArea("Descriptions", null, new { @class = "form-control", @id = "txtDescriptions", name = "Descriptions", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="pull-right">
+
+                        <button class="btn btn-success float-right" id="Save" onclick="SaveWareHouse()" title="Save"><i class="fa fa-save"></i></button>
+                        @*<button class="btn btn-warning float-right" id="Updates" onclick="UpdateWareHouse()"><i class="fa fa-save"></i></button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">HSN Code List</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("Search", null, new { @class = "form-control", @id = "search", name = "HSNCode", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+    function SaveWareHouse() {
+
+
+        var HSNCode = $("#txthsn").val();
+        var Descripction = $("#txtDescriptions").val();
+
+
+
+
+        if (HSNCode == "" || HSNCode == undefined) {
+           document.getElementById('txthsn').style.borderColor = "red";
+            alert("Please Fill HSN Code !")
+
+           return false;
+      } else {
+           document.getElementById('txthsn').style.borderColor = "Gainsboro";
+        }
+
+        if (Descripction == "" || Descripction == undefined) {
+            document.getElementById('txtDescriptions').style.borderColor = "red";
+            alert("Please Fill Descriptions !")
+
+            return false;
+        } else {
+            document.getElementById('txtDescriptions').style.borderColor = "Gainsboro";
+        }
+
+        var Elements = {};
+        Elements.HSNCode = HSNCode;//OfficeID;
+        Elements.Description = Descripction;
+
+
+
+        var data = { 'Master': Elements }
+        data = JSON.stringify(data);
+     //   alert(data);
+        @*expTariffMaster Is Entities Name *@
+        //This Is For Pass Data Through AJAX Script
+$.ajax({
+    url: "/ModifyModule/SaveHSNCode",
+    data: data,
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (response) {
+        alert(response.ResponseMessage)
+    window.location.href = '@Url.Action("HSNCodeMaster", "ModifyModule")';
+    },
+        error: function (errormessage) {
+        alert(errormessage.responseText);
+    }
+        });
+    }
+
+    function ShowSSRSummary() {
+
+
+        debugger;
+        var Search = document.getElementById('search').value;
+
+        var data1 = { 'Search': Search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ModifyModule/gethsnlist",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(jsonResult)
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "CancelFinalOutList", "CancelFinalOutList")
+                //  alert(jsonResult)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+
+
+</script>

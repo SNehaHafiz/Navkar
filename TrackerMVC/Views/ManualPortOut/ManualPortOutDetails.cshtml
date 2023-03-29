@@ -1,0 +1,873 @@
+﻿@{
+    ViewBag.Title = "ManualPortOutDetails";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Manual Port Out</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">Transport Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlTransportType", (IEnumerable<SelectListItem>)ViewBag.Transport, "--Select--", new { @class = "form-control", @id = "TransportType", name = "TransportType", autocomplete = "off", onchange = "ShowWagonNO()" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row" style="display:none" id="divWagonTrainNo">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlTrainNo", (IEnumerable<SelectListItem>)ViewBag.Train, "--Select--", new { @class = "form-control", @id = "ddlTrainNo", name = "ddlTrainNo", autocomplete = "off" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Wagon No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWagonNo", null, new { @class = "form-control", @id = "txtWagonNo", name = "txtWagonNo", autocomplete = "off", placeholder = "Wagon No", @maxlength = 15 })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                        <div class="row" style="display:none" id="divTrailerNo">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer No(Only Last 4 digits)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label mandatory">Trailer No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownList("ddlTrailerNo", (IEnumerable<SelectListItem>)ViewBag.Trailerno, "--Select--", new { @class = "form-control", @id = "ddlTrailerNo", name = "ddlTrailerNo", autocomplete = "off" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                                <label class="form-label">Trailer No </label>
+
+                                <select id="ddlTrailerNo" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+
+                            </div>
+                            <div class="col-lg-3 col-sm-12" style="display:none" id="divTrailerno">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTrailerNoFull", null, new { @class = "form-control", @id = "TrailerNoFull", name = "TrailerNoFull", autocomplete = "off", placeholder = "Trailer No", @maxlength = 100 })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "ContainerNo", name = "ContainerNo", autocomplete = "off", placeholder = "Name", @maxlength = 11, onblur = "myRequiredValidation('ContainerNo')" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlContainerSize", (IEnumerable<SelectListItem>)ViewBag.ContainerSize, "--Select--", new { @class = "form-control", @id = "ContainerSize", name = "ContainerSize", autocomplete = "off" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlContainerType", (IEnumerable<SelectListItem>)ViewBag.ContainerType, "--Select--", new { @class = "form-control", @id = "ContainerType", name = "ContainerType", autocomplete = "off" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">Port Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlportList", (IEnumerable<SelectListItem>)ViewBag.portList, "--Select--", new { @class = "form-control", @id = "portList", name = "portList", autocomplete = "off", onchange = "ShowSourceLocation()" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">Cycle</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlCycle", (IEnumerable<SelectListItem>)ViewBag.Cycle, "--Select--", new { @class = "form-control", @id = "Cycle", name = "Cycle", autocomplete = "off" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">From Source</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlLocationSource", (IEnumerable<SelectListItem>)ViewBag.LocationSource, "--Select--", new { @class = "form-control", @id = "LocationSource", name = "LocationSource", autocomplete = "off" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">To Destination</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlLocationDestination", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "LocationDestination", name = "LocationDestination", autocomplete = "off" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label ">SMTP Received</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("datePicker1", null, new { @class = "form-control datepicker1", @id = "datePicker1", autocomplete = "off", placeholder = "SMTP Received" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="card-footer text-right">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="btnSave" name="btnSave" value="Save" class="btn btn-success" onclick="Save()" />
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    function ShowSourceLocation() {
+        var Location = $("#portList option:selected").text();
+
+
+
+        var dd = document.getElementById('LocationSource');
+        for (var i = 0; i < dd.options.length; i++) {
+            if (dd.options[i].text === Location) {
+                dd.selectedIndex = i;
+                break;
+            }
+        }
+
+    }
+
+
+    function ShowWagonNO() {
+
+        var TransportType = $("#TransportType option:selected").val();
+        if (TransportType == 1) {
+            $('#divWagonTrainNo').show();
+            $('#divTrailerNo').hide();
+
+            document.getElementById('Trailerno').value = "";
+            document.getElementById('ddlTrailerNo').value = "";
+
+            var select = $("#ddlTrailerNo");
+
+
+            select.empty();
+            select.append($('<option/>', {
+                value: "",
+                text: "--Select--"
+            }));
+        }
+        else {
+            $('#divWagonTrainNo').hide();
+            $('#divTrailerNo').show();
+
+            document.getElementById('ddlTrainNo').value = "";
+            document.getElementById('txtWagonNo').value = "";
+        }
+
+    }
+
+    function Save() {
+
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+        //var TrailerNo = $("#Trailerno").val();
+
+
+        var TrailerNo = $("#ddlTrailerNo option:selected").text();
+        if (TrailerNo == "--Select--") {
+            var TrailerNo = $("#TrailerNoFull").val();
+
+        }
+
+        var ContainerSize = $("#ContainerSize option:selected").val();
+        var ContainerType = $("#ContainerType option:selected").val();
+        var ContainerNo = $("#ContainerNo").val();
+        var Portname = $("#portList option:selected").val();
+        var Cycle = $("#Cycle option:selected").val();
+        var TransportType = $("#TransportType option:selected").val();
+        var FromSource = $("#LocationSource option:selected").val();
+        var FromDestination = $("#LocationDestination option:selected").val();
+        var SMTPReceived = document.getElementById('datePicker1').value;
+
+        if (TransportType == 1) {
+            var TrainNo = $("#ddlTrainNo option:selected").val();
+            var WagonNo = $("#txtWagonNo").val();
+
+        }
+        else {
+            var TrainNo = 0;
+            var WagonNo = "";
+
+
+        }
+
+
+        if (TransportType == 1) {
+
+            var Traintext = $("#ddlTrainNo option:selected").text();
+            var data1 = { 'TrainNo': Traintext };
+            var data = JSON.stringify(data1);
+
+
+
+
+            $.ajax({
+                url: "/ManualPortOut/GetTEUSCalculation",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (Data) {
+                    
+                    if (Data == 'New') {
+                        
+                        
+                        SaveDetails(TrailerNo, ContainerType, ContainerSize, ContainerNo, Portname, Cycle, TransportType, FromSource, FromDestination, TrainNo, WagonNo, SMTPReceived);
+                    }
+                    else {
+
+                        alert(Data);
+
+                    }
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+
+
+        }
+        else {
+            SaveDetails(TrailerNo, ContainerType, ContainerSize, ContainerNo, Portname, Cycle, TransportType, FromSource, FromDestination, TrainNo, WagonNo, SMTPReceived);
+        }
+
+        
+
+        
+
+
+    }
+
+    function SaveDetails(TrailerNo, ContainerType, ContainerSize, ContainerNo, Portname, Cycle, TransportType, FromSource, FromDestination, TrainNo, WagonNo, SMTPReceived) {
+
+
+        
+        $.ajax({
+            url: "/ManualPortOut/CheckDuplicateContainer",
+            data: JSON.stringify({ 'ContainerNo': ContainerNo }),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (Data) {
+                if (Data == 'New') {
+
+                    DuplicateContainer = 0;
+
+                    var data1 = {
+                        'TrailerNo': TrailerNo, 'ContainerType': ContainerType, 'ContainerSize': ContainerSize,
+                        'ContainerNo': ContainerNo, 'Portname': Portname, 'Cycle': Cycle, 'TransportType': TransportType,
+                        'FromSource': FromSource, 'FromDestination': FromDestination, 'TrainNo': TrainNo, 'WagonNo': WagonNo, 'SMTPReceived': SMTPReceived
+                    };
+                    var data = JSON.stringify(data1);
+
+                    //alert(data);
+
+                    $.ajax({
+                        url: "/ManualPortOut/AjaxAddManualPortOut",
+                        data: data,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+
+
+                            alert("Record saved successfully!");
+
+                            document.getElementById('Trailerno').value = "";
+                            document.getElementById('ddlTrailerNo').value = "";
+                            document.getElementById('ContainerSize').value = "";
+                            document.getElementById('ContainerType').value = "";
+                            document.getElementById('ContainerNo').value = "";
+                            document.getElementById('portList').value = "";
+                            document.getElementById('Cycle').value = "";
+                            document.getElementById('TransportType').value = "";
+                            document.getElementById('LocationSource').value = "";
+                            //document.getElementById('LocationDestination').value = "";
+                            document.getElementById('TrailerNoFull').value = "";
+                            document.getElementById('ddlTrainNo').value = "";
+                            document.getElementById('txtWagonNo').value = "";
+                            document.getElementById('datePicker1').value = "";
+                            document.getElementById('Trailerno').value = "";
+
+
+
+
+                            $("#ContainerNo").removeClass("form-control is-valid state-valid");
+                            $("#ContainerNo").removeClass("form-control is-invalid state-invalid");
+                            $("#ContainerNo").addClass("form-control");
+
+
+                            $("#TransportType").removeClass("form-control is-valid state-valid");
+                            $("#TransportType").removeClass("form-control is-invalid state-invalid");
+                            $("#TransportType").addClass("form-control");
+
+
+                            $("#ContainerSize").removeClass("form-control is-valid state-valid");
+                            $("#ContainerSize").removeClass("form-control is-invalid state-invalid");
+                            $("#ContainerSize").addClass("form-control");
+
+
+
+                            $("#ContainerType").removeClass("form-control is-valid state-valid");
+                            $("#ContainerType").removeClass("form-control is-invalid state-invalid");
+                            $("#ContainerType").addClass("form-control");
+
+
+
+                            $("#portList").removeClass("form-control is-valid state-valid");
+                            $("#portList").removeClass("form-control is-invalid state-invalid");
+                            $("#portList").addClass("form-control");
+
+
+
+                            $("#Cycle").removeClass("form-control is-valid state-valid");
+                            $("#Cycle").removeClass("form-control is-invalid state-invalid");
+                            $("#Cycle").addClass("form-control");
+
+                            $("#ddlTrainNo").removeClass("form-control is-valid state-valid");
+                            $("#ddlTrainNo").removeClass("form-control is-invalid state-invalid");
+                            $("#ddlTrainNo").addClass("form-control");
+
+
+                            $("#txtWagonNo").removeClass("form-control is-valid state-valid");
+                            $("#txtWagonNo").removeClass("form-control is-invalid state-invalid");
+                            $("#txtWagonNo").addClass("form-control");
+
+
+                            $("#ddlTrailerNo").removeClass("form-control is-valid state-valid");
+                            $("#ddlTrailerNo").removeClass("form-control is-invalid state-invalid");
+                            $("#ddlTrailerNo").addClass("form-control");
+
+
+
+                            $("#TrailerNoFull").removeClass("form-control is-valid state-valid");
+                            $("#TrailerNoFull").removeClass("form-control is-invalid state-invalid");
+                            $("#TrailerNoFull").addClass("form-control");
+
+
+                            $("#datePicker1").removeClass("form-control is-valid state-valid");
+                            $("#datePicker1").removeClass("form-control is-invalid state-invalid");
+                            $("#datePicker1").addClass("form-control");
+
+
+                            $('#divTrailerno').hide();
+                            $('#divtrailernodrop').show();
+
+
+
+
+                        },
+                        error: function (errormessage) {
+                            alert("error");
+                            alert(errormessage.responseText);
+                        }
+
+                    });
+
+
+
+
+
+
+
+
+
+                }
+                else {
+                    DuplicateContainer = 1;
+                    alert(Data);
+
+                }
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+       
+
+
+        
+
+
+
+
+
+
+
+
+    }
+
+   
+
+
+    function myRequiredValidation(TextField) {
+        var pass1 = document.getElementById('ContainerNo');
+
+
+        if (pass1.value.length != 11) {
+            alert("Required 11 digits Container No.")
+            $("#ContainerNo").removeClass("form-control is-valid state-valid")
+            $("#ContainerNo").addClass("form-control is-invalid state-invalid")
+
+        } else {
+            $("#ContainerNo").removeClass("form-control is-invalid state-invalid")
+            $("#ContainerNo").addClass("form-control is-valid state-valid")
+
+        }
+    }
+
+
+
+
+    //$('#Trailerno').change(function (e) {
+    //    var trailerno = $("#Trailerno").val();
+    //    $.ajax({
+    //        url: "/ManualPortOut/AjaxGetTrailerNo",
+    //        data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+    //        type: "POST",
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        success: function (data) {
+    //            alert(JSON.stringify(data));
+    //            var select = $("#ddlTrailerNo");
+
+    //            select.empty();
+    //            select.append($('<option/>', {
+    //                value: 0,
+    //                text: "--Select--"
+    //            }));
+
+    //            $.each(data, function (data, value) {
+
+    //                select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+    //            })
+
+
+
+    //        },
+
+    //        error: function (errormessage) {
+    //            alert(errormessage.responseText);
+    //        }
+    //    });
+
+    //});
+
+
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlTrailerNo");
+
+                if (data == "") {
+
+                    $('#divTrailerno').show();
+                    $('#divtrailernodrop').hide();
+                } else {
+                    $('#divTrailerno').hide();
+                    $('#divtrailernodrop').show();
+                }
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+
+
+
+
+</script>
+
+<script type="text/javascript">
+
+
+    function validate() {
+
+        var TransportType = document.getElementById('TransportType').value;
+        var ContainerNo = document.getElementById('ContainerNo').value;
+        var ContainerSize = document.getElementById('ContainerSize').value;
+        var ContainerType = document.getElementById('ContainerType').value;
+        var port = document.getElementById('portList').value;
+        var Cycle = document.getElementById('Cycle').value;
+        var datePicker1 = document.getElementById('datePicker1').value;
+
+        var TrailerNo = document.getElementById('ddlTrailerNo').value;
+        var TrailerFullNo = document.getElementById('TrailerNoFull').value;
+
+
+        var TrainNo = document.getElementById('ddlTrainNo').value;
+        var WagonNo = document.getElementById('txtWagonNo').value;
+
+
+
+
+
+        //  var LocationSourcevalidate = document.getElementById('LocationSource').value;
+        //  var LocationDestinationvalidate = document.getElementById('LocationDestination').value;
+
+        var blResult = Boolean;
+        blResult = true;
+
+        $("#TransportType").removeClass("form-control is-invalid state-invalid");
+        $("#TransportType").addClass("form-control is-valid state-valid");
+        $("#ContainerNo").removeClass("form-control is-invalid state-invalid");
+        $("#ContainerNo").addClass("form-control is-valid state-valid");
+        $("#ContainerSize").removeClass("form-control is-invalid state-invalid");
+        $("#ContainerSize").addClass("form-control is-valid state-valid");
+        $("#ContainerType").removeClass("form-control is-invalid state-invalid");
+        $("#ContainerType").addClass("form-control is-valid state-valid");
+        $("#portList").removeClass("form-control is-invalid state-invalid");
+        $("#portList").addClass("form-control is-valid state-valid");
+        $("#Cycle").removeClass("form-control is-invalid state-invalid");
+        $("#Cycle").addClass("form-control is-valid state-valid");
+        $("#datePicker1").removeClass("form-control is-invalid state-invalid");
+        $("#datePicker1").addClass("form-control is-valid state-valid");
+
+        if (TransportType == 1) {
+
+            $("#ddlTrainNo").removeClass("form-control is-invalid state-invalid");
+            $("#ddlTrainNo").addClass("form-control is-valid state-valid");
+            $("#txtWagonNo").removeClass("form-control is-invalid state-invalid");
+            $("#txtWagonNo").addClass("form-control is-valid state-valid");
+        }
+
+
+        if (TransportType == 2) {
+
+            $("#ddlTrailerNo").removeClass("form-control is-invalid state-invalid");
+            $("#ddlTrailerNo").addClass("form-control is-valid state-valid");
+            $("#TrailerNoFull").removeClass("form-control is-invalid state-invalid");
+            $("#TrailerNoFull").addClass("form-control is-valid state-valid");
+
+        }
+
+
+
+
+        if (TransportType == "") {
+            $("#TransportType").removeClass("form-control is-valid state-valid");
+            $("#TransportType").addClass("form-control is-invalid state-invalid");
+            blResult = blResult && false;
+        }
+
+        if (ContainerNo == "") {
+            $("#ContainerNo").removeClass("form-control is-valid state-valid");
+            $("#ContainerNo").addClass("form-control is-invalid state-invalid");
+            blResult = blResult && false;
+        }
+
+        if (ContainerSize == "") {
+            $("#ContainerSize").removeClass("form-control is-valid state-valid");
+            $("#ContainerSize").addClass("form-control is-invalid state-invalid");
+            blResult = blResult && false;
+        }
+
+        if (ContainerType == "") {
+            $("#ContainerType").removeClass("form-control is-valid state-valid");
+            $("#ContainerType").addClass("form-control is-invalid state-invalid");
+            blResult = blResult && false;
+        }
+
+        if (port == "") {
+            $("#portList").removeClass("form-control is-valid state-valid");
+            $("#portList").addClass("form-control is-invalid state-invalid");
+            blResult = blResult && false;
+        }
+        if (Cycle == "") {
+            $("#Cycle").removeClass("form-control is-valid state-valid");
+            $("#Cycle").addClass("form-control is-invalid state-invalid");
+            blResult = blResult && false;
+        }
+
+
+        if (datePicker1 == "") {
+
+            $("#datePicker1").removeClass("form-control is-valid state-valid");
+            $("#datePicker1").addClass("form-control is-invalid state-invalid");
+            blResult = blResult && false;
+
+
+        }
+
+
+        if (TransportType == 1) {
+
+
+            if (TrainNo == "") {
+
+                $("#ddlTrainNo").removeClass("form-control is-valid state-valid");
+                $("#ddlTrainNo").addClass("form-control is-invalid state-invalid");
+                blResult = blResult && false;
+
+
+            }
+
+            if (WagonNo == "") {
+
+                $("#txtWagonNo").removeClass("form-control is-valid state-valid");
+                $("#txtWagonNo").addClass("form-control is-invalid state-invalid");
+                blResult = blResult && false;
+
+
+            }
+        }
+        if (TransportType == 2) {
+
+            var el = document.getElementById("divtrailernodrop");
+            var style = window.getComputedStyle(el);
+
+            // alert('e1' + style.display);
+            if (style.display != 'none') {
+
+                if (TrailerNo == "") {
+
+
+                    $("#ddlTrailerNo").removeClass("form-control is-valid state-valid");
+                    $("#ddlTrailerNo").addClass("form-control is-invalid state-invalid");
+                    blResult = blResult && false;
+
+
+                }
+
+            }
+
+
+            var e2 = document.getElementById("divTrailerno");
+
+            var style1 = window.getComputedStyle(e2);
+            // alert('e2' + style1.display);
+            if (style1.display != 'none') {
+
+
+                if (TrailerFullNo == "") {
+
+
+                    $("#TrailerNoFull").removeClass("form-control is-valid state-valid");
+                    $("#TrailerNoFull").addClass("form-control is-invalid state-invalid");
+                    blResult = blResult && false;
+
+
+                }
+            }
+
+
+
+
+        }
+
+
+
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+
+
+    }
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#datePicker1').datetimepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy hh:ii',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true,
+            forceParse: true,
+            // endDate: currDate
+        })
+            .on('changeDate', function (e) {
+                // Revalidate the date field
+                // $('#eventForm').formValidation('revalidateField', 'date');
+                $('.datetimepicker').hide();
+            });
+
+
+
+
+
+
+
+    });
+</script>

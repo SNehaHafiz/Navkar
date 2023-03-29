@@ -1,0 +1,89 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TPEntryEntities>
+@{
+    ViewBag.Title = "TP Closed Summary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area" id="diventry">
+    <div class="page-header">
+        <h4 class="page-title">TP Close Summary : @Model.Count()</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-15p sorting">TP No</th>
+                                            <th class="wd-15p sorting">TP Date</th>
+                                            <th class="wd-15p sorting">Trailer NO.</th>
+                                            <th class="wd-15p sorting">Driver name</th>
+
+                                            <th class="wd-15p sorting">TP Location</th>
+                                            <th class="wd-15p sorting">TP FOr</th>
+                                            <th class="wd-15p sorting">Amount</th>
+                                            <th class="wd-15p sorting">Attachment</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                        <tr>
+                                            <td>@Html.DisplayFor(m => d.TPNO)</td>
+                                            <td>@Html.DisplayFor(m => d.TPdate)</td>
+                                            <td>@Html.DisplayFor(m => d.trailername)</td>
+                                            <td>@Html.DisplayFor(m => d.drivername)</td>
+
+                                            <td>@Html.DisplayFor(m => d.TPLocation)</td>
+                                            <td>@Html.DisplayFor(m => d.TPfor)</td>
+                                            <td>@Html.DisplayFor(m => d.amount)</td>
+                                            <td> <a class="btn btn-sm btn-white" href="#" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Attachment" id="getattachmentid" onclick="DownloadAttachment(@d.TPNumber)"><i class="fe fe-paperclip"></i> </a></td>
+
+
+                                        </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- table-wrapper -->
+        </div>
+        <!-- section-wrapper -->
+    </div>
+</div>
+
+
+@using (Html.BeginForm("DownLoadFile", "UpdateDischarge", FormMethod.Post))
+{
+    <input type="hidden" id="hfFileId" name="TPNumber" />
+    <input type="submit" id="btnDownload" value="Download" style="display:none" />
+}
+
+<script type="text/javascript">
+
+    function DownloadAttachment(TPNumber) {
+        $("#hfFileId").val(TPNumber);
+        $("#btnDownload")[0].click();
+
+    }
+</script>
+
+       
+
+  

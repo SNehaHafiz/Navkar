@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Export Cargo bal Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+<div class=" content-area overflow-hidden" id="showview">
+    <div class="page-header">
+        <h4 class="page-title">Export Cargo Bal Details</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Agent Name</label>
+                                            @Html.DropDownList("ddlagentname", (IEnumerable<SelectListItem>)ViewBag.customer, "--Select--", new { @id = "ddlagentname", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Free Days</label>
+                                            @Html.TextBox("TxtFreeDays", null, new { @id = "TxtFreeDays", @class = "form-control", })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Inventory As On</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "txtFromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label" style="visibility:hidden">On</label>
+                                            <button class=" btn btn-primary" id="btnSearch" onclick="ShowImportEmptyInventory()" type="button">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <button class="btn btn-orange" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            @* <button class=" btn btn-yellow" id="btnSearch" type="button"><i class="fa fa-file-pdf-o"></i></button>*@
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblImportEmptyInventory" style="width:100%">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>$(document).ready(function () {
+        $("#tracker-loader").fadeOut("slow");
+
+
+    });
+    function ShowImportEmptyInventory() {
+
+
+
+        var FromDate = document.getElementById("txtFromDate").value;
+        var Agentname = $("#ddlagentname option:selected").text();
+        var FreeDays = document.getElementById("TxtFreeDays").value;
+        var data = { 'FromDate': FromDate, 'Agentname': Agentname, 'FreeDays': FreeDays };
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetExportCargobalDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (jsonResult) {
+                $("#tblImportEmptyInventory").empty();
+                RepTableDataJson($("#tblImportEmptyInventory"), jsonResult, "SupplierBill Details", "SupplierBillDetails_List");
+
+
+
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+
+            }
+        });
+
+    }</script>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelCargobalDetails", "report")?';
+
+
+    }
+
+
+</script>

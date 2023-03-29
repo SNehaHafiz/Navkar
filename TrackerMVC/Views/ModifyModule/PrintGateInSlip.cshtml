@@ -1,0 +1,173 @@
+﻿
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Gate Pass Print</title>
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+    <style>
+        body {
+            color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .box {
+            float: left;
+            width: 100%;
+            padding: 0px;
+        }
+
+        .boxHalf {
+            float: left;
+            width: 50%;
+            padding: 0px;
+            border: 1px solid gray;
+        }
+
+        .boxHeaderL {
+            /*float: left;*/
+            width: 20%;
+            padding: 0px;
+            text-align: left;
+        }
+
+        .boxHeaderR {
+            /*float: left;*/
+            width: 80%;
+            padding: 0px;
+            text-align: center;
+        }
+
+        .tblBox {
+            border-collapse: collapse;
+            width: 100%;
+            padding: 0px;
+            float: left;
+        }
+
+        .headingh3 {
+            font-size: 15pt;
+            font-family: 'verdana(batlic)';
+            padding: 2px;
+            text-decoration: underline;
+        }
+
+        th {
+            border: 1px solid black;
+            font-size: 15px;
+            font-family: verdana(batlic);
+            background-color: #ede5e5;
+        }
+
+        td {
+            border: 1px solid black;
+            font-size: 12px;
+            font-family: 'Segoe UI';
+        }
+
+        h5, h4 {
+            font-size: 10pt;
+            font-family: 'Segoe UI';
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-family: 'verdana(batlic)';
+        }
+
+        .buttomMargin {
+            margin-bottom: -20px;
+            padding-bottom: 0px;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:100%; text-align:center; height:100%">
+
+        <div style="width:100%;height:100%;">
+            <div class="box">
+                <div class="boxHeaderL">
+                    <img height="70" width="200" src="~/images/NavkarLogo.jpg" />
+                </div>
+                <div class="boxHeaderR">
+                    <h3 class="buttomMargin" style="font-size:12pt;">@ViewBag.CompanyName</h3>
+                    <div style="width:90%">
+                        <h5>@ViewBag.CompanyAddress</h5>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row" style="margin-bottom:-10px">
+                <h3 class="headingh3">Gate In Slip</h3>
+
+            </div>
+
+            <div style="text-align:left;">
+                <div style="text-align:left;">
+                    <h3>Container Details</h3>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="tblBox">
+                    <thead>
+                        <tr>
+                            <th>Container No</th>
+                            <th>Size</th>
+                            <th>Vehicle No</th>
+                            <th>Location</th>
+                            <th>Cargotype</th>
+                            <th>In Date</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dr in ViewBag.InvoiceItemList)
+                        {
+                            <tr>
+                                <td style="text-align:center">@dr["ContainerNo"]</td>
+                                <td style="text-align:center">@dr["Size"]</td>
+                                <td style="text-align:center">@dr["TruckNo"]</td>
+                                <td style="text-align:center">@dr["Location"]</td>
+                                <td style="text-align:center">@dr["Cargotype"]</td>
+                                <td style="text-align:center">@dr["INDate"]</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                &nbsp;
+                @*<p style="text-align:left;">Prepared By: @ViewBag.UserName </p><p style="text-align:right"> @ViewBag.CompanyName</p>*@
+
+            </div>
+        </div>
+        <div>
+            &nbsp;
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        window.print();
+    });
+</script>

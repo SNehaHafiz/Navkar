@@ -1,0 +1,364 @@
+﻿
+@{
+    ViewBag.Title = "BlackListPersonDetails";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Black List Person Details</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <div class="row">
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Entry-ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtentryid", null, new { @class = "form-control ", @id = "txtentryid", Placeholder = "Entry ID", @Readonly = "readonly", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Entry Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="txtdate" type="datetime-local" class="form-control" value="@ViewBag.Date" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtname", null, new { @class = "form-control ", @id = "txtname", Placeholder = "Name", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Adhar Card No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtadharno", null, new { @class = "form-control ", @id = "txtadharno", Placeholder = "Adhar No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Pan No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtpanno", null, new { @class = "form-control ", @id = "txtpanno", Placeholder = "Pan No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Contact No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcontact", null, new { @class = "form-control ", @id = "txtcontact", Placeholder = "Contact No.", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Voter-ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtvoterid", null, new { @class = "form-control ", @id = "txtvoterid", Placeholder = "Voter ID", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Reference</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtRef", null, new { @class = "form-control ", @id = "txtref", Placeholder = "Reference", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", Placeholder = "Remarks", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return SaveActivity();">Save</button>
+
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Black List Person Details</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+ 
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success" id="btnSearch" style="margin-top: auto" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                        @*@Html.ActionLink("Excel To Excel", "ExportActivityMasterReport", null, new { @class = "btn btn-primary btn-md" })*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<script>
+
+        function BackToWorkOrder() {
+            $("#divCreate").show();
+            $("#divCreateSummary").hide();
+        }
+        function OpenWOSummary() {
+            $("#divCreate").hide();
+            $("#divCreateSummary").show();
+        }
+
+     function SaveActivity() {
+         debugger;
+        // var EntryDate = document.getElementById('txtdate').value;
+         var Name = document.getElementById('txtname').value;
+         var AdharNo = document.getElementById('txtadharno').value;
+         var Penno = document.getElementById('txtpanno').value;
+         var ContactNo = document.getElementById('txtcontact').value;
+         var VoterID = document.getElementById('txtvoterid').value;
+         var Reference = document.getElementById('txtref').value;
+         var Remarks = document.getElementById('txtremarks').value;
+
+
+
+         if (Name == "") {
+             document.getElementById("txtname").style.borderColor = "red";
+            alert('Please  Enter  Name!')
+            event.preventDefault();
+            return;
+         }
+
+         if (AdharNo == "") {
+             document.getElementById("txtadharno").style.borderColor = "red";
+             alert('Please  Fill Adhar No!')
+             event.preventDefault();
+             return;
+         }
+         if (Penno == "") {
+             document.getElementById("txtpanno").style.borderColor = "red";
+             alert('Please  Fill Pen No!')
+             event.preventDefault();
+             return;
+         }
+         if (ContactNo == "") {
+             document.getElementById("txtcontact").style.borderColor = "red";
+             alert('Please  Fill Contact No!')
+             event.preventDefault();
+             return;
+         }
+         if (VoterID == "") {
+             document.getElementById("txtvoterid").style.borderColor = "red";
+             alert('Please Enter Voter Id!')
+             event.preventDefault();
+             return;
+         }
+
+         if (Reference == "") {
+             document.getElementById("txtref").style.borderColor = "red";
+             alert('Please  Enter Reference!')
+             event.preventDefault();
+             return;
+         }
+         if (Remarks == "") {
+             document.getElementById("txtremarks").style.borderColor = "red";
+             alert('Please  Enter Remarks!')
+             event.preventDefault();
+             return;
+         }
+
+
+         var data1 = {
+             'Name': Name,'AdharNo': AdharNo, 'Penno': Penno, 'ContactNo': ContactNo, 'VoterID': VoterID, 'Reference': Reference, 'Remarks': Remarks};
+
+        var data = JSON.stringify(data1);
+
+
+
+
+     $.ajax({
+         url: "/Driver/AddBLPerson",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+         success: function (message) {
+                alert(message)
+
+                window.location.href = '@Url.Action("BlackListPersonDetails", "Driver")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+    function ShowSSRSummary() {
+
+
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Driver/BLPList",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "BLPList", "BLPList")
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+</script>
+
+<script type="text/javascript">
+        // excel icon call button
+    function GetExcelFile() {
+        window.location = '@Url.Action("ExportToBLPList", "Driver")?';
+
+           }
+
+           function cleartextboxes() {
+               //clear text box and dropdownlist
+               $("input:text").val("");
+
+           }
+</script>
+
+

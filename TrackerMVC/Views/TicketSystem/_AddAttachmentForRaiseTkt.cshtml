@@ -1,0 +1,401 @@
+﻿<script src="~/js/sweet-alert.min.js"></script>
+<div>
+    <div class="modal-header">
+        <h5 class="modal-title" id="example-Modal3">Upload File</h5><label id="MSNoFile" style="visibility:hidden"></label>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" id="divAttach">
+        <form id="myForm">
+            <div class="form-group" id="divFileUpload">
+                <input type="file" id="fileTktAttachment" name="postedFile" style="width:80%" />
+                <input type="Button" id="btnUpload" value="Upload" class="btn btn-sm btn-success" />
+            </div>
+            <div class="form-group">
+                <div class="table-responsive">
+                    <table id="TktAttachment" class="table table-striped table-bordered" style="width:100%">
+                        <thead class="bg-info">
+                            <tr>
+                                <th class="wd-15p sorting text-white">File Name</th>
+                                <th style="width:15px !important"></th>
+                                <th style="width:15px  !important"></th>
+                            </tr>
+                        </thead>
+                        <tbody style="box-sizing :border-box;"></tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" id="btnDone" value="Done" class="btn btn-info pull-right" data-dismiss="modal" aria-label="Close">Done</button>
+    </div>
+</div>
+@using (Html.BeginForm("DownLoadFile", "TicketSystem", FormMethod.Post))
+{
+    <input type="hidden" id="hfFileId" name="id" />
+    <input type="submit" id="btnDownload" value="Download" style="display:none" />
+}
+<script>
+    var type = 'Raise Tkt';
+    var SrNo1 = 1;
+    var table = [];
+    $(document).ready(function () {
+        $('#TktAttachment').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false,
+            aoColumnDefs: [
+                {
+                    bSortable: false,
+                    aTargets: [1, 2]
+                }
+            ],
+
+        });
+        table = [];
+
+        for (i = 0; i < TktAttachment.length; i++) {
+            if (TktAttachment[i].SrNo1 == SrNo1) {
+                var element = {};
+                element.DocName = TktAttachment[i].DocName;
+                element.RunningID = TktAttachment[i].RunningID;
+                element.FilePath = TktAttachment[i].FilePath;
+                element.ContentType = TktAttachment[i].ContentType;
+                element.UploadType = type;
+                element.SrNo1 = SrNo1;
+
+                table.push(element);
+
+            }
+        }
+
+
+        if (table.length != 0) {
+            $('#TktAttachment').dataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "bPaginate": false,
+                "bFilter": false,
+                "paging": false,
+                "destroy": true,
+                "bLengthChange": false,
+                "order": [],
+
+                "aaData": table,
+                "columns": [
+                    { "data": "DocName" },
+                    {
+                        "data": "FilePath",
+                        "render": function (data, type, row, meta) {
+                            if (type === 'display') {
+                                data = '<a onclick="DownloadAttachment(' + row.RunningID + ')"  href="#" class="btn  btn-primary"  title="Download"><i class="fe fe-download"></i></a>';
+                            }
+
+                            return data;
+                        }
+
+
+                    },
+                    {
+                        "data": "FilePath",
+                        "render": function (data, type, row, meta) {
+                            if (type === 'display') {
+
+                                data = '<a   onclick="DeleteAttachment(' + row.RunningID + ')"  href="#" class="btn btn-danger"  title="Delete"><i class="fa fa-trash-o"></i></a>';
+                            }
+
+                            return data;
+                        }
+
+
+                    }
+
+                ],
+                aoColumnDefs: [
+                    {
+                        bSortable: false,
+                        aTargets: [1, 2]
+                    }
+                ],
+            });
+            CountRows();
+        }
+
+
+
+    });
+
+    $(document).ready(function () {
+        $('#btnUpload').click(function () {
+            debugger;
+            var MSNoFile1 = "";
+            // Checking whether FormData is available in browser
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#fileTktAttachment").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+                if (files.length == 0) {
+
+                    Swal.fire("Error!", "Please select File!", "error");
+                    return false;
+                }
+                else {
+                    AddAttachmentNoWise(type);
+                }
+            }
+            else {
+                Swal.fire("Error!", "FormData is not supported!", "error");
+
+            }
+        });
+
+
+    });
+
+    function AddAttachmentNoWise(data) {
+        $("#global-loader").fadeIn("slow");
+        var fileUpload = $("#fileTktAttachment").get(0);
+        var files = fileUpload.files;
+        var fileData = new FormData();
+        var UploadType = data;
+        //End Of maximum meetin number
+        var iSize = document.getElementById('fileTktAttachment').files[0].size / 1024
+        iSize = (Math.round((iSize / 1024) * 100) / 100)
+        if (iSize > 25) {
+            Swal.fire("Error!", "Selected file size more than 25 MB", "error");
+
+            $("#global-loader").fadeOut("slow");
+            return false;
+        }
+        // Looping over all files and add it to FormData object
+        for (var i = 0; i < files.length; i++) {
+
+            fileData.append(files[i].name, files[i]);
+
+        }
+        fileData.append('Type', UploadType);
+        runningno++;
+        $.ajax({
+            url: '/TicketSystem/UploadNewRaiseTktAttachment',
+            type: "POST",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            async: false,
+            data: fileData,
+            success: function (Data) {
+                $("#global-loader").fadeOut("slow");
+
+                var element = {};
+                element.DocName = Data.DocName;
+                element.RunningID = runningno;
+                element.FilePath = Data.FilePath;
+                element.ContentType = Data.ContentType;
+                element.UploadType = type;
+                element.SrNo1 = SrNo1;
+                TktAttachment.push(element);
+
+                table = [];
+                for (i = 0; i < TktAttachment.length; i++) {
+                    if (TktAttachment[i].SrNo1 == SrNo1) {
+                        var element = {};
+                        element.DocName = TktAttachment[i].DocName;
+                        element.RunningID = TktAttachment[i].RunningID;
+                        element.FilePath = TktAttachment[i].FilePath;
+                        element.ContentType = TktAttachment[i].ContentType;
+                        element.UploadType = type;
+                        element.SrNo1 = SrNo1;
+                        table.push(element);
+
+                    }
+                }
+
+
+                $('#TktAttachment').dataTable({
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "order": [],
+                    "aaData": table,
+                    "columns": [
+                        { "data": "DocName" },
+                        {
+                            "data": "FilePath",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a onclick="DownloadAttachment(' + row.RunningID + ')"  href="#" class="btn  btn-primary"  title="Download"><i class="fe fe-download"></i></a>';
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "ContentType",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a   onclick="DeleteAttachment(' + row.RunningID + ')"  href="#" class="btn btn-danger removebutton"  title="Delete"><i class="fa fa-trash-o"></i></a>';
+                                }
+                                return data;
+                            }
+                        }
+                    ],
+                    aoColumnDefs: [
+                        {
+                            bSortable: false,
+                            aTargets: [1, 2]
+                        }
+                    ]
+                });
+                CountRows();
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+
+
+        });
+        $("#fileTktAttachment").val('');
+    }
+    function DownloadAttachment(index) {
+        for (var r = 0; r < TktAttachment.length; r++) {
+            if (TktAttachment[r].RunningID == index) {
+                var temp = {};
+                temp.FilePath = TktAttachment[r].FilePath;
+                temp.DocName = TktAttachment[r].DocName;
+                temp.contentType = TktAttachment[r].ContentType;
+                var location_ = "/TicketSystem/DownloadFileAttached?DocName=" + temp.FilePath + "&contentType=" + temp.contentType + "&FilePath=" + temp.FilePath;
+                window.open(location_, '_blank');
+
+                var data = { 'attachment': temp };
+                data = JSON.stringify(data);
+
+            }
+        }
+    }
+
+
+    function DeleteAttachment(id) {
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are you sure you want to delete this file?",
+            icon: 'question',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.value) {
+                var no = id;
+                var f_name = "";
+                for (i = 0; i < table.length; i++) {
+                    if (table[i].RunningID == no) {
+                        table.splice(i, 1);
+                    }
+                }
+                for (i = 0; i < TktAttachment.length; i++) {
+                    if (TktAttachment[i].RunningID == no) {
+                        f_name = TktAttachment[i].DocName;
+                        TktAttachment.splice(i, 1);
+                    }
+                }
+
+                var Upload = "Capture_" + 1;
+                for (i = 0; i < TktCaptureList.length; i++) {
+                    if (TktCaptureList[i].DocName == f_name) {
+                        TktCaptureList.splice(i, 1);
+                    }
+                }
+
+                for (i = 0; i < TktAttachment.length; i++) {
+                    var element = {};
+                    if (TktAttachment[i].SrNo1 == 1) {
+                        if (TktAttachment[i].UploadType == Upload) {
+                            element.SrNo1 = 1;
+                            element.CaptureUrl = TktAttachment[i].FilePath;
+                            element.DocName = TktAttachment[i].DocName;
+                            element.FilePath = TktAttachment[i].FilePath;
+                            element.ContentType = TktAttachment[i].ContentType;
+                            TktCaptureList.push(element);
+                        }
+                    }
+
+                }
+                debugger;
+                for (i = 0; i < DummyCaptureList.length; i++) {
+
+                    if (DummyCaptureList[i].DocName == f_name) {
+                        DummyCaptureList.splice(i, 1);
+                    }
+
+                }
+
+                $('#TktAttachment').dataTable({
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "order": [],
+                    "aaData": table,
+                    "columns": [
+                        { "data": "DocName" },
+                        {
+                            "data": "FilePath",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a onclick="DownloadAttachment(' + row.RunningID + ')"  href="#" class="btn btn-primary"  title="Download"><i class="fe fe-download"></i></a>';
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "ContentType",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a   onclick="DeleteAttachment(' + row.RunningID + ')"  href="#" class="btn btn-danger removebutton"  title="Delete"><i class="fa fa-trash-o"></i></a>';
+                                }
+                                return data;
+                            }
+                        }
+                    ],
+                    aoColumnDefs: [
+                        {
+                            bSortable: false,
+                            aTargets: [1, 2]
+                        }
+                    ]
+                });
+                CountRows();
+            }
+        })
+
+
+    }
+
+    function CountRows() {
+        var table = $('#TktAttachment').DataTable();
+        var ParameterID1 = 1;
+        var Attach = "lblAttachment_" + ParameterID1;
+        var RowCount = table.rows().count();
+        document.getElementById(Attach).innerHTML = RowCount;
+
+    }
+
+</script>
+
+
+

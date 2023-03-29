@@ -1,0 +1,81 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrainTrip>
+<style>
+    .scrolling-table-container {
+        overflow: auto;
+        height: 600px;
+    }
+</style>
+<div class="modal-content ">
+    <div class="modal-header pd-x-20">
+        <h6 class="modal-title">Trip List</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body pd-20">
+        <div class="card-body hero-feature">
+            <div class="table-responsive push scrolling-table-container">
+                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblTripDets" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width:4px">#</th>
+                            <th>Trip No</th>
+                            <th>Train No</th>
+                            <th>Port Train No</th>
+                            <th>Port From</th>
+                            <th>Port To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model)
+                        {
+
+                            <tr>
+                                <td><a class="btn btn-sm btn-primary" href="#" onclick="GetTripNo('@d.TripNo','@d.TrainNo','@d.Origin','@d.Destination')">Select</a></td>
+                                @*<td><input type="checkbox" name="checklist" class="checklist" id="checklist" value="@d.Code"></td>*@
+                                <td>@Html.DisplayFor(m => d.TripNo)</td>
+                                <td>@Html.DisplayFor(m => d.TrainNo)</td>
+                                <td>@Html.DisplayFor(m => d.PortTrainNo)</td>
+                                <td>@Html.DisplayFor(m => d.Origin)</td>
+                                <td>@Html.DisplayFor(m => d.Destination)</td>
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function GetTripNo(TripNo, TrainNo, Origin, Destination) {
+
+        $('#txtTripNo').val(TripNo);
+        $('#txtTrainNo').val(TrainNo);
+        $('#txtOrigin').val(Origin);
+        $('#txtDestination').val(Destination);
+        ShowAllWagonNo();
+        $('#TestModal').modal('hide');
+
+    }
+    $(document).ready(function () {
+        $('#tblTripDets').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            // "bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+        })
+    });
+</script>

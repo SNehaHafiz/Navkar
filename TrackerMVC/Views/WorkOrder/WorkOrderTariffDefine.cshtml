@@ -1,0 +1,894 @@
+﻿@{
+    ViewBag.Title = "WorkOrderTariffDefine";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Work Order Tariff Summary</h4>
+        <div class="ibox-content text-right">
+            <a onclick="AddNewTariff();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-plus" data-placement="bottom" title="Define Tariff"></i> </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12" id="divBL">
+                                <div class="form-group">
+                                    <label class="form-label"> Effevtive From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.Editor("txtFromDate", new { htmlAttributes = new { @class = "form-control", @id = "txtFromDate", @placeholder = "From Date" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divBL">
+                                <div class="form-group">
+                                    <label class="form-label"> Effective To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.Editor("txtToDate", new { htmlAttributes = new { @class = "form-control", @id = "txtToDate", @placeholder = "To Date" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12 " id="divShowButton">
+                                <div class="form-group">
+                                    <label class="form-label " style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow1" name="login" value="Show" onclick="getTariffSummary();" class="btn btn-primary btnShow" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area overflow-hidden" style="display:none" id="divTariffEntry">
+    <div class="page-header">
+        <h4 class="page-title">Work Order Tariff Define</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Category</label>
+                                            @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                                         { new SelectListItem { Text = "Export", Value = "Export"},
+                                             new SelectListItem { Text = "Import", Value = "Import"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategory" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Effective From Date</label>
+                                            @Html.TextBox("txtEffectiveFromDate", null, new { @class = "form-control datePicker1 ", @id = "txtEffectiveFromDate", autocomplete = "off", @placeholder = "dd-MMM-yyyy" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Effective To Date</label>
+                                            @Html.TextBox("txtEffectiveToDate", null, new { @class = "form-control datePicker1 ", @id = "txtEffectiveToDate", autocomplete = "off", @placeholder = "dd-MMM-yyyy" })
+                                            <input id="hdnTariffId" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-3 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Wo Type</label>
+                                            @Html.DropDownList("ddlWoType", new List<SelectListItem>
+                                         {new SelectListItem { Text = "ALL", Value = "All"},
+                                           new SelectListItem { Text = "Truck To Container", Value = "TC"},
+                                             new SelectListItem { Text = "Wharehouse To Container", Value = "WC"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlWoType" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Size</label>
+                                            @Html.DropDownList("ddlSize", (IEnumerable<SelectListItem>)ViewBag.SizeList, "All", new { @class = "form-control", @id = "ddlSize", name = "ddlSize", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Package Type</label>
+                                            @Html.DropDownList("ddlPackageType", (IEnumerable<SelectListItem>)ViewBag.PackageType, "All", new { @class = "form-control", @id = "ddlPackageType", name = "ddlPackageType", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Cargo Type</label>
+                                            @Html.DropDownList("ddlCargoType", (IEnumerable<SelectListItem>)ViewBag.CargoType, "All", new { @class = "form-control", @id = "ddlCargoType", name = "ddlCargoType", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Commodity</label>
+                                            @Html.DropDownList("ddlCommodity", (IEnumerable<SelectListItem>)ViewBag.Commodity, "All", new { @class = "form-control", @id = "ddlCommodity", name = "ddlCommodity", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Trans Type</label>
+                                            @Html.DropDownList("ddlTransType", new List<SelectListItem>
+                                        { new SelectListItem { Text = "All", Value = "All"},
+                                           new SelectListItem { Text = "Road", Value = "2"},
+                                            new SelectListItem { Text = "Rail", Value = "1"},
+                                          }, new { @class = "form-control", autocomplete = "off", @id = "ddlTransType" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Unit Type</label>
+                                            @Html.DropDownList("ddlUnitType", new List<SelectListItem>
+                                        {new SelectListItem { Text = "Per Unit", Value = "Unit Weight"},
+                                            new SelectListItem { Text = "MT Weight", Value = "MT Weight"},
+                                          }, new { @class = "form-control", autocomplete = "off", @id = "ddlUnitType" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Amount</label>
+                                            @Html.TextBox("txtAmount", null, new { @class = "form-control ", @id = "txtAmount", autocomplete = "off", @placeholder = "0" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Range From</label>
+                                            @Html.TextBox("txtRangeFrom", null, new { @class = "form-control ", @id = "txtRangeFrom", autocomplete = "off", @placeholder = "0" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Range To</label>
+                                            @Html.TextBox("txtRangeTo", null, new { @class = "form-control ", @id = "txtRangeTo", autocomplete = "off", @placeholder = "0" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label" style="visibility:hidden">.</label>
+                                            <button id="btnAddTariff" class="btn btn-primary btn-xs" onclick="AddTariff()">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                                <div class="widget-line mt-5 ">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>##</th>
+                                                    <th> Wo Type</th>
+                                                    <th> Size</th>
+                                                    <th> Package Type</th>
+                                                    <th> Cargo Type</th>
+                                                    <th> Commodity</th>
+                                                    <th> Trans Type</th>
+                                                    <th> Unit Type</th>
+                                                    <th> Amount</th>
+                                                    <th> Range From</th>
+                                                    <th> Range To</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $('#reportTable').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            // "bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+        });
+
+        getTariffSummary();
+
+    });
+
+    
+
+
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+    $(function () {
+
+        $('.datePicker1').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true
+
+        })
+            .on('changeDate', function (e) {
+
+                $('.datepicker').hide();
+            });
+    });
+
+    function AddTariff() {
+
+        if (Sub_Validation() == false) {
+            return false;
+        }
+
+        var ddlCategory = $("#ddlWoType  option:selected").text();
+        var EntryId = 0;
+        var txtSize = $("#ddlSize  option:selected").text();
+        var txtSizeId = $("#ddlSize").val();
+        var ddlPackageType = $("#ddlPackageType option:selected").text();
+        var ddlPackageTypeId = $("#ddlPackageType").val();
+        var ddlCargoType = $("#ddlCargoType option:selected").text();
+        var ddlCargoTypeId = $("#ddlCargoType").val();
+        var ddlCommodity = $("#ddlCommodity option:selected").text();
+        var ddlCommodityId = $("#ddlCommodity").val();
+        var ddlTransType = $("#ddlTransType option:selected").text();
+        var ddlTransTypeId = $("#ddlTransType").val();
+        var ddlUnitType = $("#ddlUnitType option:selected").text();
+        var ddlUnitTypeId = $("#ddlUnitType").val();
+        var txtAmount = $("#txtAmount").val();
+        var txtRangeFrom = $("#txtRangeFrom").val();
+        var txtRangeTo = $("#txtRangeTo").val();
+
+        var Category = ddlCategory + "<input Name=EntryId type=hidden id=EntryId   value='" + EntryId + "'>";
+        var Size = txtSize + "<input Name=SizeId type=hidden id=SizeId   value=" + txtSizeId + ">";
+        var PackageType = ddlPackageType + "<input Name=PackageId type=hidden id=PackageId   value=" + ddlPackageTypeId + ">";
+        var CargoType = ddlCargoType + "<input Name=CargoTypeId type=hidden id=CargoTypeId   value='" + ddlCargoTypeId + "'>";
+        var Commodity = ddlCommodity + "<input Name=CommodityId type=hidden id=CommodityId   value='" + ddlCommodityId + "'>";
+        var TransType = ddlTransType + "<input Name=TranTypeId type=hidden id=TranTypeId   value='" + ddlTransTypeId + "'>";
+        var UnitType = ddlUnitType + "<input Name=UnitTypeId type=hidden id=UnitTypeId   value='" + ddlUnitTypeId + "'>";
+        var Amount = txtAmount + "<input Name=Amount type=hidden id=Amount   value='" + txtAmount + "'>";
+        var RangeFrom = txtRangeFrom + "<input Name=RangeFrom type=hidden id=RangeFrom   value='" + txtRangeFrom + "'>";
+        var RangeTo = txtRangeTo + "<input Name=RangeTo type=hidden id=RangeTo   value='" + txtRangeTo + "'>";
+
+        var t = $('#reportTable').DataTable();
+        t.row.add([
+            "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem()\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>",
+            Category,
+            Size,
+            PackageType,
+            CargoType,
+            Commodity,
+            TransType,
+            UnitType,
+            Amount,
+            RangeFrom,
+            RangeTo
+
+        ]).draw(false);
+
+
+    }
+
+    function Sub_Validation() {
+
+        var result = true;
+
+        var ddlCategoryId = $("#ddlWoType").val();
+        var txtSizeId = $("#ddlSize").val();
+        var ddlPackageTypeId = $("#ddlPackageType").val();
+        var ddlCargoTypeId = $("#ddlCargoType").val();
+        var ddlCommodityId = $("#ddlCommodity").val();
+        var ddlTransTypeId = $("#ddlTransType").val();
+        var ddlUnitTypeId = $("#ddlUnitType").val();
+        var txtAmount = $("#txtAmount").val();
+        var txtRangeFrom = $("#txtRangeFrom").val();
+        var txtRangeTo = $("#txtRangeTo").val();
+
+        if (txtAmount == "" || txtAmount=="0") {
+            alert("Amount cannot be Blank.");
+            result = false;
+            return result;
+        }
+
+        if (txtRangeFrom == "") {
+            alert("Range From cannot be Blank.");
+            result = false;
+            return result;
+        }
+
+        if (txtRangeTo == "") {
+            alert("Range From cannot be Blank.");
+            result = false;
+            return result;
+        }
+
+        if (parseInt(txtRangeFrom) > parseInt(txtRangeTo)) {
+            alert("To Range cannot be less then From Range ");
+            result = false;
+            return result;
+        }
+
+        var table = document.getElementById("reportTable");
+        debugger;
+        if (table != null) {
+            try {
+                if (table.rows.length > 1) {
+                    for (var i = 1; i < table.rows.length; i++) {
+                        row = table.rows[i];
+                        var WoType = "";
+                        var Size = 0;
+                        var PackageType = 0;
+                        var CargoType = 0;
+                        var Commodity = 0;
+                        var TransType = 0;
+                        var UnitType = 0;
+                        var Amount = 0;
+                        var RangeFrom = 0;
+                        var RangeTo = 0;
+
+                        WoType = row.cells[1].childNodes[0].data;
+                        Size = row.cells[2].childNodes[1].value;
+                        PackageType = row.cells[3].childNodes[1].value;
+                        CargoType = row.cells[4].childNodes[1].value;
+                        Commodity = row.cells[5].childNodes[1].value;
+                        TransType = row.cells[6].childNodes[1].value;
+                        UnitType = row.cells[7].childNodes[1].value;
+                        Amount = row.cells[8].childNodes[1].value;
+                        RangeFrom = row.cells[9].childNodes[1].value;
+                        RangeTo = row.cells[10].childNodes[1].value;
+
+                        if (ddlCategoryId == WoType && txtSizeId == Size && ddlPackageTypeId == PackageType && ddlCargoTypeId == CargoType && ddlCommodityId == Commodity && ddlTransTypeId == TransType && ddlUnitTypeId == UnitType && txtAmount == Amount && txtRangeFrom == RangeFrom && txtRangeTo == RangeTo) {
+                            alert("Duplicate Tariff range not allowed. it is already exist.");
+                            result = false;
+                            return result;
+                            break;
+                        }
+
+                    }
+                }
+            } catch (ex) {
+
+            }
+            
+        }  
+
+        return result;
+    }
+
+    function CancelItem() {
+        var table = $('#reportTable').DataTable();
+        $('#reportTable tbody').on('click', '.removebutton', function () {
+            table
+                .row($(this).parents('tr'))
+                .remove()
+                .draw();
+
+        });
+    }
+
+    function checkItemcount() {
+
+        var table = $('#reportTable').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+    }
+
+    function Save() {
+
+        var itemcount = checkItemcount();
+
+        if (itemcount) {
+            $("#btnsave").attr('disabled', 'disabled');
+
+            var SelectedData = new Array();
+            $('#reportTable tbody tr').each(function (i, row) {
+                var data = {};
+
+                $(this).find('input').each(function () {
+
+                    data[this.id] = $(this).val();
+                })
+                SelectedData.push(data);
+
+            });
+            var data1 = { 'WOdata': SelectedData, 'Category': $("#ddlCategory").val(), 'RangeFrom': $("#txtEffectiveFromDate").val(), 'RangeTo': $("#txtEffectiveToDate").val(), 'TariffId': $("#hdnTariffId").val()};
+
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/WorkOrderTariffSave",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+
+                    if (response == "1") {
+                        alert("Record saved successfully");
+
+                        Clear();
+                    }
+                    else {
+                        alert("Record not saved successfully. Try Again!");
+                        $("#btnsave").removeAttr('disabled');
+                    }
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+        else {
+            alert("Please Add Tariff Details.");
+            return false;
+        }
+    }
+
+    function AddTariff() {
+        $("#divSummary").hide();
+        $("#divTariffEntry").show();
+    }
+
+    function getBack() {
+        $("#divSummary").show();
+        $("#divTariffEntry").hide();
+    }
+
+    function getTariffSummary() {
+
+        var data1 = { 'FromDate': $("#txtFromDate").val(), 'ToDate': $("#txtToDate").val() };
+
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/WorkOrder/WorkOrderTariffSummary",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response == "" || response == "[]") {
+                    alert("No Data Found");
+                }
+                else {
+                    RepTableDataJson($("#example"), response, "d", "d");
+                }
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+    };
+
+    function EditJo(TariffId) {
+        debugger;
+        if (TariffId == "") {
+            alert("Please Select Valid Tariff Number");
+            return;
+        }
+
+        var data1 = { "TariffId": TariffId };
+
+        var data = JSON.stringify(data1);
+
+        try {
+            $.ajax({
+                url: "/WorkOrder/EditViewTariffDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    try {
+                        if (data.message == "") {
+
+                            $('#reportTable').dataTable({
+                                "destroy": true,
+                                "paging": false,
+                                "bLengthChange": false,
+                                "aaData": data.ContainerList,
+                                "aaSorting": [[0, 'desc']],
+                                "columns": [
+                                    {
+                                        "data": "EntryId",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+
+                                                data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-primary editbutton \" name=\"editbutton\" style=\"height:35px;\" onclick=\"EditItem(" + row.EntryId +")\"><i class=\"fe fe-edit\" style=\"font-size: 16px;\"></i></button>";
+                                            }
+
+                                            return data;
+                                        }
+                                    },
+                                    { "data": "WoType" },
+                                    {
+                                        "data": "Size",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+
+                                                input = '<input type=\"hidden\" name=\"SizeId\" class=\" form-control SizeId\" id=\"SizeId\"  value="' + row.SizeId + '">';
+                                            }
+
+                                            return data + input;
+                                        }
+                                    },
+                                    {
+                                        "data": "PackageType",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+                                                input = '<input type=\"hidden\" name=\"PackageId\" class=\" form-control PackageId\" id=\"PackageId\"  value="' + row.PackageId + '">';
+                                            }
+
+                                            return data + input;
+                                        }
+                                    },
+                                    {
+                                        "data": "CargoType",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+                                                input = '<input type=\"hidden\" name=\"ContainerType\" class=\" form-control ContainerType\" id=\"ContainerType\"  value="' + row.ContainerType + '">';
+                                            }
+
+                                            return data + input;
+                                        }
+                                    },
+                                    {
+                                        "data": "Commodity",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+                                                input = '<input type=\"hidden\" name=\"CommodityId\" class=\" form-control CommodityId\" id=\"CommodityId\"  value="' + row.CommodityId + '">';
+                                            }
+
+                                            return data + input;
+                                        }
+                                    },
+                                    { "data": "TranTypeId" },
+                                    { "data": "UnitType" },
+                                    { "data": "Amount" },
+                                    { "data": "RangeFrom" },
+                                    { "data": "RangeTo" },
+                                ]
+                            });
+                            enableDisableCtrl(false);
+                            Sub_Clear();
+                            //$("#divSummary").hide()
+                            //$('#divEntry').show()
+                            assignJoData(data.HeaderDetails);
+                            $("#divSummary").hide();
+                            $("#divTariffEntry").show();
+                        }
+                        else {
+                            alert(data.message);
+                        }
+                    } catch (ex) {
+                        alert(ex.message);
+                    }
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    function ViewJo(TariffId) {
+        debugger;
+        if (TariffId == "") {
+            alert("Please Select Valid Tariff Number");
+            return;
+        }
+
+        var data1 = { "TariffId": TariffId };
+
+        var data = JSON.stringify(data1);
+
+        
+
+        try {
+            $.ajax({
+                url: "/WorkOrder/EditViewTariffDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    try {
+                        if (data.message == "") {
+
+                            $('#reportTable').dataTable({
+                                "destroy": true,
+                                "paging": false,
+                                "bLengthChange": false,
+                                "aaData": data.ContainerList,
+                                "aaSorting": [[0, 'desc']],
+                                "columns": [
+                                    {
+                                        "data": "EntryId",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+
+                                                data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-primary editbutton \" name=\"editbutton\" style=\"height:35px;\" onclick=\"EditItem(this)\"><i class=\"fe fe-edit\" style=\"font-size: 16px;\"></i></button>";
+                                            }
+
+                                            return data;
+                                        }
+                                    },
+                                    { "data": "WoType" },
+                                    {
+                                        "data": "Size",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+
+                                                input = " < input Name = SizeId type = hidden id = SizeId   value = " + row.SizeId + " >";
+                                            }
+
+                                            return data;
+                                        }
+                                    },
+                                    {
+                                        "data": "PackageType",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+
+                                                input = " < input Name = PackageId type = hidden id = PackageId   value = " + row.PackageId + " >";
+                                            }
+
+                                            return data;
+                                        }
+                                    },
+                                    {
+                                        "data": "CargoType",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+
+                                                input = " < input Name = ContainerType type = hidden id = ContainerType   value = " + row.ContainerType + " >";
+                                            }
+
+                                            return data;
+                                        }
+                                    },
+                                    {
+                                        "data": "Commodity",
+                                        "render": function (data, type, row, meta) {
+                                            if (type === 'display') {
+
+                                                input = " < input Name = CommodityId type = hidden id = CommodityId   value = " + row.CommodityId + " >";
+                                            }
+
+                                            return data;
+                                        }
+                                    },
+                                    { "data": "TranTypeId" },
+                                    { "data": "UnitType" },
+                                    { "data": "Amount" },
+                                    { "data": "RangeFrom" },
+                                    { "data": "RangeTo" },
+                                ]
+                            });
+                            enableDisableCtrl(true);
+                            Sub_Clear();
+                            //$("#divSummary").hide()
+                            //$('#divEntry').show()
+                            assignJoData(data.HeaderDetails);
+                            $("#divSummary").hide();
+                            $("#divTariffEntry").show();
+                        }
+                        else {
+                            alert(data.message);
+                        }
+                    } catch (ex) {
+                        alert(ex.message);
+                    }
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    function assignJoData(HeaderDetails) {
+        debugger;
+        $("#hdnTariffId").val(HeaderDetails.TariffId);
+        $("#ddlCategory").val(HeaderDetails.Category);
+        $("#txtEffectiveFromDate").val(HeaderDetails.RangeFrom);
+        $("#txtEffectiveToDate").val(HeaderDetails.RangeTo);
+    }
+
+    function enableDisableCtrl(pEnable) {
+        $("#ddlCategory").attr('disabled', pEnable);
+        $("#txtEffectiveFromDate").attr('disabled', pEnable);
+        $("#txtEffectiveToDate").attr('disabled', pEnable);
+        $("#ddlWoType").attr('disabled', pEnable);
+        $("#ddlSize").attr('disabled', pEnable);
+        $("#ddlPackageType").attr('disabled', pEnable);
+        $("#ddlCargoType").attr('disabled', pEnable);
+        $("#ddlCommodity").attr('disabled', pEnable);
+        $("#ddlTransType").attr('disabled', pEnable);
+        $("#ddlUnitType").attr('disabled', pEnable);
+        $("#txtAmount").attr('disabled', pEnable);
+        $("#txtRangeFrom").attr('disabled', pEnable);
+        $("#txtRangeTo").attr('disabled', pEnable);
+    }
+
+    function EditItem(EntryId) {
+
+        var data1 = { 'EntryId': EntryId };
+
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/WorkOrder/getTariffByEntryId",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                debugger;
+                if (response.message != "") {
+                    alert(response.message);
+                }
+                else {
+                    $("#ddlWoType").val(response.HeaderDetails.WoType);
+                    
+                    if (response.HeaderDetails.SizeId == 0) {
+                        $("#ddlSize").find('option:eq(0)').prop('selected', true);
+                    }
+                    else {
+                        $("#ddlSize").val(response.HeaderDetails.SizeId);
+                    }
+                    if (response.HeaderDetails.PackageId == 0) {
+                        $("#ddlPackageType").find('option:eq(0)').prop('selected', true);
+                    }
+                    else {
+                        $("#ddlPackageType").val(response.HeaderDetails.PackageId);
+                    }
+                    if (response.HeaderDetails.ContainerType == 0 || response.HeaderDetails.ContainerType == "All") {
+                        $("#ddlCargoType").find('option:eq(0)').prop('selected', true);
+                    } else {
+                        $("#ddlCargoType").val(response.HeaderDetails.ContainerType);
+                    }
+                    if (response.HeaderDetails.CommodityId == 0 || response.HeaderDetails.CommodityId == "All") {
+                        $("#ddlCommodity").find('option:eq(0)').prop('selected', true);
+                    } else {
+                        $("#ddlCommodity").val(response.HeaderDetails.CommodityId);
+                    }
+                    $("#ddlTransType").val(response.HeaderDetails.TranTypeId);
+                    $("#ddlUnitType").val(response.HeaderDetails.UnitType);
+                    $("#txtAmount").val(response.HeaderDetails.Amount);
+                    $("#txtRangeFrom").val(response.HeaderDetails.RangeFrom);
+                    $("#txtRangeTo").val(response.HeaderDetails.RangeTo);
+                }
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+        $("#btnAddTariff").focus();
+    }
+
+    function Sub_Clear() {
+        $("#ddlWoType").val("TC");
+        $("#ddlSize").val("");
+        $("#ddlPackageType").val("All");
+        $("#ddlCargoType").val("");
+        $("#ddlCommodity").val("");
+        $("#ddlTransType").val("");
+        $("#ddlUnitType").val("");
+        $("#txtAmount").val(0);
+        $("#txtRangeFrom").val("");
+        $("#txtRangeTo").val("");
+    }
+
+    function AddNewTariff() {
+        debugger;
+        $("#divSummary").hide();
+        $("#divTariffEntry").show();
+
+        $('#reportTable').DataTable().clear().destroy();
+
+        $('#reportTable').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            // "bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+        });
+
+        Sub_Clear();
+    }
+
+</script>

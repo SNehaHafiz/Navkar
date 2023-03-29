@@ -1,0 +1,364 @@
+﻿
+@{
+    ViewBag.Title = "Material Stock Entry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+        text-align: center;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+        text-align: center;
+    }
+</style>
+
+<style>
+    .hiderow {
+        display: none;
+    }
+</style>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Material Stock Entry</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Entry ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtentryid", null, new { @class = "form-control ", @id = "txtentryid", Placeholder = "Entry ID", @autocomplete = "off", @maxlength = "20", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Depaertment</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddldepartment", (IEnumerable<SelectListItem>)ViewBag.DepartMentList, "--Select--", new { @class = "form-control", @id = "ddldepartment", name = "ddldepartment", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">From Party (Debit)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="ddlitems"   />
+                                        <input type="hidden" class="form-control" id="hdnitems" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Qty</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("ddldepartment", null, new { @class = "form-control ", @id = "qty", Placeholder = "Qty", @autocomplete = "off", @type = "number", @min = "0", @step = "0.01", @value = "0" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Rate</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtrate", null, new { @class = "form-control ", @id = "txtrate", Placeholder = "Rate", @autocomplete = "off", @type = "number", @min = "0", @step = "0.01", @value = "0" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button id="btnSave" class="btn btn-primary btn-xs" onclick="return Add();">Add</button>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div>
+                                @*<label class="form-label">Details </label>*@
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap mt-lg-5" id="example1" style="width:100%">
+                                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                        <tr>
+
+                                            <th style="width:80px;color: white;text-align:center">item No</th>
+                                            <th style="width:80px;color: white;text-align:center">Item Name</th>
+                                            <th style="width:80px;color: white;text-align:center">Qty</th>
+                                            <th style="width:80px;color: white;text-align:center">Rate</th>
+
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextArea("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+                                        <input type="hidden" id="txtentryid" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+    $(document).ready(function () {
+        AutomCom();
+
+
+    });
+    function AutomCom() {
+        $("#ddlitems").autocomplete({
+
+            source: function (request, response) {
+                $.ajax({
+                    url: "/WorkOrder/GetItemsDetails",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //
+                        response($.map(data, function (item) {
+                            //
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                    }
+                })
+            },
+            select: function (e, i) {
+
+                $("#ddlitems").val(i.item.label);
+                $("#hdnitems").val(i.item.val);
+            },
+
+            minLength: 1
+
+        });
+
+
+        
+    }
+</script>
+
+<script>
+
+
+    var storeAddedItem = [];
+    function Add() {
+
+
+        var element = {};
+        element.Itemno = $('#hdnitems').val();
+        element.ItemnoName = $("#ddlitems").val();
+        element.Qty = $('#qty').val();
+        element.Rate = $('#txtrate').val();
+        //before push to data it will check null or not
+
+        if (element.Itemno == 0) {
+            document.getElementById("ddlitems").style.borderColor = "red";
+            alert('Please select material!')
+            event.preventDefault();
+            return;
+        }
+        if (element.Qty == 0) {
+            document.getElementById("qty").style.borderColor = "red";
+            alert('Please enter qty!')
+            event.preventDefault();
+            return;
+        }
+        if (element.Rate == "") {
+            document.getElementById("txtrate").style.borderColor = "red";
+            alert('Please enter rate!')
+            event.preventDefault();
+            return;
+        }
+
+
+        storeAddedItem.push(element);
+        // data tble
+        $('#example1').DataTable({
+            "destroy": true,
+            "bLengthChange": true,
+            "aaData": storeAddedItem,
+            "bPaginate": true,
+            "bInfo": true,
+            "paging": true,
+
+            "columns": [
+                { "data": "Itemno" },
+                { "data": "ItemnoName" },
+                { "data": "Qty" },
+                { "data": "Rate" },
+            ]
+        });
+
+        //CLEAR TO ADD ELEMENTS
+        $('#ddlitems').val(0);
+        $('#qty').val("");
+        $('#txtrate').val("");
+    }
+</script>
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+        document.location = '@Url.Action("MaterialStockEntry", "WorkOrder")';
+    }
+</script>
+
+<script>
+    function Save() {
+       // debugger;
+
+        ///var gateinno = $("#txtgano").val();
+        var DepartID = $("#ddldepartment").val();
+        var Remarks = $("#txtremarks").val();
+
+
+        if (DepartID == 0) {
+            document.getElementById("ddldepartment").style.borderColor = "red";
+            alert('Please select department !')
+            event.preventDefault();
+            return;
+        }
+
+        var SelectedData = new Array();
+
+        var table = document.getElementById("example1");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+
+            Itemno = row.cells[0].innerText;
+            ItemnoName = row.cells[1].innerText;
+            Qty = row.cells[2].innerText;
+            Rate = row.cells[3].innerText;
+            SelectedData.push({
+                'Itemno': Itemno, 'ItemnoName': ItemnoName, 'Qty': Qty, 'Rate': Rate
+            })
+        }
+        var data1 = {
+            'Debitdata': SelectedData, 'DepartID': DepartID, 'Remarks': Remarks
+        };
+        var data = JSON.stringify(data1);
+      //  alert(data);
+        $.ajax({
+            url: "/WorkOrder/SaveMaterialsDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                alert(response.ResponseMessage);
+                cleartextboxes();
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+</script>

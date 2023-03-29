@@ -1,0 +1,500 @@
+﻿
+@{
+    ViewBag.Title = "LockedData";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+
+    @@media (min-width: 768px) {
+        .modal-lg {
+            width: 90%;
+            max-width: 1200px;
+        }
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h3>Locked Data</h3>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white">
+                <i class="fa fa-file-text" data-placement="bottom" title="Open Activity Master Summary"></i>
+            </a>
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Locked-ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtlockedid" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Locked On</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtfromdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtfromdate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddlactivity">
+                                                <option value="0">--Select--</option>
+                                                <option value="All">All</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Locked Date Upto</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txttodate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtremarks" type="text" placeholder="Remarks" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List Of Locked Data</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />*@
+                                            <button class=" btn btn-primary" style="margin-top: auto" title="Show" id="btnSearch" onclick="ShowSSRSummary()" type="button">
+                                                <i class="fe fe-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<button class="btn btn-success" id="btnSearch" style="margin-top: auto" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>*@
+                                            @*@Html.ActionLink("Excel To Excel", "ExportActivityMasterReport", null, new { @class = "btn btn-primary btn-md" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="largeModal1" class="modal fade">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content ">
+            <div class=" content-area">
+                <div class="page-header">
+                    <h6 class="page-title">Unlocked Data</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-horizontal">
+                                    <div class="row">
+                                        <div class="col-lg-2 col-sm-8">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Locked-ID </label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <input ID="txtunlockedid" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-8">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Unlocked On</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.TextBox("txtfromdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtunfromdate" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Activity</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <select class="form-control" id="ddlunactivity">
+                                                            <option value="0">--Select--</option>
+                                                            <option value="All">All</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Unlocked Date Upto</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtuntodate" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Request By</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.DropDownList("ddluser", (IEnumerable<SelectListItem>)ViewBag.UserList, "--Select--", new { @class = "form-control", @id = "ddluser", name = "ddluser", autocomplete = "off" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-3">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Remarks</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <input ID="txtunremarks" type="text" placeholder="Remarks" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label"></label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+
+                                                <button id="btnSave" class="btn btn-primary btn-xs" onclick="return unlock();">Unlock</button>
+
+                                                <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- modal-dialog -->
+</div>
+
+<script>
+
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+    function Save() {
+         debugger;
+            var FromDate = document.getElementById('txtfromdate').value;
+            var Activity = document.getElementById('ddlactivity').value;
+         var ToDate = document.getElementById('txttodate').value;
+         var Remarks = document.getElementById('txtremarks').value;
+
+
+
+            if (Activity == 0) {
+             document.getElementById("txtjono").style.borderColor = "red";
+            alert('Please select activity!')
+            event.preventDefault();
+            return;
+         }
+
+            if (Remarks == "") {
+                document.getElementById("txtremarks").style.borderColor = "red";
+             alert('Please enter remarks !')
+             event.preventDefault();
+             return;
+         }
+
+
+            var data1 = {
+                'FromDate': FromDate, 'Activity': Activity, 'ToDate': ToDate, 'Remarks': Remarks
+            };
+
+        var data = JSON.stringify(data1);
+
+
+
+
+     $.ajax({
+         url: "/ExpensesHead/SaveLockedData",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+         success: function (data) {
+             alert(data)
+                window.location.href = '@Url.Action("LockedData", "ExpensesHead")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+    function ShowSSRSummary() {
+
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ExpensesHead/LockedDataList",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(jsonResult)
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "ExpensesTypeMaster", "ExpensesTypeMaster")
+                //  alert(jsonResult)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+        $("input:text").val("");
+
+    }
+</script>
+<script>
+    function edittext(Locked_ID) {
+        $("#largeModal1").modal();
+        $("#largeModal1").show();
+
+
+        var data1 = { "Locked_ID": Locked_ID };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ExpensesHead/GetLockedData',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#txtunlockedid').val(data[0].Locked_ID);
+                $('#txtunfromdate').val(data[0].Locked_on);
+                $('#txtuntodate').val(data[0].Locked_Till_Date);
+                $('#ddlunactivity').val(data[0].Activity);
+                $('#txtunremarks').val(data[0].Remarks);
+                //log old data
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        ///*GetDetailsForTariffSearch*/();
+    }
+
+</script>
+<script>
+     function unlock() {
+         debugger;
+            var FromDate = document.getElementById('txtunfromdate').value;
+            var Activity = document.getElementById('ddlunactivity').value;
+         var ToDate = document.getElementById('txtuntodate').value;
+         var Remarks = document.getElementById('txtunremarks').value;
+         var RequestBy = document.getElementById('ddluser').value;
+
+
+
+            if (Activity == 0) {
+             document.getElementById("txtjono").style.borderColor = "red";
+            alert('Please select activity!')
+            event.preventDefault();
+            return;
+         }
+
+            if (Remarks == "") {
+                document.getElementById("txtremarks").style.borderColor = "red";
+             alert('Please enter remarks !')
+             event.preventDefault();
+             return;
+         }
+
+         if (RequestBy == 0) {
+             document.getElementById("ddluser").style.borderColor = "red";
+             alert('Please select request by !')
+             event.preventDefault();
+             return;
+         }
+
+
+         var data1 = {
+             'FromDate': FromDate, 'Activity': Activity, 'ToDate': ToDate, 'Remarks': Remarks, 'RequestBy': RequestBy
+            };
+
+        var data = JSON.stringify(data1);
+
+         alert(data);
+
+
+     $.ajax({
+         url: "/ExpensesHead/SaveUnlockedData",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+         success: function (data) {
+             alert(data)
+                window.location.href = '@Url.Action("LockedData", "ExpensesHead")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+</script>
+

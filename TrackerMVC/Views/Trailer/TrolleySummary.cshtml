@@ -1,0 +1,354 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrolleyEntities>
+
+@{
+    ViewBag.Title = "TrolleySummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+<div class=" content-area" id="divTrolleyList">
+    <div class="page-header">
+        <h4 class="page-title">Trolley Summary: @Model.Count() </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+            @*<a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a>*@
+                <a onclick="AddTrolley();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-plus" data-placement="bottom" title="Generate Trolley"></i> </a>
+           
+             </li>
+
+        </ol>
+    </div>
+    @*<div class="ibox-content text-right">
+        <a onclick="AddTrolley();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-plus" data-placement="bottom" title="Generate Trolley"></i> </a>
+    </div>*@
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="TrollyTable" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting">Trolley No.</th>
+                                                <th class="wd-10p sorting">Size</th>
+                                                <th class="wd-10p sorting">Weight</th>
+                                                <th style="visibility:hidden;width:10%"></th>
+                                                
+
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+                                                <tr>
+                                                    <td>@d.TrolleyNo </td>
+                                                    <td>@d.TrolleySize </td>
+                                                    <td>@d.TrolleyWeight </td>
+                                                    <td> <a onclick="EditTrolley(@d.TrollyID,'@d.TrolleyNo','@d.TrolleySize','@d.TrolleyWeight')" href="#" class="btn btn-sm btn-info" title="Edit"><i class="fa fa-edit"></i></a></td>
+
+                                                </tr>
+                                            }
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divAddTrolley" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Trolley</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row" style="display:none">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Trolley ID</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.Hidden("TrolleyId", null, new { @class = "form-control", @id = "txtTrolleyID", name = "txtTrolleyID", autocomplete = "off" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Trolley No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TrolleyNo", null, new { @class = "form-control", @id = "txtTrolleyNo", name = "txtTrolleyNo", autocomplete = "off", onblur = "myRequiredValidation('txtTrolleyNo')",  @maxlength = 10 })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Trolley Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TrolleySize", null, new { @class = "form-control", @id = "txtTrolleySize", name = "txtTrolleySize", autocomplete = "off" ,onkeypress="return isNumberKey(event)", @maxlength = 10 })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Trolley Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TrolleyWeight", null, new { @class = "form-control", @id = "txtTrolleyWeight", name = "txtTrolleyWeight", autocomplete = "off", onkeypress = "return isNumberKey(event)" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.CheckBox("TrolleyActive", new { @checked = "checked", @id = "isActive" }) Is Active?*@
+                                            <input type="checkbox" id="isActive" checked />Is Active?
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="btnSave" name="saveProfile" value="Save" class="btn btn-success" />
+                                        @*<input type="button" name="clearProfile" value="Clear" class="btn btn-gray" title="clear" id="clearValue" />*@
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#TrollyTable').dataTable({
+                retrieve: true,
+                paging: false,
+                "bInfo": false
+
+            })
+        });
+
+    </script>
+
+<script>
+    function AddTrolley() {
+
+        $("#divTrolleyList").hide()
+        $('#divAddTrolley').show()
+        
+    }
+    </script>
+<script>
+    function getBack() {
+        $("#divAddTrolley").hide()
+        $('#divTrolleyList').show()
+         document.location = '@Url.Action("TrolleySummary", "Trailer")';
+        //$.ajax({
+        //    url: "Trailer/TrolleySummary",
+        //    success: function () { }
+        //});
+    }
+</script>
+<script>
+    $('#clearValue').click(function () {
+        
+        $('#txtTrolleyNo').removeClass("form-control is-valid state-valid")
+
+        $('#txtTrolleyNo').addClass("form-control")
+        document.getElementById('txtTrolleyNo').value = "";
+        document.getElementById('txtTrolleyID').value = ""
+    });
+
+</script>
+
+
+<script>
+   
+    function validate() {
+        // alert("hifg");
+
+        var txtTrolleyNo = document.getElementById('txtTrolleyNo').value;
+
+        var blResult = Boolean;
+        blResult = true;
+       
+
+        if (txtTrolleyNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtTrolleyNo").removeClass("form-control is-valid state-valid")
+            $("#txtTrolleyNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+
+       
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+    //$('#btnRemoveCSS').click(function () {
+
+    </script>
+
+<script>
+
+    $("#btnSave").click(function () {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+      
+
+     //   alert(document.getElementById("isActive").checked);
+        var TrolleyData = {};
+        TrolleyData.TrollyID = $("#txtTrolleyID").val();
+        TrolleyData.TrolleyNo = $("#txtTrolleyNo").val();
+        TrolleyData.TrolleySize = $("#txtTrolleySize").val();
+        TrolleyData.TrolleyWeight = $("#txtTrolleyWeight").val();
+       
+       
+        TrolleyData.IsActive =  document.getElementById("isActive").checked;
+
+        $.ajax({
+            url: "/Trailer/AddTrolley",
+            data: '{TrolleyData: ' + JSON.stringify(TrolleyData) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+              //  alert(result)
+                if(result == 1)
+                {
+                    alert("Data Updated successfully");
+                    document.getElementById('txtTrolleyNo').value = "";
+                    document.getElementById('txtTrolleyID').value = "";
+                    document.getElementById('txtTrolleySize').value = "";
+                    document.getElementById('txtTrolleyWeight').value = "";
+                    document.getElementById('btnSave').value = "Save";
+                    $('#txtTrolleyNo').removeClass("form-control is-valid state-valid")
+                
+                    $('#txtTrolleyNo').addClass("form-control")
+                }
+                else if(result == 2)
+                {
+                    alert("Data Saved successfully");
+                    document.getElementById('txtTrolleyNo').value = "";
+                    document.getElementById('txtTrolleyID').value = "";
+                    document.getElementById('txtTrolleySize').value = "";
+                    document.getElementById('txtTrolleyWeight').value = "";
+                    $('#txtTrolleyNo').removeClass("form-control is-valid state-valid")
+                
+                    $('#txtTrolleyNo').addClass("form-control")
+                
+                }
+                else if(result == 3)
+                {
+                    alert("Already exist same trolley data")
+                
+                }
+               
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    });
+</script>
+<script>
+    function myRequiredValidation(TextField) {
+
+        // alert("#" + TextField);
+
+        if ($("#" + TextField).val() == "") {
+            $("#" + TextField).removeClass("form-control is-valid state-valid")
+            $("#" + TextField).addClass("form-control is-invalid state-invalid")
+            //  document.getElementById(TextField).style.borderColor = "red"
+        } else {
+            // alert("hi")
+            $("#" + TextField).removeClass("form-control is-invalid state-invalid")
+            $("#" + TextField).addClass("form-control is-valid state-valid")
+            // document.getElementById(TextField).style.borderColor = "Gainsboro"
+        }
+    };
+</script>
+
+<script>
+    function EditTrolley(TrollyID, TrolleyNo, TrolleySize, TrolleyWeight)
+    {
+      
+        AddTrolley();
+        var Id = TrollyID;
+        var TrolleyNo1 = TrolleyNo;
+
+       // $("#txtTrolleyID").val(ID);
+        document.getElementById('btnSave').value = "Update";
+        document.getElementById('txtTrolleyID').value=Id;
+        document.getElementById('txtTrolleyNo').value=TrolleyNo1;
+        document.getElementById('txtTrolleySize').value = TrolleySize;
+        document.getElementById('txtTrolleyWeight').value = TrolleyWeight;
+
+       // document.getElementById("txtTrolleyNo").innerHTML = TrolleyNo; 
+    }
+
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+</script>

@@ -1,0 +1,486 @@
+﻿
+@{
+    ViewBag.Title = "EDIReceiptTallyInfo";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden">
+
+    <div class="page-header">
+        <h4 class="page-title">EDI Receipt Tally Info</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-8 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As On: </label>
+                                <div class="row gutters-xs">
+                                    <div class="col-md-12 col-lg-3">
+
+                                        @Html.TextBox("txtDate", (String)ViewBag.Date, new { @class = "form-control datePicker1", @id = "txtDate", autocomplete = "off", onchange = "CheckDate();", @value = @ViewBag.Date })
+
+                                    </div>
+                                    <div class="col-md-12 col-lg-9">
+                                        <button class="btn btn-primary" type="button" id="EDI" onclick="LoadData('EDI');">EDI</button>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+
+                        <div class="col-md-2 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">No of Records</label>
+                                @Html.TextBox("txtCount", null, new { @class = "form-control", @id = "txtCount", name = "txtCount", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <input type="hidden" name="txtCategory" id="txtCategory">
+                    </div>
+
+                    <div class="table-responsive">
+                        @Html.ActionLink("Export To Excel", "ExportToExcelTallyInvoiceInfo_EDi", null, new { @class = "btn btn-primary btn-md" })
+                        <button class="btn btn-primary" name="btnLock" onclick="Lock()">Lock</button>
+                        <table id="tblInvoiceList" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th class="wd-15p sorting" style="width:1px;"> <input type="checkbox" id="flowcheckall" value="" />&nbsp;Select    </th>
+
+                                    <th class="wd-10p sorting">Category</th>
+                                    <th class="wd-10p sorting">Receipt No</th>
+                                    <th class="wd-10p sorting">Receipt Date</th>
+                                    <th class="wd-10p sorting">Receipt Amount</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                    <!-- table-wrapper -->
+
+                    <div id="divExcel" style="display:none">
+                        <div class="table-responsive">
+                            <table id="tblExport" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="wd-10p sorting">V_INVOICE_DATE</th>
+                                        <th class="wd-10p sorting">VOUCHER_TYPE</th>
+                                        <th class="wd-10p sorting">REF_T</th>
+                                        <th class="wd-10p sorting">LEDERNAME</th>
+                                        <th class="wd-10p sorting">DR_CR</th>
+                                        <th class="wd-10p sorting">AMOUNT</th>
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+
+                    </div>
+
+
+
+
+                </div>
+                <!-- section-wrapper -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    function Lock() {
+        debugger;
+        var category = $('#txtCategory').val();
+
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("tblInvoiceList");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+            //debugger;
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                //debugger;
+                var ReceiptNo = row.cells[0].childNodes[0].value;
+
+                if (ReceiptNo == checkboxarray[k]) {
+
+                    if ($('#txtCategory').val() == 'ALL') {
+                        //alert(category);
+                        var categoryx = row.cells[1].innerText;
+                        //alert(categoryx);
+                    }
+                    tablearray.push({ 'ReceiptNo': ReceiptNo, 'Category': categoryx })
+                }
+            }
+        }
+        //alert(JSON.stringify(tablearray));
+
+        if (tablearray.length == 0) {
+            alert("Please select Receipt to proceed");
+
+        }
+        else {
+            var r = confirm("Do you want lock selected Receipts ?");
+            if (r == true) {
+                debugger;
+                var data1 = { 'Receiptdata': tablearray, 'CategoryName': category };
+                var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/ReceiptTally/LockEDItData",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (Data) {
+
+                        alert("Data locked successfully!");
+
+                        document.location = '@Url.Action("EDIReceiptTallyInfo", "ReceiptTally")';
+
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+            else {
+
+            }
+        }
+
+
+
+
+    }
+
+    function ExportToExcel() {
+
+        var category = $('#txtCategory').val();
+        var Date = $("#txtDate").val();
+
+        var data1 = { 'Date': Date, 'Category': category };
+        var data = JSON.stringify(data1);
+
+
+        $.ajax({
+            url: "/ReceiptTally/GetExporttoExcelData",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (Data) {
+                debugger;
+                var filename = 'Export_CategoryWiseInvoice_' + category + '_' + Date;
+
+                $('#tblExport').dataTable({
+                    "destroy": true,
+                    "initComplete": function () {
+                        $('.buttons-excel').click()
+                    },
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "aaSorting": [],
+                    "order": [],
+
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+                    "aaData": Data,
+                    "columns": [
+                        { "data": "V_INVOICE_DATE" },
+                        { "data": "VOUCHER_TYPE" },
+                        { "data": "REF_T" },
+                        { "data": "LEDERNAME" },
+                        { "data": "DR_CR" },
+                        { "data": "AMOUNT" }
+
+                    ]
+                    ,
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'CategoryWiseInvoice',
+                        "filename": filename,
+                        "text":'Export to Excel'
+
+                    }
+
+                    ]
+
+                })
+
+
+
+
+            },
+            error: function (errormessage) {
+                debugger;
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+
+
+
+
+    function CheckDate() {
+
+        $('#txtCategory').val("");
+        $("#ALL,#Import,#Bond,#Other,#Domestic,#MNR,#Export").removeClass("btn btn-success");
+        $("#ALL,#Import,#Bond,#Other,#Domestic,#MNR,#Export").addClass("btn btn-primary");
+
+        var table = $('#tblInvoiceList').DataTable();
+
+        table
+            .clear()
+            .draw();
+
+        $('#txtCount').val("");
+        $('#txtSGST').val("");
+        $('#txtCGST').val("");
+        $('#txtIGST').val("");
+        $('#txtTotalGST').val("");
+        $('#txtTotal').val("");
+
+
+
+    }
+
+
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#tblInvoiceList').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+
+    function LoadData(category) {
+        debugger;
+        $('#txtCategory').val(category);
+
+        $("#flowcheckall").prop('checked', false);
+
+        var Date = $("#txtDate").val();
+
+        if (Date == "") {
+            alert("Please select date");
+        }
+        else {
+
+            if (category == 'EDI') {
+
+                $("#EDI").removeClass("btn btn-primary");
+                $("#EDI").addClass("btn btn-success");
+
+                $("#EDI").removeClass("btn btn-success");
+                $("#EDI").addClass("btn btn-primary");
+
+            }
+
+
+
+            var data1 = { 'Date': Date, 'Category': category };
+            var data = JSON.stringify(data1);
+
+
+            $.ajax({
+                url: "/ReceiptTally/FetchCategorywiseEDI",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (Data) {
+                    debugger;
+                   //  $('#txtCount').val(Data.length);
+
+                    $('#tblInvoiceList').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bInfo": false,
+                        "bPaginate": false,
+                        //"bFilter": false,
+                        "aaSorting": [],
+                        "order": [],
+
+                        "aoColumnDefs": [
+                            {
+                                'bSortable': false,
+                                'aTargets': [0]
+                            }
+
+                        ],
+                        "aaData": Data,
+                        "columns": [
+                            {
+
+                                "data": "Select",
+                                "render": function (data, type, row, meta) {
+
+                                    data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  value="' + row.ReceiptNo + '">';
+                                    return data;
+
+                                }
+                            },
+                            { "data": "Category" },
+                            { "data": "ReceiptNo" },
+                            { "data": "ReceiptDate" },
+                            { "data": "ReceivedAmount" }
+                        ]
+                        //,
+                        //"dom": 'Bfrtip',
+                        //"buttons": [{
+                        //    "extend": 'excel',
+                        //    "title": 'CategoryWiseInvoice',
+                        //    "filename": 'CategoryWiseInvoice',
+                        //    "text":'Export to Excel'
+
+                        //}
+
+                        //]
+
+                    })
+
+
+
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+
+        $('#tblInvoiceList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+            //,
+            //"dom": 'Bfrtip',
+            //"buttons": [{
+            //    "extend": 'excel',
+            //    "title": 'CountryList',
+            //    "filename": 'GetMyREQ_Country_List'
+
+            //}
+
+            //]
+
+        })
+
+
+        $('#tblExport').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+            //,
+            //"dom": 'Bfrtip',
+            //"buttons": [{
+            //    "extend": 'excel',
+            //    "title": 'CountryList',
+            //    "filename": 'GetMyREQ_Country_List'
+
+            //}
+
+            //]
+
+        })
+
+
+        $(function () {
+
+            $('.datePicker1').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true
+
+            })
+                .on('changeDate', function (e) {
+
+                    $('.datepicker').hide();
+                });
+        });
+    });
+
+</script>
+

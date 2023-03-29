@@ -1,0 +1,274 @@
+﻿
+@{
+    ViewBag.Title = "Category Wise Credit Note Summary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    /*.dt-buttons{
+        visibility:hidden !important
+    }*/
+</style>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/js/GetTableArray.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Credit Note Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-lg-1 col-sm-12">
+                                        <div class="form-group">
+                                            <div class="form-label">Container Wise</div>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input" onclick='CheckActive(this);'>
+                                                <span class="custom-switch-indicator"></span>
+
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2" style="display:none">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">For</label>
+                                            @Html.DropDownList("ddlFor", new List<SelectListItem>
+                                          { new SelectListItem { Text = "Credit Note", Value = "1"},
+                                            new SelectListItem { Text = "Container", Value = "2"}
+                                           }, new { @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-lg-1">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Category</label>
+                                            @Html.DropDownList("ddlActivity", (IEnumerable<SelectListItem>)ViewBag.Activity, "ALL", new { @class = "form-control", @id = "ddlActivity", name = "ddlActivity", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-3">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Party Name</label>
+                                            @Html.DropDownList("ddlGSTName", (IEnumerable<SelectListItem>)ViewBag.GSTName, "ALL", new { @class = "form-control", @id = "ddlGSTName", name = "ddlGSTName", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_date2", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_date2", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-1 col-lg-1">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" title="Show" onclick="Show()" type="button">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-lg-1">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-danger" style="margin-top: -7px" id="btnSearch" title="Show Cancelled Credit Notes" onclick="CancelDetails()" type="button">
+                                                Show Cancelled Credit Notes
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    
+
+                  
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <button class="btn btn-orange" id="btnSearch"  title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+     function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelCreditNoteSummary", "report")?';
+
+
+    }
+
+
+    function Show() {
+        $("#tracker-loader").fadeIn("slow");
+
+        var ddlActivity = $("#ddlActivity option:selected").val();
+        var ddlFor = 'Credit Note';
+
+        if (ddlActivity == "") {
+            ddlActivity = 0;
+        }
+        var ddlGSTName = $("#ddlGSTName option:selected").val();
+
+        if (ddlGSTName == "") {
+            ddlGSTName = 0;
+        }
+        var fromdate = $("#FromDate").val();
+        var todate = $("#ToDate").val();
+        var data1 = { 'ddlActivity': ddlActivity, 'ddlGSTName': ddlGSTName, 'fromdate': fromdate, 'todate': todate, 'CFor': ddlFor };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetCreditNoteSummary',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+              
+                $("#reportTable").empty();
+                RepTableDataJson($("#reportTable"), data, "CreditNoteSummary", "CreditNoteSummary");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    function CheckActive() {
+        $("#tracker-loader").fadeIn("slow");
+
+        var ddlActivity = $("#ddlActivity option:selected").val();
+        var ddlFor = '2';
+
+        if (ddlActivity == "") {
+            ddlActivity = 0;
+        }
+        var ddlGSTName = $("#ddlGSTName option:selected").val();
+
+        if (ddlGSTName == "") {
+            ddlGSTName = 0;
+        }
+        var fromdate = $("#FromDate").val();
+        var todate = $("#ToDate").val();
+        var data1 = { 'ddlActivity': ddlActivity, 'ddlGSTName': ddlGSTName, 'fromdate': fromdate, 'todate': todate, 'CFor': ddlFor };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetCreditNoteSummary',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#reportTable").empty();
+                RepTableDataJson($("#reportTable"), data, "CreditNoteSummary", "CreditNoteSummary");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+    function CancelDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var ddlActivity = $("#ddlActivity option:selected").val();
+        var ddlFor = $("#ddlFor option:selected").val();
+
+        if (ddlActivity == "") {
+            ddlActivity = 0;
+        }
+        var ddlGSTName = $("#ddlGSTName option:selected").val();
+
+        if (ddlGSTName == "") {
+            ddlGSTName = 0;
+        }
+        var fromdate = $("#FromDate").val();
+        var todate = $("#ToDate").val();
+        var data1 = { 'ddlActivity': ddlActivity, 'ddlGSTName': ddlGSTName, 'fromdate': fromdate, 'todate': todate, 'CFor': ddlFor };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetCreditNoteCancelSummary',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#reportTable").empty();
+                RepTableDataJson($("#reportTable"), data, "CreditNoteSummary", "CreditNoteSummary");
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+

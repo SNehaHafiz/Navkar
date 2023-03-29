@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewBag.Title = "ImportWorkOrderReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Import Work Order Report</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd-MMM-yyyy 00:00") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd-MMM-yyyy 23:59") })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label mandatory">Category</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                                    { new SelectListItem { Text = "--Select--", Value = ""},
+                                    new SelectListItem { Text = "Import", Value = "Import"},
+                                    new SelectListItem { Text = "Import LCL", Value = "Import LCL"},
+                                    new SelectListItem { Text = "Bond", Value = "Bond"},
+                                    new SelectListItem { Text = "Import DPD", Value = "Import DPD"},
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategory" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label mandatory">Search Criteria</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.DropDownList("ddlCriteria", new List<SelectListItem>
+                                    { new SelectListItem { Text = "--Select--", Value = ""},
+                                    new SelectListItem { Text = "Vendor", Value = "Vendor"},
+                                    new SelectListItem { Text = "Vehicle No", Value = "Vehicle No"},
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlCriteria", onchange = "OnCriteriaChange()" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2" id="divVendor" style="display:none">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Vendor</label>
+                                            @Html.DropDownList("ddlVendor", (IEnumerable<SelectListItem>)ViewBag.VendorList, "ALL", new { @class = "form-control custom-select", @id = "ddlVendor", name = "ddlVendor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12" id="divSearchText" style="display:none">
+                                        <div class="form-group">
+                                            <label class="form-label mandatory">Search Text</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.TextBox("txtSearchText", null, new { @class = "form-control", @id = "txtSearchText", name = "txtSearchText", autocomplete = "off", placeholder = "Search Text" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-22 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show()" type="button">
+                                                Show
+                                            </button>
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnPrint" onclick="PrintLabourReport()" type="button">
+                                                Print
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelImpWorkOrder", null, new { @class = "btn btn-primary btn-md" })
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                               
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function OnCriteriaChange() {
+        var ddlCriteria = $("#ddlCriteria").val();
+        if (ddlCriteria != "") {
+            if (ddlCriteria == "Vendor") {
+                $("#divSearchText").hide();
+                $("#divVendor").show();
+            }
+            else if (ddlCriteria == "Vehicle No") {
+                $("#divSearchText").show();
+                $("#divVendor").hide();
+            }
+        }
+        else {
+            $("#divVendor").hide();
+            $("#divSearchText").hide();
+        }
+    }
+    function Show() {
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var ddlCriteria = $("#ddlCriteria").val();
+        var ddlCategory = $("#ddlCategory").val();
+        var SearchText = "";
+        if (ddlCriteria == "Vendor") {
+            SearchText = $("#ddlVendor").val();
+        }
+        else if (ddlCriteria == "Vehicle No") {
+            SearchText = $("#txtSearchText").val();
+        }
+        else {
+            SearchText = "";
+        }
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Criteria': ddlCriteria, 'SearchText': SearchText, 'Category': ddlCategory };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: '/ImportWorkOrder/ShowWorkOrderReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                RepTableDataJson($('#reportTable'),data,"Import Work Order Report","ImportWorkOrderReport")
+            }
+        })
+    }
+</script>
+<script>
+    function PrintLabourReport() {
+        debugger;
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var ddlVendor = $("#ddlVendor").val();
+        var ddlCategory = $("#ddlCategory").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Vendor': ddlVendor, 'Category': ddlCategory };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/ImportWorkOrder/ImportLabourActivityReportPrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //window.print();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+                //myWindow.print();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+</script>

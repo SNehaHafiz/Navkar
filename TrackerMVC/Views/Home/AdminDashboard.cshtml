@@ -1,0 +1,629 @@
+﻿@*@model IEnumerable<TrackerMVCEntities.BusinessEntities.CustArrivalEntities>*@
+@*@model System.Data.DataTable
+@using System.Data;*@
+
+@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+@*@Scripts.Render("~/plugins/highcharts/highcharts.js")
+@Scripts.Render("~/plugins/highcharts/highcharts-3d.js")
+@Scripts.Render("~/plugins/highcharts/exporting.js")
+@Scripts.Render("~/plugins/highcharts/export-data.js")
+@Scripts.Render("~/plugins/highcharts/histogram-bellcurve.js")
+@Scripts.Render("~/plugins/highcharts/solid-gauge.js")
+@Scripts.Render("~/js/chart.js")
+@Scripts.Render("~/js/echarts.js")
+@Scripts.Render("~/js/morris.js")
+@Scripts.Render("~/js/vendors/jquery-3.2.1.min.js")
+@Scripts.Render("~/plugins/select2/select2.full.min.js")
+@Scripts.Render("~/js/select2.js")
+@Scripts.Render("~/js/select2.js")
+@Scripts.Render("~/plugins/peitychart/jquery.peity.min.js")
+@Scripts.Render("~/plugins/peitychart/peitychart.init.js") 
+
+<link href="~/css/login.css" rel="stylesheet" />*@
+@*<div  id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Mktg. Wise Arrivals</h4>
+
+    </div>
+    <div class="row row-cards">
+      <div class="col-lg-6">
+          <div class="col-lg-12 col-sm-12">
+              <div class="mt-2 mb-5">
+                  <div class="input-group-append ml-10">
+                      <button type="button" class="btn btn-outline-info col-lg-4 col-sm-12" onclick="getImportArrivalDashboardCount('May')" id="May" style="cursor: pointer;">May</button>
+                      <button type="button" class="btn btn-outline-info col-lg-4 col-sm-12" onclick="getImportArrivalDashboardCount('June')" id="June" style="cursor: pointer;">June</button>
+                      <button type="button" class="btn btn-outline-info col-lg-4 col-sm-12" onclick="getImportArrivalDashboardCount('July')" id="July" style="cursor: pointer;">July</button>
+                  </div>
+              </div>
+              <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                  <div>
+                      <div class="inline">
+                          <div>
+                              <img class="arrival_image" src="~/images/truck-trailer.png">
+                              <!-- <i class="mdi mdi-truck-trailer left import_icon arrival"></i> -->
+                          </div>
+                          <div class="widget-line mt-5 margin_wrap">
+                              <p> Arrival TEUS</p>
+                              <h1 class="counter">@ViewBag.totalTEUSForImportArrivalDisplay</h1>
+                          </div>
+
+                      </div>
+                  </div>
+                  <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="@ViewBag.donutValue" data-thickness="20" data-color="#9f78ff">
+                      <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                  </div>
+                  <div class="widget-line mt-5 ">
+                      <div class="table-responsive">
+                          <table class="table card-table table-vcenter text-nowrap">
+                              <thead class="text-white" style="background-color:#7bc144">
+                                  <tr>
+
+                                      <th style="color:white;text-align:left;font-weight:bold;">Person</th>
+                                      <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                      <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                      <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                      <th style="color:white;text-align:right;font-weight:bold;">TEUS</th>
+                                  
+
+
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @foreach (var d in ViewBag.MPArrival as List<TrackerMVCEntities.BusinessEntities.CustArrivalEntities>)
+                                  {
+
+                                      <tr>
+                                          @if (d.Person != "Total")
+                                          {
+                                              <td class="@d.css text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;" onclick="getPersonMonthlyDetails('@d.Person')">@d.Person </td>
+                                              <td style="text-align:right;">@d.size20 </td>
+                                              <td style="text-align:right;">@d.size40 </td>
+                                              <td style="text-align:right;">@d.size45 </td>
+                                              <td style="text-align:right;">@d.TEUS </td>
+                                          }
+                                          else
+                                          {
+                                              <td class="@d.css text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer; font-weight:bold;" onclick="getPersonMonthlyDetails('@d.Person')">@d.Person </td>
+                                              <td class="green_Total" style="text-align:right; color:white;font-weight:bold;">@d.size20 </td>
+                                              <td class="green_Total" style="text-align:right; color:white;font-weight:bold;">@d.size40 </td>
+                                              <td class="green_Total" style="text-align:right; color:white;font-weight:bold;">@d.size45 </td>
+                                              <td class="green_Total" style="text-align:right; color:white;font-weight:bold;">@d.TEUS </td>
+                                          }
+
+                                 
+
+                                      </tr>
+                                  }
+
+                              </tbody>
+                          </table>
+                      </div>
+
+                  </div>
+
+              </div>
+              <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCardMonthWise">
+                  <div>
+                      <div class="inline">
+                          <div>
+                              <img class="arrival_image" src="~/images/truck-trailer.png">
+                              <!-- <i class="mdi mdi-truck-trailer left import_icon arrival"></i> -->
+                          </div>
+                          <div class="widget-line mt-5 margin_wrap">
+                              <p> Arrival TEUS</p>
+                              <h1 class="counter" id="totalTeusOFTheMonth"></h1>
+                          </div>
+
+                      </div>
+                  </div>
+                  <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="@ViewBag.donutValue" data-thickness="20" data-color="#9f78ff" id="donutChartForMonth">
+                      <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                  </div>
+                  <div id="tableBody">
+
+                  </div>
+              </div>
+
+          </div>
+        
+      </div>
+        <!--Line graph-->
+        <div class="col-lg-6 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Movement Graph</h3>
+                    <div class="card-options ">
+                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                    
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="echartArea2" class="chart-tasks chart-dropshadow" style="height:400px;"></div>
+                </div>
+
+            </div>
+        </div>
+        <!--bar graph-->
+        <div class="col-sm-12 col-lg-12" id="personGraph">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title" id="personIDTitle">   </h3>
+                    <div class="card-options ">
+                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                        <a href="#" class="card-options-remove" onclick="hideGraph()"><i class="fe fe-x"></i></a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="particular_Person" class="chart-tasks BarChartShadow" style="height:400px;"></div>
+                </div>
+            </div>
+        </div>
+        <div id="global-loader" class="styleNone"></div>
+    </div>
+
+
+</div>*@
+
+@*<script>
+    window.onload = function () {
+
+        $.ajax({
+            url: "/Home/GetMonthlyTEUSForImportArrival",
+            type: "POST",
+            dataType: "json",
+            data: { },
+            success: function (data) { 
+                var xAxis = [];
+                var yAxis = [];
+                $.each(data, function (i, item) {
+                    xAxis.push(item.XAxis)
+                    yAxis.push(item.Total)
+                });
+
+                /*-----echartArea2-----*/
+                var areaData2 = [
+                  {
+                      name: 'TEUS',
+                      type: 'line',
+                      smooth: true,
+                      data: yAxis,
+                      symbolSize: 20,
+                      lineStyle: {
+                          normal: {
+                              width: 4,
+                              color: new echarts.graphic.LinearGradient(
+                                  0, 0, 0, 1,
+                                  [
+                                      { offset: 0, color: '#9f78ff' },
+                                      { offset: 1, color: '#32cafe' }
+                                  ]
+                              )
+                          }
+                      },
+                      scaleShowLabels: false,
+                  },
+
+                ];
+
+                var optionArea2 = {
+                    grid: {
+                        top: '6',
+                        right: '12',
+                        bottom: '17',
+                        left: '25',
+                    },
+                    xAxis: {
+                        data: xAxis,
+                        boundaryGap: false,
+                        axisLine: {
+                            lineStyle: { color: '#c0dfd8' }
+                        },
+                        axisLabel: {
+                            fontSize: 10,
+                            color: '#000',
+                            display: 'false'
+                        }
+                    },
+                    tooltip: {
+                        show: true,
+                        showContent: true,
+                        alwaysShowContent: true,
+                        triggerOn: 'mousemove',
+                        trigger: 'axis',
+                        axisPointer:
+                            {
+                                label: {
+                                    show: false,
+                                }
+                            }
+
+                    },
+                    yAxis: {
+                        splitLine: {
+                            lineStyle: { color: '#eaeaea' },
+                            display: false
+                        },
+                        axisLine: {
+                            lineStyle: { color: '#eaeaea' },
+                            display: false
+                        },
+                        axisLabel: {
+                            fontSize: 0,
+                            color: '#000',
+                            display: false,
+                            show: false
+                           
+                        },
+                        scaleShowLabels: false,
+                    },
+                    series: areaData2,
+                    color: ['#9f78ff', '#32cafe']
+                };
+
+                var chartArea2 = document.getElementById('echartArea2');
+                var areaChart2 = echarts.init(chartArea2);
+                areaChart2.setOption(optionArea2);
+
+                $("#global-loader").css("display", "none");
+            }
+        });
+        
+       
+    }
+    function getImportArrivalDashboardCount(monthName) {
+        $("#importArrivalMainCard").css("display", "none");
+        $("#global-loader").css("display", "block");
+       
+        if (monthName == "May") {
+            $("#" + monthName).removeClass();
+            $("#" + monthName).addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+        } else {
+            $("#May" ).removeClass();
+            $("#May").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+        }
+
+        if (monthName == "June") {
+            $("#" + monthName).removeClass();
+            $("#" + monthName).addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+        } else {
+            $("#June").removeClass();
+            $("#June").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+        }
+
+        if (monthName == "July") {
+            $("#" + monthName).removeClass();
+            $("#" + monthName).addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+        } else {
+            $("#July").removeClass();
+            $("#July").addClass("btn btn-outline-info col-lg-4 col-sm-12");
+        }
+        $("#donutChartForMonth").css("display", "none");
+
+        $("#importArrivalMainCardMonthWise").css("display", "none");
+        $.ajax({
+            url: "/Home/GetCustomerArrivalForGivenMonth",
+            type: "POST",
+            dataType: "json",
+            data: { month: monthName },
+            success: function (data) { 
+                $('#donutChartForMonth').data('value', donutValue);
+              
+                $("#donutChartForMonth").attr('data-value', donutValue);
+                $("#importArrivalMainCardMonthWise").css("display", "block");
+                var donutValue = 0;
+                if (data.length != 0) {
+                    $("#totalTeusOFTheMonth").text(data[data.length - 1].totalTEUSForImportArrivalDisplay);
+                    donutValue = data[data.length - 1].donutValue;
+                } else {
+                    $("#totalTeusOFTheMonth").text(0)
+                }
+
+               
+                $('#donutChartForMonth').attr('data-value',    donutValue  );
+                $("#importArrivalMainCardMonthWise").css("display", "none");
+                $("#tableBody").remove();
+                if (data.length != 0) {
+                    var mainBody = " <div class=\"widget-line mt-5 \" id=\"tableBody\">" +
+                 " <div class=\"table-responsive\">" +
+                     " <table class=\"table card-table table-vcenter text-nowrap\">" +
+                        "  <thead class=\"text-white\" style=\"background-color:#7bc144\">" +
+                           "   <tr>" +
+
+                             "     <th style=\"color:white;text-align:left;font-weight:bold;\">Person</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">20</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">40</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">45</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">TEUS</th>" +
+
+
+
+                            "  </tr>" +
+                        "  </thead>" +
+                        "  <tbody>"
+                    var rows = ""
+                    $.each(data, function (i, item) {
+                        rows += " <tr>"
+                        if (item.Person != "Total") {
+                            rows += "<td class=\"" + item.css + " text-white\" style=\"text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;\" onclick=\"getPersonMonthlyDetails('" + item.Person + "')\">" + item.Person + " </td>" +
+                        "<td style=\"text-align:right;\">" + item.size20 + "</td>" +
+                       " <td style=\"text-align:right;\">" + item.size40 + " </td>" +
+                       " <td style=\"text-align:right;\">" + item.size45 + "</td>" +
+                        "<td style=\"text-align:right;\">" + item.TEUS + " </td>"
+                        } else {
+                            rows += " <td class=\"" + item.css + " text-white\" style=\"text-align:left;padding: 10px 10px 0px 10px; cursor: pointer; font-weight:bold;\" onclick=\"getPersonMonthlyDetails('" + item.Person + "')\">" + item.Person + "</td>" +
+                   " <td class=\"green_Total\" style=\"text-align:right; color:white;font-weight:bold;\">" + item.size20 + "</td>" +
+                    "<td class=\"green_Total\" style=\"text-align:right; color:white;font-weight:bold;\"> " + item.size40 + "</td>" +
+                    "<td class=\"green_Total\" style=\"text-align:right; color:white;font-weight:bold;\">" + item.size45 + "</td>" +
+                    "<td class=\"green_Total\" style=\"text-align:right; color:white;font-weight:bold;\">" + item.TEUS + "</td>"
+                        }
+
+
+                        rows += " </tr>"
+                    })
+
+                    mainBody += rows += " </tbody>   </table>    </div>  </div>"
+
+                    $("#importArrivalMainCardMonthWise").css("display", "block");
+                    $("#importArrivalMainCardMonthWise").append(mainBody);
+                    $("#importArrivalMainCardMonthWise").css("display", "block");
+
+                    $("#donutChartForMonth").css("display", "block");
+                    $(function () {
+                        $(".data-attributes span").peity("donut")
+                    });
+
+                    $("#global-loader").css("display", "none");
+                } else {
+                    var mainBody = " <div class=\"widget-line mt-5 \" id=\"tableBody\">" +
+                 " <div class=\"table-responsive\">" +
+                     " <table class=\"table card-table table-vcenter text-nowrap\">" +
+                        "  <thead class=\"text-white\" style=\"background-color:#7bc144\">" +
+                           "   <tr>" +
+
+                             "     <th style=\"color:white;text-align:left;font-weight:bold;\">Person</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">20</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">40</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">45</th>" +
+                              "    <th style=\"color:white;text-align:right;font-weight:bold;\">TEUS</th>" +
+
+
+
+                            "  </tr>" +
+                        "  </thead>" +
+                        "  <tbody>"
+                    var rows = ""
+                    
+
+                    mainBody += rows += " </tbody>   </table>    </div>  </div>"
+
+                    $("#importArrivalMainCardMonthWise").css("display", "block");
+                    $("#importArrivalMainCardMonthWise").append(mainBody);
+                    $("#importArrivalMainCardMonthWise").css("display", "block");
+
+                    $("#donutChartForMonth").css("display", "block");
+                    $(function () {
+                        $(".data-attributes span").peity("donut")
+                    });
+
+             
+                    $("#global-loader").css("display", "none");
+                }
+              
+               
+            }
+        });
+
+    }
+    function hideGraph() {
+        $("#personGraph").css("display", "none");
+    }
+    function getPersonMonthlyDetails(person) {
+        if(person != 'Total'){
+
+            $("#global-loader").css("display", "block");
+            $.ajax({
+                url: "/Home/GetMonthlyDataForPerson",
+                type: "POST",
+                dataType: "json",
+                data: {personName: person },
+                success: function (data) {
+                    $("#personGraph").css("display", "block");
+                    $("#personIDTitle").html(person + "'s Monthly Arrival Report");
+
+                    var xAxis = [];
+                    var yAxis = [];
+                    $.each(data, function (i, item) {
+                        xAxis.push(item.XAxisValue)
+                        yAxis.push(item.YAxisValue)
+                    });
+
+                    var areaData3 = [
+                        {
+                            name: 'Arrival ',
+                            type: 'bar',
+                            smooth: true,
+                            data: yAxis,
+                            symbolSize: 2,
+                            itemStyle: {
+                                normal: {
+                                    barBorderRadius: [60, 60, 0, 0],
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            { offset: 0, color: '#9f78ff' },
+                                            { offset: 1, color: '#32cafe' }
+                                        ]
+                                    )
+                                }
+                            },
+                        },
+
+                    ];
+
+                    var optionArea3 = {
+                        grid: {
+                            top: '6',
+                            right: '2',
+                            bottom: '17',
+                            left: '20',
+                        },
+                        xAxis: {
+                            data: xAxis,
+                            boundaryGap: false,
+                            axisLine: {
+                                lineStyle: { color: '#c0dfd8' }
+                            },
+                            axisLabel: {
+                                fontSize: 7.5,
+                                color: '#000',
+                                display: 'true'
+                            }
+                        },
+                        tooltip: {
+                            show: true,
+                            showContent: true,
+                            alwaysShowContent: true,
+                            triggerOn: 'mousemove',
+                            trigger: 'axis',
+                            axisPointer:
+                            {
+                                label: {
+                                    show: false,
+                                }
+                            }
+
+                        },
+                        yAxis: {
+                            splitLine: {
+                                lineStyle: { color: '#eaeaea' },
+                                display: false
+                            },
+                            axisLine: {
+                                lineStyle: { color: '#eaeaea' },
+                                display: false
+                            },
+                            axisLabel: {
+                                fontSize: 0,
+                                color: '#000',
+                                show: false
+                            }
+                        },
+                        series: areaData3,
+                        color: ['#32cafe']
+                    };
+
+                    var chartArea3 = document.getElementById('particular_Person');
+                    var areaChart3 = echarts.init(chartArea3);
+                    areaChart3.setOption(optionArea3);
+
+                    $("#global-loader").css("display", "none");
+                }
+            });
+
+        }
+
+    }
+
+    $(document).ready(function () {
+
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var d = new Date();
+        var monthName = months[d.getMonth()];
+        $("#" + monthName).removeClass();
+        $("#" + monthName).addClass("btn btn-outline-info col-lg-4 col-sm-12 selected");
+
+        $('#tblCustArrival').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "searching": false,
+            "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [0, 1, 2, 3, 4, 5]
+            }
+            ]
+
+
+
+        })
+
+
+        $('#tblPipeLine td:nth-child(1)').css('background-color', '#9f78ff');
+        $('#tblPipeLine td:nth-child(1)').css('color', '#fff');
+        $('#tblPipeLine td:nth-child(1)').css('text-align', 'left');
+
+    
+
+    });
+
+    function getPieChart()
+    {
+        alert("hi")
+        $.ajax({
+            url: "/Home/CustPieChart",
+            type: "POST",
+            dataType: "json",
+
+            success: function (data) {
+
+                var series = new Array();
+                for (var i in data) {
+                    // var serie = new Array(data[i].Person,  data[i].TTLCount);
+                    series.push({ "name": data[i].Person, "data": data[i].TTLCount })
+                    // series.push(serie);
+                }
+                DrawPieChart(series);
+
+            }
+        })
+    }
+    function DrawPieChart(series)
+    {
+
+        alert(JSON.stringify(series))
+        // alert(r);
+        Highcharts.chart('highchart4', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: 1, //null,
+                plotShadow: false
+            },
+            title: {
+                text: ' Vehicle Summary'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Task Status',
+                data: series
+            }]
+        });
+
+    }
+
+
+
+    $('#highchart4').highcharts({
+        chart: {
+            type: 'column'
+        },
+    })
+</script>*@

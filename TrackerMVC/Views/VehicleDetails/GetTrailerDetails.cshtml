@@ -1,0 +1,228 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.InsuranceandTrackeringEntiites>
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Insurance And RTO Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th style="width:4px">#</th>
+                                        <th style="width:4px">#</th>
+                                        <th style="width:4px">#</th>
+                                        <th>tRAILER nAME</th>
+                                        <th>rEG nO</th>
+                                        <th>rEG dATE</th>
+                                        <th>yEAR OF manufacturer</th>
+                                        <th>make by</th>
+                                        <th>reg name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in Model)
+                                    {
+
+                                    <tr>
+                                        <td><a class="btn btn-sm btn-primary" href="#" onclick="GetTrailerDOcView('@d.tRAILERNAME')">View</a></td>
+                                        <td><a class="btn btn-sm btn-primary" href="#" onclick="GetTrailerDetails('@d.tRAILERNAME')">Update</a></td>
+                                        <td><a class="btn btn-sm btn-success" href="#" onclick="TrailerReneval('@d.tRAILERNAME')">Renaval</a></td>
+
+                                        <td>@Html.DisplayFor(m => d.tRAILERNAME)</td>
+                                        <td>@Html.DisplayFor(m => d.regno)</td>
+                                        <td>@Html.DisplayFor(m => d.Regdate)</td>
+                                        <td>@Html.DisplayFor(m => d.yearofmanufacture)</td>
+                                        <td>@Html.DisplayFor(m => d.makeby)</td>
+                                        <td>@Html.DisplayFor(m => d.regname)</td>
+
+                                    </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="modal-content ">
+    <div class="modal-header pd-x-20">
+        <h6 class="modal-title">Trailer Details</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body pd-20">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width:4px">#</th>
+                            <th style="width:4px">#</th>
+                            <th>tRAILER nAME</th>
+                            <th>rEG nO</th>
+                            <th>rEG dATE</th>
+                            <th>yEAR OF manufacturer</th>
+                            <th>make by</th>
+                            <th>reg name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model)
+                        {
+
+                            <tr>
+                                <td><a class="btn btn-sm btn-primary" href="#" onclick="GetTrailerDetails('@d.tRAILERNAME')">Update</a></td>
+                                <td><a class="btn btn-sm btn-success" href="#" onclick="TrailerReneval('@d.tRAILERNAME')">Renaval</a></td>
+                              
+                                <td>@Html.DisplayFor(m => d.tRAILERNAME)</td>
+                                <td>@Html.DisplayFor(m => d.regno)</td>
+                                <td>@Html.DisplayFor(m => d.Regdate)</td>
+                                <td>@Html.DisplayFor(m => d.yearofmanufacture)</td>
+                                <td>@Html.DisplayFor(m => d.makeby)</td>
+                                <td>@Html.DisplayFor(m => d.regname)</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>*@
+<script type="text/javascript">
+
+    //$(function () {
+    //    $(".checklist").change(function (e) {
+    //        e.preventDefault();
+    //        if ($(this).is(":checked")) {
+    //            $("input").prop("checked", false);
+    //            $(this).prop("checked", true);
+
+    //            $('#AccountingCode').val($(this).val());
+
+    //        }
+    //    });
+    //});
+
+    function GetTrailerDetails(tRAILERNAME) {
+        $("#divinsuranceandRto").show();
+        $("#divshowreneval").show();
+        $("#myModalContent").hide();
+        $("#divsave").hide();
+        $("#divupdate").show();
+        $("#showRtoDetails").hide();
+        var data1 = { 'TrailerName': tRAILERNAME };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/VehicleDetails/GetTrailerWIseInsuranceDetails",
+            data: data,
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+               
+                $("#txtVehicleNo").val(data.tRAILERNAME);
+                $("#txtregistrationNo").val(data.regno);
+                $("#RegistrationDate").val(data.Regdate);
+                $("#txtregistrationowner").val(data.regname);
+                $("#ddlvehicleType").val(data.vehicletype);
+                $("#YearOfmanf").val(data.yearofmanufacture);
+                $("#ddlMake").val(data.makeby);
+                $("#txtchasisno").val(data.chasisno);
+                $("#TxtEngineno").val(data.engineno);
+                $("#TxtGrossweight").val(data.GrossWeight);
+                $("#ddlModel").val(data.modelname);
+                $("#TxtInvoiceAmount").val(data.InVoiceAmount);
+              
+                if (data.rcbookfiled == "True") {
+                    document.getElementById("radioyes").checked = true;
+                } else {
+                    document.getElementById("radiono").checked = true;
+                }
+              
+              //  $("input[name='rdRCBook']:unchecked").val(data.rcbookfiled);
+                $("#txtpolicy").val(data.PolicyType);
+                $("#txtPolicyNo").val(data.PolicyNo);
+                $("#ddlInsuranceCompany").val(data.InsuranceCompany);
+                $("#TxtPremiumAMount").val(data.PaymentAmt);
+                $("#TXTSumofinsured").val(data.SumInsured);
+                $("#PolicyDate").val(data.PaymentDate);
+                $("#ValidUpto").val(data.ValidUpTo);
+                $("#PaymentDate").val(data.PaymentDate);
+                $("#TxtBankName").val(data.TakenFrom);
+                $("#endDate").val(data.EndDate);
+                $("#txtemiamount").val(data.EMIAmt);
+              
+               
+              
+               //document.getElementById("rdRCBook").checked = false;
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+
+        $.ajax({
+            type: "POST",
+            url: "/VehicleDetails/GetRtoDetails",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                //alert(response);
+                // $('#TestModal').modal('show');
+                $('#ShowEditRtoDetails').html(response);
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+
+        $('#TestModal').modal('hide');
+    }
+
+
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+             "bFilter": true,
+            "paging": false
+           
+        })
+    });
+
+
+    function getBack() {
+        document.location ='@Url.Action("InsuranceAndRTOTracking", "VehicleDetails")'
+    }
+</script>
+
+
+
+
+

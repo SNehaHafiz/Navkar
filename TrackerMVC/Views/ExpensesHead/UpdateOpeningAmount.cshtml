@@ -1,0 +1,383 @@
+﻿
+@{
+    ViewBag.Title = "Update Opening Amount";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonPagging.js"></script>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+<div id="divMain">
+    <div class="page-header">
+        <h4 class="page-title">Update Opening Amount</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="Hold" title="Hold" id="Hold" onclick="goToHold();">Hold Entry</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12 col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Category</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCriteria", (IEnumerable<SelectListItem>)ViewBag.CategoryList, new { @class = "form-control", @id = "ddlCriteria", name = "ddlCriteria", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Transaction Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("--Select--", new List<SelectListItem>
+                                    {
+                                       new SelectListItem { Text = "--Select--", Value = ""},
+                                       new SelectListItem { Text = "CR", Value = "CR"},
+                                        new SelectListItem { Text = "DR", Value = "DR"},
+
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlTransactionType" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Customer Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtCustomerName", null, new { @class = "form-control", @placeholder = "Customer Name", @id = "txtCustomerName", autocomplete = "off" })
+                                        @Html.TextBox("txtCustomerNameID", null, new { @class = "form-control", @placeholder = "Customer Name", @id = "txtCustomerNameID", autocomplete = "off", style = "display:none" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Opening Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtOpeningAmount", null, new { @class = "form-control", @placeholder = "Opening Amount", @id = "txtOpeningAmount", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Reference No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtReferenceNo", null, new { @class = "form-control", @placeholder = "Reference No", @id = "txtReferenceNo", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Reference Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtReferenceDate", null, new { @class = "form-control form_datetime1", @placeholder = "Reference Date", @id = "txtReferenceDate", autocomplete = "off", @Value = DateTime.Now.AddDays(0).ToString("dd MMM yyyy 08:00") })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">...</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divHoldEntry" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Hold Entry</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="Main Page" title="Back" id="openingForm" onclick="goBack();"><i class="fa fa-arrow-left"></i></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12 col-lg-12">
+
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Reference No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtHoldReferenceNo", null, new { @class = "form-control", @placeholder = "Reference No", @id = "txtHoldReferenceNo", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtRemarks", null, new { @class = "form-control", @placeholder = "Remarks", @id = "txtRemarks", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">...</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button id="btnHold" class="btn btn-success btn-xs" onclick="return Hold();">Hold</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        AutomCom();
+    });
+
+    function goToHold() {
+        $("#divHoldEntry").show();
+        $("#divMain").hide();
+    }
+
+    function goBack() {
+        $("#divHoldEntry").hide();
+        $("#divMain").show();
+    }
+
+    function Save() {
+        var isValid = true;
+        var formData = {};
+        formData.TransactionType = $("#ddlTransactionType").val();
+        formData.CustomerID = $("#txtCustomerNameID").val();
+        formData.OpeningAmount = $("#txtOpeningAmount").val();
+        formData.ReferenceNo = $("#txtReferenceNo").val();
+        formData.ReferenceDate = $("#txtReferenceDate").val();
+        formData.AddedOn = new Date();
+        formData.Criteria = $("#ddlCriteria").val();
+
+        if (formData.TransactionType == "") {
+            isValid = false;
+            $("#ddlTransactionType").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddlTransactionType").removeClass("is-invalid state-invalid");
+        }
+        if (formData.CustomerID == "") {
+            isValid = false;
+            $("#txtCustomerNameID").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtCustomerNameID").removeClass("is-invalid state-invalid");
+        }
+        if (formData.OpeningAmount == "") {
+            isValid = false;
+            $("#txtOpeningAmount").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtOpeningAmount").removeClass("is-invalid state-invalid");
+        }
+        if (formData.ReferenceNo == "") {
+            isValid = false;
+            $("#txtReferenceNo").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtReferenceNo").removeClass("is-invalid state-invalid");
+        }
+        if (formData.ReferenceNo == "") {
+            isValid = false;
+            $("#txtReferenceNo").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtReferenceNo").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid) {
+            var data1 = {
+                'FromData': formData
+            };
+
+            var data = JSON.stringify(data1);
+            $.ajax({
+                url: "/ExpensesHead/SaveUpdateOpeningDtl",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.Status == 1) {
+                        alert(data.Message);
+                        window.location = "/ExpensesHead/UpdateOpeningAmount"
+                    } else if (data.Status == 2) {
+                        alert(data.Message);
+                    } else {
+                        alert(data.Message);
+                    }
+
+                },
+                error: function (errormessage) {
+                    let str = errormessage.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+    }
+
+    function Hold() {
+        var isValid = true;
+        var formData = {};
+        formData.ReferenceNo = $("#txtHoldReferenceNo").val();
+        formData.Remarks = $("#txtRemarks").val();
+        formData.AddedOn = new Date();
+
+        if (formData.ReferenceNo == "") {
+            isValid = false;
+            $("#txtHoldReferenceNo").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtHoldReferenceNo").removeClass("is-invalid state-invalid");
+        }
+        if (formData.Remarks == "") {
+            isValid = false;
+            $("#txtRemarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtRemarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid) {
+            var data1 = {
+                'HoldData': formData
+            };
+
+            var data = JSON.stringify(data1);
+            $.ajax({
+                url: "/ExpensesHead/SaveHoldDtls",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.Status == 1) {
+                        alert(data.Message);
+                        $("#txtHoldReferenceNo").val('');
+                        $("#txtRemarks").val('');
+                    } else if (data.Status == 2) {
+                        alert(data.Message);
+                    } else {
+                        alert(data.Message);
+                    }
+
+                },
+                error: function (errormessage) {
+                    let str = errormessage.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+    }
+
+    function AutomCom() {
+        $("#txtCustomerName").autocomplete({
+
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ImportReceipt/getAutoCustomerList",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //
+                        response($.map(data, function (item) {
+                            //
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                    }
+                })
+            },
+            select: function (e, i) {
+
+                $("#txtCustomerName").val(i.item.label);
+                $("#txtCustomerNameID").val(i.item.val);
+            },
+
+            minLength: 1
+
+        });
+
+
+    }
+</script>

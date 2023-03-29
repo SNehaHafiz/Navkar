@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewBag.Title = "UpdateMCINPCIN";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Update MCIN/PCIN</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">SB No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtsbno", null, new { @class = "form-control ", @id = "txtsbno", Placeholder = "SB No", @autocomplete = "off", @maxlength = "11" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button id="btnSave" class="btn btn-primary btn-xs" onclick="return Fetch();">Show</button>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">SB Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtsbdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txtsbdate", @readonly = "disable" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">MCIN/PCIN</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtmcin", null, new { @class = "form-control ", @id = "txtmcin", Placeholder = "MCIN/PCIN", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Update</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="Clear();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function Fetch() {
+
+        debugger;
+        var SBNo = $("#txtsbno").val().trim();
+
+        var data1 = { "SBNo": SBNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetSBDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    return;
+                }
+
+                $('#txtentryid').val(data[0].SBEntryID);
+                $('#txtsbdate').val(data[0].SBDate);
+
+
+                // Size, containertype, AGName
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function Save() {
+        debugger;
+        var SBNo = $("#txtsbno").val().trim();
+
+        var MCIN = $("#txtmcin").val().trim();
+
+
+
+        if (SBNo == "") {
+            document.getElementById('txtsbno').style.borderColor = "red";
+            alert("Please Enter SB No !")
+
+            return false;
+        }
+
+
+
+        if (MCIN == "") {
+            document.getElementById('txtmcin').style.borderColor = "red";
+            alert("Please Enter MCIN or PCIN no !")
+
+            return false;
+        }
+
+
+        var data1 = { "SBNo": SBNo, "MCIN": MCIN };
+        var data = JSON.stringify(data1);
+        alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/UpdateSBMCIN',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("UpdateMCINPCIN", "ModifyModule")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function Clear() {
+    document.location = '@Url.Action("UpdateMCINPCIN", "ModifyModule")';
+    }
+</script>
+

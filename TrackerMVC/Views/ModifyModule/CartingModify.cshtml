@@ -1,0 +1,393 @@
+﻿
+@{
+    ViewBag.Title = "CartingModify";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area overflow-hidden" id="divCreate">
+    <script src="~/js/GetTableJson.js"></script>
+    <div class=" content-area overflow-hidden" id="divCreate">
+        <div class="page-header">
+            <h4 class="page-title">Export Carting Modification</h4>
+            <li class="breadcrumb-item">
+                <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+            </li>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label">SB No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsbno", null, new { @class = "form-control ", @id = "txtsbno", Placeholder = "SB No", @autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label">Vehicle No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtvehicleno", null, new { @class = "form-control ", @id = "txtvehicleno", Placeholder = "Vehicle No", @autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Carting Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcartingdate", null, new { @class = "form-control form_datetime1 ", @id = "txtcartingdate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            <select class="form-control" id="ddllocation">
+                                                <option value="0">--Select--</option>
+                                                <option value="SHED-1">SHED-1</option>
+                                                <option value="SHED-2">SHED-2</option>
+                                                <option value="Domestic">Domestic</option>
+                                                <option value="Warehouse">Warehouse</option>
+                                                <option value="Direct Stuff">Direct Stuff</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">PKGS Qty</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtqty", null, new { @type = "number", @class = "form-control ", @id = "txtqty", autocomplete = "off", Placeholder = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Unit WT</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtunitwt", null, new { @type = "number", @class = "form-control ", OnChange = "Cargowt()", @id = "txtunitwt", autocomplete = "off", Placeholder = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Cargo WT</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcargowt", null, new { @type = "number", @class = "form-control ", @id = "txtcargowt", autocomplete = "off", Placeholder = "" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+                                            <input type="hidden" id="txtoldpkg" />
+                                            <input type="hidden" id="txtoldwt" />
+                                            <input type="hidden" id="txtoldut" />
+                                            <input type="hidden" id="txtoldvno" />
+                                            <input type="hidden" id="ddloldloc" />
+                                            <input type="hidden" id="txtallowid" />
+                                            <input type="hidden" id="txtsbentryid" />
+                                            <input type="hidden" id="txtsrno" />
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+
+                                    <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">SB No</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+
+                                            @Html.TextBox("txtsbno", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsbno", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        function Cargowt() {
+            debugger;
+            var pkgs = $("#txtqty").val();
+            var UnitWT = $("#txtunitwt").val();
+            //  txtunitwt
+            totalwt = parseFloat(pkgs) * parseFloat(UnitWT);
+            $("#txtcargowt").val(totalwt);
+
+
+        }
+
+    </script>
+<script>
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }</script>
+
+    <script>
+
+        function edittext(CartingAllowID, SrNo, SBEntryID, SBNo, VehicleNo) {
+            debugger;
+            $("#divCreate").show();
+            $("#divCreateSummary").hide();
+            $("#txtsbno").val(SBNo);
+            $("#txtvehicleno").val(VehicleNo);
+            $("#txtsbentryid").val(SBEntryID);
+            $("#txtallowid").val(CartingAllowID);
+            $("#txtsrno").val(SrNo);
+            
+
+
+            var data1 = { "CartingAllowID": CartingAllowID, "SrNo": SrNo, "SBEntryID": SBEntryID, "SBNo": SBNo, "VehicleNo": VehicleNo };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/ModifyModule/GetImpContainerDetails',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $('#txtcartingdate').val(data[0].EntryDate);
+                    $('#ddllocation').val(data[0].Location);
+                    $('#txtqty').val(data[0].DeclQty);
+                    $('#txtunitwt').val(data[0].UnitWT);
+                    $('#txtcargowt').val(data[0].Allowwt);
+                    //log old data
+
+                    $('#ddloldloc').val(data[0].Location);
+                    $('#txtoldpkg').val(data[0].DeclQty);
+                    $('#txtoldut').val(data[0].UnitWT);
+                    $('#txtoldwt').val(data[0].Allowwt);
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+    </script>
+    <script>
+    function Update() {
+        debugger;
+        var SBNo = $("#txtsbno").val().trim();
+        var Vehicleno = $("#txtvehicleno").val().trim();
+        var CartingDate = $("#txtcartingdate").val().trim();
+        var Location = $("#ddllocation").val().trim();
+        var CartingWT = $("#txtcargowt").val().trim();
+        var CartingQty = $("#txtqty").val().trim();
+        var UnitWT = $("#txtunitwt").val().trim();
+
+        //old data store
+        var OldLocation = $("#ddloldloc").val().trim();
+        var OldCartingWT = $("#txtoldwt").val().trim();
+        var OldCartingQty = $("#txtoldpkg").val().trim();
+        var OldUnitWT = $("#txtoldut").val().trim();
+        var Remarks = $("#txtremarks").val().trim();
+        var SBEntryID = $("#txtsbentryid").val().trim();
+        var AllowID = $("#txtallowid").val().trim();
+        var SRNo = $("#txtsrno").val().trim();
+        
+
+        if (SBNo == "" || SBNo == undefined) {
+            document.getElementById('txtsbno').style.borderColor = "red";
+            alert("Please Fill SBNo !")
+
+            return false;
+        }
+        
+
+        if (Vehicleno == "" || Vehicleno == undefined) {
+            document.getElementById('txtvehicleno').style.borderColor = "red";
+            alert("Please Fill Vehicle No !")
+
+            return false;
+        }
+
+        if (CartingQty == "" || CartingQty == undefined) {
+            document.getElementById('txtqty').style.borderColor = "red";
+            alert("Please Fill Qty !")
+            return false;
+        }
+
+        if (CartingWT == "" || CartingWT == undefined) {
+            document.getElementById('txtcargowt').style.borderColor = "red";
+            alert("Please Enter Cargo Wt !")
+            return false;
+        }
+        
+        if (Remarks == "" || Remarks == undefined) {
+            document.getElementById('txtremarks').style.borderColor = "red";
+            alert("Please Enter The Remarks !")
+
+            return false;
+        }
+       
+
+        var data1 = { "SBNo": SBNo, "Vehicleno": Vehicleno, "CartingDate": CartingDate, "Location": Location, "CartingWT": CartingWT, "CartingQty": CartingQty, "UnitWT": UnitWT, "OldLocation": OldLocation, "OldCartingWT": OldCartingWT, "OldCartingQty": OldCartingQty, "OldUnitWT": OldUnitWT, "Remarks": Remarks, "SBEntryID": SBEntryID, "AllowID": AllowID, "SRNo": SRNo };
+        var data = JSON.stringify(data1);
+        
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/UpdateCartingDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("CartingModify", "ModifyModule")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    </script>
+   
+<script>
+
+    function ShowSSRSummary() {
+
+
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ModifyModule/Search",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(jsonResult)
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "ExpensesTypeMaster", "ExpensesTypeMaster")
+                //  alert(jsonResult)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+</script>

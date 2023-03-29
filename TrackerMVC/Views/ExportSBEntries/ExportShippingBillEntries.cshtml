@@ -1,0 +1,573 @@
+﻿
+@{
+    ViewBag.Title = "ExportShippingBillEntries";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Export Shipping Bill Entries</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry-ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtentryid" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtdate" type="datetime-local" class="form-control" value="@ViewBag.Date" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Shipping Bill No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtsbno" type="text" placeholder="Shipping Bill No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Shipping Bill Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtsbdate" type="datetime-local" class="form-control" value="@ViewBag.Date" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtinvoiceno" type="text" placeholder="Invoice No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Agency Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.CustomerList, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">CHA Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlcha", (IEnumerable<SelectListItem>)ViewBag.CHAList, "--Select--", new { @class = "form-control", @id = "ddlcha", name = "ddlcha", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Exporter Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlexporter", (IEnumerable<SelectListItem>)ViewBag.Exporter, "--Select--", new { @class = "form-control", @id = "ddlexporter", name = "ddlexporter", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Consignee</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtcons" type="text" placeholder="Consignee" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Consignee Address</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtconsadd" type="text" placeholder="Consignee Address" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cargo Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtcargodesc" type="text" placeholder="Cargo Description" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Cargo Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlcargo", (IEnumerable<SelectListItem>)ViewBag.CargoList, "--Select--", new { @class = "form-control", @id = "ddlcargo", name = "ddlcargo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">FOB Value</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtfob" type="text" placeholder="FOB Value" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label">Stuffing Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlstuff", (IEnumerable<SelectListItem>)ViewBag.Stuff, "--Select--", new { @class = "form-control", @id = "ddlstuff", name = "ddlstuff", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cargo Qty</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtcarqty" type="text" placeholder="Cargo Qty" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Packeges Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlpkgs", (IEnumerable<SelectListItem>)ViewBag.pkglist, "--Select--", new { @class = "form-control", @id = "ddlpkg", name = "ddlcargo", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cargo Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtcargowt" type="text" placeholder="Cargo Weight" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">In</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddlweight">
+                                                <option value="0">--Select--</option>
+                                                <option value="KGS">KGS</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">POD</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlpod", (IEnumerable<SelectListItem>)ViewBag.PodList, "--Select--", new { @class = "form-control", @id = "podddl", name = "podddl", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Commodity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlcommodity", (IEnumerable<SelectListItem>)ViewBag.Commodity, "--Select--", new { @class = "form-control", @id = "commoddl", name = "commoddl", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtremarks" type="text" placeholder="Remarks" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                            <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+                                            <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                            @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Shipping Bill List</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+        function BackToWorkOrder() {
+            $("#divCreate").show();
+            $("#divCreateSummary").hide();
+        }
+        function OpenWOSummary() {
+            $("#divCreate").hide();
+            $("#divCreateSummary").show();
+        }
+
+     function Save1() {
+        debugger;
+        var EntDate = document.getElementById('txtdate').value;
+         var Sbno = document.getElementById('txtsbno').value;
+         var sbdate = document.getElementById('txtsbdate').value;
+         var InvoiceNo = document.getElementById('txtinvoiceno').value;
+         var Customer = document.getElementById('ddlcustomer').value;
+         var  CHA = document.getElementById('ddlcha').value;
+         var Exporter = document.getElementById('ddlexporter').value;
+         var Cons = document.getElementById('txtcons').value;
+         var ConsAdd = document.getElementById('txtconsadd').value;
+         var CargoDes = document.getElementById('txtcargodesc').value;
+         var Cargo = document.getElementById('ddlcargo').value;
+         var FOBValues = document.getElementById('txtfob').value;
+         var StuffID = document.getElementById('ddlstuff').value;
+         var crrqty = document.getElementById('txtcarqty').value;
+         var pkgs = document.getElementById('ddlpkg').value;
+         var cargowt = document.getElementById('txtcargowt').value;
+         var weightin = document.getElementById('ddlweight').value;
+         var pod = document.getElementById('podddl').value;
+         var commodity = document.getElementById('commoddl').value;
+         var remarks = document.getElementById('txtremarks').value;
+         
+         if (Sbno == "") {
+             document.getElementById("txtsbno").style.borderColor = "red";
+            alert('Please  Enter Shipping Bill No Type Name!')
+            event.preventDefault();
+            return;
+         }
+         if (sbdate == "") {
+             document.getElementById("txtsbdate").style.borderColor = "red";
+             alert('Please  Select SB Date Group!')
+             event.preventDefault();
+             return;
+         }    
+         if (Customer == 0) {
+             document.getElementById("ddlcustomer").style.borderColor = "red";
+             alert('Please  Select Agency Name!')
+             event.preventDefault();
+             return;
+         }
+         if (CHA == 0) {
+             document.getElementById("ddlcha").style.borderColor = "red";
+             alert('Please  Select CHA Name!')
+             event.preventDefault();
+             return;
+         }
+         if (Exporter == 0) {
+             document.getElementById("ddlexporter").style.borderColor = "red";
+             alert('Please  Select Exporter Name!')
+             event.preventDefault();
+             return;
+         }
+         if (Cons == "") {
+             document.getElementById("txtcons").style.borderColor = "red";
+             alert('Please  Enter Consignee Name!')
+             event.preventDefault();
+             return;
+         }
+         if (ConsAdd == "") {
+             document.getElementById("txtconsadd").style.borderColor = "red";
+             alert('Please  Enter Consignee Address !')
+             event.preventDefault();
+             return;
+         }
+         if (CargoDes == "") {
+             document.getElementById("txtcargodesc").style.borderColor = "red";
+             alert('Please  Enter Cargo Descriptions !')
+             event.preventDefault();
+             return;
+         }
+         if (Cargo == 0) {
+             document.getElementById("ddlcargo").style.borderColor = "red";
+             alert('Please  Select Cargo Type !')
+             event.preventDefault();
+             return;
+         }
+         if (FOBValues == "") {
+             document.getElementById("txtfob").style.borderColor = "red";
+             alert('Please  Enter FOB Values !')
+             event.preventDefault();
+             return;
+         }
+         if (StuffID == 0) {
+             document.getElementById("ddlstuff").style.borderColor = "red";
+             alert('Please  Select Stuffing Type !')
+             event.preventDefault();
+             return;
+         }
+         if (crrqty == "") {
+             document.getElementById("txtcarqty").style.borderColor = "red";
+             alert('Please  Enter Cargo Qty !')
+             event.preventDefault();
+             return;
+         }
+         if (pkgs == 0) {
+             document.getElementById("ddlpkg").style.borderColor = "red";
+             alert('Please  Select Package Type !')
+             event.preventDefault();
+             return;
+         }
+         if (cargowt == "") {
+             document.getElementById("txtcargowt").style.borderColor = "red";
+             alert('Please  Enter Cargo Weight !')
+             event.preventDefault();
+             return;
+         }
+         if (pod == 0) {
+             document.getElementById("podddl").style.borderColor = "red";
+             alert('Please  Select POD !')
+             event.preventDefault();
+             return;
+         }
+         if (commodity == 0) {
+             document.getElementById("commoddl").style.borderColor = "red";
+             alert('Please  Select Commodity  !')
+             event.preventDefault();
+             return;
+         }
+
+         var ExportShippingBillEnt = {};
+         ExportShippingBillEnt.EntryDate = EntDate;
+         ExportShippingBillEnt.SBNO = Sbno;
+         ExportShippingBillEnt.SBDate = sbdate;
+         ExportShippingBillEnt.InvNo = InvoiceNo;
+         ExportShippingBillEnt.AGID = Customer;
+         ExportShippingBillEnt.CHAID = CHA;
+         ExportShippingBillEnt.shipperid = Exporter;
+         ExportShippingBillEnt.con = Cons;
+         ExportShippingBillEnt.conaddrs = ConsAdd;
+         ExportShippingBillEnt.CargoDesc = CargoDes;
+         ExportShippingBillEnt.CID = Cargo;
+         ExportShippingBillEnt.FobVal = FOBValues;
+         ExportShippingBillEnt.StuffID = StuffID;
+         ExportShippingBillEnt.carQty = crrqty;
+         ExportShippingBillEnt.pkgid = pkgs;
+         ExportShippingBillEnt.cargowt = cargowt;
+         ExportShippingBillEnt.kgwt = weightin;
+         ExportShippingBillEnt.PodID = pod;
+         ExportShippingBillEnt.CommodityName = commodity;
+         ExportShippingBillEnt.Remark = remarks;
+
+        @*expTariffMaster Is Entities Name *@
+        //This Is For Pass Data Through Java Script
+$.ajax({
+    url: "/ExportSBEntries/Save",
+    data: '{ExportShippingBillEnt: ' + JSON.stringify(ExportShippingBillEnt) + '}',
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("ExportShippingBillEntries", "ExportSBEntries")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+        }
+
+        function ShowSSRSummary() {
+
+
+            debugger;
+            var search = document.getElementById('txtsearch').value;
+            var data1 = { 'search': search };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/ExportSBEntries/Search",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //alert(jsonResult)
+                    $("#reportTable").empty();
+                    RepTableDataJson($("#tblWorkOrderOpenList"), data, "ExportShippingBillEntries", "ExportShippingBillEntries")
+                    //  alert(jsonResult)
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+        }
+</script>
+
+<script type="text/javascript">
+    function Save() {
+        var Sbno = $("#txtsbno").val().trim();
+
+        var data1 = { 'Sbno': Sbno };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/ExportSBEntries/CheckSBNo",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response == 1) {
+                    alert("Shipping Bill number already exist! "+Sbno);
+                    document.getElementById('txtsbno').value = "";
+                }
+                else {
+                    Save1();
+                }
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+        $("input:text").val("");
+    }
+</script>

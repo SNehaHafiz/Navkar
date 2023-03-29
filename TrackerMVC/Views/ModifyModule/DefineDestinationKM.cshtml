@@ -1,0 +1,289 @@
+﻿
+@{
+    ViewBag.Title = "Define Destination KM";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div class=" content-area" id="divMain">
+    <div class="page-header">
+        <h4 class="page-title"> Define Destination KM </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">From Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlFromLocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlFromLocation", name = "ddlFromLocation", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">To Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlToLocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlToLocation", name = "ddlToLocation", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">KM</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtKM", null, new { @class = "form-control", @id = "txtKM", name = "txtKM", autocomplete = "off", placeholder = " KM " })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();" style="margin-left:15px">Save</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title"> Define Destination List</h4>
+
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        @*<div class="row">
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-12" id="divall">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button class=" btn btn-primary" style="margin-top: 2px" title="Show" id="btnSearch" onclick="ShowSummary()" type="button">
+                                                    <i class="fe fe-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>*@
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+
+                                            <button class="btn btn-orange" id="btnExcel" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table id="example5" class="table table-bordered text-nowrap w-100" style="width:100%"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        ShowSummary();
+
+
+
+        if ('@ViewBag.FormLocation' != 0 && '@ViewBag.ToLocation' != 0) {
+            $("#ddlFromLocation").val('@ViewBag.FormLocation');
+            $("#ddlToLocation").val('@ViewBag.ToLocation');
+            $("#txtKM").val('@ViewBag.KM');
+        }
+    });
+    function Save() {
+        debugger;
+        var FromLocation = $("#ddlFromLocation").val();
+        var ToLocation = $("#ddlToLocation").val();
+        var KM = $("#txtKM").val();
+
+        var isValid = true;
+        if (FromLocation == "") {
+            $("#ddlFromLocation").addClass("form-control is-invalid state-invalid");
+            isValid = false;
+        } else {
+            $("#ddlFromLocation").removeClass("is-invalid state-invalid");
+        }
+        if (ToLocation == "") {
+            $("#ddlToLocation").addClass("form-control is-invalid state-invalid");
+            isValid = false;
+        } else {
+            $("#ddlToLocation").removeClass("is-invalid state-invalid");
+        }
+        if (KM == "") {
+            $("#txtKM").addClass("form-control is-invalid state-invalid");
+            isValid = false;
+        } else {
+            $("#txtKM").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid) {
+            var data1 = {
+                'FromLocation': FromLocation, 'ToLocation': ToLocation, 'KM': KM
+            };
+            var data = JSON.stringify(data1);
+         
+            $.ajax({
+                url: "/ModifyModule/SaveDefineDestination",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    alert(data.Message);
+                    document.location = '@Url.Action("DefineDestinationKM", "ModifyModule")';
+
+                },
+                error: function (errormessage) {
+                    let str = errormessage.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+    }
+
+    function ViewSummary() {
+        $("#divSummary").show();
+        $("#divMain").hide();
+    }
+
+    function getBack() {
+        $("#divMain").show();
+        $("#divSummary").hide();
+    }
+
+    function ShowSummary() {
+        //var Fromdate = $("#FromDate").val();
+        //var Todate = $("#ToDate").val();
+
+
+        //var data1 = { 'Fromdate': Fromdate, 'Todate': Todate };
+        //data = JSON.stringify(data1);
+        $.ajax({
+            url: '/ModifyModule/getDestinationKMList',
+            type: 'Post',
+            data: ' ',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                RepTableDataJsonwopaging($("#example5"), data, "List", "List");
+
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+        });
+
+    }
+
+    function GetExcelFile() {
+          window.location = '@Url.Action("ExportToExcelDefineDestination", "ModifyModule")?';
+    }
+
+    function editDestination(FromLocation, ToLocation, KM) {
+        window.location = "/ModifyModule/DefineDestinationKM?FromLocation=" + FromLocation + "&ToLocation=" + ToLocation + "&KM="+KM;
+    }
+</script>

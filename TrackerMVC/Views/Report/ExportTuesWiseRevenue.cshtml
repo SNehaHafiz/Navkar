@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "Export TuesWise Revenue";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/js/GetTableArray.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Export Tues Wise Revenue</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-22 col-lg-2">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show('SHOW')" type="button">
+                                                SHOW
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelExptTuesWiseRevenue", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#FromDateDetails').click(function () {
+        var firstname = $('#FromDate').val(); // get the textbox value
+        return false; // cancel default redirect
+    });
+</script>
+
+
+<script>
+
+
+
+
+    function Show(type) {
+
+        var fromdate = $("#FromDate").val();
+        var todate = $("#ToDate").val();
+        var data1 = {  'fromdate': fromdate, 'todate': todate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetExportTuesWiseRevenue',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+            
+                debugger;
+                $("#reportTable").empty();
+                RepTableDataJson($("#reportTable"), data, "CreditNoteSummary", "CreditNoteSummary");
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+
+    }
+
+</script>
+
+
+
+

@@ -1,0 +1,87 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.SaveUpdateMovementEntities>
+<style>
+    .scrolling-table-container {
+        overflow: auto;
+        height: 600px;
+    }
+</style>
+<div class="modal-content">
+    <div class="modal-header pd-x-20">
+        <h6 class="modal-title">Container List</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body pd-20">
+        <div class="card-body hero-feature">
+            <div class="table-responsive push scrolling-table-container">
+                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblcontainerDets" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width:4px">#</th>
+                            <th>Shipment No</th>
+                            <th>Container No</th>
+                            <th>Size</th>
+                            <th>Vehicle No</th>
+                            <th>From</th>
+                            <th>To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model)
+                        {
+
+                            <tr>
+                                <td><a class="btn btn-sm btn-primary" href="#" onclick="GetContainerNo('@d.ContainerNo','@d.Size','@d.Vehicle','@d.fromid','@d.toid','@d.Type','@d.MovementDate','@d.jono','@d.Reamrks','@d.ShipmentNo')">Select</a></td>
+                                @*<td><input type="checkbox" name="checklist" class="checklist" id="checklist" value="@d.Code"></td>*@
+                                <td>@Html.DisplayFor(m => d.ShipmentNo)</td>
+                                <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                <td>@Html.DisplayFor(m => d.Size)</td>
+                                <td>@Html.DisplayFor(m => d.Vehicle)</td>
+                                <td>@Html.DisplayFor(m => d.from)</td>
+                                <td>@Html.DisplayFor(m => d.to)</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function GetContainerNo(ContainerNo, Size, Vehicle, fromid, toid, Type, MovementDate, jono, Reamrks,ShipmentNo) {
+
+        $('#txtjono').val(jono);
+        $('#txtVehicleNo').val(Vehicle);
+        $('#txtContainerNo').val(ContainerNo);
+        $('#ddlFrom').val(fromid);
+        $('#ddlTo').val(toid);
+        $('#ddlSize').val(Size);
+        $('#ddlType').val(Type);
+        $('#txtMovementDate').val(MovementDate);
+        $('#txtRemarks').val(Reamrks);
+        $('#txtShipmentNo').val(ShipmentNo);
+
+        $('#TestModal').modal('hide');
+    }
+    $(document).ready(function () {
+        $('#tblcontainerDets').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            // "bFilter": false,
+            "paging": true,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+        })
+    });
+</script>

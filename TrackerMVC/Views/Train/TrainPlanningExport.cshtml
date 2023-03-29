@@ -1,0 +1,256 @@
+﻿
+@{
+    ViewBag.Title = "MTY Pre Planning";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area" id="Taindetails">
+    <div class="page-header">
+        <h4 class="page-title">MTY Pre Planning: <label id="lblcount"></label></h4>
+        @*<ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="window.location = '@Url.Action("TrainDepartureFromPort", "TrainDeparture_From_Port")' " class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+        </ol>*@
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Shipping Line</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlShipline", (IEnumerable<SelectListItem>)ViewBag.ShipLines, "--Select-- ", new { @class = "form-control", @id = "ddlShipline", name = "ddlShipline", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-primary " type="button" id="Add" onclick="Show()" name="Add"><i class="fe fe-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div id="showItems">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:1px"></th>
+                                                    <th style="width:5px">Status</th>
+                                                    <th style="width:7px">Container No</th>
+                                                    <th style="width:3px">Size</th>
+                                                    <th style="width:3px">Container Type</th>
+                                                    <th>Shipping Line</th>
+                                                    <th>ICD In Date and Time</th>
+                                                    <th>Document Date</th>
+                                                    <th>Pre Plan Date</th>
+                                                    <th>Remarks</th>
+                                                    <th>Dwell Days</th>
+
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="btn-list text-center">
+                                <div class="row">
+                                    <div class=" btn-list col-12">
+                                        <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+            </div>
+
+
+            <!-- Show the table after click of save button  -->
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#ContainerList').dataTable({
+            "destroy": true,
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "aaSorting": [],
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+
+        })
+    });
+</script>
+<script>
+    function Show()
+    {
+        var ShiplineID = $("#ddlShipline").val();
+        var data1 = { 'ShiplineID': ShiplineID };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Train/getLineWiseData",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var count = Object.keys(data).length;
+                $("#lblcount").text(count);
+                $('#ContainerList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+                     
+                    ],
+
+                    "aaData": data,
+                    "columns": [
+                        
+                           {
+                           
+                               "data": "entryid",
+                               "render": function (data, type, row, meta) {
+
+                                   data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\" ' + row.selected + '   value="' + data + '">';
+                                  
+                                   return data;
+
+                               }
+                           },
+                            {"data": "Status"},
+                            {"data": "ContainerNo"},
+                            {"data": "Size"},
+                            {"data": "ContainerType"},
+                            {"data": "LineName"},
+                            {"data": "IcdIndate"},
+                            {"data": "DocumentReadyDate"},
+                            {"data": "PrePlanDate"},
+                            {"data": "Remarks"},
+                            {"data": "DwellDays"},
+
+                        
+                    ]
+                })
+                
+            }
+            })
+    }
+
+</script>
+<script>
+    function Save()
+    {
+        var itemcount = checkItemcount();
+        if (itemcount) {
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+            var tablearray = [];
+            var table = document.getElementById("ContainerList");
+            var row;
+
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+                    var entryID = row.cells[0].childNodes[0].value;
+
+
+                    if (entryID == checkboxarray[k]) {
+                        
+                        var ContainerNo = row.cells[2].innerText;
+                        
+                        tablearray.push({ 'entryid': entryID, 'ContainerNo': ContainerNo })
+                    }
+                }
+
+                
+            }
+
+            $.ajax({
+                url: "/Train/AddPrePlanContainerData",
+                data: JSON.stringify({ 'te': tablearray }),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (Data) {
+
+                    alert(Data);
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+
+        else {
+            alert("Please select atleast one container!");
+        }
+
+    }
+
+    function checkItemcount() {
+
+        var table = $('#ContainerList').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+</script>

@@ -1,0 +1,105 @@
+﻿@model TrackerMVCEntities.BusinessEntities.CategorywiseInvoice
+<div>
+    <div class="modal-header">
+        <h5 class="modal-title" id="example-Modal3">Cancelling ReceiptNo No. @ViewBag.ReceiptNo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" id="divAttach">
+        <form id="myForm">
+            <div class="form-group">
+                <label class="form-label">Reason</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtReason", null, new { @class = "form-control", @id = "txtReason", autocomplete = "off", Placeholder = "Enter Cancel Remarks.." })
+                        <input type="hidden" id="hdReceiptNo" value="@ViewBag.ReceiptNo" />
+                        <input type="hidden" id="hdFromDate" value="@ViewBag.FromDate" />
+                        <input type="hidden" id="hdToDate" value="@ViewBag.ToDate" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" id="btnCancel" onclick="CancelReceiptWithReason()" class="btn btn-primary">Cancel</button>
+    </div>
+</div>
+<script>
+    function CancelReceiptWithReason() {
+        debugger;
+        var RecNo = $('#hdReceiptNo').val();
+        var txtReason = $('#txtReason').val();
+        // alert(jono);
+        //  alert(ReasonId);
+        if (txtReason != "") {
+            $("#txtReason").removeClass("form-control is-invalid state-invalid")
+            $("#txtReason").addClass("form-control is-valid state-valid")
+           
+            var data = JSON.stringify({
+                'ReceiptNo': RecNo,
+                'Remarks': txtReason
+            });
+            //  alert(data)
+            $.ajax({
+
+                type: "POST",
+                url: "/ImportReceipt/CancelReceiptWithReason",
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    debugger;
+                    $('#hdReceiptNo').val("");
+                    alert(response);
+                    $('#myModal').modal('hide');
+                    GetReceiptGenSummary();
+                },
+                error: function (errormessage) {
+                    //  alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        }
+        else {
+            alert("Please Enter Remarks")
+            $("#txtReason").removeClass("form-control is-valid state-valid")
+            $("#txtReason").addClass("form-control is-invalid state-invalid")
+        }
+
+    }
+
+    function GetReceiptGenSummary() {
+        debugger;
+        var searchcerteria = $("#ddlsummarysearchcerteria").val();
+        var Searchtext = $("#txtSearchtext").val();
+        var FromDate = $("#txtSummaryFromDate").val();
+        var ToDate = $("#txtSummaryToDate").val();
+        $.ajax({
+            url: '/ImportReceipt/getReceiptSummaryDet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', searchcerteria: ' + JSON.stringify(searchcerteria) + ', Searchtext: ' + JSON.stringify(Searchtext) + '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                if (data == "0" || data == "[]") {
+                    //  ControlCtrl.TableReceiptSummaryDet.empty();
+                    alert('No Receipt found.');
+                    return;
+                }
+                $("#tblReceiptSummaryDet").empty();
+                RepTableDataJson($("#tblReceiptSummaryDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+</script>
+
+
+

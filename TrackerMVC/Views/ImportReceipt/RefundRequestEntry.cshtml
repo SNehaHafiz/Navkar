@@ -1,0 +1,732 @@
+﻿
+@{
+    ViewBag.Title = "RefundRequestEntry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonPaggingRe.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<link href="~/plugins/iconfonts/icons.css" rel="stylesheet" />
+<script src="~/js/sweet-alert.min.js"></script>
+<style>
+
+    .textbgstyle {
+        background-color: #c6ade7;
+        color: white;
+        font-weight: 700;
+    }
+</style>
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+
+    <div class="page-header">
+        <h4 class="page-title">Refund Request Entry</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                 
+                    <button class="btn btn-primary" style="float:right" onclick="ToGoSummary()"><i class="fe fe-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "ReceiptForm" }))
+    {
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlCategoryMode", new List<SelectListItem>
+                                              {  new SelectListItem { Text = "All", Value = "ImportInvoice"},
+                                                new SelectListItem { Text = "Import Invoice", Value = "ImportInvoice"},
+                                                new SelectListItem { Text = "Bond Invoice", Value = "BondInvoice"},
+                                                new SelectListItem { Text = "MNR Invoice", Value = "MNRInvoice"},
+                                                new SelectListItem { Text = "Misc Invoice", Value = "MiscInvoice"},
+                                                new SelectListItem { Text = "Export Invoice", Value = "ExportInvoice"},
+                                                new SelectListItem { Text = "Domestic Invoice", Value = "DomesticInvoice"},
+                                                new SelectListItem { Text = "All Location", Value = "All Location"},
+                                                 new SelectListItem { Text = "Suspense", Value = "Suspense"},
+                                                 new SelectListItem { Text = "Contra", Value = "Contra"},
+                                                    new SelectListItem { Text = "Auction", Value = "AucInvoice"},
+                                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategoryMode" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row" id="divsearchcerteria">
+
+                            <div class="col-lg-6 col-sm-12" id="divCustomerName">
+                                <div class="form-group">
+                                    <label class="form-label">Customer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="ddlCustomerName" />
+                                            <input type="hidden" class="form-control" id="hdnCustomerName" />
+                                            @*@Html.DropDownListFor(model => model.BillParty, (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select--", new { @class = "form-control", @id = "ddlCustomerName", name = "ddlCustomerName", autoComplete = "on" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                            <div class="col-lg-2 col-sm-12" id="divShowButton">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnShowInvoice" name="Add" onclick="DisplayInvoiceList()">Show Invoice</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" style="visibility:hidden">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnAddAdjsutement" name="Add">adj Invoice</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divpendingrececipt">
+                            <div class="col-lg-2 col-sm-12" id="divPendingReceipt">
+                                <div class="form-group">
+                                    <label class="form-label">Pending Receipt</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select id="ddlPendingReceipt" class="form-control">
+                                                <option value="">--All--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12" id="divPendingReceipt">
+                                <div class="form-group">
+                                    <label class="form-label">Receipt Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPendingReceiptAmount", null, new { @class = "form-control text-right", @id = "txtPendingReceiptAmount", @readonly = "true", autocomplete = "off", @Value = "0" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divPendingReceipt">
+                                <div class="form-group">
+                                    <label class="form-label">Receipt Balance Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBalanceAmount", null, new { @class = "form-control text-right", @id = "txtBalanceAmount", @readonly = "true", autocomplete = "off", @Value = "0" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12" id="divPendingReceipt">
+                                <div class="form-group">
+                                    <label class="form-label"> Received Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReceivedAmount", null, new { @class = "form-control text-right", @id = "txtReceivedAmount", autocomplete = "off", @Value = "0", onchange = "NetRecivedCal();" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtRemarks", null, new { @class = "form-control ", @id = "txtRemarks", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 col-lg-12 col-sm-12">
+
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">Upload Documents </label>
+
+                                    <div class="col">
+                                        @Html.DropDownList("ddlUploadDocument", new List<SelectListItem>
+                                          {  new SelectListItem { Text = "NOC", Value = "NOC"},
+                                            new SelectListItem { Text = "Cancel Cheque", Value = "Cancel Cheque"},
+                                            new SelectListItem { Text = "Request Letter", Value = "Request Letter"},
+                                            new SelectListItem { Text = "TDS Certificate", Value = "TDS Certificate"},
+
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlUploadDocument" })
+                                    </div>
+
+                                    <br /><br /> <br /><br /> <br /><br />
+                                </div>
+                                <a onclick="AddAttachment(1)" style="margin-top:30px;">
+                                    <i class="fa fa-paperclip fa-2x" style="color:#070884" aria-hidden="true" title="Upload Attachments"></i>
+                                    <span class="custom-switch-description" style="font-size:17px;color:#6c4cbb"><b><label id="lblAttachment_1">0</label></b></span>
+                                </a>
+
+                                <div class="col-md-12 col-lg-8 col-sm-12" id="divLiveCam" style="margin-top:30px;">
+                                    <div class="input-group">
+
+                                        <input type="file" accept="image/*" class="form-control" multiple id="multi_camera_">
+                                        <span class="input-group-append">
+                                            <button class="btn btn-primary" style="height: 44px !important" type="button" onclick="uploadFiles()">Upload</button>
+                                        </span>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-sm-4" id="divCaptCam" style="display:none">
+                                    <div class="form-group">
+                                        <label class="form-label">Captured Picture <i class="fa fa-close pull-right" style="color:red;cursor:pointer" onclick="CloseCapturedImage()"></i></label>
+                                        <div class="row gutters-xs">
+                                            <img id="imgCapture" style="visibility: hidden; width: 100%;height: 100%" />
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" type="button" id="btnSave" name="Add" onclick="Save()">Save</button>&nbsp;
+                                            @*<button class="btn btn-success" type="button" id="btnPrint" name="Add">Print</button>&nbsp;
+                                                <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal  fade" id="myModalAttachment" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog " role="document">
+                <div class="modal-content" id='myModalContentAttachment'>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<div class=" content-area overflow-hidden" id="divSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">>Refund Request  Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="GoBackToForm();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="card">
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="form-group">
+                        <label class="form-label">From Date</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy 08:00"), @id = "FromDate" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3 col-sm-6">
+                    <div class="form-group">
+                        <label class="form-label">To Date </label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(1).ToString("dd MMM yyyy 08:00"), @id = "ToDate" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="col-lg-3 col-sm-6">
+                    <div class="form-group">
+
+                        <div class="row gutters-xs">
+
+                            <div class="col" style="margin-top: 27px;">
+                                <button class="btn btn-primary" onclick="getSummary()"><i class="fe fe-search"></i></button>
+                                <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                  
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                            <tbody style="box-sizing :border-box;"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+             
+        </div>
+    </div>
+</div>
+<script>
+    function ToGoSummary() {
+        $("#DivReceiptGenDet").hide();
+        $("#divSummary").show();
+    }
+    function GoBackToForm() {
+        $("#DivReceiptGenDet").show();
+        $("#divSummary").hide();
+    }
+    $("#tracker-loader").fadeOut("slow");
+    var DetailsData = [];
+    var ReciptRefNo = "";
+    $(function () {
+
+        $('.datePicker1').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true
+
+        })
+            .on('changeDate', function (e) {
+
+                $('.datepicker').hide();
+            });
+    });
+
+        $("#ddlCustomerName").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/ImportReceipt/getPartyNameReceipt",
+                data: "{ 'prefixText': '" + request.term + "','Mode': 'ImportInvoice'}",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    //
+                    response($.map(data, function (item) {
+                        //
+                        return {
+                            label: item.AGName,
+                            val: item.AGID
+                        };
+                    }))
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        },
+        select: function (e, i) {
+            //
+            $("#txtAutoCust").val(i.item.label);
+            $("#hdnCustomerName").val(i.item.val);
+        },
+        minLength: 1
+        });
+
+
+    function BindPendinReceipt() {
+        var hdnPayFromId = $('#hdnCustomerName').val();
+        var TotalReceiptAmount = 0;
+        var TotalTDSAmount = 0;
+        var Category = "All";
+        var ason = $("#txtFromDate").val();
+        var partyfullname = ""
+
+        var data1 = { 'hdnPayFromId': hdnPayFromId, 'ason': ason, 'Category': Category, 'partyfullname': partyfullname };
+        data = JSON.stringify(data1);
+
+
+    $.ajax({
+        url: '/ImportReceipt/getPendingRect',
+        type: 'Post',
+        data: data,
+        async: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+
+            $("#ddlPendingReceipt").empty();
+            $("#ddlPendingReceipt").append($("<option></option>").val('').html('--Select--'));
+            $.each(response, function (index, value) {
+
+                var ReceiptAmtNo = value.InvoiceNo +'~'+ value.ReceiptRefNo + '~' + value.TotalAmount;
+                $("#ddlPendingReceipt").append($("<option></option>").val(ReceiptAmtNo).html(value.InvoiceNo));
+            });
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+            $("#tracker-loader").fadeOut("slow");
+        }
+    });
+
+    }
+
+    $("#ddlPendingReceipt").change(function () {
+        ShowPendingAmount();
+    });
+
+function ShowPendingAmount() {
+    debugger;
+    var splitItem = $("#ddlPendingReceipt").children("option:selected").val();
+    var SplitAmount = "";
+    var Amount = 0;
+    SplitAmount = splitItem.split('~');
+    ReciptRefNo = SplitAmount[0];
+    Amount = SplitAmount[1];
+    PenidAmount = SplitAmount[2];
+
+    if (Amount == "" || Amount == null) {
+        Amount = 0;
+    }
+
+
+        $("#txtPendingReceiptAmount").val(parseInt(Amount));
+    $("#txtBalanceAmount").val(parseInt(PenidAmount));
+
+
+
+
+}
+ 
+
+function DisplayInvoiceList() {
+    var hdnPayFromId = $('#hdnCustomerName').val();
+    var TotalReceiptAmount = 0;
+    var TotalTDSAmount = 0;
+    var Category = "All";
+    var ason = $("#txtFromDate").val();
+    var partyfullname = ""
+
+    var data1 = { 'hdnPayFromId': hdnPayFromId, 'ason': ason, 'Category': Category, 'partyfullname': partyfullname };
+    data = JSON.stringify(data1);
+
+    $.ajax({
+        url: '/ImportReceipt/getPendingInvoice',
+        type: 'Post',
+        data: data,
+        async: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+
+            if (data.length == 0 || data == '[]') {
+                ControlCtrl.InvoiceList.empty();
+                InitializeTable(ControlCtrl);
+                alert('Data Not Found.');
+                return;
+            }
+            else {
+                //$("#ddlPendingReceipt").empty();
+                //$("#ddlPendingReceipt").append($("<option></option>").val('').html('--Select--'));
+                //$.each(response, function (index, value) {
+                //
+                //    var ReceiptAmtNo = value.ReceiptNo + '~' + value.TotalAmount;
+                //    $("#ddlPendingReceipt").append($("<option></option>").val(ReceiptAmtNo).html(value.ReceiptRefNo));
+                //});
+                $("#ddlInvoiceNo").empty();
+                $("#ddlInvoiceNo").append($("<option></option>").val('').html('--Select--'));
+                $.each(data, function (index, value) {
+
+                    var InvoiceDetails = value.InvoiceNo + '~' + value.NetAmount + '~' + value.TotalAmount;
+                    $("#ddlInvoiceNo").append($("<option></option>").val(InvoiceDetails).html(value.InvoiceNo));
+                });
+
+            }
+            $("#tracker-loader").fadeOut("slow");
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+            $("#tracker-loader").fadeOut("slow");
+        }
+    });
+    $("#tracker-loader").fadeOut("slow");
+
+    //ControlCtrl.ReceiptAmount.val(TotalReceiptAmount);
+     $("#txtReceiptAmount").val(TotalReceiptAmount);
+    $("#txtSelectedInvoiceAmount").val(TotalReceiptAmount);
+    $("#txtInvoiceTDSAmount").val(TotalTDSAmount);
+    //ControlCtrl.TDS.val(TotalTDSAmount);
+    //CalculateAutoTDSAmount(ControlCtrl);
+    BindPendinReceipt(hdnPayFromId);
+    };
+
+    $("#ddlInvoiceNo").change(function () {
+        ShowPendingInvoiceAmount();
+    });
+
+    function ShowPendingInvoiceAmount() {
+        debugger;
+    var splitItem = $("#ddlInvoiceNo").children("option:selected").val();
+    var SplitAmount = "";
+    var InvoiceAmount = 0;
+    var ReceivalAmount = 0;
+    var TDS = 0;
+
+    var Amount = 0;
+    SplitAmount = splitItem.split('~');
+        InvoiceNo = SplitAmount[0];
+        InvoiceAmount = SplitAmount[1];
+        TotalAmount = SplitAmount[2];
+
+        if (InvoiceAmount == "" || InvoiceAmount == null) {
+            InvoiceAmount = 0;
+        }
+        if (ReceivalAmount == "" || ReceivalAmount == null) {
+            ReceivalAmount = 0;
+        }
+        if (TDS == "" || TDS == null) {
+            TDS = 0;
+        }
+
+    if (parseInt(InvoiceAmount) > 0) {
+        $("#txtSelectedInvoiceAmount").val(parseInt(InvoiceAmount));
+        $("#txtSelectedInvoicePendingAmount").val(parseInt(TotalAmount));
+    }
+    else {
+        $("#txtSelectedInvoiceAmount").val(0);
+        $("#txtSelectedInvoicePendingAmount").val(0);
+    }
+
+    //    if (parseInt(ReceivalAmount) > 0) {
+    //    $("#txtBalanceAmount").val(parseInt(ReceivalAmount));
+    //}
+    //else {
+    //    $("#txtBalanceAmount").val(0);
+    //    }
+
+        if (parseInt(TDS) > 0) {
+        $("#txtInvoiceTDSAmount").val(parseInt(TDS));
+    }
+    else {
+        $("#txtInvoiceTDSAmount").val(0);
+    }
+
+    }
+    function NetRecivedCal() {
+        debugger;
+            var ReceivedAmount = $("#txtReceivedAmount").val();
+            var ReceivedTDSAmount = $("#txtReceivedTDS").val();
+            var NetReceivedAmount = 0;
+            if (ReceivedAmount == undefined || ReceivedAmount == "" || ReceivedAmount == null) {
+                ReceivedAmount = 0;
+            } else {
+                ReceivedAmount = parseFloat(ReceivedAmount);
+            }
+            if (ReceivedTDSAmount == undefined || ReceivedTDSAmount == "" || ReceivedTDSAmount == null) {
+                ReceivedTDSAmount = 0;
+            } else {
+                ReceivedTDSAmount = parseFloat(ReceivedTDSAmount);
+            }
+            //to set net received
+            NetReceivedAmount = ReceivedAmount - ReceivedTDSAmount;
+            $("#txtNetReceived").val(NetReceivedAmount);
+
+            //to set pending Invoice Amount
+
+             var ReciptAmount = $("#txtPendingReceiptAmount").val();
+             var InvoiceAmount = $("#txtSelectedInvoiceAmount").val();
+             var InvoiceNo = $("#ddlInvoiceNo").children("option:selected").text();
+            var PendingInvoiceAmount = 0;
+            var BalanceReceiptAmount = 0;
+            ReciptAmount = parseFloat(ReciptAmount);
+            InvoiceAmount = parseFloat(InvoiceAmount);
+
+            var OverallReciptPendingAmount = 0;
+
+            for (i = 0; i < DetailsData.length; i++) {
+                if (ReciptRefNo == DetailsData[i].ReciptRefNo) {
+                    OverallReciptPendingAmount = OverallReciptPendingAmount + parseFloat(DetailsData[i].ReceivedAmount);
+                }
+
+            }
+            //for (i = 0; i < DetailsData.length; i++) {
+            //    if (InvoiceNo == DetailsData[i].InvoiceNo) {
+            //        alert("Invoice No already exist ..");
+            //        return false;
+            //    }
+            //}
+
+
+
+            BalanceReceiptAmount = ReciptAmount -  (NetReceivedAmount- OverallReciptPendingAmount);
+            PendingInvoiceAmount = InvoiceAmount - (NetReceivedAmount- OverallReciptPendingAmount);
+
+            $("#txtBalanceAmount").val(BalanceReceiptAmount);
+            $("#txtSelectedInvoicePendingAmount").val(PendingInvoiceAmount);
+
+            if (NetReceivedAmount > ReciptAmount) {
+                alert("Net Received amount can not be grater than Receipt Balance Amount");
+                $("#txtNetReceived").val(0);
+                $("#txtReceivedAmount").val(0);
+                $("#txtBalanceAmount").val($("#txtPendingReceiptAmount").val());
+                $("#txtSelectedInvoicePendingAmount").val($("#txtSelectedInvoiceAmount").val())
+
+            } else if (NetReceivedAmount>InvoiceAmount){
+                alert("Net Received amount can not be grater than Invoice Amount");
+                 $("#txtNetReceived").val(0);
+                 $("#txtReceivedAmount").val(0);
+                $("#txtBalanceAmount").val($("#txtPendingReceiptAmount").val());
+
+            }
+
+
+        }
+
+    
+
+    
+    function Save() {
+        debugger;
+
+        var CategoryMode = $("#ddlCategoryMode").val();
+        var hdnCustomerName = $("#hdnCustomerName").val();
+        var PendingReceipt  = $("#ddlPendingReceipt").children("option:selected").text(); 
+        var PendingReceiptAmount = $("#txtPendingReceiptAmount").val();
+        var BalanceAmount = $("#txtBalanceAmount").val();
+        var ReceivedAmount = $("#txtReceivedAmount").val();
+        var Remarks = $("#txtRemarks").val();
+        var UploadDocument = $("#ddlUploadDocument").val();
+   
+       
+        var data1 = {
+            'CategoryMode': CategoryMode, 'hdnCustomerName': hdnCustomerName, 'PendingReceipt': PendingReceipt,
+            'PendingReceiptAmount': PendingReceiptAmount, 'BalanceAmount': BalanceAmount, 'ReceivedAmount': ReceivedAmount,
+            'Remarks': Remarks, 'UploadDocument': UploadDocument
+        }
+        var data = JSON.stringify(data1);
+
+         $.ajax({
+             url: "/Importreceipt/RefundRequestSave",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("RefundRequestEntry", "importreceipt")'
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+    function AddAttachment(SrNo1) {
+
+        var data = { 'SrNo1': SrNo1 }
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "POST",
+            url: "/ImportReceipt/_AddAttachmentForRefund",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $('#myModalContentAttachment').html(response);
+                $('#myModalAttachment').modal('show');
+
+            },
+            failure: function (response) {
+                Swal.fire("Error!", response, "error");
+                Swal.fire("Error!", response.responseText, "error");
+
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+
+        })
+    }
+
+    function getSummary() {
+        var from = $("#FromDate").val();
+        var to = $("#ToDate").val();
+        
+        var data = { 'From': from, 'To': to };
+        data = JSON.stringify(data);
+        $("#global-loader").fadeIn();
+        $.ajax({
+
+            url: '/ImportReceipt/GetRefundRequesSummary',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJsonwopaging($("#reportTable"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                $("#tracker-loader").fadeOut("slow");
+
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+        });
+        $("#global-loader").fadeOut();
+    }
+</script>
+
+

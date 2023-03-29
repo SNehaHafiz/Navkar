@@ -1,0 +1,605 @@
+﻿@model TrackerMVCEntities.BusinessEntities.BCNRRDownload
+@{
+    ViewBag.Title = "RRDownload";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script>
+    //window.location.reload(true);
+</script>
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/UserScripts/BCN/RRDownload.js"></script>
+<div class=" content-area" id="divUpdateNOCStatus">
+    <div class="page-header">
+        <h4 class="page-title">BCN RR Download</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewNOCSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "BCNRRForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">File Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlFileType", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                             new SelectListItem { Text = "BCN Wagon", Value = "BCN Wagon"},
+                                             new SelectListItem { Text = "BCN Container", Value = "BCN Container"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlFileType" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="TrainNo" name="TrainNo" />
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            
+                                            @Html.EditorFor(model => model.RRWagonContNo, new { htmlAttributes = new { @class = "form-control", @id = "RRWagonContNo", Placeholder = "RR No", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR File</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="file" class="file-path validate" id="fileImport" name="postedFile" />
+                                            <input id="hdnFileCount" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="Button" id="btnImport" value="Import" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="tab_wrapper first_tab">
+                                <ul class="tab_list">
+                                    <li class="active" rel="tab_1_1" id="tabItems">BCN Wagon Download</li>
+                                    <li rel="tab_1_2" class="" id="tabLocation">BCN Container Download</li>
+                                </ul>
+                                <div class="content_wrapper">
+                                    <div title="tab_1_1" class="accordian_header tab_1_1 active">Tab 1<span class="arrow"></span></div>
+                                    <div class="tab_content first tab_1_1 active" title="tab_1_1" style="display: block;">
+                                        <div id="divWagonDownload">
+                                            <div class="row">
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">From Station</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                @Html.DropDownListFor(model => model.FromStationId, (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlFromStation", name = "FromStation", onblur = "myRequiredValidation('ddlFromStation')", autoComplete = "off" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">To Station</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                @Html.DropDownListFor(model => model.ToStationId, (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlToStation", name = "ToStation", onblur = "myRequiredValidation('ddlToStation')", autoComplete = "off" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Commodity</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                @Html.DropDownListFor(model => model.CommodityId, (IEnumerable<SelectListItem>)ViewBag.CommodityGroup, "--Select--", new { @class = "form-control", @id = "ddlCommodity", name = "Commodity_group_id", onblur = "myRequiredValidation('ddltxtCommodity')" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Freight Amount</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                @Html.EditorFor(model => model.FreightAmount, new { htmlAttributes = new { @class = "form-control number", @id = "txtFreightAmount" } })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Party</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                @Html.DropDownListFor(model => model.PartyId, (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select--", new { @class = "form-control", @id = "ddlPartyName", name = "AgentID", onblur = "myRequiredValidation('ddlPartyName')", autoComplete = "on" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">RR No</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                @Html.EditorFor(model => model.RRWagonNo, new { htmlAttributes = new { @class = "form-control", @id = "txtRRNo" } })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Arrival Date</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                @Html.EditorFor(model => model.ArrivalDate, new { htmlAttributes = new { @class = "form-control form_datetime1", @id = "txtArrivalDate", @autocomplete = "off" } })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <span style="font-weight: bold"> Total No of Wagon :</span> <label id="lblWTotalWagon" style="font-weight: bold"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <span style="font-weight: bold"> Total No of Package :</span> <label id="lblWTotalPackage" style="font-weight: bold"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <span style="font-weight: bold"> Total Weight :</span> <label id="lblWTotalWeight" style="font-weight: bold"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="divInvoiceDetails">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-sm-12">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblInvoiceList" width="100%">
+                                                                <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                                                    <tr>
+                                                                        <th style="width:1px;color: white;">Sr No</th>
+                                                                        <th style="width:1px;color: white;">Wagon Type</th>
+                                                                        <th style="width:80px;color: white;">Wagon No</th>
+                                                                        <th style="width:100px;color: white;">Owngrly</th>
+                                                                        <th style="width:80px;color: white;">PCC wt(kg)</th>
+                                                                        <th style="width:80px;color: white;">CC wt(kg)</th>
+                                                                        <th style="width:100px;color: white;">Tare wt(kg)</th>
+                                                                        <th style="width:80px;color: white;">Pkg</th>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div title="tab_1_2" class="accordian_header tab_1_2 undefined">Tab 2<span class="arrow"></span></div>
+                                    <div class="tab_content tab_1_2" title="tab_1_2" style="display: none;">
+                                        <div id="divContainerDownload">
+                                            <div class="row">
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <span style="font-weight: bold"> Total No of Container :</span> <label id="lblCTotalCont" style="font-weight: bold"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <span style="font-weight: bold"> Total No of Package :</span> <label id="lblCTotalPackage" style="font-weight: bold"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                                        <div class="row gutters-xs">
+                                                            <div class="col">
+                                                                <span style="font-weight: bold"> Total Weight :</span> <label id="lblCTotalWeight" style="font-weight: bold"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-sm-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblContList" width="100%">
+                                                            <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                                                <tr>
+                                                                    <th style="width:1px;color: white;">Sr No</th>
+                                                                    <th style="width:1px;color: white;">Container No</th>
+                                                                    <th style="width:80px;color: white;">Booking No</th>
+                                                                    <th style="width:100px;color: white;">Wt.Rept.No</th>
+                                                                    <th style="width:80px;color: white;">Date&Time</th>
+                                                                    <th style="width:80px;color: white;">Con Tare</th>
+                                                                    <th style="width:100px;color: white;">Package</th>
+                                                                    <th style="width:80px;color: white;">Gross Weight</th>
+                                                                    <th style="width:80px;color: white;">Tare Weight</th>
+                                                                    <th style="width:80px;color: white;">Net Weight</th>
+                                                                    <th style="width:80px;color: white;">Custom Seal No</th>
+                                                                    <th style="width:80px;color: white;">Net Weight</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnSave" value="Save" class="btn btn-success" />
+                                            <input type="button" id="btnclearValue" value="Clear" class="btn btn-gray" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class=" content-area" id="divRRDOwnloadReport" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">RR Download Summary Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                 { new SelectListItem { Text = "Data Range", Value = "DateRange"},
+                 new SelectListItem { Text = "Train Number", Value = "TrainNo"},
+                 new SelectListItem { Text = "RRNumber", Value = "RRNo"},
+                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategory" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divTrainNo" style="display:none">
+            <div class="form-group">
+                <label class="form-label">Train No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtTrainNo", null, new { @class = "form-control", @id = "txtTrainNo",@placeholder="Train Number" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divRRNo"  style="display:none">
+            <div class="form-group">
+                <label class="form-label">RR No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtRepRRNo", null, new { @class = "form-control", @id = "txtRepRRNo", @placeholder = "RR Number" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divFromDate">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @autocomplete="off", @id = "txtFromDate", @Value = DateTime.Now.AddDays(-10).ToString("dd MMM yyyy 00:00") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12" id="divToDate">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @autocomplete = "off", @id = "txtToDate", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" onclick="getRRSummary();" id="btnShowSummary">Show</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.ActionLink("Export To Excel", "ExportToExcelRRDownload", null, new { @class = "btn btn-primary btn-md" })
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblRRDownloadList"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+        window.onload = function () {
+            var message = @Html.Raw(Json.Encode(ViewBag.Message))
+            alert(message);
+            };
+        </script>
+    }
+
+    <script>
+        function getBack() {
+            $("#divRRDOwnloadReport").hide();
+            $("#divUpdateNOCStatus").show();
+        };
+
+        function ViewNOCSummary() {
+            $("#divRRDOwnloadReport").show();
+            $("#divUpdateNOCStatus").hide();
+        };
+
+        $(document).ready(function () {
+            
+            $("#lblWTotalWagon").text(0);
+            $("#lblWTotalPackage").text(0);
+            $("#lblWTotalWeight").text(0);
+
+            $("#lblCTotalCont").text(0);
+            $("#lblCTotalPackage").text(0);
+            $("#lblCTotalWeight").text(0);
+
+            $("#ddlCategory").change(function () {
+                if ($("#ddlCategory").val() == "DateRange") {
+                    $("#divFromDate").show();
+                    $("#divToDate").show();
+                    $("#divTrainNo").hide();
+                    $("#divRRNo").hide();
+                    $("#txtTrainNo").val('');
+                    $("#txtRepRRNo").val('');
+                }
+                else if ($("#ddlCategory").val() == "TrainNo") {
+                    $("#divFromDate").hide();
+                    $("#divToDate").hide();
+                    $("#divTrainNo").show();
+                    $("#divRRNo").hide();
+                    $("#txtRepRRNo").val('');
+                    $("#txtFromDate").val('');
+                    $("#txtToDate").val('');
+                }
+                else if ($("#ddlCategory").val() == "RRNo") {
+                    $("#divFromDate").hide();
+                    $("#divToDate").hide();
+                    $("#divTrainNo").hide();
+                    $("#divRRNo").show();
+                    $("#txtTrainNo").val('');
+                    $("#txtFromDate").val('');
+                    $("#txtToDate").val('');
+                }
+            });
+
+            //getRRSummary();
+
+            autoTrainNumber();
+
+        });
+
+        function getRRSummary() {
+            var txtTrainNo = "";
+            var txtRRNo = "";
+            var txtFromDate = "";
+            var txtToDate = "";
+
+            if ($("#ddlCategory").val() == "DateRange") {
+                txtFromDate = $("#txtFromDate").val();
+                txtToDate = $("#txtToDate").val();
+
+                if (txtFromDate == "") {
+                    alert("From Date cannot be Blank.");
+                    return;
+                }
+
+                if (txtToDate == "") {
+                    alert("To Date cannot be Blank.");
+                    return;
+                }
+
+            }
+            else if ($("#ddlCategory").val() == "TrainNo") {
+                txtTrainNo = $("#txtTrainNo").val();
+
+                if (txtTrainNo == "") {
+                    alert("Train No cannot be Blank.");
+                    return;
+                }
+            }
+            else if ($("#ddlCategory").val() == "RRNo") {
+                txtRRNo = $("#txtRepRRNo").val();
+
+                if (txtRRNo == "") {
+                    alert("RR No cannot be Blank.");
+                    return;
+                }
+
+            }
+            debugger;
+            var data1 = {"FromDate": txtFromDate , "ToDate": txtToDate , "TrainNo": txtTrainNo , "RRNo": txtRRNo};
+
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: '/BCNWagon/getRRDownloadDet',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    RepTableDataJson($("#tblRRDownloadList"), data, "RR Download Summary", "RRDownloadList");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+
+        };
+
+        function autoTrainNumber() {
+
+            $("#TrainNo").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/BCNWagon/getAutoRRNoList",
+                        data: "{ 'prefixText': '" + request.term + "','CustomerType': '" + 0 + "'}",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            debugger;
+                            response($.map(data, function (item) {
+                                debugger;
+                                return {
+                                    label: item.TrainNo,
+                                    val: item.WagonRRNo,
+                                    val1: item.FromStationId,
+                                    val2: item.ToStationId,
+                                    val3: item.CommodityId,
+                                    val4: item.PartyId,
+                                };
+                            }))
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    })
+                },
+                select: function (e, i) {
+                    debugger;
+                    $("#TrainNo").val(i.item.label);
+                    $("#RRWagonContNo").val(i.item.val);
+                    $("#ddlFromStation").val(i.item.val1);
+                    $("#ddlToStation").val(i.item.val2);
+                    $("#ddlCommodity").val(i.item.val3);
+                    $("#ddlPartyName").val(i.item.val4);
+                },
+                minLength: 1
+            });
+
+        }
+
+        function PrintBCN(id) {
+            debugger;
+            var data1 = { 'RRNo': id };
+            data = JSON.stringify(data1);
+
+            $.ajax({
+                url: '/BCNWagon/BCNWagonPrint',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    debugger;
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + 800 + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.close();
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + 800 + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.document.write(response);
+                    //myWindow.print();
+                    //window.print();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        };
+
+    </script>
+
+

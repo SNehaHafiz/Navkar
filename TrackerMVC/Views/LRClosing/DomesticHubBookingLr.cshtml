@@ -1,0 +1,327 @@
+﻿
+@{
+    ViewBag.Title = "DomesticHubBookingLr";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<script src="~/js/GetTableJsonPagging.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/js/sweet-alert.js"></script>
+<div class=" content-area overflow-hidden" id="DivDomesticLrHub">
+    <div class="page-header">
+        <h4 class="page-title">Domestic Hub Booking LR</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <li class="breadcrumb-item">
+                <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+            </li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">LR Receipt No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtLrno", "New", new { @class = "form-control ", @id = "txtLrno", name = "txtLrno", autocomplete = "off", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4     col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Booking Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtLrDate", null, new { @class = "form-control form_datetime1", @id = "txtLrDate", name = "txtLrDate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-label">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control ", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off" })
+                                        <input id="lblEntryID" type="hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <div class="form-group" style="padding-top:26px;">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" id="btnprintsearch" type="button" onclick="ContainerNo()"><i class="fe fe-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-label">Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtType", null, new { @class = "form-control ", @id = "txtType", name = "txtType", autocomplete = "off", @readonly = true })
+                                        <input id="lblType" type="hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-label">Size</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSize", null, new { @class = "form-control ", @id = "txtSize", name = "txtSize", autocomplete = "off", @readonly = true })
+                                        <input id="lblSize" type="hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Line Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtLineName", null, new { @class = "form-control ", @id = "txtLineName", name = "txtLineName", autocomplete = "off", @readonly = true })
+                                        <input id="lblLineID" type="hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success " type="button" id="savedetails" onclick="Save();">Save</button>
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Domestic Hub Booking LR Summary
+        </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function ShowSSRSummary() {
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+
+        try {
+            var data1 = { 'search': search };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/LRClosing/Search",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    RepTableDataJsonwopaging($("#tblWorkOrderOpenList"), response, "CreateSearch", "CreateSearch")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+    function BackToWorkOrder() {
+        $("#DivDomesticLrHub").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#DivDomesticLrHub").hide();
+        $("#divCreateSummary").show();
+    }
+
+    function ContainerNo() {
+        debugger;
+        var ContainerNo = $("#txtContainerNo").val();
+        var data1 = { 'ContainerNo': ContainerNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: '/LRClosing/GetContainer',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#txtType").val(data[0].ContainerType);
+                $("#lblType").val(data[0].ContainerTypeID);
+                $("#txtSize").val(data[0].Size);
+                $("#txtLineName").val(data[0].LineName);
+                $("#lblLineID").val(data[0].LineIID);
+                $("#lblEntryID").val(data[0].ENTRYID);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function Save() {
+
+        debugger;
+        var element = {};
+
+        element.LrDate = $("#txtLrDate").val().trim();
+        element.ContainerNo = $("#txtContainerNo").val();
+        element.ContainerTypeID = $("#lblType").val().trim();
+        element.Size = $("#txtSize").val();
+        element.LineID = $("#lblLineID").val().trim();
+        element.EntryID = $("#lblEntryID").val().trim();
+
+        var isValid = true;
+        if (element.ContainerNo == "" ) {
+            isValid = isValid && false;
+            $("#txtcontainerno").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtcontainerno").removeClass("is-invalid state-invalid");
+        }
+
+
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+
+        //Tax Validation
+
+
+
+        var data = { 'Master': element };
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: 'post',
+            url: '/LRClosing/UpdateJOBMDetails',
+            data: data,
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                if (response.ResponseMessage != '') {
+                    alert(response.ResponseMessage);
+                    document.location = '@Url.Action("DomesticHubBookingLr", "LRClosing")';
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.Message,
+                        icon: 'error'
+                    })
+                }
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: str,
+                    icon: 'error'
+                });
+            }
+        });
+    }
+
+</script>

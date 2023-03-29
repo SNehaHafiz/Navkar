@@ -1,0 +1,456 @@
+﻿
+@{
+    ViewBag.Title = "Updation Of Export Seal No";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Updation Of Export Seal No</h4>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                            { new SelectListItem { Text = "--Select--", Value = ""},
+                            new SelectListItem { Text = "SB Number", Value = "SB Number"},
+                            new SelectListItem { Text = "Container No", Value = "Container No"},
+
+
+
+                              }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch", onchange = "OnSearchChange()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divIGMNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SB No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsbno", null, new { @class = "form-control", @id = "txtsbno", name = "txtIGMNo", autocomplete = "off", placeholder = "SB No" })
+                                            @*<select id="ddlContainerNo" class="form-control" onchange="GetTotalPkgsContainerWise()">
+                                <option value="">--Select--</option>
+                            </select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12" id="divContainerNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off", placeholder = "Container No", @maxlength = 11 })
+                                            @*<select id="ddlContainerNo" class="form-control" onchange="GetTotalPkgsContainerWise()">
+                                <option value="">--Select--</option>
+                            </select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group" style="padding-top:25px">
+
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnSearch" name="Search" onclick="Fetch()">Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap mt-lg-5" id="example1" style="width:100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+
+                                                <th style="width:1px;color: white;text-align:center">Select</th>
+
+
+                                                <th style="width:80px;color: white;text-align:center">Container No</th>
+                                                <th style="width:80px;color: white;text-align:center">Size</th>
+                                                <th style="width:80px;color: white;text-align:center">Container Type</th>
+                                                <th style="width:80px;color: white;text-align:center">Agent Seal</th>
+                                                <th style="width:80px;color: white;text-align:center">Custom Seal</th>
+
+                                                <th style="width:80px;color: white;text-align:center">Entry ID</th>
+
+
+
+
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+                                            <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+  //  grid drop down
+
+
+
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+</script>
+
+
+
+<script>
+    function OnSearchChange() {
+        var ddlSearch = $("#ddlSearch").val();
+
+
+        $("#txtContainerNo").val("");
+        $("#txtsbno").val("");
+
+
+        if (ddlSearch != "") {
+            if (ddlSearch == "SB Number") {
+                $("#divIGMNo").show();
+
+                $("#divContainerNo").hide();
+
+            }
+            else if (ddlSearch == "Container No") {
+                $("#divIGMNo").hide();
+
+                $("#divContainerNo").show();
+
+            }
+
+        }
+        else {
+            $("#divIGMNo").show();
+
+            $("#divContainerNo").hide();
+
+
+        }
+    }
+
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function Fetch() {
+        debugger;
+        var Category = document.getElementById('ddlSearch').value;
+
+        var Search = "";
+
+        if (Category == "SB Number") {
+
+            Search = $("#txtsbno").val();
+        }
+        if (Category == "Container No") {
+            Search = $("#txtContainerNo").val();
+        }
+
+
+
+
+
+
+
+        var data1 = { 'Category': Category, 'Search': Search };
+
+        data = JSON.stringify(data1);
+      //  alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/ShowSealDetailsWeb',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+
+                            "data": "Edit",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.EntryID + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "containerNo" },
+                        { "data": "Size" },
+                        { "data": "ContainerType" },
+                        //start
+                        {
+                            "data": "AgentSeal",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtAgentSeal' + row.containerNo + '_' + row.containerNo.replace(/\\|\//g, '') + '\" class=\"form-control\" id=\"txtAgentSeal' + row.containerNo + '_' + row.containerNo.replace(/\\|\//g, '') + '\" style=\"width:200px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+                            }
+                        },
+                        //end
+                        {
+                            "data": "CustomSeal",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtCustomSeal' + row.containerNo + '_' + row.containerNo.replace(/\\|\//g, '') + '\" class=\"form-control\" id=\"txtCustomSeal' + row.containerNo + '_' + row.containerNo.replace(/\\|\//g, '') + '\" style=\"width:200px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+                            }
+                        },
+
+
+                        { "data": "EntryID" },
+
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
+
+
+
+<script>
+    function Update() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        var r = confirm("Are you sure to update seal no?");
+        if (r == true) {
+
+            var itemcount = checkItemcount();
+            if (itemcount == false) {
+                alert("No Record Found To Update");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        var EntryID = row.cells[6].innerText;
+                        var containerNo = row.cells[1].innerText;
+
+
+
+
+
+
+                        // insert with checked condition and declare all details
+                        if (EntryID == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                            row = table.rows[i];
+                            var isValid = true;
+                            EntryID = row.cells[6].innerText;
+                            containerNo = row.cells[1].innerText;
+
+
+                            AgentSeal = $("#txtAgentSeal" + containerNo + "_" + containerNo.replace(/\\|\//g, '') + "").val();
+
+                            if (AgentSeal == 0) {
+                                isValid = isValid && false;
+                                $("#txtAgentSeal").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#txtAgentSeal").removeClass("is-invalid state-invalid");
+                            }
+
+
+
+
+                            CustomSeal = $("#txtCustomSeal" + containerNo + "_" + containerNo.replace(/\\|\//g, '') + "").val();
+                            if (CustomSeal == "") {
+                                isValid = isValid && false;
+                                $("#txtCustomSeal").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#txtCustomSeal").removeClass("is-invalid state-invalid");
+                            }
+
+                            if (isValid == false) {
+                                alert("Please fill all required field");
+                                $("#global-loader").fadeOut("slow");
+                                return;
+                            }
+                            tablearray.push({
+                                'EntryID': EntryID, 'containerNo': containerNo, 'AgentSeal': AgentSeal,
+                                'CustomSeal': CustomSeal
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+            }//else part end
+        }
+        var data1 = {
+            'Debitdata': tablearray, 'Remarks': Remarks
+        };
+        
+               var data = JSON.stringify(data1);
+             //  alert(data);
+                  $.ajax({
+                      url: "/ModifyModule/UpdationOfSealNoExport",
+            data: data,
+            type: "POST",
+     contentType: "application/json; charset=utf-8",
+        dataType: "json",
+             success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                 {
+                     alert(response);
+                    document.location = '@Url.Action("UpdateExportSealNo", "ModifyModule")';
+                }
+             
+            },
+           error: function (errormessage) {
+                       alert(errormessage.responseText);
+                                }
+                         });
+                   }//end of main called function
+
+    //Check Checkbox selected count
+    function checkItemcount() {
+        var table = $('#example1').DataTable();
+        if (table.rows().count() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+</script>
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+        $("input:text").val("");
+    }
+</script>
+
+

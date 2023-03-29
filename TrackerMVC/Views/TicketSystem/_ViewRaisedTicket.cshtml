@@ -1,0 +1,202 @@
+﻿<script src="~/js/sweet-alert.min.js"></script>
+<div class=" content-area overflow-hidden" id="ViewTktDet">
+    <div class="page-header">
+
+        <h4 class="page-title">
+            <a onclick="getBackSumm()" style="text-decoration:none"><i class="fe fe-arrow-left"></i></a>
+            Ticket Details
+        </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+
+                    <button type="button" style="display:none;" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewReceiptSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-lg-12 ">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Basic Details</h4>
+            </div>
+            <div class="card-body">
+
+                <div class="row tblSupplierBillDetailsrow" style="">
+
+                    <div class="col-sm-12 col-md-6 col-lg-6 table-responsive ">
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Ticket No : </strong>@ViewBag.Data.TktNo</li>
+                            <li class="list-group-item"><strong>Ticket Type : </strong> @ViewBag.Data.TktTypeName</li>
+                            <li class="list-group-item"><strong>Module/Subject : </strong>@ViewBag.Data.Subject</li>
+                            <li class="list-group-item"><strong>Description : </strong> @ViewBag.Data.Description</li>
+                        </ul>
+
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6 table-responsive">
+                        <ul class="list-group">
+
+                            <li class="list-group-item"><strong>Raised By : </strong>@ViewBag.Data.UserName</li>
+                            <li class="list-group-item"><strong> Raised On : </strong> @ViewBag.Data.AddedOn</li>
+                            <li class="list-group-item"><strong>Resolution Comment : </strong>@ViewBag.Data.Comment</li>
+                            <li class="list-group-item" id="divUpdateTypeDets">
+                                <strong>Resolution Comment : </strong>
+                                @*<div style="margin-left: 185px;margin-top: -21px;">
+                                        <div class="form-group d-flex">
+                                            <span id="Bug2" class="form-label"><strong>Bug</strong></span>
+                                            <label class="switch">
+                                                <input type="checkbox" id="FormState2" onchange="checkForm2()">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span id="newRequirement2" class="form-label"><strong>New Requirement</strong></span>
+                                        </div>
+                                    </div>*@
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="form-group ">
+                                        <div class="custom-controls-stacked">
+                                            <div class="row col-sm-12 col-md-12 col-lg-12">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" id="FormState11" name="example-radios" value="option1" checked="" onchange="checkForm2()">
+                                                    <span id="Bug2" class="custom-control-label"><strong>Bug &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" id="FormState22" name="example-radios" value="option2" onchange="checkForm2()">
+                                                    <span id="newRequirement2" class="custom-control-label"><strong>New Requirement&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" id="FormState33" name="example-radios" value="option3" onchange="checkForm2()">
+                                                    <span id="correction2" class="custom-control-label"><strong>Corrections</strong></span>
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Attachment Details</h4>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.Data.Attachment != null)
+                {
+                    if (ViewBag.Data.Attachment.Count != 0)
+                    {
+
+                        <div class="col-sm-12 col-lg-12 col-md-12 mt-3">
+                            <div class="col-sm-12 col-lg-12 col-md-12">
+
+                                <table class="table table-bordered text-center w-100" style="width:100%" id="tblAttachment">
+                                    <thead class="bg-info">
+                                        <tr>
+                                            <th class="text-white text-center" style="width:20px">Sr No</th>
+                                            <th class="text-white text-center">File Name</th>
+                                            <th class="text-white text-center" style="width:15px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{int k = 0;}
+                                        @foreach (var d in ViewBag.Data.Attachment)
+                                        {
+                                            k++;
+                                            <tr>
+                                                <td>@k</td>
+                                                <td style="text-align:left">@d.DocName</td>
+                                                <td><button class="btn btn-sm btn-primary" onclick="downloadSelectedFile(@d.runningno)"><i class="fe fe-download"></i></button></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+        <div id="divUpdatebtn">
+            <button type="button" id="btnDone2" value="Done" class="btn btn-outline-success pull-right" aria-label="Close" onclick="UpdateTicketType()">Update</button>
+        </div>
+    </div>
+
+</div>
+<script>
+    var _qcGRNWAttachment = [];
+    $(document).ready(function () {
+
+        _qcGRNWAttachment =  @Html.Raw(Json.Encode(ViewBag.Attachment));
+        _qcGRNWAttachment = JSON.parse(_qcGRNWAttachment);
+
+
+        if ('@ViewBag.Data.TktTypeName' == "Bug") {
+            document.getElementById("FormState11").checked = true;
+            document.getElementById("FormState22").checked = false;
+            document.getElementById("FormState33").checked = false;
+        } else if ('@ViewBag.Data.TktTypeName' == "New Requirement") {
+            document.getElementById("FormState11").checked = false;
+            document.getElementById("FormState22").checked = true;
+            document.getElementById("FormState33").checked = false;
+        } else {
+            document.getElementById("FormState11").checked = false;
+            document.getElementById("FormState22").checked = false;
+            document.getElementById("FormState33").checked = true;
+        }
+
+        var val = $("#FormState11").is(':checked')
+        if (val == true) {
+            $("#newRequirement2").css("color", "#ccc");
+            $("#correction2").css("color", "#ccc");
+            $("#Bug2").css("color", "black");
+        }
+        var val1 = $("#FormState22").is(':checked')
+        if (val1 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#newRequirement2").css("color", "black");
+            $("#correction2").css("color", "#ccc");
+        }
+        var val2 = $("#FormState33").is(':checked')
+        if (val2 == true) {
+            $("#Bug2").css("color", "#ccc");
+            $("#correction2").css("color", "black");
+            $("#newRequirement2").css("color", "#ccc");
+        }
+
+        if (@ViewBag.IsUpdate== 1) {
+            $("#divUpdatebtn").show();
+            $("#divUpdateTypeDets").show();
+        } else {
+            $("#divUpdatebtn").hide();
+            $("#divUpdateTypeDets").hide();
+        }
+    });
+
+    function getBackSumm() {
+        $("#ViewTktDet").hide();
+        $("#divMain").show();
+    }
+    function downloadSelectedFile(index) {
+        debugger;
+        for (var r = 0; r < _qcGRNWAttachment.length; r++) {
+            if (_qcGRNWAttachment[r].runningno == index) {
+                var temp = {};
+                temp.FilePath = _qcGRNWAttachment[r].FilePath;
+                temp.DocName = _qcGRNWAttachment[r].DocName;
+                temp.contentType = _qcGRNWAttachment[r].ContentType;
+                var location_ = "/TicketSystem/DownloadFileAttached?DocName=" + temp.FilePath + "&contentType=" + temp.contentType + "&FilePath=" + temp.FilePath;
+                window.open(location_, '_blank');
+
+                var data = { 'attachment': temp };
+                data = JSON.stringify(data);
+
+            }
+        }
+    }
+
+</script>

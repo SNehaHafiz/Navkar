@@ -1,0 +1,258 @@
+﻿
+@{
+    ViewBag.Title = "CityMaster";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">City Master</h4>
+        @*@if (TempData["Success"] !=null)
+            {
+            <div class="alert alert-success alert-dismissable">
+            @TempData["Success"].ToString()<p class="pull-right"></p>
+            </div>
+            }*@
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry-ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtentryid" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">State</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlstat", (IEnumerable<SelectListItem>)ViewBag.GroupDDL, "--Select--", new { @class = "form-control", @id = "ddlstate", name = "ddlstate", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">City Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtcity" type="text" placeholder="City Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">PIN Code</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtpincode" type="number" placeholder="PIN Code" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-xs-12">
+                                <div class="form-group">
+                                    <label class="custom-switch">
+                                        <input type="checkbox" name="custom-switch-checkbox" id="chkIsActive" value="true" checked class="custom-switch-input">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">Is Active?</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save1();">Save</button>
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">City Master List</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+function BackToWorkOrder() {
+$("#divCreate").show();
+$("#divCreateSummary").hide();
+}
+function OpenWOSummary() {
+$("#divCreate").hide();
+$("#divCreateSummary").show();
+}
+
+function Save1() {
+debugger;
+var state = document.getElementById('ddlstate').value;
+var City = document.getElementById('txtcity').value;
+var PinCode = document.getElementById('txtpincode').value;
+
+var chkIsActive = document.getElementById('chkIsActive').value;
+
+if (state == 0) {
+document.getElementById("ddlstate").style.borderColor = "red";
+alert('Please Select State!')
+event.preventDefault();
+return;
+}
+if (City == "") {
+document.getElementById("txtcity").style.borderColor = "red";
+alert('Please Enter City Name!')
+event.preventDefault();
+return;
+}
+if (PinCode == "") {
+document.getElementById("txtpincode").style.borderColor = "red";
+alert('Pin Code Cannot Be Blank!')
+event.preventDefault();
+return;
+}
+
+
+var CityMaster = {};
+CityMaster.StateID = state;
+CityMaster.CityName = City;
+CityMaster.PinCode = PinCode;
+CityMaster.IsActive = chkIsActive;
+
+
+
+@*expTariffMaster Is Entities Name *@
+//This Is For Pass Data Through Java Script
+$.ajax({
+url: "/ExpensesHead/SaveCityDetails",
+data: '{CityMaster: ' + JSON.stringify(CityMaster) + '}',
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("CityMaster", "ExpensesHead")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+}
+
+function ShowSSRSummary() {
+
+
+debugger;
+var search = document.getElementById('txtsearch').value;
+var data1 = { 'search': search };
+data = JSON.stringify(data1);
+$.ajax({
+url: "/ExpensesHead/CityList",
+data: data,
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (data) {
+//alert(jsonResult)
+$("#reportTable").empty();
+RepTableDataJson($("#tblWorkOrderOpenList"), data, "ExpensesTypeMaster", "ExpensesTypeMaster")
+// alert(jsonResult)
+},
+error: function (errormessage) {
+alert("error");
+alert(errormessage.responseText);
+}
+});
+
+
+}
+function cleartextboxes() {
+//clear text box and dropdownlist
+$("input:text").val("");
+$('#ddlstate').val("0");
+$('#txtpincode')[0].reset();
+}
+
+</script>

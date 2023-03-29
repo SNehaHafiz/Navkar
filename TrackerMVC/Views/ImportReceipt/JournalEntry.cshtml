@@ -1,0 +1,562 @@
+﻿
+@{
+    ViewBag.Title = "JournalEntry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Journal Entry</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">JV No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtjvno", null, new { @class = "form-control ", @id = "txtjvno", Placeholder = "New", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">JV Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtjvdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm"), @id = "txtjvdate", @readonly = "disable" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divPendingReceipt">
+                            <div class="form-group">
+                                <label class="form-label">JV Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select id="ddlEntryType" class="form-control">
+                                            <option value="0">--select--</option>
+                                            <option value="Debtors">Debtors</option>
+                                            <option value="Creditors">Creditors</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Category</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCriteria", (IEnumerable<SelectListItem>)ViewBag.CategoryList, new { @class = "form-control", @id = "ddlCriteria", name = "ddlCriteria", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divPendingReceipt">
+                            <div class="form-group">
+                                <label class="form-label">JV For</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select id="ddlJVFor" class="form-control">
+                                            <option value="0">--select--</option>
+                                            <option value="Debtors">Dr.</option>
+                                            <option value="Creditors">Cr.</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">From Party (Debit)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="ddlCustomerName" onblur="GetGstnoID()" />
+                                        <input type="hidden" class="form-control" id="hdnCustomerName" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">To Party (Credit)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="ddlcust2" />
+                                        <input type="hidden" class="form-control" id="hdnddlcust2" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divPendingReceipts">
+                            <div class="form-group">
+                                <label class="form-label">Reference No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select id="ddlPendingReceipt" class="form-control" onblur="GetAmount()">
+                                            <option value="">--All--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-8" style="display:none" id="divReference">
+                            <div class="form-group">
+                                <label class="form-label">Reference No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtReferenceNo", null, new { @class = "form-control ", @id = "txtReferenceNo", Placeholder = "Reference No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Balance Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtbalanceamt", null, new { @class = "form-control ", @id = "txtbalanceamt", Placeholder = "Balance Amount", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Transfer Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txttransamt", null, new { @class = "form-control ", @id = "txttransamt", Placeholder = "Transfer Amount", @autocomplete = "off" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", Placeholder = "Remarks", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                    <div class="col-lg-2 col-sm-8">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success" onclick="Save()" title="Save"><b>Save</b></button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+    $(document).ready(function () {
+        AutomCom();
+
+
+    });
+    function AutomCom() {
+        $("#ddlCustomerName").autocomplete({
+
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ImportReceipt/getAutoCustomerList",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //
+                        response($.map(data, function (item) {
+                            //
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                    }
+                })
+            },
+            select: function (e, i) {
+
+                $("#ddlCustomerName").val(i.item.label);
+                $("#hdnCustomerName").val(i.item.val);
+            },
+
+            minLength: 1
+
+        });
+
+
+        $("#ddlcust2").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ImportReceipt/getAutoCustomerList",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //
+                        response($.map(data, function (item) {
+                            //
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (error) {
+                        let str = error.responseText;
+                        var a = str.indexOf("<title>") + 7;
+                        var b = str.indexOf("</title>");
+                        str = str.substring(a, b);
+                        alert("Something went wrong: " + str);
+                    }
+                })
+            },
+            select: function (e, i) {
+                //
+                $("#ddlcust2").val(i.item.label);
+                $("#hdnddlcust2").val(i.item.val);
+
+            },
+            minLength: 1
+        });
+    }
+</script>
+
+<script>
+    $("#ddlEntryType").change(function () {
+        debugger;
+        var ddlEntryType = document.getElementById('ddlEntryType').value;
+        if (ddlEntryType == "Debtors") {
+            $("#divReference").hide();
+            $("#divPendingReceipts").show();
+
+        }
+        if (ddlEntryType == "Creditors") {
+            $("#divReference").show();
+            $("#divPendingReceipts").hide();
+
+        }
+
+    });
+  
+    function Save() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var PendingReceipt
+        
+        var EntryType = document.getElementById('ddlEntryType').value;
+        var CustomerName = document.getElementById('hdnCustomerName').value;
+        var CustomerName2 = document.getElementById('hdnddlcust2').value;
+        if (EntryType == "Debtors") {
+              PendingReceipt = $("#ddlPendingReceipt option:selected").text();
+        }
+        if (EntryType == "Creditors") {
+            PendingReceipt = document.getElementById('txtReferenceNo').value;
+        }
+     
+        var Criteria = document.getElementById('ddlCriteria').value;
+
+        
+        var BalAmt = document.getElementById('txtbalanceamt').value;
+        var TransAmt = document.getElementById('txttransamt').value;
+         var Remarks = document.getElementById('txtremarks').value;
+
+        TransAmt = parseFloat(TransAmt);
+        BalAmt = parseFloat(BalAmt);
+
+        if (EntryType == 0) {
+            document.getElementById("ddlEntryType").style.borderColor = "red";
+            $("#tracker-loader").fadeOut("slow");
+            alert('Please select To Entry Type!')
+            event.preventDefault();
+            return;
+        }
+        if (CustomerName == 0) {
+            document.getElementById("hdnCustomerName").style.borderColor = "red";
+            $("#tracker-loader").fadeOut("slow");
+             alert('Please select from party!')
+             event.preventDefault();
+             return;
+         }
+
+
+        if (CustomerName2 == 0) {
+            document.getElementById("hdnddlcust2").style.borderColor = "red";
+            $("#tracker-loader").fadeOut("slow");
+            alert('Please select To Party!')
+            event.preventDefault();
+            return;
+        }
+
+        if ( TransAmt == "") {
+            document.getElementById("txttransamt").style.borderColor = "red";
+            $("#tracker-loader").fadeOut("slow");
+            alert('please enter the amount!')
+            event.preventDefault();
+            return;
+        }
+        if (EntryType == "Debtors") {
+            if (TransAmt > BalAmt) {
+                document.getElementById("txttransamt").style.borderColor = "red";
+                $("#tracker-loader").fadeOut("slow");
+                alert('transfer amount cannot be greater than your account balance!')
+                event.preventDefault();
+                return;
+            }
+        }
+            
+     
+
+
+        if (CustomerName2 == "5530" || CustomerName == "5530") {
+            if (TransAmt >2) {
+            document.getElementById("txttransamt").style.borderColor = "red";
+                $("#tracker-loader").fadeOut("slow");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Journal Entry | Tracker',
+                    text: 'Rounded off cannot be greater than Transferred Amount Rs.2. Cannot proceed !',
+
+                })
+            ///alert('Round off case cannot be greater than amount Rs.2. Cannot proceed')
+            event.preventDefault();
+                return;
+            }
+        }
+
+
+
+         if (Remarks == "") {
+            document.getElementById("txtremarks").style.borderColor = "red";
+            $("#tracker-loader").fadeOut("slow");
+             alert('Please enter remarks !')
+             event.preventDefault();
+             return;
+        }
+        var JVFor = document.getElementById('ddlJVFor').value;
+
+
+
+
+        var data1 = {
+            'CustomerName': CustomerName, 'CustomerName2': CustomerName2, 'PendingReceipt': PendingReceipt, 'TransAmt': TransAmt, 'Remarks': Remarks, 'EntryType': EntryType, 'Criteria': Criteria, 'JVFor': JVFor
+            };
+
+        var data = JSON.stringify(data1);
+
+
+
+     $.ajax({
+         url: "/ImportReceipt/SaveJVDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+         success: function (response) {
+                $("#tracker-loader").fadeOut("slow");
+                if (response.Status != 0) {
+
+                    alert(response.Message);
+                    window.location.href = '@Url.Action("JournalEntry", "ImportReceipt")';
+
+                } else {
+                    alert(response.Message);
+                }
+            },
+           error: function (error) {
+             let str = error.responseText;
+             var a = str.indexOf("<title>") + 7;
+             var b = str.indexOf("</title>");
+             str = str.substring(a, b);
+               alert("Something went wrong: " + str);
+               $("#tracker-loader").fadeOut("slow");
+         }
+        });
+
+    }
+</script>
+<script>
+
+    function GetGstnoID() {
+        var CustomerId = $("#hdnCustomerName").val();
+
+        if (CustomerId <= 0) {
+            alert("Please Select Valid Customer Name.");
+            return false;
+        }
+
+
+        if (CustomerId != 0 && CustomerId != "") {
+            var data1 = { 'CustomerId': CustomerId };
+            data = JSON.stringify(data1);
+
+            $.ajax({
+                url: '/ImportReceipt/getPendingReceipt',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+
+                    $("#ddlPendingReceipt").empty();
+                    $("#ddlPendingReceipt").append($("<option></option>").val('').html('--Select--'));
+                    $.each(response, function (index, value) {
+
+                        var ReceiptAmtNo = value.ReceiptNo + '~' + value.TotalAmount;
+                        $("#ddlPendingReceipt").append($("<option></option>").val(ReceiptAmtNo).html(value.ReceiptRefNo));
+                    });
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+        }
+
+
+
+
+
+
+    }
+
+</script>
+<script>
+
+    function GetGstnoID() {
+        var CustomerId = $("#hdnCustomerName").val();
+
+        if (CustomerId <= 0) {
+            alert("Please Select Valid Customer Name.");
+            return false;
+        }
+
+
+        if (CustomerId != 0 && CustomerId != "") {
+            var data1 = { 'CustomerId': CustomerId };
+            data = JSON.stringify(data1);
+
+            $.ajax({
+                url: '/ImportReceipt/getPendingReceipt',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+
+                    $("#ddlPendingReceipt").empty();
+                    $("#ddlPendingReceipt").append($("<option></option>").val('').html('--Select--'));
+                    $.each(response, function (index, value) {
+
+                        var ReceiptAmtNo = value.ReceiptNo + '~' + value.TotalAmount;
+                        $("#ddlPendingReceipt").append($("<option></option>").val(ReceiptAmtNo).html(value.ReceiptRefNo));
+                    });
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+
+        }
+
+
+
+    }
+
+</script>
+
+<script>
+
+    function GetAmount() {
+
+        $("#tracker-loader").fadeIn("slow");
+        var ReferenceNo = $("#ddlPendingReceipt option:selected").text();
+
+
+
+        var data1 = { "ReferenceNo": ReferenceNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetAmountByRefNo',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#tracker-loader").fadeOut("slow");
+                if (data == 0 || data == '[]') {
+
+                    alert('there is no balance amount.');
+                    return;
+                }
+
+                $('#txtbalanceamt').val(data[0].TotalAmountForJB.toFixed(2));
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

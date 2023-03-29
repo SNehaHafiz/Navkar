@@ -1,0 +1,417 @@
+﻿
+@{
+    ViewBag.Title = "UpdateActivity";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">
+            Reapplicable CODECO
+        </h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control ", @id = "txtContainerNo", autocomplete = "off", @maxlength = "11" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-4">
+                            <div class="form-group">
+                                <label class="form-label mandatory">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="file" id="fileImport" name="postedFile" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory" style="visibility:hidden">d</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button type="Button" id="btnImport" value="Import" class="btn btn-primary" title="Upload"><i class="fa fa-upload"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Activity</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlActivity", (IEnumerable<SelectListItem>)ViewBag.ddlActivity, "--Select--", new { @class = "form-control", @id = "ddlActivity", name = "ddlActivity" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button id="btnSave" class="btn btn-primary btn-xs" onclick="return Add();">Add</button>
+                                        @*<button class="btn btn-success " type="button" id="savedetails" onclick="return Add();">Add</button>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">
+                            <div>
+                                @*<label class="form-label">Details </label>*@
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                        <tr>
+
+
+                                            <th style="width:20px;color: white;text-align:center">Container No.</th>
+                                <th style="width:20px;color: white;text-align:center">Activity</th>
+
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success " type="button" id="btnSave" onclick="Save()" name="Add">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    @Html.ActionLink("Export To Excel", "ExportToExcelCodecoReport", null, new { @class = "btn btn-primary btn-md" })
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                    <thead>
+
+                    </thead>
+                    <tbody style="box-sizing :border-box;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    var storeAddedItem = [];
+    function Add() {
+        var element = {};
+        element.ContainerNo = $("#txtContainerNo").val();
+        element.Activity = $("#ddlActivity option:selected").text();
+        storeAddedItem.push(element);
+        $('#example1').DataTable({
+            "destroy": true,
+            "bLengthChange": false,
+            "aaData": storeAddedItem,
+            "bPaginate": false,
+            "bInfo": false,
+            "paging": false,
+            "columns": [
+
+                { "data": "ContainerNo" },
+                { "data": "Activity" },
+            ]
+        });
+    }
+
+
+    $(document).ready(function () {
+
+        $('#btnImport').click(function () {
+            $("#tracker-loader").fadeIn("slow");
+            //$("#tracker-loader").fadeIn("slow");
+
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#fileImport").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+
+                var fileData = new FormData();
+                if (files.length == 0) {
+                    alert("Please select File!")
+                    $("#tracker-loader").fadeOut("slow");
+                    return false;
+                }
+
+
+                else {
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+
+                        fileData.append(files[i].name, files[i]);
+                    }
+                     
+
+
+                    $.ajax({
+                        url: '/UpdateSurvey/ImportFile',
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (data) {
+
+                            //RepTableDataJsonwopaging($("#example1"), data, "Voucher Details", "VoucherDetails_List");
+                            $('#example1').DataTable({
+                                "destroy": false,
+                                "bLengthChange": false,
+                                "aaData": data,
+                                "bPaginate": false,
+                                "bInfo": false,
+                                "paging": false,
+                                "columns": [
+
+                                    { "data": "ContainerNo" },
+                                    { "data": "Activity" },
+                               
+
+
+
+                                ]
+                            });
+                            $("#tracker-loader").fadeOut("slow");
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                            $("#tracker-loader").fadeOut("slow");
+                        }
+
+                    });
+                }
+
+            }
+            else {
+                alert("FormData is not supported.");
+                $("#tracker-loader").fadeOut("slow");
+            }
+            $("#fileImport").val('');
+
+        });
+
+    });
+</script>
+<script>
+    $(window).on('load', function () {
+
+        Show();
+
+    })
+</script>
+
+<script>
+
+
+    function ShowSelectedValue() {
+        $.ajax({
+
+            url: '/UpdateSurvey/CodecoPendingStatus',
+            type: 'Post',
+            data: "",
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                RepTableDataJson($("#reportTable"), data, "CodecoPendingStatus", "CodecoPendingStatus_list");
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+    function Show() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValue();
+
+        }, delayInMilliseconds);
+
+    }
+</script>
+<script>
+    function Save() {
+        //var res = validate();
+        //if (res == false) {
+        //    return false;
+        //}
+
+
+        //var txtContainerNo = $("#txtContainerNo").val();
+        //var Activity = $("#ddlActivity option:selected").text();
+
+
+
+        var SelectedData = new Array();
+        var tablearray = new Array();
+
+        var table = document.getElementById("example1");
+
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+            ContainerNo = row.cells[0].innerText;
+            Activity = row.cells[1].innerText;
+          
+            SelectedData.push({
+                'ContainerNo': ContainerNo, 'Activity': Activity
+
+            })
+        }
+
+        var data1 = {
+            'Debitdata': SelectedData 
+        };
+       
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/UpdateSurvey/SaveActivity",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                alert(response);
+                $("#txtContainerNo").val("");
+                $("#ddlActivity").val("");
+              document.location = '@Url.Action("UpdateActivity", "UpdateSurvey")';
+                Show()
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+                Show()
+            }
+        });
+
+
+    }
+</script>
+<script>
+    function validate() {
+
+        var txtContainerNo = document.getElementById('txtContainerNo').value;
+        var ddlActivity = document.getElementById('ddlActivity').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('txtContainerNo').style.borderColor = "Gainsboro";
+        document.getElementById('ddlActivity').style.borderColor = "Gainsboro";
+
+
+        if (txtContainerNo == "") {
+            document.getElementById('txtContainerNo').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (ddlActivity == "") {
+            document.getElementById('ddlActivity').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+
+<script type="text/javascript">
+
+    function PrintJO(Slid, Linecode, Activity) {
+        debugger;
+        var Slid
+        var Activity
+       // alert('Slid = ' + Slid + ' & Linecode =' + Linecode + ' & Activity = ' + Activity);
+        //window.location = '~/UpdateSurvey/DownloadActivity?Slid='+Slid+'&Linecode ='+Linecode+'&Activity='+Activity;
+         window.location = '@Url.Action("DownloadActivity", "UpdateSurvey")?Slid=' + Slid + "&Linecode=" + Linecode + "&Activity=" + Activity;
+            //var data1 = { 'Slid': Slid, 'Linecode': Linecode, 'Activity': Activity };
+            //data = JSON.stringify(data1);
+            //$.ajax({check karocontroll me same pass kao
+            //    url: "/UpdateSurvey/DownloadActivity",
+            //    data: data,
+            //    type: "POST",
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    success: function (response) {
+            //        alert(response);
+
+            //        pageExecute.fileContents = response;
+            //        $("#txtContainerNo").val("");
+            //        $("#ddlActivity").val("");
+            //        Show()
+
+            //    },
+            //    error: function (errormessage) {
+            //        alert("error");
+            //        alert(errormessage.responseText);
+            //        Show()
+            //    }
+            //});
+
+        }
+</script>

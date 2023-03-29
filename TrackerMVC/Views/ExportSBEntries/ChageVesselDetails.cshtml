@@ -1,0 +1,408 @@
+﻿
+@{
+    ViewBag.Title = "ChageVesselDetails";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class="page-header">
+    <h4 class="page-title">Change Vessel Details</h4>
+    <li class="breadcrumb-item">
+        <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+    </li>
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Search By</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                    <select class="form-control" id="ddlcategory">
+                                        <option value="0">--Select--</option>
+                                        <option value="Container No">Container No</option>
+                                        <option value="SB number">SB Number</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Search</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input ID="txtsearch" type="text" placeholder="" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden"> '</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-primary" id="btnSearch" onclick="Show()" type="button"><i class="fe fe-check"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Via No</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtViaNo", null, new { @class = "form-control ", @id = "txtViaNo", Placeholder = "Via No",@Onchange= "ViaNo()", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>s
+
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Vessel</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownList("ddlvessel", (IEnumerable<SelectListItem>)ViewBag.VesselList, "--Select--", new { @class = "form-control", @id = "ddlvessel", name = "ddlvessel", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Port</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtPort", null, new { @class = "form-control ", @id = "txtport", Placeholder = "Port", @autocomplete = "off", @Readonly = "Readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Cut Off Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("FDate", null, new { @id = "FDate", @Readonly = "Readonly", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Voyage</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtVoy", null, new { @class = "form-control ", @id = "txtVoy", Placeholder = "Port", @autocomplete = "off", @Readonly = "Readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">POD</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownList("ddlpod", (IEnumerable<SelectListItem>)ViewBag.POList, "--Select--", new { @class = "form-control", @id = "ddlpod", name = "ddlpod", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">FPD</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                  @*  @Html.DropDownList("ddlfpd", (IEnumerable<SelectListItem>)ViewBag.VesselList, "--Select--", new { @class = "form-control", @id = "ddlfpd", name = "ddlfpd", autocomplete = "off" })*@
+
+                                    @Html.DropDownList("ddlpod", (IEnumerable<SelectListItem>)ViewBag.POList, "--Select--", new { @class = "form-control", @id = "ddlfpd", name = "ddlfpd", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success btn-xs" id="Save" onclick="Save()" title="Save">Save</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <div>
+                            @*<label class="form-label">Details </label>*@
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                    <tr>
+
+
+                                        <th style="width:1px;color: white;text-align:center">#</th>
+                                        <th style="width:80px;color: white;text-align:center">Entry ID</th>
+                                        <th style="width:80px;color: white;text-align:center">Container No.</th>
+                                        <th style="width:80px;color: white;text-align:center">Size</th>
+                                        <th style="width:80px;color: white;text-align:center">Container Type</th>
+                                        <th style="width:80px;color: white;text-align:center">Cargo Type</th>
+                                        <th style="width:100px;color: white;text-align:center">SB No</th>
+                                        <th style="width:80px;color: white;text-align:center">SB Entry-ID</th>
+                                        <th style="width:20px;color: white;text-align:center">Via No</th>
+                                        <th style="width:80px;color: white;text-align:center">FPD</th>
+                                        <th style="width:100px;color: white;text-align:center">POD</th>
+                                        <th style="width:1px;color: white;text-align:center">.</th>
+                                        
+
+
+
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function Show() {
+
+
+        debugger;
+        var Category = document.getElementById('ddlcategory').value;
+        var Search = document.getElementById('txtsearch').value;
+        var data1 = { 'Category': Category, 'Search': Search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ExportSBEntries/VesselGrid',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+              
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\ "id=\"checklist\" ' + row.select + '   value="' + data + '" >';
+                                return data;
+                            }
+                        },
+                        
+                        { "data": "EntryID" },
+                        { "data": "containerNo" },
+                        { "data": "csize" },
+                        { "data": "CType" },
+                        { "data": "CargoType" },
+                        { "data": "SBNO" },
+                        { "data": "SBEntryID" },
+                        { "data": "ViaNo" },
+                        { "data": "PortName" },
+                        { "data": "PODName" },
+                    ]
+                });
+                $("#txtViaNo").val(data[0].ViaNo);
+                GridViaNo(data[0].ViaNo);
+              
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function GridViaNo(ViaNo) {
+        debugger;
+
+        //var ViaNO = $("#txtViaNo").val().trim();
+        var data1 = { "ViaNO": ViaNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ExportSBEntries/FetchVesselDet',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $('#FDate').val(data[0].CutofDate);
+                $('#txtVoy').val(data[0].Voyage);
+                $('#txtRotation').val(data[0].RotationNo);
+                $('#ddlvessel').val(data[0].VesselID);
+                $('#txtport').val(data[0].PortName);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+    function ViaNo() {
+        debugger;
+
+        var ViaNO = $("#txtViaNo").val().trim();
+        var data1 = { "ViaNO": ViaNO };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ExportSBEntries/FetchVesselDet',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",  
+            success: function (data) {
+                
+                $('#FDate').val(data[0].CutofDate);
+                $('#txtVoy').val(data[0].Voyage);
+                $('#txtRotation').val(data[0].RotationNo);
+                $('#ddlvessel').val(data[0].VesselID);
+                $('#txtport').val(data[0].PortName);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+    function Save() {
+       
+         debugger;
+        $("#tracker-loader").fadeIn("slow");
+          var ViaNo = $("#txtViaNo").val();
+          var pod = $("#ddlpod").val();
+          var fpd = $("#ddlfpd").val();
+          var vesselID = $("#ddlvessel").val();
+          var vesselName = $("#ddlvessel option:Selected").text();
+        
+        var itemcount = checkItemcount();
+        if (itemcount == false) {
+            alert("No Record Found To Save");
+        }
+        else {
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+            var tablearray = [];
+            var table = document.getElementById("example1");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                    var EntryID = row.cells[1].innerText;
+                    var containerNo = row.cells[2].innerText;
+
+                    if (containerNo == checkboxarray[k]) {
+                        //after checked catch to data from grid container no and entryid
+                        
+                        row = table.rows[i];
+                        
+                        EntryID = row.cells[1].innerText;
+                        containerNo = row.cells[2].innerText;
+                         
+                       
+                        tablearray.push({
+                            'containerNo': containerNo, 'EntryID': EntryID 
+                        })
+
+
+                    }
+                }
+            }
+        }
+      
+          //Send Data To Parameters Which Is Declare with Action Results
+            var data1 = {
+                'tablearray': tablearray, 'ViaNo': ViaNo, 'pod': pod, 'fpd': fpd,
+                'vesselID': vesselID, 'vesselName':vesselName };
+            var data = JSON.stringify(data1);
+
+
+            $.ajax({
+                url: "/ExportSBEntries/UpdateVesselDet",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                        alert();
+                                  document.location = '@Url.Action("ChageVesselDetails", "ExportSBEntries")';
+                    $("#tracker-loader").fadeOut("slow");
+
+
+                },
+
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+
+    }
+    function checkItemcount() {
+
+        var table = $('#example1').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+</script>

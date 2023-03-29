@@ -1,0 +1,481 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.EDIPrintEntities>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+   
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+    <script src="~/js/qrcode.min.js"></script>
+    <script src="~/js/JsBarcode.all.min.js"></script>
+    <script src="https://www.easyproject.cn/easyqrcodejs/easy.qrcode.min.js?v=10" type="text/javascript" charset="utf-8"></script>
+    <style>
+        body {
+            color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .box {
+            float: left;
+            width: 100%;
+            padding: 0px;
+            border-style: solid;
+            border-width: 1pt;
+        }
+
+        .boxHalf {
+            float: left;
+            width: 50%;
+            padding: 0px;
+            border: 1px solid gray;
+        }
+
+        .boxHeaderL {
+            /*float: left;*/
+            width: 25%;
+            padding: 0px;
+            text-align: left;
+        }
+
+        .boxHeaderC {
+            /*float: left;*/
+            width: 75%;
+            padding: 0px;
+            text-align: center;
+        }
+
+        .boxHeaderR {
+            /*float: left;*/
+            width: 75%;
+            padding: 0px;
+            text-align: center;
+        }
+
+        .tblBox {
+            border-collapse: collapse;
+            width: 100%;
+            padding: 0px;
+            float: left;
+        }
+
+        .headingh3 {
+            font-size: 7.5pt;
+            font-family: 'Segoe UI';
+            padding: 2px;
+            text-decoration: underline;
+        }
+
+        th {
+            border: 1px solid black;
+            font-size: 7.5pt;
+            font-family: Segoe UI;
+            background-color: white;
+        }
+
+        td {
+            border: 1px solid black;
+            font-size: 7.5pt;
+            font-family: Segoe UI;
+        }
+
+        h5, h4 {
+            font-size: 7.5pt;
+            font-family: Segoe UI;
+        }
+
+        h3 {
+            font-size: 7.5pt;
+            font-family: 'Segoe UI';
+        }
+
+        .buttomMargin {
+            margin-bottom: -20px;
+            padding-bottom: 0px;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+
+        #qrcode {
+            width: 60px !important;
+            height: 80px !important;
+            margin: 2px;
+            /*margin-top: 15px;*/
+        }
+
+
+        #UPIcode {
+            width: 250px !important;
+            height: 250px !important;
+            margin: 2px;
+            /*margin-top: 15px;*/
+        }
+    </style>
+</head>
+<body>
+    <div style="width:100%; text-align:center; height:100%">
+        <div style="width:100%;height:100%;">
+            <table class="tblBox">
+                <tbody>
+                    <tr>
+                        @*<th style="text-align:left;width:9%"><img height="70" width="200" src="~/images/NavkarLogo.jpg" /></th>*@
+                        <th style="width:46%;text-align:center;background-color:white;font-family: 'Segoe UI'">
+                            <span style="font-size:12pt;margin-top: 0px;margin-bottom:-13px;">@ViewBag.Con_Name</span>   <br />
+                            <span style="font-size:7pt;margin-top: 0px;margin-bottom:0px;font-weight:normal"> @ViewBag.AddressI</span> <br />
+                            <span style="font-size:7pt;margin-top: 0px;margin-bottom:0px;font-weight:normal"> @ViewBag.GSTIN</span> <br />
+
+                        </th>
+                        <th style="width:39%">
+                            <div class="boxHeaderRight" style="height:308px;">
+                                <div id="qrcode"> </div>
+                                <div id="UPIcode"> </div>
+                            </div>
+                        </th>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+
+            <table class="tblBox">
+                <tbody>
+                    <tr>
+                        <th style="width:100%;text-align:center; background-color: #ede5e5;font-size:20px">
+                            EDI Charges IMP/EXP
+                        </th>
+                        
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="printBody clearfix">
+                <div class="box" style="border-style:none;">
+
+
+                    <table class="tblBox">
+                        <tbody>
+                            <tr>
+                                <td colspan="1" style="vertical-align:top;width:56%">
+                                    <div class="box" style="border-style: none;">
+                                        <table class="tblBox">
+                                            <tbody>
+
+                                                <tr>
+                                                    <th style="width:30%;text-align:left;border-style:none">E-Invoice Details</th>
+
+                                                </tr>
+                                                <tr>
+                                                    <th style="width:35%;text-align:left;border-style:none">IRN</th>
+                                                    <td style="width:65%;text-align:left;border-style:none;font-weight: 700;">:<label style="visibility:hidden;font-weight:400">Sp</label>@ViewBag.Irn</td>
+                                                </tr>
+                                                <tr>
+                                                    <th style="width:30%;text-align:left;border-style:none">Ack.No</th>
+                                                    <td style="width:70%;text-align:left;border-style:none;font-weight: 700;">:<label style="visibility:hidden;font-weight:400">Sp</label> @ViewBag.AckNo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th style="width:30%;text-align:left;border-style:none">ACK Date</th>
+                                                    <td style="width:70%;text-align:left;border-style:none;font-weight: 700;">:<label style="visibility:hidden;font-weight:400">Sp</label>@ViewBag.AckDt</td>
+                                                </tr>
+
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+
+                                <td colspan="1" style="vertical-align:top;width:26%;text-align:center;background-color:white">
+
+                                    <input type="checkbox" name="checklist[]" id="chkDelLoc" readonly style="font-size:7pt" checked>
+                                    <span>Original for recipient </span><br />
+                                    <input type="checkbox" name="checklist[]" id="chkDelLoc" readonly style="font-size:7pt">
+                                    <span>Duplicate for supplier</span>
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                    <br />
+                </div>
+            </div>
+
+            <div class="printBody clearfix">
+                <div class="box" style="border-style:none;">
+                    <table class="tblBox">
+                        <tbody>
+                            <tr>
+                                <th style="width:150px;text-align:left">Invoice No :</th>
+                                <th style="text-align:left">@ViewBag.InvoiceNO</th>
+
+                                <th style="width:150px;text-align:left">Invoice Date :</th>
+                                <th style="text-align:left">@ViewBag.WorkYear</th>
+                            </tr>
+                            <tr>
+                                <th style="width:150px;text-align:left">Activity :</th>
+                                <th style="text-align:left">@ViewBag.Activity</th>
+                            </tr>
+
+                            @*<tr>
+                            <th style="width:150px;text-align:left">SB No :</th>
+                            <th style="text-align:left">@ViewBag.SBNo</th>
+
+                            <th style="width:150px;text-align:left">SB Date :</th>
+                            <th style="text-align:left">@ViewBag.SBDate</th>
+                        </tr>
+
+                        <tr>
+                            <th style="width:150px;text-align:left">BOE No :</th>
+                            <th style="text-align:left">@ViewBag.BOENo</th>
+
+                            <th style="width:150px;text-align:left">BOE Date :</th>
+                            <th style="text-align:left">@ViewBag.BOEDate</th>
+                        </tr>*@
+                            <tr>
+                                <th style="width:150px;text-align:left">CHA :</th>
+                                <th style="text-align:left" colspan="3">@ViewBag.CHA</th>
+                            </tr>
+                            <tr>
+                                <th style="width:150px;text-align:left">Billing Party :</th>
+                                <th style="text-align:left" colspan="3">@ViewBag.PartyName</th>
+                            </tr>
+                            <tr>
+                                <th style="width:150px;text-align:left">Address :</th>
+                                <th style="text-align:left" colspan="3">@ViewBag.PartyAddress</th>
+                            </tr>
+                            <tr>
+                                <th style="width:150px;text-align:left">GST No :</th>
+                                <th style="text-align:left">@ViewBag.GSTNo</th>
+
+                                <th style="width:150px;text-align:left">State/State Code :</th>
+                                <th style="text-align:left">@ViewBag.State</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                </div>
+            </div>
+            <div class="printBody clearfix">
+
+
+                <div class="table-responsive">
+                    <table class="tblBox" style="border-style: none;width:50%" id="tblReceiptDets">
+                        <thead>
+                            <tr>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">SR No</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">BOE No</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">BOE Date</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">SB No</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">SB Date</th>
+                            </tr>
+                        </thead>
+                        <tbody style="box-sizing :border-box;">
+                            @foreach (var d in ViewBag.EDIImportExport)
+                            {
+                                <tr>
+                                    <td style="text-align:center">@d.SRNO</td>
+                                    <td style="text-align:center">@d.BOENo</td>
+                                    <td style="text-align:center">@d.BOEDate</td>
+                                    <td style="text-align:center">@d.SBNo</td>
+                                    <td style="text-align:center">@d.SBDate</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <br />
+
+
+            <div class="table-responsive">
+                <table class="tblBox" style="border-style: none;" id="tblAccountDets">
+                    <thead>
+                        <tr>
+                            <th style="background-color:#ede5e5;font-size: 8pt;">Account Name</th>
+                            <th style="background-color:#ede5e5;font-size: 8pt;">Total Pages</th>
+                            <th style="background-color:#ede5e5;font-size: 8pt;">Net Amount</th>
+                            <th style="background-color:#ede5e5;font-size: 8pt;">SGST</th>
+                            <th style="background-color:#ede5e5;font-size: 8pt;">CGST</th>
+                            <th style="background-color:#ede5e5;font-size: 8pt;">IGST</th>
+                            <th style="background-color:#ede5e5;font-size: 8pt;">Grand Total</th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="box-sizing :border-box;">
+                        <tr>
+                            <td style="text-align:left">@ViewBag.AccountName</td>
+                            <td style="text-align:center">@ViewBag.PageFrom</td>
+                            <td style="text-align:right">@ViewBag.NetAmount</td>
+                            <td style="text-align:right">@ViewBag.SGST</td>
+                            <td style="text-align:right">@ViewBag.CGST</td>
+                            <td style="text-align:right">@ViewBag.IGST</td>
+                            <td style="text-align:right">@ViewBag.GrandTotal</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <br />
+            <div class="printBody clearfix">
+
+                <b style="text-align:left">Receipt Details</b>
+                <div class="table-responsive">
+                    <table class="tblBox" style="border-style: none;" id="tblReceiptDets">
+                        <thead>
+                            <tr>
+
+                                <th style="background-color:#ede5e5;font-size: 8pt;">Mode</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">Amount</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">Mode No</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">Bank Name</th>
+                                <th style="background-color:#ede5e5;font-size: 8pt;">Mode Date</th>
+                            </tr>
+                        </thead>
+                        <tbody style="box-sizing :border-box;">
+                            @foreach (var d in ViewBag.EDIReceipt)
+                            {
+                                <tr>
+                                    <td style="text-align:center">@d.Mode</td>
+                                    <td style="text-align:right">@d.ModeAmount</td>
+                                    <td style="text-align:center">@d.ModeNo</td>
+                                    <td style="text-align:center">@d.BankName</td>
+                                    <td style="text-align:center">@d.ModeDate</td>
+
+                                </tr>
+
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <div class="boxHalf clearfix" style="text-align:left;height:230px">
+                <h5 style="margin-top:0px;margin-bottom:0px;">Terms and conditions</h5>
+                <h3 style="margin-top:0px;margin-bottom:0px;">
+                    @ViewBag.NoteVI
+                </h3>
+                <h3>@ViewBag.GSTIN</h3>
+                <h3>PAN No:- @ViewBag.PANNo</h3>
+                <h3 style="font-weight:normal">@ViewBag.NoteII</h3>
+                <h3>(E.& O.E.)</h3>
+            </div>
+            <div class="boxHalf clearfix" style="text-align:center;height:230px">
+                <br />
+                <h3>@ViewBag.ConFor</h3><br /><br />
+                <h3>Authorised Signatory</h3>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script>
+    //1.  Get  if registered  or not
+    //2.  if regesitered show qr code from db
+    //3.  else AJAx call
+
+    var RegisteredType;
+       $(document).ready(function () {
+           debugger;
+           console.log("EBTRY")
+           RegisteredType = "@ViewBag.Registered";
+           if (RegisteredType == "Registered") {
+               loadRegisteredQR();
+           } else {
+               loadUPIQR();
+           }
+           console.log("EXIST")
+
+    });
+
+
+
+
+
+
+    @*JsBarcode("#barcode", @ViewBag.AckNo, {
+        height: 20, width: 01, displayValue: false
+});
+
+    var barcode = document.getElementById("barwrapper");
+
+    console.log(barcode);*@
+
+    //window.print();
+
+    //$(document).ready(function () {
+
+    //    window.print();
+    //});
+
+    function loadRegisteredQR() {
+        $("#UPIcode").hide();
+            var options = {
+        text: "@ViewBag.SignedQRcode",
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H, // L, M, Q, H
+        logo: "~/images/NavkarLogo.jpg",
+        backgroundImage: '../images/NavkarLogo.jpg', // Background Image
+        backgroundImageAlpha: 1, // Background image transparency, value between 0 and 1. default is 1.
+        autoColor: false, // Automatic color adjustment(for data block)
+        autoColorDark: "rgba(0, 0, 0, .6)", // Automatic color: dark CSS color
+        autoColorLight: "rgba(255, 255, 255, .7)",
+    };
+
+    // Create QRCode Object
+    new QRCode(document.getElementById("qrcode"), options);
+    }
+
+
+    function loadUPIQR() {
+        $("#qrcode").hide();
+        var element = {};
+        element.name = "@ViewBag.Con_Name";
+        element.vpa ="@ViewBag.UPINumber";
+        element.amount = "@ViewBag.GrandTotal";
+        element.note = "-";
+        $.ajax({
+            url: "https://upiqr.in/api/qr?name=" + element.name + "&vpa=" + element.vpa + "&amount=" + element.amount + "&note=" + element.note,
+            type: "get",
+            dataType: "html",
+            success: function (response) {
+                console.log(response)
+
+                $('#UPIcode').html(response);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+</script>

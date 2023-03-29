@@ -1,0 +1,234 @@
+﻿
+    @model IEnumerable<TrackerMVCEntities.BusinessEntities.FuelEntities>
+
+    @{
+        ViewBag.Title = "Generated Fuel Slip List";
+        Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+    }
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+<div class=" content-area overflow-hidden">
+        <div id="divFuelList">
+            <div class="page-header">
+                <h4 class="page-title">
+                    Generated Fuel Slip: @Model.Count()
+                </h4>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a onclick="Refresh();" class="btn btn-secondary" style="color:white;align-content:center;"><i class="fa fa-refresh" data-placement="bottom" title="Back"></i>  </a></li>
+                </ol>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+
+
+                            <div id="showItems">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="visibility:hidden"></th>
+                                                        <th style="visibility:hidden"></th>
+                                                        <th>Sr No.</th>
+                                                        <th>Voucher No.</th>
+                                                        <th>Voucher Date</th>
+                                                        <th>Trailer No.</th>
+                                                        <th>Trailer Type</th>
+                                                        <th>Passing</th>
+                                                        <th>Driver</th>
+                                                        <th>Transporter</th>
+                                                        <th>From Location</th>
+                                                        <th>To Location</th>
+                                                        <th>Delivery Address</th>
+                                                        <th>In/Out Date</th>
+                                                        <th>Fuel</th>
+                                                        <th>Amount(Cash)</th>
+                                                        <th>Amount(Bank)</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="box-sizing :border-box;">
+                                                    @foreach (var d in Model)
+                                                    {
+                                                        <tr>
+                                                            @*<td>@Html.ActionLink("PrintFuelSlipDirectNew", "LoadingPlan", new { voucherNo = @d.VoucherNo, AutoID = @d.AutoID })</td>*@
+                                                            <td><a class='@d.HoldClass' onclick="GenerateFuelPrint('@d.VoucherNo',@d.AutoID)" href="#">Fuel Slip </a></td>
+                                                            @* <td><a class='@d.HoldClass' href="/LoadingPlan/PrintFuelSlipDirectNew?voucherNo=@d.VoucherNo&AutoID=@d.AutoID" target="_blank">Fuel Slip </a></td>*@
+
+                                                            @* <td><a class="btn btn-sm btn-primary" onclick="GenerateVoucherFuelPrint('@d.VoucherNo')" href="#">Voucher Slip </a></td>*@
+                                                          @*  <td><a class='@d.VoucherBtnClass' href="/LoadingPlan/PrintVoucherFuelSlipDirectNew?voucherNo=@d.VoucherNo&AutoID=@d.AutoID" target="_blank">Voucher Slip </a></td>*@
+                                                            <td><a class='@d.VoucherBtnClass' onclick="GenerateVoucherFuelPrint('@d.VoucherNo',@d.AutoID)" href="#">Voucher Slip </a></td>
+
+                                                            <td>@Html.DisplayFor(m => d.SrNo)</td>
+                                                            <td>@Html.DisplayFor(m => d.VoucherNo)</td>
+                                                            <td>@Html.DisplayFor(m => d.VoucherDate)</td>
+                                                            <td>@Html.DisplayFor(m => d.TrailerNo)</td>
+                                                            <td>@Html.DisplayFor(m => d.TrailerType)</td>
+                                                            <td>@Html.DisplayFor(m => d.Passing)</td>
+                                                            <td>@Html.DisplayFor(m => d.driver)</td>
+                                                            <td>@Html.DisplayFor(m => d.Transportor)</td>
+                                                            <td>@Html.DisplayFor(m => d.From)</td>
+                                                            <td>@Html.DisplayFor(m => d.To)</td>
+                                                            <td>@Html.DisplayFor(m => d.DelAddress)</td>
+                                                            <td>@Html.DisplayFor(m => d.InOutDate)</td>
+                                                            <td>@Html.DisplayFor(m => d.fuel)</td>
+                                                            <td>@Html.DisplayFor(m => d.amount1)</td>
+                                                            <td>@Html.DisplayFor(m => d.amount2)</td>
+
+                                                        </tr>
+
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Show the table after click of save button  -->
+                    <!--End of save button-->
+                </div>
+                <!-- table-wrapper -->
+            </div>
+        </div>
+
+        <!-- section-wrapper -->
+
+    </div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ContainerList').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+        });
+    })
+</script>
+
+<script>
+
+    function GenerateFuelPrint(VoucherNo, id) {
+
+
+        var datac1 = {
+            'voucherNo': VoucherNo,
+            'AutoID': id
+        };
+        var datac = JSON.stringify(datac1);
+        $.ajax({
+            url: "/LoadingPlan/CheckFuelPrint",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data == "0") {
+                    GenerateFuelPrint1(VoucherNo, id);
+                } else {
+                    alert("already printed for the Slip cannot proceed!");
+                    return false;
+                }
+            },
+
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+    }
+    function GenerateFuelPrint1(VoucherNo,id)
+    {
+                          
+     
+        var datac1 = {
+            'voucherNo': VoucherNo,
+            'AutoID': id
+        };
+        var datac = JSON.stringify(datac1);
+        $.ajax({
+            url: "/LoadingPlan/PrintFuelSlipDirectNew",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+              
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.close ();
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>
+
+<script>
+    function Refresh()
+    {
+        document.location = '@Url.Action("GetGeneratedFuelSlip", "LoadingPlan")';
+
+    }
+</script>
+<script>
+
+   
+    function GenerateVoucherFuelPrint(VoucherNo,id)
+    {
+
+      //  var url = '/LoadingPlan/PrintVoucherFuelSlipDirectNew?voucherNo=' + id
+
+        var datac1 = {
+            'voucherNo': VoucherNo,
+            'AutoID': id
+        };
+        var datac = JSON.stringify(datac1);
+        $.ajax({
+            url: "/LoadingPlan/PrintVoucherFuelSlipDirectNew",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+               // alert(response);
+               // window.close("", "MsgWindow1");
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.close ();
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+</script>

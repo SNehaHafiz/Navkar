@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewBag.Title = "Domestic HUB Loaded Inventory";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="page-header">
+    <h4>Domestic HUB Loaded Inventory</h4>
+    <div class="float-right">
+        <div id="buttons"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label">As On</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("AsOn", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-1 col-lg-1">
+                        <div class="form-group label-floating">
+                            <label class="form-label" style="visibility:hidden">On</label>
+                            <button class=" btn btn-primary" title="Show" id="btnSearch" onclick="GetInventarySummary()" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+
+
+
+
+                    <div class="col-lg-12 col-sm-12">
+                        <button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+
+                        <div class="table-responsive">
+                            <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                <thead>
+
+                                    <tr></tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+         function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportLoadedLRExcel", "TPTariffDetails")';
+
+
+    }
+
+        function GetInventarySummary() {
+            $("#tracker-loader").fadeIn("slow");
+            var AsOn = $("#AsOn").val();
+
+
+            data1 = { 'AsOn': AsOn };
+            data = JSON.stringify(data1);
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/TPTariffDetails/GetLoadedInsuranceSummary',
+                data: data,
+                // data: "",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (jsonResult) {
+                    console.log(jsonResult);
+                    $("#example2").empty();
+                    RepTableDataJson($("#example2"), jsonResult, "Loaded Summary", "LoadedSummary");
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+
+        function RepTableDataJson(tableName, data, title, fileName) {
+            //debugger;
+            //Check if table dose not exist then return error message.
+            console.log(data);
+            try {
+                if (tableName == null) {
+                    alert("table not exist.");
+                }
+
+                //Check Data Table has if already initialize then need to destroy first!
+                if ($.fn.DataTable.isDataTable(tableName)) {
+                    tableName.DataTable().destroy();
+                    tableName.empty();
+                }
+
+                var parseJSONResult = jQuery.parseJSON(data);
+
+                if (parseJSONResult != null && parseJSONResult.length > 0) {
+                    //Get dynmmic column.
+                    var dynamicColumns = [];
+                    var i = 0;
+                    $.each(parseJSONResult[0], function (key, value) {
+                        var obj = { sTitle: key };
+                        dynamicColumns[i] = obj;
+                        i++;
+                    });
+                    //fetch all records from JSON result and make row data set.
+                    var rowDataSet = [];
+                    var i = 0;
+                    $.each(parseJSONResult, function (key, value) {
+                        var rowData = [];
+                        var j = 0;
+                        $.each(parseJSONResult[i], function (key, value) {
+                            rowData[j] = value;
+                            j++;
+                        });
+                        rowDataSet[i] = rowData;
+
+                        i++;
+                    });
+                    tableName.dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": rowDataSet,
+                        "bInfo": true,
+                        "bPaginate": true,
+                        "bFilter": true,
+                        "paging": true,
+                        //"order": [],
+                        "columns": dynamicColumns,
+                        "deferRender": true
+
+                    });
+                }
+
+
+            }
+            catch (ex) {
+                alert(ex.message);
+            }
+        }
+</script>

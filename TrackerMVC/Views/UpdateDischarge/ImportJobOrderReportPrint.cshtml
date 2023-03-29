@@ -1,0 +1,207 @@
+﻿<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Import Job Order Print</title>
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+    <style>
+        body {
+            color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .box {
+            float: left;
+            width: 100%;
+            padding: 0px;
+        }
+
+        .boxHeaderL {
+            float: left;
+            width: 30%;
+            padding: 0px;
+            text-align: left;
+        }
+
+        .boxHeaderR {
+            float: left;
+            width: 70%;
+            padding: 0px;
+            text-align: center;
+        }
+
+        .tblBox {
+            border-collapse: collapse;
+            width: 100%;
+            padding: 0px;
+            float: left;
+        }
+
+        .headingh3 {
+            font-size: 14pt;
+            font-family: 'verdana(batlic)';
+            padding: 2px;
+            text-decoration: underline;
+        }
+
+        th {
+            border: 1px solid black;
+            font-size: 14px;
+            font-family: verdana(batlic);
+            background-color: #ede5e5;
+        }
+
+        td {
+            border: 1px solid black;
+            font-size: 12px;
+            font-family: 'Segoe UI';
+        }
+
+        h5, h4 {
+            font-size: 10pt;
+            font-family: 'Segoe UI';
+        }
+
+        h3 {
+            font-size: 14pt;
+            font-family: 'verdana(batlic)';
+        }
+
+        .buttomMargin {
+            margin-bottom: -20px;
+            padding-bottom: 0px;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:100%; text-align:center; height:100%">
+        
+        <div style="width:100%;height:100%;">
+            <div class="box">
+                <div class="boxHeaderL">
+                    <img height="70" width="200" src="~/images/NavkarLogo.jpg" />
+                </div>
+                <div class="boxHeaderR">
+                    <h3 class="buttomMargin">@ViewBag.CompanyName</h3>
+                    <h5>@ViewBag.CompanyAddress<br />@ViewBag.CompanyAddress2</h5>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <h3 class="headingh3">Import Job Order Print</h3>
+            </div>
+            <div style="text-align:left">
+                <h4>To,<br />The Operations Manager</h4>
+            </div>
+            <div class="printBody clearfix">
+                <div class="box">
+                    <table class="tblBox">
+                        <tbody>
+                            <tr>
+                                <th style="width:10%;text-align:left">Port :</th>
+                                <td style="width:40%;text-align:left">@ViewBag.Port</td>
+                                <th style="width:10%;text-align:left">Job No :</th>
+                                <td style="width:10%;text-align:left">@ViewBag.JOBNo</td>
+                                <th style="width:10%;text-align:left">&nbsp;</th>
+                                <td style="width:20%;text-align:left">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <th style="width:10%;text-align:left">Vessel :</th>
+                                <td style="width:50%;text-align:left">@ViewBag.Vessel</td>
+                                <th style="width:10%;text-align:left">VIA No :</th>
+                                <td style="width:10%;text-align:left">@ViewBag.VIANo</td>
+                                <th style="width:10%;text-align:left">IGM No :</th>
+                                <td style="width:20%;text-align:left">@ViewBag.IGMNo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div class="table-responsive">
+                <table class="tblBox">
+                    <thead>
+                        <tr>
+                            <th style="width:50%">Line</th>
+                            <th>20'</th>
+                            <th>40'</th>
+                            <th>45'</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dr in ViewBag.JobOrderList)
+                        {
+                            <tr>
+                                <td style="width:40%;text-align:left">@dr["LINE"]</td>
+                                <td style="width:15%;text-align:left">@dr["20'"]</td>
+                                <td style="width:15%;text-align:left">@dr["40'"]</td>
+                                <td style="width:15%;text-align:left">@dr["45'"]</td>
+                                <td style="width:15%;text-align:left">@dr["TOTAL"]</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="printBody clearfix" style="text-align:left">
+                <h5 style="margin-bottom: -20px;">Sir,</h5>
+                <h5>Please allow us to move the following containers to M/s Navkar Corporation Ltd.</h5>
+            </div>
+            <div class="printBody clearfix">
+                <table class="tblBox" id="reportTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sr. No</th>
+                            <th scope="col">Container No</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Scan</th>
+                            <th scope="col">SA Code</th>
+                            <th scope="col">Cargo Type</th>
+                            <th scope="col">Agent Seal</th>
+                            <th scope="col">Temp/Class</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dr in ViewBag.JoContainerList)
+                        {
+                            <tr>
+                                <td>@dr["SR. NO"]</td>
+                                <td>@dr["CONT NO"]</td>
+                                <td>@dr["SIZE"]</td>
+                                <td>@dr["SCAN"]</td>
+                                <td>@dr["SAC CODE"]</td>
+                                <td>@dr["CARGO TYPE"]</td>
+                                <td>@dr["AGENT SEAL"]</td>
+                                <td>@dr["TEMP/CLASS"]</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                &nbsp;
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "Own Container Inventory";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="Summary">
+    <div class="page-header">
+        <h4 class="page-title">Own Container Inventory</h4>
+        @*<button class="btn btn-icon btn-success" title="Back" data-toggle="tooltip" data-placement="bottom" onclick="ShowEntry()"><i class="fa fa-arrow-left"></i></button>*@
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <button class="btn btn-orange" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                <div class="col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelLoadOwnContainer", "report")?';
+
+
+    }
+    $(function () {
+        Load();
+    });
+
+    function Load() {
+        $.ajax({
+            type: "POST",
+            url: '/Report/LoadOwnContainer',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No data found.');
+                    $("#example").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#example").empty();
+                RepTableDataJson($("#example"), data, "QC Entry", "QC_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function RepTableDataJson(tableName, data, title, fileName) {
+        try {
+            if (tableName == null) {
+                alert("table not exist.");
+            }
+            if ($.fn.DataTable.isDataTable(tableName)) {
+                tableName.DataTable().destroy();
+                tableName.empty();
+            }
+            var parseJSONResult = jQuery.parseJSON(data);
+            if (parseJSONResult != null && parseJSONResult.length > 0) {
+                var dynamicColumns = [];
+                var i = 0;
+                $.each(parseJSONResult[0], function (key, value) {
+                    var obj = { sTitle: key };
+                    dynamicColumns[i] = obj;
+                    i++;
+                });
+                var rowDataSet = [];
+                var i = 0;
+                $.each(parseJSONResult, function (key, value) {
+                    var rowData = [];
+                    var j = 0;
+                    $.each(parseJSONResult[i], function (key, value) {
+                        rowData[j] = value;
+                        j++;
+                    });
+                    rowDataSet[i] = rowData;
+
+                    i++;
+                });
+                tableName.dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "pageLength": 25,
+                    "aaData": rowDataSet,
+                    "bInfo": true,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": true,
+                    "order": [0, 1, 2, 3, 4, 5],
+                    "columns": dynamicColumns,
+                    "deferRender": true,
+                    "bSort": false,
+                    "dom": 'Bfrtip',
+                    "searching": true,
+                    "buttons": [
+                    ]
+                });
+            }
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+    }
+</script>

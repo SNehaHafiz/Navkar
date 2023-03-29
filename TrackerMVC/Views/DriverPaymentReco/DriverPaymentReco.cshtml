@@ -1,0 +1,754 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.DriverPaymentReco>
+@{
+    ViewBag.Title = "DriverPaymentReco";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="addReco">
+    <div class=" content-area">
+        <div class="page-header">
+            <h4 class="page-title">Driver Payment Reco </h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryList()"><i class="fa fa-file-text"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Entry ID</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="text" id="txtEntryID" class="form-control" readonly placeholder="Entry ID" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Entry Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="datetime-local" id="txtEntryDate" value="@ViewBag.Date" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group" style="padding-top:30px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="file" id="fileImport" name="postedFile" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group" style="padding-top:25px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @*<input type="Button" id="btnImport" value="Import" class="btn btn-primary" />*@
+                                                <button class="btn btn-primary" id="btnImport" type="button">Import</button>
+                                                <button class="btn btn-primary" id="btnView" style="display:none" type="button">View all</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="wd-10p sorting">Sr No.</th>
+                                                    <th class="wd-10p sorting ">Transfer from Account</th>
+                                                    <th class="wd-10p sorting">Amount </th>
+                                                    <th class="wd-10p sorting">Transfer in Account</th>
+                                                    <th class="wd-10p sorting">IFSC Code</th>
+                                                    <th class="wd-10p sorting">Transfer Type</th>
+                                                    <th class="wd-10p sorting">Transporter</th>
+                                                    <th class="wd-10p sorting">Driver</th>
+                                                    <th class="wd-10p sorting">Voucher No</th>
+                                                    <th class="wd-10p sorting">Voucher For</th>
+                                                    <th class="wd-10p sorting">Reference No</th>
+                                                    <th class="wd-10p sorting">Payment Status</th>
+                                                    <th class="wd-10p sorting">File Name</th>
+                                                    <th class="wd-10p sorting">Trans Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="box-sizing :border-box;">
+                                                @*@foreach (var d in Model)
+                                                    {
+
+                                                        <tr>
+                                                            <td>@d.JONO <input name=hdJONO type=hidden id=JONO value='@d.JONO'></td>
+                                                            <td>@d.ContainerNO <input name=hdContainerNO type=hidden id=ContainerNO value='@d.ContainerNO'></td>
+                                                            <td>@d.Size </td>
+                                                            <td>@d.port  </td>
+                                                            <td>@d.DischargeDate</td>
+                                                        </tr>
+                                                    }*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-1 col-xs-12">
+                                    <div class="form-group" style="padding-top:25px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button class="btn btn-success pull-right" type="button" id="btnSave" onclick="Save();" name="Save">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 col-xs-12">
+                                    <div class="form-group" style="padding-top:25px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button class="btn btn-default pull-right" type="button" id="btnClear" onclick="Clear();" name="Clear">Clear</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area overflow-hidden" id="summaryLists" style="display:none">
+
+    <div class="page-header">
+        <h4 class="page-title">Driver Payment Reco Summary</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-success" name="addTrain" title="Import Driver Payment Reco" id="addRecoScreen" onclick="AddReco()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> Voucher No</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtVoucherNo", null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label mandatory">Drivers</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @*<select class="form-control" id="ddlSearchCriteria" onchange="SelectSearchCriteria();">
+                            <option value="0">All</option>
+                            <option value="1">Voucher No</option>
+                            <option value="2">Driver</option>
+                        </select>*@
+                        @Html.DropDownList("ddlDrivers", (IEnumerable<SelectListItem>)ViewBag.DriverList, "All", new { @class = "form-control", @id = "ddlDrivers", name = "ddlDrivers", autocomplete = "off" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-1 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden"> '</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <input type="button" value="Show" class="btn btn-primary" onclick="reco_View()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-danger" name="clearProfile" title="clear" id="btnShow" onclick="CancelDetails()">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-lg-12 col-sm-12">
+
+            
+
+
+
+                    <div class="table-responsive">
+                        <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                            <thead>
+
+                                <tr>
+                                    <th class="wd-10p sorting"></th>
+                                    <th class="wd-10p sorting">Sr No</th>
+                                    <th class="wd-10p sorting">File Name</th>
+                                    <th class="wd-10p sorting">Entry Date</th>
+                                    <th class="wd-10p sorting">Voucher No</th>
+                                    <th class="wd-10p sorting">Trans Date</th>
+                                    <th class="wd-10p sorting">Amount</th>
+                                    <th class="wd-10p sorting">Voucher For</th>
+                                    <th class="wd-10p sorting">Transporter</th>
+                                    <th class="wd-10p sorting">Driver</th>
+                                    <th class="wd-10p sorting">Driver Account No</th>
+                                    <th class="wd-10p sorting">Transfer Type</th>
+                                    <th class="wd-10p sorting">Reference No</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                
+            <!-- section-wrapper -->
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "paging": false
+
+        })
+    })
+
+</script>
+<script>
+    function Clear() {
+        document.location = '@Url.Action("DriverPaymentReco", "DriverPaymentReco")';
+    }
+    function ViewSummaryList() {
+
+        $("#summaryLists").show();
+        $("#addReco").hide();
+
+        reco_View();
+
+
+    }
+    function AddReco() {
+        $("#summaryLists").hide();
+        $("#addReco").show();
+    }
+    function reco_View() {
+        
+
+        var data = { 'FromDate': $("#txtFromDate").val(), 'ToDate': $("#txtToDate").val(), 'Voucher': $("#txtVoucherNo").val(), 'Driver': $("#ddlDrivers option:selected").val() };
+        var data1 = JSON.stringify(data);
+        $.ajax({
+            type: 'POST',
+            url: '/DriverPaymentReco/GetRecoSummary',
+            data: data1,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                // alert(JSON.stringify(data));
+                //lblcount
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "SRNo",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  value="' + data + '">';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "SRNo" },
+                        { "data": "FileName" },
+                        { "data": "PaidDate" },
+                        { "data": "VoucherNo" },
+                        { "data": "TransDate" },
+                        { "data": "Amount" },
+                        { "data": "VoucherFor" },
+                        { "data": "Transporter" },
+                        { "data": "Driver" },
+                        { "data": "DriverAccountNo" },
+                        { "data": "TransferType" },
+                        { "data": "ReferenceNo" }
+                    ]
+                    , "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'Driver Payment Reco Details',
+                        "filename": 'Driver_Payment_Reco_Details'
+
+                    }
+                    ]
+                });
+
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+
+    };
+</script>
+<script>
+    $(document).ready(function () {
+        $('#btnImport').click(function () {
+
+            document.getElementById('btnImport').value = "Please Wait..."
+            document.getElementById('btnImport').setAttribute("class", "btn btn-primary disabled")
+
+            //$("#btnImport").value = "Please Wait...";
+            //$("#btnImport").setAttribute("class", "btn btn-primary disabled");
+
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#fileImport").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+                if (files.length == 0) {
+                    alert("Please select File!")
+                    return false;
+                }
+                else {
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+
+                        fileData.append(files[i].name, files[i]);
+                    }
+
+
+                    // Adding one more key to FormData object
+                    // fileData.append('JONo', JONo);
+                    // alert("hi")
+                    $.ajax({
+                        url: '/DriverPaymentReco/ImportFile',
+
+
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (data) {
+                            // alert(JSON.stringify(data));
+                            //  var str = data;
+                            $('#example1').dataTable({
+                                "destroy": true,
+                                "bLengthChange": false,
+                                "aaData": data,
+                                "paging": false,
+                                "aaSorting": [[0, 'asc']],
+                                "columns": [
+                                    { "data": "SRNo" },
+                                    { "data": "TransferFromAccnt" },
+                                    { "data": "Amount" },
+                                    { "data": "TransferInAccnt" },
+                                    { "data": "IFSCCode" },
+                                    { "data": "TransferType" },
+                                    { "data": "Transporter" },
+                                    { "data": "Driver" },
+                                    { "data": "VoucherNo" },
+                                    { "data": "VoucherFor" },
+                                    { "data": "ReferenceNo" },
+                                    { "data": "PaymentStatus" },
+                                    { "data": "FileName" }
+                                    ,{ "data": "TransDate" }
+                                ]
+                            })
+                            //$("#btnImport").value = "Import";
+                            //$("#btnImport").setAttribute("class", "btn btn-primary");
+                        },
+                        error: function (errormessage) {
+                            document.getElementById('btnImport').value = "Import"
+                            document.getElementById('btnImport').setAttribute("class", "btn btn-primary")
+                            alert(errormessage.responseText);
+                        }
+
+                    });
+
+                }
+
+            }
+            else {
+                document.getElementById('btnImport').value = "Import"
+                document.getElementById('btnImport').setAttribute("class", "btn btn-primary")
+                alert("FormData is not supported.");
+            }
+            document.getElementById('btnImport').value = "Import"
+            document.getElementById('btnImport').setAttribute("class", "btn btn-primary")
+            $("#fileImport").val('');
+        });
+    });
+</script>
+<script>
+    function Save() {
+
+        var itemcount = checkItemcount();
+        if (itemcount) {
+
+            document.getElementById('btnSave').value = "Please Wait"
+            document.getElementById('btnSave').setAttribute("class", "btn btn-success pull-right disabled")
+
+            var entrydate = document.getElementById('txtEntryDate').value;
+
+
+            //var checkboxarray = [];
+            //$('input[type=checkbox]').each(function () {
+            //    if (this.checked) {
+
+            //        checkboxarray.push($(this).val());
+            //    }
+            //});
+            //alert(JSON.stringify(checkboxarray));
+
+
+            var tablearray = [];
+            var table = document.getElementById("example1");
+            var row;
+
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                var SrNo = row.cells[0].innerText;
+                var TransferFromAccnt = row.cells[1].innerText;
+                var Amount = row.cells[2].innerText;
+                var TransferInAccnt = row.cells[3].innerText;
+                var IFSCCode = row.cells[4].innerText;
+                var TransferType = row.cells[5].innerText;
+                var Transporter = row.cells[6].innerText;
+                var Driver = row.cells[7].innerText;
+                var VoucherNo = row.cells[8].innerText;
+                var VoucherFor = row.cells[9].innerText;
+                var ReferenceNo = row.cells[10].innerText;
+                var PaymentStatus = row.cells[11].innerText;
+                var FileName = row.cells[12].innerText;
+                var Transdate = row.cells[13].innerText;
+
+                if (TransferFromAccnt == "") {
+                    alert("Transfer from account number cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if ((Amount == "") || (Amount == "0")) {
+                    alert("Amount from account number cannot be left blank or zero for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (TransferInAccnt == "") {
+                    alert("Transfer in account number cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (IFSCCode == "") {
+                    alert("IFSC Code cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (TransferType == "") {
+                    alert("Transfer type cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (Transporter == "") {
+                    alert("Transporter cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (Driver == "") {
+                    alert("Driver Name cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (VoucherNo == "") {
+                    alert("Voucher No cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (VoucherFor == "") {
+                    alert("Voucher For cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (ReferenceNo == "") {
+                    alert("Reference No cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (PaymentStatus == "") {
+                    alert("Payment Status cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (FileName == "") {
+                    alert("File Name cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                if (Transdate == "") {
+                    alert("Trans date cannot be left blank for Sr No.: " + SrNo + "")
+                    return false;
+                }
+                tablearray.push({ 'TransferFromAccnt': TransferFromAccnt, 'Amount': Amount, 'TransferInAccnt': TransferInAccnt, 'IFSCCode': IFSCCode, 'TransferType': TransferType, 'Transporter': Transporter, 'Driver': Driver, 'VoucherNo': VoucherNo, 'VoucherFor': VoucherFor, 'ReferenceNo': ReferenceNo, 'PaymentStatus': PaymentStatus, 'FileName': FileName, 'Transdate': Transdate })
+
+            }
+            //alert(JSON.stringify(tablearray));
+
+            //if ($("#selected_count").text() > 90) {
+            //    alert("TEUS cannot be greater than 90")
+            //    return false;
+            //}
+            var data1 = { 'Paymentdata': tablearray }
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/DriverPaymentReco/Validation",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (Data) {
+
+                    //alert(Data);
+
+                    if (Data == 'New') {
+
+                        SaveDetails(tablearray, entrydate);
+                    }
+                    else {
+
+                        document.getElementById('btnSave').value = "Save"
+                        document.getElementById('btnSave').setAttribute("class", "btn btn-success pull-right")
+                        alert(Data);
+
+                    }
+
+
+                },
+                error: function (errormessage) {
+                    document.getElementById('btnSave').value = "Save"
+                    document.getElementById('btnSave').setAttribute("class", "btn btn-success pull-right")
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        }
+        else {
+            document.getElementById('btnSave').value = "Save"
+            document.getElementById('btnSave').setAttribute("class", "btn btn-success pull-right")
+
+            alert("Payment details not present!");
+        }
+
+    }
+    function checkItemcount() {
+
+        var table = $('#example1').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+    function SaveDetails(tablearray, entrydate) {
+
+
+        if (tablearray.length == 0) {
+                    alert("Data not found for saving! Cannot proceed.");
+                }
+        else {
+            var data1 = { 'Paymentdata': tablearray, 'entrydate': entrydate };
+            var data = JSON.stringify(data1);
+
+            //alert(data);
+
+                    $.ajax({
+                        url: "/DriverPaymentReco/SavePaymentList",
+                        data: data,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                             var str = response;
+
+                                var str1 = JSON.stringify(response.validationMessage);
+                                var a = JSON.stringify(response.containerList);
+                              //  alert(str1);
+                               // alert(a);
+                                if (str1 != 0) {
+                                    var message = "Record saved successfully"
+                                    alert(message);
+                                    document.location = '@Url.Action("DriverPaymentReco", "DriverPaymentReco")';
+                                }
+                                else {
+
+                                    var message = "Following Voucher(s) has been already saved. Please re-check. \n" + response.containerList;
+                                    var array = message.split(',').join("\n");
+                                    alert(array);
+                                    // alert("Following container no \n" + data.ContainerData.JOValidation.containerList + " \n is already in CFS or still on another ICD!")
+                                }
+
+
+                        },
+                        error: function (errormessage) {
+                            document.getElementById('btnSave').value = "Save"
+                            document.getElementById('btnSave').setAttribute("class", "btn btn-success pull-right")
+                            alert("error");
+                            alert(errormessage.responseText);
+                        }
+                    });
+                }
+
+
+
+    }
+</script>
+
+<script>
+    function checkItemcount1() {
+
+        var table = $('#example2').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+
+    function CancelDetails() {
+        var r = confirm("Do you want to Cancel these Slip No!");
+        if (r == true) {
+            var itemcount = checkItemcount1();
+            if (itemcount == false) {
+                alert("No details selected for saving. Cannot proceed");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+
+                var tablearray = [];
+                var table = document.getElementById("example2");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+
+                    row = table.rows[i];
+
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                        var InvoiceNo = row.cells[1].innerText;
+
+                        if (InvoiceNo == checkboxarray[k]) {
+
+
+                            row = table.rows[i];
+                            VoucherNo = row.cells[4].innerText;
+                            ReferenceNo = row.cells[12].innerText;
+
+
+                            tablearray.push({
+                                'VoucherNo': VoucherNo, 'ReferenceNo': ReferenceNo
+                            })
+
+
+                        }
+                    }
+                }
+
+
+
+                var data1 = {
+                    'Driverrecodetails': tablearray
+                }
+                var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/DriverPaymentReco/CancelDriverRecodetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+
+                    alert("Reocrd Saved successfully!")
+                    document.location = '@Url.Action("DriverPaymentReco", "DriverPaymentReco")'
+
+                },
+
+                    error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+
+                }
+            });
+            }
+        } else {
+            alert("You Pressed Cancelled!")
+        }
+    }
+</script>
+

@@ -1,0 +1,1814 @@
+﻿@*@model TransportEntities.BusinessEntities.Horse*@
+@{
+    ViewBag.Title = "EDI Collections";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="tracker-loader"></div>
+<script src="~/js/GetTableJson.js"></script>
+<div id="addHorse">
+    <div class="page-header">
+        <h4 class="page-title">
+            EDI Collections
+        </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    
+                    <button class="btn btn-primarys" type="button" id="aDivShow" data-toggle="modal" data-target="#exampleModal" title="Invoice Details"><i class="fa fa-rupee"></i></button>
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Summary();"><i class="fa fa-file-text"></i></button>
+                    <button type="button" class="btn btn-IgmDeatls" name="summarylist" title="EDI Collection Reports" id="summarylist" onclick="Summarys();"><i class="fa fa-th-list"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtInvoiceNo" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtInvoiceDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Activity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlActivity", (IEnumerable<SelectListItem>)ViewBag.InvoiceList, "--Select--", new { @class = "form-control", @id = "ddlActivity", name = "ddlActivity", autocomplete = "off", onchange = "ActivityChange()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divsb" style="display:none">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SB No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtSbno" type="text" onchange="SBNoChange('E')" placeholder="SB No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SB Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsbdate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group" style="padding-top:26px;">
+                                    <button id="btnSBAdd" class="btn btn-primary btn-xs" onclick="AddEDIDets()">Add</button>
+                                    @* <input type="button" name="clearProfile" value="Clear" class="btn cursor display_none" title="clear" id="clearValue" />*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="divBOE" style="display:none">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">BOE No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtboeno" type="text" onchange="SBNoChange('I')" placeholder="BOE No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">BOE Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBoeDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group" style="padding-top:26px;">
+                                    <button id="btnBOEAdd" class="btn btn-primary btn-xs" onclick="AddEDIDets()">Add</button>
+                                    @* <input type="button" name="clearProfile" value="Clear" class="btn cursor display_none" title="clear" id="clearValue" />*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="divImpExpDets" style="display:none">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="table-responsive">
+                                    <table id="tblEDIDets" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting"></th>
+                                                <th class="wd-10p sorting">BOE No</th>
+                                                <th class="wd-10p sorting">BOE Date</th>
+                                                <th class="wd-10p sorting">SB No</th>
+                                                <th class="wd-10p sorting">SB Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CHA Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlCHAName", (IEnumerable<SelectListItem>)ViewBag.chaList, "--Select--", new { @class = "form-control", @id = "ddlCHAName", name = "ddlCHAName", autocomplete = "off" })
+                                            @*@Html.DropDownList("ddlCHAName", new List<SelectListItem>
+                                                { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                  }, new { @class = "form-control", autocomplete = "off", @id = "ddlCHAName" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">GST Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtGStnumber" type="text" placeholder="GST Number" readonly class="form-control" />
+                                            <input ID="txtstatecode" style="display:none" type="text" placeholder="GST Number" class="form-control" />
+                                            <input ID="txtGSTid" style="display:none" type="text" placeholder="GST Number" class="form-control" />
+                                            <input ID="txtTotalReceiptAmount" style="display:none" value="0" type="text" placeholder="GST Number" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group" style="padding-top:26px;">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<button type="button" class="btn btn-icon btn-teal" name="gstList" title="Summary list" id="gstList" onclick="gstList()"><i class="fa fa-file-text"></i></button>*@
+                                            <button class="btn btn-primary" style="width:60PX" id="gstSearch" type="button" onclick="LoadGSTSearch()"><i class="fe fe-search"></i></button>
+                                            @*<button class="btn btn-primary" id="btnView" style="display:none" type="button">View all</button>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="display:none">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Page From</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtPagefrom" onchange="TotalPage()" type="number" placeholder="Page From" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Page To</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtPageto" onchange="TotalPage()" type="number" placeholder="Page To" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">No Of Page</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtNoofpage" type="text" placeholder="Total No Of Pages" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Account Head</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlAcountHead", (IEnumerable<SelectListItem>)ViewBag.EDIAccountList, "--Select--", new { @class = "form-control", @id = "ddlAcountHead", name = "ddlAcountHead", autocomplete = "off" })
+                                            @*@Html.DropDownList("ddlCHAName", new List<SelectListItem>
+                                                { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                  }, new { @class = "form-control", autocomplete = "off", @id = "ddlCHAName" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group" style="padding-top:26px;">
+                                    <button id="btnCalculate" class="btn btn-success btn-xs" onclick="CalculateTariff()">Calculate</button>
+                                    @* <input type="button" name="clearProfile" value="Clear" class="btn cursor display_none" title="clear" id="clearValue" />*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Net Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtNetTotal" type="text" readonly placeholder="NetTotal" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtSGSt" type="text" readonly placeholder="SGST" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">CGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtCGST" type="text" readonly placeholder="CGST" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGST</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtIGST" type="text" readonly placeholder="IGST" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Grand Total</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtGrandTotal" type="text" readonly placeholder="Grand Total" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="page-header">
+                            <h class="page-title">Receipt Details</h>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mode</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlmode", (IEnumerable<SelectListItem>)ViewBag.MOdeList, "--Select--", new { @class = "form-control", @id = "ddlmode", name = "ddlmode", autocomplete = "off", onchange = "ModeOnChange()" })
+                                            @*@Html.DropDownList("ddlmode", new List<SelectListItem>
+                                                { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                  }, new { @class = "form-control", autocomplete = "off", @id = "ddlmode" })*@
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mode Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtmodeamount" type="text" placeholder="Mode Amount" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mode No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtModeNo" type="text" placeholder="Receipt No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bank Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+
+                                            @Html.DropDownList("ddlbankname", (IEnumerable<SelectListItem>)ViewBag.EDIBankList, "--Select--", new { @class = "form-control", @id = "ddlbankname", name = "ddlbankname", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mode Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtModeDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group" style="padding-top:26px;">
+
+                                    <button id="btnAdd" class="btn btn-success btn-xs" onclick="ShowReceiptList()">Add</button>
+                                    @* <input type="button" name="clearProfile" value="Clear" class="btn cursor display_none" title="clear" id="clearValue" />*@
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting"></th>
+                                                <th class="wd-10p sorting">Mode</th>
+                                                <th class="wd-10p sorting">Amount</th>
+                                                <th class="wd-10p sorting">Mode No</th>
+                                                <th class="wd-10p sorting">Bank Name</th>
+                                                <th class="wd-10p sorting">Mode Date</th>
+                                                <th class="wd-10p sorting" style="display:none">Mode ID</th>
+
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-3" style="margin-top:20px;">
+                            <div class="form-group">
+
+                                <button id="btnsave" class="btn btn-success btn-xs" onclick="Save()">Save</button>
+                                <input type="button" name="clearProfile" value="Clear" class="btn cursor" onclick="Clear()" title="clear" id="clearValue" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="divEDIsummary" style="display:none">
+    <div class=" content-area">
+        <div class="page-header">
+            <h4 class="page-title">EDI Summary</h4>
+
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a onclick="GoBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*Drop Down By Sagar*@
+                                <div class="col-md-2 col-lg-2">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label">Search On</label>
+                                        @Html.DropDownList("ddlSearchs", new List<SelectListItem>
+                                       { new SelectListItem { Text = "--Select--", Value = "0"},
+                                           new SelectListItem { Text = "Mode Name", Value = "Mode Name"},
+                                           new SelectListItem { Text = "SBNo", Value = "SBNo"},
+                                         new SelectListItem { Text = "BOE No", Value = "BOE No"},
+                                          new SelectListItem { Text = "Mode No", Value = "Receipt No"},
+
+                                         }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearchs" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2" style="display:none" id="divmodename">
+                                    <div class="form-group">
+                                        <label class="form-label mandatory">Mode</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownList("ddlmodes", (IEnumerable<SelectListItem>)ViewBag.MOdeList, "--Select--", new { @class = "form-control", @id = "ddlmodes", name = "ddlmode", autocomplete = "off" })
+                                                @*@Html.DropDownList("ddlmode", new List<SelectListItem>
+                                                    { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlmode" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2" style="display:none" id="divsbno">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label">SB Number</label>
+                                        @Html.TextBox("txtSBNo", null, new { @class = "form-control", @id = "txtSBNo", name = "txtSBNo", autocomplete = "off", style = "text-align:right" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2" style="display:none" id="divboeno">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label">BOE No</label>
+                                        @Html.TextBox("txtBOENo", null, new { @class = "form-control", @id = "txtBOENo", name = "txtBOENo", autocomplete = "off", style = "text-align:right" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2" style="display:none" id="divmodeno">
+                                    <div class="form-group label-floating">
+                                        <label class="form-label">Mode No</label>
+                                        @Html.TextBox("txtModeNo", null, new { @class = "form-control", @id = "txtModeNo", name = "txtModeNo", autocomplete = "off", style = "text-align:right" })
+                                    </div>
+                                </div>
+                                @*Drop Down End*@
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" value="Show" class="btn btn-primary" id="btnSubmit" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table id="tblEDISummary" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th class="wd-10p sorting"></th>
+                                                    <th class="wd-10p sorting"></th>
+                                                    <th class="wd-10p sorting">Assess No</th>
+                                                    <th class="wd-10p sorting">Work Year</th>
+                                                    <th class="wd-10p sorting">EDI Date</th>
+                                                    <th class="wd-10p sorting">Activity</th>
+                                                    <th class="wd-10p sorting">SB No</th>
+                                                    @*<th class="wd-10p sorting">SB Date</th>*@
+                                                    <th class="wd-10p sorting">BOE No</th>
+                                                    @*<th class="wd-10p sorting">BOE Date</th>*@
+                                                    <th class="wd-10p sorting">CHA</th>
+                                                    <th class="wd-10p sorting">Total Pages</th>
+                                                    @*<th class="wd-10p sorting">Page To</th>*@
+                                                    <th class="wd-10p sorting">Account Head</th>
+                                                    <th class="wd-10p sorting">Party Name</th>
+                                                    <th class="wd-10p sorting">Net Total</th>
+                                                    <th class="wd-10p sorting">SGST</th>
+                                                    <th class="wd-10p sorting">CGST</th>
+                                                    <th class="wd-10p sorting">IGST</th>
+                                                    <th class="wd-10p sorting">Grand Total</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:left;font-size:large;color:blue;font-weight: 700;">
+                <h5 class="modal-title" id="exampleModalLabel">Today's Collection</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 col-lg-12" style="padding-top:0px;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div menuitemname="Client Details" class="panel panel-sidebar">
+                                <div class="panel-body">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <b><label style="color:blue;width:100px;font-size: large;font-weight: 700">Cash</label></b>&nbsp;&nbsp;<label id="lblCash" Style="text-transform:uppercase;text-align:right;background-color:#eee;width:130px;border:thick;width:250px;font-size: large;font-weight: 700" class="text-label pull-right">00.00</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b><label style="color:blue;width:100px;font-size: large;font-weight: 700">Cheque</label></b>&nbsp;&nbsp;<label id="lblCheque" Style="text-transform:uppercase;text-align:right;background-color:#eee;width:130px;border:thick;width:250px;font-size: large;font-weight: 700" class="text-label pull-right">00.00</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b><label style="color:blue;width:100px;font-size: large;font-weight: 700">DD</label></b>&nbsp;&nbsp;<label id="lblDD" Style="text-transform:uppercase;text-align:right;background-color:#eee;width:130px;border:thick;width:250px;font-size: large;font-weight: 700" class="text-label pull-right">00.00</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b><label style="color:blue;width:100px;font-size: large;font-weight: 700">PO</label></b>&nbsp;&nbsp;<label id="lblPO" Style="text-transform:uppercase;text-align:right;background-color:#eee;width:130px;border:thick;width:250px;font-size: large;font-weight: 700" class="text-label pull-right">00.00</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b><label style="color:blue;width:100px;font-size: large;font-weight: 700">NEFT</label></b>&nbsp;&nbsp;<label id="lblNEFT" Style="text-transform:uppercase;text-align:right;background-color:#eee;width:130px;border:thick;width:250px;font-size: large;font-weight: 700" class="text-label pull-right">00.00</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b><label style="color:blue;width:100px;font-size: large;font-weight: 700">TDS</label></b>&nbsp;&nbsp;<label id="lblTDS" Style="text-transform:uppercase;text-align:right;background-color:#eee;width:130px;border:thick;width:250px;font-size: large;font-weight: 700" class="text-label pull-right">00.00</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b><label style="color:blue;width:100px;font-size: large;font-weight: 700">Total</label></b>&nbsp;&nbsp;<label id="lblTotal" Style="text-transform:uppercase;text-align:right;background-color:#eee;width:130px;border:thick;width:250px;font-size: large;font-weight: 700" class="text-label pull-right">00.00</label>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area overflow-hidden" id="addEDI" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">EDI Collection Reports</h4>
+
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a onclick="GoBacks();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDates", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDates", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportTransport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%"></table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="TestModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id='myModalContent'>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+
+        $('#example2').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false
+        })
+        $('#tblEDIDets').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false
+        })
+    })
+    function LoadGSTSearch() {
+
+        $.ajax({
+            type: "POST",
+            url: "/EDICollections/SearchGST",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                //alert(response);
+                $('#TestModal').modal('show');
+                $('#myModalContent').html(response);
+                $('#txtNetTotal').val('')
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+
+        })
+    }
+    function ActivityChange() {
+        var ddlActivity = document.getElementById('ddlActivity').value;
+        $("#ddlCHAName").val("");
+        $('#txtGStnumber').val("");
+        $('#txtGSTid').val("");
+        $('#txtstatecode').val("");
+        $('#txtboeno').val("");
+        $('#txtSbno').val("");
+
+        if (ddlActivity == 1 || ddlActivity == 6) {
+            $("#divsb").hide();
+            $("#divBOE").show();
+            $("#divImpExpDets").show();
+        }
+        else if (ddlActivity == "") {
+            $("#divsb").hide();
+            $("#divBOE").hide();
+            $("#divImpExpDets").hide();
+        }
+        else {
+            $("#divsb").show();
+            $("#divBOE").hide();
+            $("#divImpExpDets").show();
+        }
+    }
+    function TotalPage() {
+        document.getElementById('txtNoofpage').value = "";
+        var txtPagefrom = document.getElementById('txtPagefrom').value;
+        var txtPageto = document.getElementById('txtPageto').value;
+        if ((txtPagefrom != "") && (txtPageto != "")) {
+            if (parseFloat(txtPagefrom) < parseFloat(txtPageto)) {
+                if (txtPageto != "0") {
+                    document.getElementById('txtNoofpage').value = parseFloat(txtPageto) - parseFloat(txtPagefrom);
+                    document.getElementById('btnCalculate').focus()
+                }
+            }
+            else {
+                alert("Page From should not be smaller than page to")
+                document.getElementById('txtPagefrom').value = "";
+                document.getElementById('txtPagefrom').focus();
+
+            }
+        }
+    }
+    function CalculateTariff() {
+        debugger;
+        var txtNoofpage = document.getElementById('txtNoofpage').value;
+        var ddlAcountHead = document.getElementById('ddlAcountHead').value;
+        var txtstatecode = document.getElementById('txtstatecode').value;
+
+        var blResult = Boolean;
+        blResult = true;
+
+        document.getElementById('txtNoofpage').style.borderColor = "Gainsboro";
+        document.getElementById('ddlAcountHead').style.borderColor = "Gainsboro";
+
+        if (ddlAcountHead == "") {
+            document.getElementById('ddlAcountHead').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (ddlAcountHead != "1") {
+            if ((txtNoofpage == "") || (txtNoofpage == 0)) {
+                document.getElementById('txtNoofpage').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+        }
+        else {
+            document.getElementById('txtNoofpage').value = "0";
+        }
+        if ((txtstatecode == "") || (txtstatecode == "0 ")) {
+            document.getElementById('txtGStnumber').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        else {
+            $("#tracker-loader").fadeIn("slow");
+            var data = { 'PageFrom': $("#txtNoofpage").val(), 'AccountID': $("#ddlAcountHead").val(), 'State': $("#txtstatecode").val() };
+            var data1 = JSON.stringify(data);
+            $.ajax({
+                url: "/EDICollections/CalculateAmount",
+                type: 'Post',
+                data: data1,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    //alert(response);
+                    //alert(response[0].length);
+                    //if (!$.isArray(response) || !response.length) {
+                    //    //handler either not an array or empty array
+                    //}
+                    if (response == "") {
+                        alert("Tariff not found");
+                        $("#txtNetTotal").val("");
+                        $("#txtSGSt").val("");
+                        $("#txtCGST").val("");
+                        $("#txtIGST").val("");
+                        $("#txtGrandTotal").val("");
+                        $("#tracker-loader").fadeOut("slow");
+                        return false;
+                    }
+                    else {
+                        $("#txtNetTotal").val(response[0].NetTotal);
+                        $("#txtSGSt").val(response[0].SGST);
+                        $("#txtCGST").val(response[0].CGST);
+                        $("#txtIGST").val(response[0].IGST);
+                        $("#txtGrandTotal").val(response[0].GrandTotal);
+                    }
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+        return blResult;
+    }
+    function ModeOnChange() {
+        //var table = $('#txtTotalReceiptAmount').DataTable();
+        var TotalReceiptAmount = $('#txtTotalReceiptAmount').val();
+        var FinalAmount = 0;
+        var table = document.getElementById("example2");
+        //alert(table.rows().count());
+        var txtGrandTotal = document.getElementById('txtGrandTotal').value;
+        var txtmodeamount = document.getElementById('txtmodeamount').value;
+        var row;
+        FinalAmount = parseFloat(txtGrandTotal) - parseFloat(TotalReceiptAmount);
+        if (parseFloat(FinalAmount) < 0) {
+            document.getElementById('txtmodeamount').value = "0";
+            return false;
+        }
+        else {
+            document.getElementById('txtmodeamount').value = FinalAmount
+        }
+
+        //$('#txtTotalReceiptAmount').val(FinalAmount);
+        var TotalAmount = 0;
+        if ((txtGrandTotal == "") || (txtGrandTotal == "0")) {
+            alert('Please calculate EDI amount first!');
+            return false;
+        }
+
+        //if (table != null) {
+        //    if (table.rows.length > 1) {
+        //        for (var i = 1; i < table.rows.length; i++) {
+        //            row = table.rows[i];
+        //            TotalAmount += row.cells[3].innerHTML;
+        //        }
+        //    }
+        //}
+        //if ((parseFloat(txtGrandTotal) - parseFloat(TotalAmount)) > 0) {
+        //    document.getElementById('txtmodeamount').value = parseFloat(txtGrandTotal) - parseFloat(TotalAmount);
+        //}
+        //else {
+        //    alert("Mode details made against all Amount.Cannot Proceed!")
+        //    document.getElementById('ddlmode').value = "";
+        //    return false;
+        //}
+        //for (var i = 0; i < table.rows().count(); i++) {
+        //    row = table.rows[i];
+        //    row = $('#example2').DataTable().rows[];
+        //    //table.rows.contentType = Headers
+        //        var Amount = row.cells[2].innerText;
+        //        TotalAmount = parseFloat(TotalAmount) + parseFloat(Amount);
+        //}
+        //if ((parseFloat(txtGrandTotal) - parseFloat(TotalAmount)) > 0) {
+        //    document.getElementById('txtmodeamount').value = parseFloat(txtGrandTotal) - parseFloat(TotalAmount);
+        //}
+        //else {
+        //    alert("Mode details made against all Amount.Cannot Proceed!")
+        //    document.getElementById('ddlmode').value = "";
+        //    return false;
+        //}
+    }
+    function ShowReceiptList() {
+        $("#tracker-loader").fadeIn("slow");
+        var txtGrandTotal = document.getElementById('txtGrandTotal').value;
+        var txtNetTotal = document.getElementById('txtNetTotal').value;
+
+        if ((txtNetTotal == "") || (txtNetTotal == "0")) {
+            alert('Net Amount Blank Please calculate EDI amount first!');
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        if ((txtGrandTotal == "")|| (txtGrandTotal == "0")){
+            alert('Please calculate EDI amount first!');
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        var res = validate();
+        if (res == false) {
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+
+        var BankName1;
+        if (document.getElementById('ddlbankname').value == "") {
+            BankName1 = "";
+        }
+        else {
+            BankName1 = $("#ddlbankname option:selected").text();
+        }
+        var ModeID1 = $("#ddlmode option:selected").val();
+        var ModeName1 = $("#ddlmode option:selected").text();
+        var ModeAmount1 = $("#txtmodeamount").val();
+        var ModeNo1 = $("#txtModeNo").val();
+        var ModeDate1 = $("#txtModeDate").val();
+
+        var BankName = BankName1 + "<input Name=BankName type=hidden id=BankName   value='" + BankName1 + "'>";
+        var ModeID = ModeID1 + "<input Name=ModeID type=hidden id=ModeID   value=" + ModeID1 + ">";
+        var ModeName = ModeName1 + "<input Name=ModeName type=hidden id=ModeName   value='" + ModeName1 + "'>";
+        var ModeAmount = ModeAmount1  + "<input Name=ModeAmount type=hidden id=ModeAmount   value='" + ModeAmount1 + "'>";
+        var ModeNo = ModeNo1 + "<input Name=ModeNo type=hidden id=ModeNo   value='" + ModeNo1 + "'>";
+        var ModeDate = ModeDate1 + "<input Name=ModeDate type=hidden id=ModeDate   value='" + ModeDate1 + "'>";
+
+        var data1 = { 'ModeID': ModeID, 'ModeAmount': ModeAmount, 'BankName': BankName };
+        var data = JSON.stringify(data1);
+        //alert(data)
+        var exists = $('#example2 tr > td:contains(' + ModeName + ')').length;
+        if (exists == 1) {
+            alert("Mode alredy Added!");
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        else {
+            var ReceiptAmount;
+            ReceiptAmount = parseFloat($('#txtTotalReceiptAmount').val()) + parseFloat(ModeAmount);
+            if (parseFloat(ReceiptAmount) > parseFloat(txtGrandTotal)){
+                alert("Amount should not be greater than Grand Total!");
+                $("#txtmodeamount").val("0")
+                $("#tracker-loader").fadeOut("slow");
+                return false;
+            }
+            else {
+                $('#txtTotalReceiptAmount').val(parseFloat($('#txtTotalReceiptAmount').val()) + parseFloat(ModeAmount));
+                var t = $('#example2').DataTable();
+                t.row.add([
+                    "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + ModeAmount1 + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>",
+                    ModeName,
+                    ModeAmount,
+                    ModeNo,
+                    BankName,
+                    ModeDate,
+                    ModeID
+                ]).draw(false);
+
+                document.getElementById('ddlbankname').value = "";
+                document.getElementById('ddlmode').value = "";
+                document.getElementById('txtmodeamount').value = "";
+                document.getElementById('txtModeNo').value = "";
+                //document.getElementById('txtModeDate').value = Date();
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+        }
+    }
+    function ValidateAdd() {
+            debugger;
+
+            $("#tracker-loader").fadeIn("slow");
+            var ddlActivity = document.getElementById('ddlActivity').value
+
+
+
+
+            var res = validate1();
+            if (res == false) {
+                $("#tracker-loader").fadeOut("slow");
+                return false;
+            }
+            var BOENo1;
+            var BOEDate1;
+            var BOEDate2;
+            var SBNo1;
+            var SBDate1;
+            var SBDate2;
+
+            if (ddlActivity == "1" || ddlActivity == "6") {
+                BOENo1 = $("#txtboeno").val();
+                BOEDate1 = $("#txtBoeDate").val();
+                BOEDate2 = $("#txtBoeDate").val();
+                //SBNo1 = "";
+                SBDate2 = "";
+                SBNo1 = $("#txtSbno").val();
+                SBDate1 = $("#txtsbdate").val();
+            }
+            else {
+                //BOENo1 = "";
+                BOEDate2 = "";
+                BOENo1 = $("#txtboeno").val();
+                BOEDate1 = $("#txtBoeDate").val();
+                SBNo1 = $("#txtSbno").val();
+                SBDate1 = $("#txtsbdate").val();
+                SBDate2 = $("#txtsbdate").val();
+            }
+
+            var BOENo = BOENo1 + "<input Name=BOENo type=hidden id=BOENo   value='" + BOENo1 + "'>";
+            //var BOEDate = BOEDate1 + "<input Name=BOEDate type=hidden id=BOEDate   value=" + BOEDate1 + ">";
+            var BOEDate = BOEDate2 + "<input Name=BOEDate type=hidden id=BOEDate   value='" + BOEDate1 + "'>";
+            var SBNo = SBNo1 + "<input Name=SBNo type=hidden id=SBNo   value='" + SBNo1 + "'>";
+            var SBDate = SBDate2 + "<input Name=SBDate type=hidden id=SBDate   value='" + SBDate1 + "'>";
+
+            var data1 = { 'BOENo': BOENo, 'SBNo': SBNo };
+            var data = JSON.stringify(data1);
+
+            if (ddlActivity == "1" || ddlActivity == "6") {
+                var exists = $('#tblEDIDets tr > td:contains(' + BOENo1 + ')').length;
+                if (exists == 1) {
+                    alert("BOE No alredy Added!");
+                    $("#tracker-loader").fadeOut("slow");
+                    return false;
+                }
+                else {
+                    var t = $('#tblEDIDets').DataTable();
+                    t.row.add([
+                        "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelEDIBOESB()\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>",
+                        BOENo,
+                        BOEDate,
+                        SBNo,
+                        SBDate
+                    ]).draw(false);
+
+                    document.getElementById('txtboeno').value = "";
+                    document.getElementById('txtBoeDate').value = '@DateTime.Now.ToString("dd MMM yyyy HH:mm")';
+                    document.getElementById('txtSbno').value = "";
+                    document.getElementById('txtsbdate').value = '@DateTime.Now.ToString("dd MMM yyyy HH:mm")';
+                    //document.getElementById('txtModeDate').value = Date();
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            }
+            else if (ddlActivity == "2") {
+                var exists = $('#tblEDIDets tr > td:contains(' + SBNo1 + ')').length;
+                if (exists == 1) {
+                    alert("SB No alredy Added!");
+                    $("#tracker-loader").fadeOut("slow");
+                    return false;
+                }
+                else {
+                    var t = $('#tblEDIDets').DataTable();
+                    t.row.add([
+                        "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelEDIBOESB()\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>",
+                        BOENo,
+                        BOEDate,
+                        SBNo,
+                        SBDate
+                    ]).draw(false);
+
+                    document.getElementById('txtboeno').value = "";
+                    document.getElementById('txtBoeDate').value = '@DateTime.Now.ToString("dd MMM yyyy HH:mm")';
+                    document.getElementById('txtSbno').value = "";
+                    document.getElementById('txtsbdate').value = '@DateTime.Now.ToString("dd MMM yyyy HH:mm")';
+                    //document.getElementById('txtModeDate').value = Date();
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            }
+            $("#tracker-loader").fadeOut("slow");
+        }
+        function CancelEDIBOESB() {
+            var table = $('#tblEDIDets').DataTable();
+            $('#tblEDIDets tbody').on('click', '.removebutton', function () {
+
+                table
+                    .row($(this).parents('tr'))
+                    .remove()
+                    .draw();
+
+            });
+        }
+        function validate1() {
+            var ddlActivity = document.getElementById('ddlActivity').value;
+            var txtSbno = document.getElementById('txtSbno').value;
+            var txtsbdate = document.getElementById('txtsbdate').value;
+            var txtboeno = document.getElementById('txtboeno').value;
+            var txtBoeDate = document.getElementById('txtBoeDate').value;
+
+
+            var blResult = Boolean;
+            blResult = true;
+            document.getElementById('ddlActivity').style.borderColor = "Gainsboro";
+            document.getElementById('txtSbno').style.borderColor = "Gainsboro";
+            document.getElementById('txtsbdate').style.borderColor = "Gainsboro";
+            document.getElementById('txtboeno').style.borderColor = "Gainsboro";
+            document.getElementById('txtBoeDate').style.borderColor = "Gainsboro";
+
+            if (ddlActivity != "2") {
+                if (txtboeno == "") {
+                    document.getElementById('txtboeno').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+                if (txtBoeDate == "") {
+                    document.getElementById('txtBoeDate').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+            }
+            if ((ddlActivity != "1" ) && ( ddlActivity != "6")) {
+                if (txtSbno == "") {
+                    document.getElementById('txtSbno').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+                if (txtsbdate == "") {
+                    document.getElementById('txtsbdate').style.borderColor = "red"
+                    blResult = blResult && false;
+                }
+            }
+            if (blResult == false) { alert('Please fill the required fields!'); }
+            return blResult;
+        }
+    function validate() {
+
+        var ddlmode = document.getElementById('ddlmode').value;
+        var txtmodeamount = document.getElementById('txtmodeamount').value;
+        var txtModeNo = document.getElementById('txtModeNo').value;
+        var ddlbankname = document.getElementById('ddlbankname').value;
+        var txtModeDate = document.getElementById('txtModeDate').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('ddlmode').style.borderColor = "Gainsboro";
+        document.getElementById('txtmodeamount').style.borderColor = "Gainsboro";
+        document.getElementById('txtModeNo').style.borderColor = "Gainsboro";
+        document.getElementById('ddlbankname').style.borderColor = "Gainsboro";
+        document.getElementById('txtModeDate').style.borderColor = "Gainsboro";
+        if (ddlmode == "") {
+            document.getElementById('ddlmode').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if ((txtmodeamount == "") || (txtmodeamount == 0)) {
+            document.getElementById('txtmodeamount').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if ((ddlmode != "1") && (ddlmode != "8")) {
+            if (txtModeNo == "") {
+                document.getElementById('txtModeNo').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (ddlbankname == "") {
+                document.getElementById('ddlbankname').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+            if (txtModeDate == "") {
+                document.getElementById('txtModeDate').style.borderColor = "red"
+                blResult = blResult && false;
+            }
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+    }
+        function CancelItem(ModeAmount) {
+        $('#txtTotalReceiptAmount').val(parseFloat($('#txtTotalReceiptAmount').val()) - parseFloat(ModeAmount));
+        var table = $('#example2').DataTable();
+        $('#example2 tbody').on('click', '.removebutton', function () {
+
+            table
+                .row($(this).parents('tr'))
+                .remove()
+                .draw();
+
+        });
+    }
+    function checkItemcount() {
+
+        var table = $('#example2').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+        function checkItemcount1() {
+
+            var table = $('#tblEDIDets').DataTable();
+
+            if (table.rows().count() == 0) {
+
+                return false;
+            }
+            return true;
+
+        }
+    function Save() {
+        var res1 = validateSave();
+        if (res1 == false) {
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        var itemcount1 = checkItemcount1()
+        if (itemcount1) {
+            var itemcount = checkItemcount();
+            if (itemcount) {
+                var SelectedData = new Array();
+                $('#example2 tbody tr').each(function (i, row) {
+                    var data = {};
+
+                    $(this).find('input').each(function () {
+
+                        data[this.id] = $(this).val();
+                    })
+                    SelectedData.push(data);
+
+                });
+
+                var SelectedData1 = new Array();
+                $('#tblEDIDets tbody tr').each(function (i, row) {
+                    var data = {};
+
+                    $(this).find('input').each(function () {
+
+                        data[this.id] = $(this).val();
+                    })
+                    SelectedData1.push(data);
+                });
+                console.log(SelectedData1);
+                var data1 = { 'Receiptdata': SelectedData, 'ImportExportdata': SelectedData1, 'InvoiceDate': $("#txtInvoiceDate").val(), 'Activity': $("#ddlActivity").val(), 'CHAName': $("#ddlCHAName").val(), 'GSTID': $("#txtGSTid").val(), 'PageFrom': $("#txtNoofpage").val(), 'PageTo': $("#txtPageto").val(), 'AccountID': $("#ddlAcountHead").val(), 'NetTotal': $("#txtNetTotal").val(), 'SGST': $("#txtSGSt").val(), 'CGST': $("#txtCGST").val(), 'IGST': $("#txtIGST").val(), 'GrandTotal': $("#txtGrandTotal").val() };
+
+                var data = JSON.stringify(data1);
+                $('#btnsave').attr('disabled', 'disabled');
+                $.ajax({
+                    url: "/EDICollections/EDISave",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.Message == "1") {
+
+                            alert("Record saved successfully");
+                            $('#btnsave').removeAttr('disabled', 'disabled');
+                            var data = { 'AssessNo': response.AssessNo, 'WorkYear': response.WorkYear };
+                            var data1 = JSON.stringify(data);
+                            var r = confirm("Do you want to print?");
+                            if (r == true) {
+                                $.ajax({
+                                    url: "/EDICollections/PrintEDI",
+                                    data: data1,
+                                    type: "POST",
+                                    contentType: "application/json; charset=utf-8",
+                                    // dataType: "json",
+                                    success: function (response) {
+                                        var myWindow = window.open("", "MsgWindow1");
+                                        myWindow.close();
+                                        var myWindow = window.open("", "MsgWindow1");
+                                        myWindow.document.write(response);
+                                    },
+                                    error: function (errormessage) {
+                                        alert(errormessage.responseText);
+                                    }
+                                });
+                            }
+                            else {
+                                document.location = '@Url.Action("EDICollections", "EDICollections")';
+                            }
+                            document.location = '@Url.Action("EDICollections", "EDICollections")';
+                        }
+                        else {
+                            alert("Record not saved successfully");
+                        }
+                        //document.location = '@Url.Action("EDICollections", "EDICollections")';
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+            else {
+                alert("Please Add Receipt details");
+                $("#tracker-loader").fadeOut("slow");
+            }
+        }
+        else {
+            alert("Please Add SB or BOE details");
+            $("#tracker-loader").fadeOut("slow");
+        }
+    }
+    function validateSave() {
+        var txtInvoiceDate = document.getElementById('txtInvoiceDate').value;
+        var ddlActivity = document.getElementById('ddlActivity').value;
+        var txtSbno = document.getElementById('txtSbno').value;
+        var txtsbdate = document.getElementById('txtsbdate').value;
+        var txtboeno = document.getElementById('txtboeno').value;
+        var txtBoeDate = document.getElementById('txtBoeDate').value;
+        var ddlCHAName = document.getElementById('ddlCHAName').value;
+        var txtGStnumber = document.getElementById('txtGStnumber').value;
+        var ddlAcountHead = document.getElementById('ddlAcountHead').value;
+        var txtGrandTotal = document.getElementById('txtGrandTotal').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('txtInvoiceDate').style.borderColor = "Gainsboro";
+        document.getElementById('ddlActivity').style.borderColor = "Gainsboro";
+        document.getElementById('txtSbno').style.borderColor = "Gainsboro";
+        document.getElementById('txtsbdate').style.borderColor = "Gainsboro";
+        document.getElementById('txtboeno').style.borderColor = "Gainsboro";
+        document.getElementById('txtBoeDate').style.borderColor = "Gainsboro";
+        document.getElementById('ddlCHAName').style.borderColor = "Gainsboro";
+        document.getElementById('txtGStnumber').style.borderColor = "Gainsboro";
+        document.getElementById('ddlAcountHead').style.borderColor = "Gainsboro";
+        document.getElementById('txtGrandTotal').style.borderColor = "Gainsboro";
+
+        if (txtInvoiceDate == "") {
+            document.getElementById('txtInvoiceDate').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (ddlActivity == "") {
+            document.getElementById('ddlActivity').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        //if (ddlActivity == 2) {
+        //    if (txtSbno == "") {
+        //        document.getElementById('txtSbno').style.borderColor = "red"
+        //        blResult = blResult && false;
+        //    }
+        //    if (txtsbdate == "") {
+        //        document.getElementById('txtsbdate').style.borderColor = "red"
+        //        blResult = blResult && false;
+        //    }
+        //}
+        //else if ((ddlActivity != 2) && (ddlActivity != "")) {
+        //    if (txtboeno == "") {
+        //        document.getElementById('txtboeno').style.borderColor = "red"
+        //        blResult = blResult && false;
+        //    }
+        //    if (txtBoeDate == "") {
+        //        document.getElementById('txtBoeDate').style.borderColor = "red"
+        //        blResult = blResult && false;
+        //    }
+        //}
+        if (ddlCHAName == "") {
+            document.getElementById('ddlCHAName').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (txtGStnumber == "") {
+            document.getElementById('txtGStnumber').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (ddlAcountHead == "") {
+            document.getElementById('ddlAcountHead').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (txtGrandTotal == "") {
+            document.getElementById('txtGrandTotal').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+       
+        }
+        $("#btnSubmit").click(function () {
+            ShowEDISummary();
+        })
+
+
+        function ShowEDISummary() {
+            debugger;
+            var ddlSearchs = document.getElementById('ddlSearchs').value;
+            var e = document.getElementById("ddlSearchs");
+            var DepartmentID = e.options[e.selectedIndex].value;
+
+            var Search = "";
+            var Search1 = "";
+            if (DepartmentID == "Mode Name") {
+                Search1 = $("#ddlmodes").val();
+            }
+            if (DepartmentID == "SBNo") {
+                Search = $("#txtSBNo").val();
+            }
+            if (DepartmentID == "BOE No") {
+                Search = $("#txtBOENo").val();
+            }
+            if (DepartmentID == "Mode No") {
+                Search = $("#txtModeNo").val();
+            }
+
+            var data1 = { 'FromDate': $("#txtFromDate").val(), 'ToDate': $("#txtToDate").val(), 'category': DepartmentID, 'Search1': Search1, 'Search': Search};
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/EDICollections/EDISummary",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#tblEDISummary').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": response,
+                        "paging": false,
+                        "aaSorting": [[0, 'asc']],
+                        "order": [],
+                        "aoColumnDefs": [
+                            {
+                                'bSortable': false,
+                                'aTargets': [0],
+                            },
+
+                        ],
+                        "dom": 'Bfrtip',
+                        "buttons": [{
+                            "extend": 'excel',
+                            "title": 'List of EDI',
+                            "filename": 'EDISummary'
+                        }
+                        ],
+                        "columns": [
+                            {
+                                "data": "data",
+                                "render": function (data, type, row, meta) {
+                                    data = "<a href=\"/EDICollections/PrintEDI?AssessNo=" + row.AssessNo + "&WorkYear=" + row.WorkYear+"\" target=\"_blank\" class=\"btn btn-sm btn-info\" title=\"Close\" onclick=\"PrintEDI('" + row.AssessNo + "','" + row.WorkYear + "')\">Print</a>";
+
+                                    return data;
+                                }
+                            },
+                            {
+                                "data": "data",
+                                "render": function (data, type, row, meta) {
+                                    data = "<a href=\"#\" class=\"btn btn-sm btn-info\" title=\"Cancel\" onclick=\"CancelEDI('" + row.AssessNo + "','" + row.WorkYear + "')\">Cancel</a>";
+
+                                    return data;
+                                }
+                            },
+                            { "data": "AssessNo" },
+                            { "data": "WorkYear" },
+                            { "data": "AssessDate" },
+                            { "data": "Activity" },
+                            { "data": "SBNo" },
+                            //{ "data": "SBDate" },
+                            { "data": "BOENo" },
+                            //{ "data": "BOEDate" },
+                            { "data": "CHA" },
+                            { "data": "PageFrom" },
+                            //{ "data": "PageTo" },
+                            { "data": "AccountName" },
+                            { "data": "GSTName" },
+                            { "data": "NetTotal" },
+                            { "data": "SGST" },
+                            { "data": "CGST" },
+                            { "data": "IGST" },
+                            { "data": "GrandTotal" },
+                        ]
+                    })
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+    function PrintEDI(AssessNo, WorkYear) {
+        return
+            var data = { 'AssessNo': AssessNo, 'WorkYear': WorkYear };
+            var data1 = JSON.stringify(data);
+            $.ajax({
+                url: "/EDICollections/PrintEDI",
+                data: data1,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (response) {
+                    var myWindow = window.open("", "MsgWindow1");
+                    myWindow.close();
+                    var myWindow = window.open("", "MsgWindow1");
+                    myWindow.document.write(response);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+    function CancelEDI(AssessNo, WorkYear) {        debugger;        var r = confirm("Are you sure want to cancel this Invoice?");        if (r == true) {            var element = {};            element.AssessNo = AssessNo;            element.WorkYear = WorkYear;            var data1 = { "AM": element };            var data = JSON.stringify(data1);            $.ajax({                url: "/EDICollections/CancelEDI",                data: data,                type: "POST",                contentType: "application/json; charset=utf-8",                dataType: "json",                success: function (response) {                    if (response != "") {                        alert(response.Message)                        ShowEDISummary()                    }                },                error: function (errormessage) {                    alert(errormessage.responseText);                }            })        }    }
+        function GoBack() {
+            $("#addHorse").show();
+            $("#divEDIsummary").hide();
+
+        }
+        function Summary() {
+            $("#addHorse").hide();
+            $("#divEDIsummary").show();
+    }
+
+    function Summarys() {
+
+            $("#addHorse").hide();
+        $("#addEDI").show();
+        }
+
+    function GoBacks() {
+        $("#addHorse").show();
+        $("#addEDI").hide();
+
+    }
+
+        function SBNoChange(Category) {
+            debugger;
+
+             
+            $("#tracker-loader").fadeIn("slow");
+            var data = { 'Category': Category, 'SBNo': $("#txtSbno").val(), 'BOENo': $("#txtboeno").val() };
+            var data1 = JSON.stringify(data);
+            $.ajax({
+                url: "/EDICollections/GetSBBOEData",
+                type: 'Post',
+                data: data1,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response != "") {
+                        if (Category == "E") {
+                            if ($("#ddlCHAName").val() != "") {
+                                if ($("#ddlCHAName").val() != response[0].CHA) {
+                                    alert('SB No should be of same CHA');
+                                    $("#txtSbno").val("")
+                                    $("#tracker-loader").fadeOut("slow");
+                                    return false;
+                                }
+                            }
+                            $("#txtsbdate").val(response[0].SBDate);
+                            $("#ddlCHAName").val(response[0].CHA);
+                            $('#txtGStnumber').val(response[0].GSTIn_uniqID);
+                            $('#txtGSTid').val(response[0].GSTID);
+                            $('#txtstatecode').val(response[0].state_Code);
+                            $('#txtNoofpage').val(response[0].pages);
+                        }
+                        else if (Category == "I") {
+                            if ($("#ddlCHAName").val() != "") {
+                                if ($("#ddlCHAName").val() != response[0].CHA) {
+                                    alert('BOE No should be of same CHA');
+                                    $("#txtboeno").val("")
+                                    $("#tracker-loader").fadeOut("slow");
+                                    return false;
+                                }
+                            }
+                            $("#txtBoeDate").val(response[0].BOEDate);
+                            $("#ddlCHAName").val(response[0].CHA);
+                            $('#txtGStnumber').val(response[0].GSTIn_uniqID);
+                            $('#txtGSTid').val(response[0].GSTID);
+                            $('#txtstatecode').val(response[0].state_Code);
+                            $('#txtNoofpage').val(response[0].pages);
+                        }
+                        document.getElementById('txtNoofpage').focus();
+                    }
+                    else {
+                        alert('Record not found');
+                        $("#ddlCHAName").val("");
+                        $('#txtGStnumber').val("");
+                        $('#txtGSTid').val("");
+                        $('#txtstatecode').val("");
+                        $('#txtNoofpage').val("");
+                        if (Category == "E") {
+                            document.getElementById('txtSbno').focus();
+                        }
+                        else if (Category == "I") {
+                            document.getElementById('txtboeno').focus();
+                        }
+                    }
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                failure: function (response) {
+                    alert(response);
+                    alert(response.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            })
+        }
+        function Clear() {
+            document.location = '@Url.Action("EDICollections", "EDICollections")';
+        }
+          //Drop Down By Sagar
+        $("#ddlSearchs").change(function () {
+            var ddlSearchby = $("#ddlSearchs option:selected").text();
+            if (ddlSearchby == "Mode Name") {
+                $("#divmodename").show();
+                $("#divsbno").hide();
+                $("#divboeno").hide();
+                $("#divmodeno").hide();
+            }
+            if (ddlSearchby == "SBNo") {
+                $("#divmodename").hide();
+                $("#divsbno").show();
+                $("#divboeno").hide();
+                $("#divmodeno").hide();
+
+            }
+            if (ddlSearchby == "BOE No") {
+                $("#divmodename").hide();
+                $("#divsbno").hide();
+                $("#divboeno").show();
+                $("#divmodeno").hide();
+            }
+
+            if (ddlSearchby == "Mode No") {
+                $("#divmodename").hide();
+                $("#divsbno").hide();
+                $("#divboeno").hide();
+                $("#divmodeno").show();
+
+            }
+
+
+
+        });
+
+    function AddEDIDets() {
+
+            var result = true;
+
+            //var ddlActivity = document.getElementById('ddlActivity').value;
+
+            //var e = document.getElementById("ddlActivity");
+            var DepartmentID = document.getElementById('ddlActivity').value;
+            var Search = "";
+            if (DepartmentID == "1") {
+                Search = $("#txtboeno").val();
+
+            }
+            if (DepartmentID == "2") {
+                Search = $("#txtSbno").val();
+            }
+
+            var data1 = { 'category': DepartmentID, 'Search': Search };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/EDICollections/ValidateVendor",
+                data: data,
+                async: false,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (response) {
+                    if (response != "") {
+                        result = false;
+                        alert(response);
+                        return result;
+                    }
+                    else {
+                        ValidateAdd();
+                    }
+
+                },
+
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+
+            return result;
+        }
+
+        $("#aDivShow").click(function () {
+            GetDailyConnection();
+        });
+        function GetDailyConnection() {
+
+            $.ajax({
+                url: '/EDICollections/DailyCollection',
+                type: 'Post',
+                data: '',
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+                    var parseJSONResult = jQuery.parseJSON(data);
+                    //fetch all records from JSON result and make row data set.
+                    var rowDataSet = [];
+                    var i = 0;
+                    $.each(parseJSONResult, function (key, value) {
+                        var rowData = [];
+                        var j = 0;
+                        $.each(parseJSONResult[i], function (key, value) {
+                            rowData[j] = value;
+                            j++;
+                        });
+                        rowDataSet[i] = rowData;
+
+                        i++;
+                    });
+                    $("#lblCash").text(rowDataSet[0][1]);
+                    $("#lblCheque").text(rowDataSet[1][1]);
+                    $("#lblDD").text(rowDataSet[2][1]);
+                    $("#lblPO").text(rowDataSet[3][1]);
+                    $("#lblNEFT").text(rowDataSet[4][1]);
+                    $("#lblTDS").text(rowDataSet[5][1]);
+                    $("#lblTotal").text(rowDataSet[6][1]);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        };
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+
+
+<script>
+
+    function ShowSelectedValue() {
+        var FromDate = $("#txtFromDates").val();
+        var ToDate = $("#txtToDates").val()
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/EDICollections/getDailyCollection',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                RepTableDataJson($("#reportTable"), data, "DailyCollection", "DailyCollectionList");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+    function Show() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValue();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+</script>

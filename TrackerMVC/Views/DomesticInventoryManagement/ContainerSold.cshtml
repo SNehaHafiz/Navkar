@@ -1,0 +1,522 @@
+﻿
+@{
+    ViewBag.Title = "Container Sold";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<div id="AddNewContainerSold">
+    <div class="page-header">
+        <h4 class="page-title">Container Sold</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSoldDT", null, new { @class = "form-control datePickerD", @id = "txtSoldDT", name = "txtSoldDT", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control ", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off", @style = "text-transform:uppercase", @maxlength = 11, placeholder = "Container No", onchange = "GetDetailsAgainstContainerNo();" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Size</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlSize", new List<SelectListItem>
+                                        { new SelectListItem { Text = "--Select--", Value = ""},
+                                        new SelectListItem { Text = "20", Value = "20"},
+                                        new SelectListItem { Text = "40", Value = "40"},
+                                        new SelectListItem { Text = "45", Value = "45"},
+                                          }, new { @class = "form-control", autocomplete = "off", @id = "ddlSize", disabled = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlType", new List<SelectListItem>
+                                        { new SelectListItem { Text = "--Select--", Value = ""},
+                                        new SelectListItem { Text = "GEN", Value = "GEN"},
+                                        new SelectListItem { Text = "REF", Value = "REF"},
+                                        new SelectListItem { Text = "TK", Value = "TK"},
+                                          }, new { @class = "form-control", autocomplete = "off", @id = "ddlType", disabled = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Vendor Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtVendorName", null, new { @class = "form-control ", @id = "txtVendorName", name = "txtVendorName", autocomplete = "off", placeholder = "Vendor Name", disabled = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12" hidden>
+                            <div class="form-group">
+                                <label class="form-label mandatory">Department</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlDept", (IEnumerable<SelectListItem>)ViewBag.ddlDeptList, "--Select--", new { @class = "form-control", @id = "ddlDept", name = "ddlDept", autocomplete = "off", onchange = "GetDetailsAgainstDept();" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12" hidden>
+                            <div class="form-group">
+                                <label class="form-label mandatory">Contact Person</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContactPerson", null, new { @class = "form-control ", @id = "txtContactPerson", name = "txtContactPerson", autocomplete = "off", @style = "text-transform:uppercase", placeholder = "Contact Person", disabled = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12" hidden>
+                            <div class="form-group">
+                                <label class="form-label mandatory">Contact No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContactNo", null, new { @class = "form-control ", @id = "txtContactNo", name = "txtContactNo", autocomplete = "off", placeholder = "Contact No", disabled = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextArea("txtRemarks", null, new { @class = "form-control ", @id = "txtRemarks", name = "txtRemarks", autocomplete = "off", placeholder = "Remarks", })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <button id="btnClear" class="btn btn-default btn-xs float-left" data-toggle="tooltip" data-placement="bottom" data-original-title="Clear" onclick="reload();" value="Clear"><i class="fa fa-refresh"></i></button>
+                    <button id="btnSave" class="btn btn-success btn-xs float-right" data-toggle="tooltip" data-placement="bottom" data-original-title="Save" onclick="SaveNewContainerSold();"><i class="fa fa-floppy-o"></i></button>
+                    @*<input type="button" name="clear" value="Clear" class="btn btn-default float-right" title="clear" id="clearValue" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ContainerSoldSummaryList" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" data-original-title="Back" onclick="AddNewCotainerIN()"></i> Container Return Summary <label class="bg-primary text-white br-7 pl-3 pr-3" id="quotCount"></label></h4>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtFromdate", null, new { @class = "form-control form_datetime1", @id = "TxtFromdate", name = "TxtFromdate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtFromdate", null, new { @class = "form-control form_datetime1", @id = "TxtTodate", name = "TxtTodate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="Show" id="btnShow" onclick="GetSummarydetails()"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div id="btnExcel" title="Export To Excel" type="button"></div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover text-nowrap" id="tblContainerSummary" style="width:100%">
+                                    <thead class="bg-primary">
+                                        <tr>
+                                            <th class="text-white">Date</th>
+                                            @*<th class="text-white">Dept Name</th>*@
+                                            <th class="text-white">Container No</th>
+                                            <th class="text-white">Size</th>
+                                            <th class="text-white">Type</th>
+                                            <th class="text-white">Vendor Name</th>
+                                            <th class="text-white">Remarks</th>
+                                            <th class="text-white">Added On</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var d = new Date();
+    var currMonth = d.getMonth();
+    var currYear = d.getFullYear();
+    var currHour = d.getHours();
+    var currMin = d.getMinutes();
+    var startDate = new Date(currYear, currMonth, 1);
+
+    $(document).ready(function () {
+
+        $('#TxtFromdate').datepicker({
+            //startDate: startDate,
+            format: 'dd M yyyy 00:00',
+        });
+        $('#TxtFromdate').datepicker("setDate", startDate);
+
+        GetSummarydetails();
+    });
+
+    function InputToUpper(obj) {
+        if (obj.value != "") {
+            obj.value = obj.value.toUpperCase();
+        }
+    }
+</script>
+
+<script>
+
+    function ViewSummary() {
+        $("#AddNewContainerSold").hide()
+        $('#ContainerSoldSummaryList').show()
+    }
+
+    function AddNewCotainerIN() {
+        $("#AddNewContainerSold").show()
+        $('#ContainerSoldSummaryList').hide()
+    }
+</script>
+
+<script>
+
+    function reload() {
+        var Url = "/DomesticInventoryManagement/ContainerSold";
+        document.location = Url;
+    }
+
+    var SummaryList = [];
+    function GetSummarydetails() {
+
+        var isValid = true;
+        var Type = 'Sold';
+        var FromDate = $("#TxtFromdate").val();
+        var ToDate = $("#TxtTodate").val();
+
+        if (FromDate == "" || ToDate == "") {
+            alert("Please Select date range");
+            return false;
+        }
+        var date1 = new Date(FromDate);
+        var date2 = new Date(ToDate);
+        var Today = new Date();
+        if (date1 >= date2) {
+            document.getElementById('TxtTodate').style.borderColor = "red";
+
+            alert("To Date should not be less than from date ");
+            return false;
+        } else {
+            document.getElementById('TxtTodate').style.borderColor = "Gainsboro";
+        }
+        if (isValid) {
+            data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Type': Type };
+            data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/DomesticInventoryManagement/GetSummarydetails',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (response) {
+                    debugger
+                    SummaryList = [];
+                    SummaryList = response;
+                    $("#quotCount").html(response.length);
+                    $('#tblContainerSummary').DataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "aaData": SummaryList,
+                        "bPaginate": true,
+                        "bInfo": false,
+                        "paging": true,
+                        order: [],
+                        "searching": true,
+                        "columns": [
+                            //{
+                            //    "data": "TransID",
+                            //},
+                            {
+                                "data": "DisplayDate",
+                            },
+                            {
+                                "data": "ContainerNo",
+                            },
+                            {
+                                "data": "Size",
+                            },
+                            {
+                                "data": "Type",
+                            },
+                            {
+                                "data": "VendorName",
+                            },
+                            {
+                                "data": "Remarks",
+                            },
+                            {
+                                "data": "DisplayAddedOn",
+                            },
+                        ],
+                        "aoColumnDefs": [
+                            {
+                                'bSortable': false,
+                                'aTargets': [5],
+                            }],
+                        mark: true
+                    });
+                    var table = $('#tblContainerSummary').DataTable();
+
+                    table = $('#tblContainerSummary').DataTable();
+                    var buttons = new $.fn.dataTable.Buttons(table, {
+                        buttons: [
+                            {
+                                extend: 'excelHtml5',
+                                text: '<i class="fa fa-file-excel-o"></i>',
+                                titleAttr: 'Excel',
+                                className: 'btn btn_excel'
+                            }
+                        ]
+                    }).container().appendTo($('#btnExcel'));
+                },
+                error: function (errormessage) {
+
+                    alert(errormessage);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+
+    }
+
+    $("#txtContainerNo").autocomplete({
+        source: function (request, response) {
+            var type = "Sold";
+            $.ajax({
+                url: "/DomesticInventoryManagement/AjaxGetAutoContainerNoList",
+                data: "{ 'prefixText': '" + request.term + "','Type': '" + type + "'}",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    response($.map(data, function (item) {
+
+                        if (item.ContainerNo == "No Data Found") {
+                            alert("Please enter correct container no.");
+                            $("#txtContainerNo").val("");
+                            return false
+                        }
+                        else {
+                            return {
+                                label: item.ContainerNo,
+                                val: item.ContainerNo
+                            };
+                        }
+                    }))
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        },
+        select: function (e, i) {
+            $("#txtContainerNo").val(i.item.label);
+            //$("#hdnPayFromId").val(i.item.val);
+        },
+        minLength: 1
+    });
+
+    function GetDetailsAgainstContainerNo() {
+        var containerNo = $("#txtContainerNo").val();
+        //if (containerNo == "" || containerNo == null) {
+        //    alert("Please enter container no");
+        //    return false
+        //}
+        var data = { 'ContainerNo': containerNo };
+        data = JSON.stringify(data);
+        debugger
+
+        $.ajax({
+            type: "POST",
+            url: "/DomesticInventoryManagement/GetDetailsAgainstContainerNo",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                debugger
+                $("#ddlSize").val(response.Size);
+                $("#ddlType").val(response.Type);
+                $("#txtVendorName").val(response.VendorName);
+                $("#global-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                $("global-loader").fadeOut();
+                $('#SaveButton').attr('disabled', false);
+                alert(errormessage);
+            }
+        });
+    }
+
+    function GetDetailsAgainstDept() {
+        var deptID = $("#ddlDept").val();
+
+        var data = { 'DeptID': deptID };
+        data = JSON.stringify(data);
+        debugger
+
+        $.ajax({
+            type: "POST",
+            url: "/DomesticInventoryManagement/GetDetailsAgainstDept",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                debugger
+                $("#txtContactPerson").val(response.ContactPerson);
+                $("#txtContactNo").val(response.ContactNo);
+                $("#global-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                $("global-loader").fadeOut();
+                $('#SaveButton').attr('disabled', false);
+                alert(errormessage);
+            }
+        });
+    }
+
+    function SaveNewContainerSold() {
+        debugger
+        $("global-loader").fadeIn();
+        var ContainerM = {};
+
+        ContainerM.SoldDate = $("#txtSoldDT").val();
+        ContainerM.ContainerNo = $("#txtContainerNo").val();
+        ContainerM.DeptID = $("#ddlDept").val();
+        ContainerM.Remarks = $("#txtRemarks").val();
+        ContainerM.Type = "Sold";
+
+        var isValidData = true;
+        if (ContainerM.SoldDate == "") {
+            $("#txtSoldDT").addClass("is-invalid");
+            isValidData = isValidData && false;
+        } else {
+            $("#txtSoldDT").removeClass("is-invalid");
+        }
+
+        if (ContainerM.ContainerNo == "") {
+            $("#txtContainerNo").addClass("is-invalid");
+            isValidData = isValidData && false;
+        } else {
+            $("#txtContainerNo").removeClass("is-invalid");
+        }
+        if (ContainerM.DeptID == "") {
+            ContainerM.DeptID = 0;
+        }
+        if (ContainerM.Remarks == "" || ContainerM.Remarks == null || ContainerM.Remarks == undefined) {
+            ContainerM.Remarks = "";
+        }
+        if (isValidData == false) {
+            alert("Please fill all required details");
+            $("#global-loader").fadeOut("slow");
+            return false;
+        }
+
+        var data = { 'ContainerSoldList': ContainerM };
+        data = JSON.stringify(data);
+        debugger
+
+        $.ajax({
+            type: "POST",
+            url: "/DomesticInventoryManagement/SaveSoldContainer",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                debugger
+                alert(response.Message);
+                reload();
+                $("#global-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                $("global-loader").fadeOut();
+                $('#SaveButton').attr('disabled', false);
+                alert(errormessage);
+            }
+        });
+    }
+
+</script>
+
+
+

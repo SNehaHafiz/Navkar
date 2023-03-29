@@ -1,0 +1,352 @@
+﻿
+@{
+    ViewBag.Title = "Modify Other Tax Remarks";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+
+    .hiderow {
+        display: none;
+    }
+</style>
+<style>
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Modify Other Tax Remarks</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assess No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvoiceno", null, new { @class = "form-control", @id = "txtinvoiceno", name = "txtinvoiceno", autocomplete = "off", placeholder = "Assess No" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divContainerNo">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Work Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtworkyear", null, new { @class = "form-control", @id = "txtworkyear", name = "txtworkyear", autocomplete = "off", placeholder = "Work Year", maxlength = 11, @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group" style="padding-top:25px">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="Showbtn" name="Search" onclick="Fetch1()">Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tax Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddltaxlist", (IEnumerable<SelectListItem>)ViewBag.TaxRemarks, "--Select-- ", new { @class = "form-control", @id = "ddltaxlist", name = "ddltaxlist", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" onclick="Update()" title="Update" id="Update"><b>Update</b></button>
+                                            <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function () {
+        debugger;
+        WorkYear();
+    });</script>
+<script>
+//get details in text box
+    function WorkYear() {
+        debugger;
+        data = JSON.stringify();
+        $.ajax({
+            type: 'GET',
+            url: '/ModifyModule/WorkYearMaster',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+
+                $('#txtworkyear').val(data[0].WorkYear);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }</script>
+
+<script>
+//get details in text box
+    function Fetch1() {
+        debugger;
+
+        debugger;
+        var InvoiceNo = document.getElementById('txtinvoiceno').value;
+        var WorkYear = document.getElementById('txtworkyear').value;
+
+        var data1 = { 'InvoiceNo': InvoiceNo, 'WorkYear': WorkYear };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetOtherTaxDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (data == "") {
+                    alert("No data found")
+                    return false;
+                }
+
+
+                $('#txtindate').val(data[0].isack);
+                $('#txtlock').val(data[0].isinvlocked);
+                $('#txtcancel').val(data[0].Iscancel);
+                $('#ddltaxlist').val(data[0].IGST);
+
+                var ACK = data[0].isack;
+                var INV = data[0].isinvlocked;
+                var Can = data[0].Iscancel;
+                if (ACK == 1) {
+                    alert("ACK done cannot modify");
+                    cleartextboxes();
+                }
+                else if (INV == 1) {
+                    alert("invoice locked cannot modify");
+                    cleartextboxes();
+                }
+                else if (Can == 1) {
+                    alert("Invoice cancelled cannot modify");
+                    cleartextboxes();
+                }
+
+                else {
+                    Fetch();
+                }
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }</script>
+<script>
+    function Update() {
+        debugger;
+        //var NOC1 = $("#txthiddennoc").val();
+        //var NOC2 = $("#txtNocNo").val();
+
+
+
+        const Master = {};
+        Master.Activity='Update Tax'
+        Master.AssessNo = $("#txtinvoiceno").val();
+        Master.WorkYear = $("#txtworkyear").val();
+        Master.TaxID = $("#ddltaxlist").val();
+        Master.Remarks = $("#txtremarks").val();
+
+
+        var isValid = true;
+        if (Master.AssessNo == 0 || Master.AssessNo == "") {
+            isValid = isValid && false;
+            $("#txtinvoiceno").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtinvoiceno").removeClass("is-invalid state-invalid");
+        }
+
+        if ( Master.TaxID == "") {
+            isValid = isValid && false;
+            $("#ddltaxlist").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddltaxlist").removeClass("is-invalid state-invalid");
+        }
+
+
+
+
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+        var data1 = { 'AM': Master };
+        var data = JSON.stringify(data1);
+      //  alert(data);
+        $.ajax({
+            url: "/ModifyModule/UpdateOtherRemarks",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (item) {
+
+
+                if (item.Status == 1) {
+                    {
+                        swal.fire({
+                            title: "success",
+                            text: item.Message,
+                            icon: "success",
+                        }).then(function (isConfirm) {
+                            if (isConfirm) {
+                                cleartextboxes();
+                            }
+                        });
+                        return false;
+
+                    }
+                }
+                else if (response.Status == 0) {
+                    {
+                        swal.fire({
+                            title: "Error!",
+                            text: item.Message,
+                            icon: "error",
+                        }).then(function (isConfirm) {
+                            if (isConfirm) {
+                                cleartextboxes();
+                            }
+                        });
+                        return false;
+
+                    }
+                }
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: "Something went wrong" + str,
+                    icon: 'error'
+                });
+            }
+        });
+
+    }
+</script>
+
+
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+                         document.location = '@Url.Action("ModifyOtherTaxRemarks", "ModifyModule")';
+    }
+</script>
+
+@*<script>
+        $(document).ready(function () {
+
+
+            $("#Update").click(function () {
+                debugger;
+                var aData = [];
+                $("#example1 tbody tr").each(function () {
+                    var currentRow = $(this);
+
+                    var col1d = currentRow.find("td:eq(1)").text();
+                    var col2d = currentRow.find("td:eq(2)").text();
+                    var col3d = currentRow.find("td:eq(3)").text();
+                    var col4d = currentRow.find("td:eq(5)").text();
+                    var col5d = currentRow.find("td:eq(6)").text();
+
+                    var obj = {};
+                    obj.col1 = col1d;
+                    obj.col2 = col2d;
+                    obj.col3 = col3d;
+                    obj.col4 = col4d;
+                    obj.col5 = col5d;
+
+                    if (currentRow.find(".checklist").is(":checked")) {
+                        aData.push(obj);
+                    }
+
+
+                });
+                var data = { 'Data': aData }
+                console.log(data);
+            });
+        });
+    </script>*@

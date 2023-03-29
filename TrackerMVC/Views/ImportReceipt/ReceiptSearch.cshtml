@@ -1,0 +1,398 @@
+﻿
+@{
+    ViewBag.Title = "Receipt Search";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    .bg-tab-active h4 {
+        color: white;
+    }
+
+    .bg-tab-active {
+        color: white !important;
+        background-image: linear-gradient(269deg, #32CAFE, #867EFC);
+        border-radius: 4px;
+    }
+
+    .br-btm {
+        border-bottom: 1px solid #32CAFE;
+    }
+
+    .bg-tab {
+        display: grid;
+    }
+
+    .px-3 {
+        padding-left: 5rem;
+    }
+
+    .bx-left {
+        box-shadow: 0 8px 6px -6px #888888;
+    }
+
+    .bx-right {
+        box-shadow: 0 8px 6px -6px #888888;
+    }
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    /*   .bg-tab {
+        display: grid;
+        background-color: #e3ebf3 !important;
+    }*/
+</style>
+
+
+<script src="~/js/GetTableJson.js"></script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/js/datatablewihtoutfilter.js"></script>
+
+@*<script src="~/UserScripts/ImportReceiptController.js"></script>*@
+
+@*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>*@
+
+
+
+
+
+
+<div id="mainContent">
+    <div class="m-6">
+        <h2 class=" text-center" style="font-weight:900">
+            Search Via <span id="headerName"></span>
+        </h2>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-sm-12 col-md-12">
+
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="cursor: pointer;margin-left: 350px;margin-bottom:25px ">
+
+                <button class="btn btn-outline-primary active chk" id="tab_1" onclick="changeTabSection(1)" style=" margin-left: 60px; ">Receipt Number</button>
+                <button class="btn btn-outline-primary   chk" id="tab_2" onclick="changeTabSection(2)">Invoice Number</button>
+                <button class="btn btn-outline-primary  chk" id="tab_3" onclick="changeTabSection(3)"> Customer</button>
+                <button class="btn btn-outline-primary  chk" id="tab_4" onclick="changeTabSection(4)"> Mode Number</button>
+                <button class="btn btn-outline-primary  chk" id="tab_5" onclick="changeTabSection(5)"> Mode Amount</button>
+                <button class="btn btn-outline-primary  chk" id="tab_6" onclick="changeTabSection(6)"> Receipt Remarks</button>
+
+
+            </div>
+
+
+            <div class="card">
+                @* <div class="row no-gutters br-btm" id="importSlab" style="cursor: pointer;">
+                    <div class="bg-tab bg-tab-active p-md-2" onclick="changeTabSection(1)" id="tab_1">
+                        <h4 class="bg-tab text-center ">
+                            Receipt Number
+                        </h4>
+                    </div>
+                    <div class="bg-tab  p-md-3" onclick="changeTabSection(2)" id="tab_2">
+                        <h4 class="bg-tab text-center ">
+                            Invoice Number
+                        </h4>
+                    </div>
+                    <div class="bg-tab  p-md-3 " onclick="changeTabSection(3)" id="tab_3">
+                        <h4 class=" text-center ">
+                            Customer
+                        </h4>
+                    </div><div class="bg-tab  p-md-3" onclick="changeTabSection(4)" id="tab_4">
+                        <h4 class="bg-tab text-center ">
+                            Mode Number
+                        </h4>
+                    </div>
+
+
+                    <div class="bg-tab  p-md-3 " onclick="changeTabSection(5)" id="tab_5">
+                        <h4 class="bg-tab text-center ">
+                            Mode Amount
+                        </h4>
+                    </div>*@
+
+                @*<div class="bg-tab col p-md-3 " onclick="changeTabSection(6)" id="tab_6">
+                            <h4 class="bg-tab text-center ">
+                                Receipt Remarks
+                            </h4>
+                        </div>
+
+                    </div>*@
+
+                <div class="row mt-5" style="margin-left: 15px;">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label"> <span id="Parameter" style=" margin-left: 10px; "></span></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Search for..." id="ParameterValue" style=" margin-left: 10px; ">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12" id="_formDate">
+                        <div class="form-group">
+                            <label class="form-label">From Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+                                    <input type="text" class="form-control form_datetime1" placeholder="From Date" id="fromDate">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12" id="_toDate">
+                        <div class="form-group">
+                            <label class="form-label">To Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <input type="text" class="form-control form_datetime1" placeholder="To Date" id="toDate">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">Save</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-icon btn-success" type="button" id="track" onclick="search()"><i class="fe fe-search"></i></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div class="row">
+                        <div class=" col-lg-12 col-sm-12">
+                            <div class="m-md-5 xs-p-1">
+                                <div class="form-group">
+
+                                    <div class="row gutters-xs">
+                                        <div class=" col md-2">
+                                            <label class="form-label col-lg-5">Enter <span id="Parameter"></span></label>
+                                            <input type="text" class="form-control" placeholder="Search for..." id="ParameterValue">
+                                            <input type="hidden" id="ParameterID">
+                                        </div>
+
+                                        <div class=" col md-2" id="_formDate">
+                                            <label class="form-label">From Date</label>
+                                            <input type="text" class="form-control form_datetime1" placeholder="From Date" id="fromDate">
+                                        </div>
+                                        <div class=" col md-2" id="_toDate">
+                                            <label class="form-label">To Date</label>
+                                            <input type="text" class="form-control form_datetime1" placeholder="To Date" id="toDate">
+                                        </div>
+                                        <span class=" col-auto">
+                                            <label class="form-label" style="visibility:hidden">Search</label>
+                                            <button class="btn btn-secondary" type="button" id="track" onclick="search()"><i class="fe fe-search"></i></button>
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <span id="errorMSG" class="text-danger">@ViewBag.Status</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+
+
+
+
+
+                <div class="col-lg-12 col-sm-12">
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblReceiptSummaryDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="divInfo"></div>
+
+
+
+<script>
+    var searchCriteria = "";
+    var searchText = "";
+
+    $(document).ready(function () {
+        $("#Parameter").text("Receipt Number");
+        $("#headerName").text("Receipt Number");
+        searchCriteria = "Receipt No"
+        $("#_formDate").hide();
+        $("#_toDate").hide();
+    });
+
+    function changeTabSection(index) {
+        $(".chk").removeClass('btn-primary active');
+        $("#tab_" + index).addClass('btn-primary');
+
+        $("#errorMSG").hide();
+        currentIndex = index;
+        $("#ParameterID").val(index);
+        //$(".bg-tab").removeClass("bg-tab-active");
+        //$("#tab_" + index).addClass("bg-tab-active");
+        if (index == 1) {
+            $("#Parameter").text("Receipt Number");
+            $("#headerName").text("Receipt Number");
+            $("#_formDate").hide();
+            $("#_toDate").hide();
+            searchCriteria = "Receipt No"
+            //clearText();
+
+        } else if (index == 2) {
+            $("#Parameter").text("Invoice Number");
+            $("#headerName").text("Invoice Number");
+            searchCriteria = "Invoice NO"
+            $("#_formDate").hide();
+            $("#_toDate").hide();
+            clearText();
+
+        } else if (index == 3) {
+            $("#Parameter").text("Customer");
+            $("#headerName").text("Customer");
+            searchCriteria = "Customer";
+            $("#_formDate").show();
+            $("#_toDate").show();
+            clearText();
+
+        } else if (index == 4) {
+            $("#Parameter").text("Mode Number");
+            $("#headerName").text(" Mode Number");
+            searchCriteria = "Mode No";
+            $("#_formDate").hide();
+            $("#_toDate").hide();
+            clearText();
+
+        } else if (index == 5) {
+            $("#Parameter").text("Mode Amount");
+            $("#headerName").text("Mode Amount");
+            searchCriteria = "Mode Amount";
+            $("#_formDate").show();
+            $("#_toDate").show();
+            clearText();
+
+        }
+        else if (index == 6) {
+            $("#Parameter").text("Receipt Remarks");
+            $("#headerName").text("Receipt Remarks");
+            searchCriteria = "Receipt Remarks";
+            $("#_formDate").hide();
+            $("#_toDate").hide();
+            clearText();
+
+        }
+    }
+
+    function clearText() {
+        $("#ParameterValue").val('');
+        $("#fromDate").val('')
+        $("#toDate").val('')
+    }
+
+    function search() {
+        var searchcerteria = searchCriteria;
+        var Searchtext = $("#ParameterValue").val();
+        var FromDate = $("#fromDate").val();
+        var ToDate = $("#toDate").val();
+        $.ajax({
+            url: '/ImportReceipt/getReceiptSearchDtl',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', searchcerteria: ' + JSON.stringify(searchcerteria) + ', Searchtext: ' + JSON.stringify(Searchtext) + '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                if (data == "0" || data == "[]") {
+                    //  ControlCtrl.TableReceiptSummaryDet.empty();
+                    alert('Record Not found.');
+                    return;
+                }
+                $("#tblReceiptSummaryDet").empty();
+                RepTableDataJson($("#tblReceiptSummaryDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function ViewDetails(id, workyear, type) {
+
+        if (type == "ImportInvoice") {
+            type = "IMPORT - RECEIPT"
+        } else if (type == "ExportInvoice") {
+            type = "EXPORT - RECEIPT"
+        } else if (type == "BondInvoice") {
+            type = "BOND - RECEIPT"
+        } else if (type == "Auction invoice") {
+            type = "AUCTION - RECEIPT"
+        } else if (type == "Misc Invoice") {
+            type = "MISC - RECEIPT"
+        } else if (type == "MNR Invoice") {
+            type = "MNR - RECEIPT"
+        } else if (type == "JournalVoucher") {
+            type = "Journal Voucher"
+        } else if (type == "Suspense") {
+            type = "SUSPENSE - RECEIPT"
+        } else if (type == "DomesticInvoice") {
+            type = "DOMESTIC - RECEIPT"
+        } else if (type == "Contra") {
+            type = "Contra Voucher"
+        } else if (type == "Credit Note") {
+            type = "CREDIT - NOTE"
+        } else {
+            type = "";
+        }
+
+        var data1 = { 'receiptNo': id, 'workyear': workyear, 'Type': type };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/ImportReceipt/StoreReceiptNoInTemp',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                //$("#divInfo").show();
+                //$("#mainContent").hide();
+                //$("#divInfo").html(response);
+                //ViewReceiptDetail
+
+                                 document.location = '@Url.Action("SearchReceipt", "ImportReceipt")';
+
+                //document.location = 'ImportReceipt/'
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function getBack() {
+        $("#divInfo").hide();
+        $("#mainContent").show();
+    }
+</script>

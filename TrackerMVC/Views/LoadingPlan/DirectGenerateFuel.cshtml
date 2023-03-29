@@ -1,0 +1,608 @@
+﻿
+<div>
+
+    @model TrackerMVCEntities.BusinessEntities.FuelEntities
+
+
+    <style>
+        .dropdown-disable {
+            cursor: not-allowed;
+            pointer-events: none;
+            /*Button disabled - CSS color class*/
+            color: #6b6f80;
+            background-color: #fff;
+            opacity: 0.65;
+        }
+    </style>
+
+
+    <div id="divFuelList">
+        <div class="page-header">
+            <h4 class="page-title">
+                Fuel Slip(Direct)
+            </h4>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Container Count</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.containerCount, new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                           new SelectListItem { Text = "1 X 20", Value = "1 X 20"},
+                                           new SelectListItem { Text = "2 X 20", Value = "2 X 20"},
+                                           new SelectListItem { Text = "1 X 40", Value = "1 X 40"},
+
+
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "containerCount" })
+
+
+                                            @*@Html.DropDownListFor(model => model.containerCount, new List<SelectListItem>
+                                                { new SelectListItem { Text = "--Select--", Value = ""},
+                                                  new SelectListItem { Text = "Onward", Value = "Onward"},
+                                                  new SelectListItem { Text = "Import", Value = "Import"},
+                                                  new SelectListItem { Text = "Export", Value = "Export"},
+                                                  new SelectListItem { Text = "Platform", Value = "Platform"}
+
+                                                  }, new { @class = "form-control", autocomplete = "off" })*@
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Container Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.ConTypeID, (IEnumerable<SelectListItem>)ViewBag.CargoType, "--Select--", new { @class = "form-control", @id = "ddlCargotype", name = "ddlCargotype" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer No(Last 4 digits)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                                <label class="form-label">Trailer No </label>
+                                <select id="ddlTrailerNo" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" style="display:none" id="divTrailerno">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTrailerNoFull", null, new { @class = "form-control", @id = "TrailerNoFull", name = "TrailerNoFull", autocomplete = "off", placeholder = "Trailer No", @maxlength = 100 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Passing</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.Passing, (IEnumerable<SelectListItem>)ViewBag.Passing, "--Select--", new { @class = "form-control dropdown-disable", @id = "ddlPassing", name = "ddlPassing", @readonly = true })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Driver</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.driverID, (IEnumerable<SelectListItem>)ViewBag.Drivers, "--Select--", new { @class = "form-control dropdown-disable", @id = "ddlDriver", name = "ddlDriver", @readonly = true })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Transporter</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.TransportorID, (IEnumerable<SelectListItem>)ViewBag.Transpoter, "--Select--", new { @class = "form-control dropdown-disable", @id = "ddlTransporter", name = "ddlTransporter", @readonly = true })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> From</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.FromID, (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlFrom", name = "ddlFrom" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> To</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.ToID, (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlTo", name = "ddlTo" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> To</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.To1ID, (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlTo1", name = "ddlTo1" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Activity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+
+                                            @Html.DropDownListFor(model => model.Activity, (IEnumerable<SelectListItem>)ViewBag.Activity, "--Select--", new { @class = "form-control", @id = "ddlActivity", name = "ddlActivity" })
+
+
+
+                                            @*@Html.DropDownListFor(model => model.Activity, new List<SelectListItem>
+                                                { new SelectListItem { Text = "--Select--", Value = ""},
+                                                  new SelectListItem { Text = "Onward", Value = "Onward"},
+                                                  new SelectListItem { Text = "Import", Value = "Import"},
+                                                  new SelectListItem { Text = "Export", Value = "Export"},
+                                                  new SelectListItem { Text = "Platform", Value = "Platform"}
+
+                                                  }, new { @class = "form-control", autocomplete = "off" })*@
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnUpdate" onclick="ShowFuelData()" name="Add">Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Reading From</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.TextBox("txtReadingFrom", null, new { @class = "form-control", @id = "txtReadingFrom", autocomplete = "off" })*@
+                                            @Html.EditorFor(model => model.ReadingFrom, new { htmlAttributes = new { @class = "form-control", @id = "txtReadingFrom", autocomplete = "on", maxlength = 50 } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Reading To</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.TextBox("txtReadingTo", null, new { @class = "form-control", @id = "txtReadingTo", autocomplete = "off" })*@
+                                            @Html.EditorFor(model => model.ReadingTo, new { htmlAttributes = new { @class = "form-control", @id = "txtReadingTo", autocomplete = "on", maxlength = 50 } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label "> Fuel</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.TextBox("txtFuel", (String)ViewBag.fuel, new { @class = "form-control", @id = "txtFuel", autocomplete = "off" })*@
+                                            @Html.EditorFor(model => model.fuel, new { htmlAttributes = new { @class = "form-control", @id = "txtFuel", autocomplete = "on", maxlength = 50 } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Amount 1</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.TextBox("txtAmount1", (String)ViewBag.amount1, new { @class = "form-control", @id = "txtAmount1", autocomplete = "off" })*@
+                                            @Html.EditorFor(model => model.amount1, new { htmlAttributes = new { @class = "form-control", @id = "txtAmount1", autocomplete = "on", maxlength = 50 } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Amount 2</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*  @Html.TextBox("txtAmount2", (String)ViewBag.amount2, new { @class = "form-control", @id = "txtAmount2", autocomplete = "off" })*@
+                                            @Html.EditorFor(model => model.amount2, new { htmlAttributes = new { @class = "form-control", @id = "txtAmount2", autocomplete = "on", maxlength = 50 } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> Adjust Fuel</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.TextBox("txtAdjustFuel", null, new { @class = "form-control", @id = "txtAdjustFuel", autocomplete = "off" })*@
+                                            @Html.EditorFor(model => model.adjustAmount, new { htmlAttributes = new { @class = "form-control", @id = "txtAdjustFuel", autocomplete = "on", maxlength = 50 } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-left">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="btnSave" name="saveProfile" value="Save" class="btn btn-success" onclick="Save()" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Show the table after click of save button  -->
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+
+</div>
+   
+    <script>
+    $(document).ready(function () {
+
+    });
+    </script>
+    <script>
+
+    function Save() {
+
+        var containerCount = $("#containerCount").val();
+        var containerType = $("#ddlCargotype").val();
+
+        var TrailerNo = $("#ddlTrailerNo option:selected").text();
+        if (TrailerNo == "--Select--") {
+            var TrailerNo = $("#TrailerNoFull").val();
+
+        }
+        var Passing = $("#ddlPassing option:selected").val();
+        var Driver = $("#ddlDriver").val();
+        var Transporter = $("#ddlTransporter").val();
+        var FromDestination = $("#ddlFrom").val();
+        var ToDestination = $("#ddlTo").val();
+        var Activity = $("#ddlActivity").val();
+        var ReadingFrom = $("#txtReadingFrom").val();
+        var ReadingTo = $("#txtReadingTo").val();
+        var Fuel = $("#txtFuel").val();
+        var Amount1 = $("#txtAmount1").val();
+        var Amount2 = $("#txtAmount2").val();
+        var AdjustFuel = $("#txtAdjustFuel").val();
+
+
+
+
+
+        var datac1 = {
+            'containerCount': containerCount, 'containerTypeID': containerType, 'TrailerNo': TrailerNo, 'Passing': Passing, 'driverID': Driver, 'TransportorID': Transporter,
+            'FromID': FromDestination, 'ToID': ToDestination, 'Activity': Activity, 'ReadingFrom': ReadingFrom, 'ReadingTo': ReadingTo, 'fuel': Fuel, 'Amount1': Amount1, 'Amount2': Amount2,
+            'AdjustFuel': AdjustFuel
+        };
+        var datac = JSON.stringify(datac1);
+
+
+        var containerCounttext = $("#containerCount option:selected").text();
+        var containerTypetext = $("#ddlCargotype option:selected").text();
+        var Passingtext = $("#ddlPassing option:selected").text();
+        var Drivertext = $("#ddlDriver  option:selected").text();
+        var Transportertext = $("#ddlTransporter  option:selected").text();
+        var FromDestinationtext = $("#ddlFrom option:selected").text();
+        var ToDestinationtext = $("#ddlTo option:selected").text();
+        var Activitytext = $("#ddlActivity option:selected").text();
+
+
+        var datap1 = {
+            'containerCount': containerCounttext, 'containerTypeID': containerTypetext, 'TrailerNo': TrailerNo, 'Passing': Passingtext, 'driverID': Drivertext, 'TransportorID': Transportertext,
+            'FromID': FromDestinationtext, 'ToID': ToDestinationtext, 'Activity': Activitytext, 'ReadingFrom': ReadingFrom, 'ReadingTo': ReadingTo, 'fuel': Fuel, 'Amount1': Amount1, 'Amount2': Amount2,
+            'AdjustFuel': AdjustFuel
+
+
+
+        };
+        var datap = JSON.stringify(datap1);
+     //  alert(datap);
+
+        $.ajax({
+            url: "/LoadingPlan/AddDirectFuel",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+
+                var voucherNo = response.VoucherNo;
+                var voucherDate = response.VoucherDate;
+
+                //var datap1 = {
+                //    'containerCount': containerCounttext, 'containerTypeID': containerTypetext, 'TrailerNo': TrailerNo, 'Passing': Passingtext, 'driverID': Drivertext, 'TransportorID': Transportertext,
+                //    'FromID': FromDestinationtext, 'ToID': ToDestinationtext, 'Activity': Activitytext, 'ReadingFrom': ReadingFrom, 'ReadingTo': ReadingTo, 'fuel': Fuel, 'Amount1': Amount1, 'Amount2': Amount2,
+                //    'AdjustFuel': AdjustFuel, 'voucherNo': voucherNo, 'voucherDate': voucherDate
+
+                //};
+                //var datap = JSON.stringify(datap1);
+               // alert(datap);
+                alert("Record saved successfully!");
+                $("#containerCount").val("");
+                $("#ddlCargotype").val("");
+                $("#ddlTrailerNo").val("");
+                $("#TrailerNoFull").val("");
+                $("#ddlPassing").val("");
+                $("#ddlDriver").val("");
+                $("#ddlTransporter").val("");
+                 $("#ddlFrom").val("");
+                $("#ddlTo").val("");
+                $("#ddlActivity").val("");
+                $("#txtReadingFrom").val("");
+                $("#txtReadingTo").val("");
+                 $("#txtFuel").val("");
+                 $("#txtAmount1").val("");
+                $("#txtAmount2").val("");
+                 $("#txtAdjustFuel").val("");
+
+
+
+                var r = confirm("Do you want to Print?");
+                if (r == true) {
+
+                    $.ajax({
+                        url: "/LoadingPlan/PrintFuelSlip",
+                        data: datap,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        // dataType: "json",
+                        success: function (response) {
+                             if (response == 1) {
+                                 //   document.location = '@Url.Action("PrintFuelSlipDirect", "LoadingPlan")';
+                               //  var url = '/CreateVisitor/PrintVisitorDetails/' + @ViewBag.Message
+
+                                 var url = '/LoadingPlan/PrintFuelSlipDirect/' + voucherNo+','+ voucherDate
+                                 window.open(url, '_blank');
+                            }
+                        },
+
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+
+                    });
+
+
+
+                }
+                else{
+
+                }
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+
+
+
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlTrailerNo");
+
+                if (data == "") {
+
+                    $('#divTrailerno').show();
+                    $('#divtrailernodrop').hide();
+                } else {
+                    $('#divTrailerno').hide();
+                    $('#divtrailernodrop').show();
+                }
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+
+
+        //function onservice() {
+        //    alert("Under revision..!")
+        //}
+
+
+    </script>
+
+    <script>
+
+    $('#ddlTrailerNo').change(function (e) {
+        var trailerID = $("#ddlTrailerNo").val();
+        $.ajax({
+            url: "/LoadingPlan/GetTrailerData",
+            data: '{trailerID: ' + JSON.stringify(trailerID) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $("#ddlPassing").val(data.Passing);
+                $("#ddlTransporter").val(data.TransportorID);
+                $("#ddlDriver").val(data.driverID);
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+    </script>
+
+    <script>
+
+    function ShowFuelData()
+    {
+       // alert("hi");
+        var Transporter = $("#ddlTransporter").val();
+        var Activity = $("#ddlActivity").val();
+        var containerType = $("#ddlCargotype").val();
+        var TrailerNo = $("#ddlTrailerNo option:selected").text();
+        if (TrailerNo == "--Select--") {
+            var TrailerNo = $("#TrailerNoFull").val();
+
+        }
+        var FromDestination = $("#ddlFrom").val();
+        var ToDestination = $("#ddlTo").val();
+        var containerCount = $("#containerCount").val();
+      //   alert(Transporter);
+        var datac1 = {
+            'TransportorID': Transporter, 'ActivityID': Activity, 'ConTypeID': containerType, 'TrailerNo': TrailerNo,
+            'containerCount': containerCount, 'FromID': FromDestination, 'ToID': ToDestination
+        };
+        var datac = JSON.stringify(datac1);
+       // alert(datac);
+        $.ajax({
+            url: "/LoadingPlan/GetFuelData",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                $("#txtAmount1").val(data.amount1);
+                $("#txtAmount2").val(data.amount2);
+                $("#txtFuel").val(data.fuel);
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+    </script>
+    <script>
+
+    function getBack() {
+        // alert("hi")
+        $("#divFuelList").show()
+        $('#divGenerateFuel').hide()
+
+    }
+    </script>
+

@@ -1,0 +1,197 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.PendingContainersForJoUpdationsEntities>
+@{
+    ViewBag.Title = "PendingContainerForJOUpdation";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">List of Pending Container for Jo Updations</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblContainer" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+
+                                            <th style="width:1px">Sr No.</th>
+                                            <th>Container No.</th>
+                                            <th>Size</th>
+                                            <th>FL</th>
+                                            <th>Type</th>
+                                            <th>ISO Code</th>
+                                            <th>Cargo Wt</th>
+                                            <th>IGM No.</th>
+                                            <th>Item No.</th>
+                                            <th>SMTP NO.</th>
+                                            <th>SMTP Date</th>
+                                            <th>Consignee</th>
+                                            <th>Cargo Descriptions</th>
+                                            <th>BL Number</th>
+                                            <th>Seal No</th>
+                                            <th>Updated By</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(m => d.SrNo)</td>
+                                                <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                                <td>@Html.DisplayFor(m => d.Size)</td>
+                                                <td>@Html.DisplayFor(m => d.FL)</td>
+                                                <td>@Html.DisplayFor(m => d.Type)</td>
+                                                <td>@Html.DisplayFor(m => d.ISOCode)</td>
+                                                <td>@Html.DisplayFor(m => d.CargoWt)</td>
+                                                <td>@Html.DisplayFor(m => d.Igmno)</td>
+                                                <td>@Html.DisplayFor(m => d.Itemno)</td>
+                                                <td>@Html.DisplayFor(m => d.SMTPNO)</td>
+                                                <td>@Html.DisplayFor(m => d.SMTPDate)</td>
+                                                <td>@Html.DisplayFor(m => d.Consignee)</td>
+                                                <td>@Html.DisplayFor(m => d.CargoDescriptions)</td>
+                                                <td>@Html.DisplayFor(m => d.BLNumber)</td>
+                                                <td>@Html.DisplayFor(m => d.SealNo)</td>
+                                                <td>@Html.DisplayFor(m => d.UpdatedBy)</td>
+
+                                            </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //alert("hi")
+        $('#tblContainer').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'PendingContainerForJoUpdation',
+                "filename": 'PendingContainer_List'
+
+            }
+            ]
+        });
+        var table = document.getElementById("tblContainer");
+        var row;
+
+
+        var TotTEUS1 = 0;
+        var TotTEUS2 = 0;
+        var TotTEUS3 = 0;
+        var TotTEUS = 0;
+
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            var Size = row.cells[2].innerText;
+
+            //  alert(Size)
+
+            if (Size == 20) {
+                TotTEUS1 = Number(TotTEUS1) + 1;
+            }
+            if (Size == 40) {
+                TotTEUS2 = Number(TotTEUS2) + 2;
+            }
+            if (Size == 45) {
+                TotTEUS3 = Number(TotTEUS3) + 2;
+            }
+            //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+        }
+        TotTEUS = TotTEUS1 + TotTEUS2 + TotTEUS3
+        //alert(TotTEUS);
+        $("#lbltwenty").text(TotTEUS1);
+        $("#lblforty").text(TotTEUS2);
+        $("#lblfortyfive").text(TotTEUS3);
+        $("#lblTotal").text(TotTEUS);
+
+        $("#divTEUS").show();
+        $("#divTEUS1").show();
+        $("#divTEUS2").show();
+        $("#divTEUS3").show();
+
+
+
+
+    });
+</script>
+
+
+
+
+

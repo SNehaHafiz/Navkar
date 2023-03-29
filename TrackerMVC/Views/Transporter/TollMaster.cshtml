@@ -1,0 +1,606 @@
+﻿
+@{
+    ViewBag.Title = "Toll Master";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div id="tracker-loader"></div>
+<div class="content-area overflow-hidden" id="divtoll">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Toll Master</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Toll Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("DDlTollDropDownList", (IEnumerable<SelectListItem>)ViewBag.TollLocation, "--Select--", new { @class = "form-control", @id = "DDlTollDropDownList", name = "DDlTollDropDownList" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+
+                                    <div class="col">
+
+                                        <button type="button" class="btn btn-success" name="summarylist" title="Add Expense" onclick="AddTollname();"><i class="fa fa-plus"></i></button>
+                                        <br />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="display:none" id="Divshowtollprint">
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Toll Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtDroplistTollName", null, new { @class = "form-control", @id = "TxtDroplistTollName", name = "TxtDroplistTollName", autocomplete = "off" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+
+                                    <div class="col">
+
+                                        <input type="button" id="Add" name="Add" value="Add" onclick="ShowExpenseFor()" class="btn btn-primary" />
+                                        <br />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Passing Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlpassing", new List<SelectListItem>
+                                          { new SelectListItem { Text = "--Select--", Value = ""},
+                                            new SelectListItem { Text = "MH", Value = "MH"},
+                                            new SelectListItem { Text = "GJ", Value = "GJ"},
+                                            }, new { @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Ongoing Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtOngoingamount", null, new { @class = "form-control", @id = "TxtOngoingamount", @name = "TxtOngoingamount", autocomplete = "off", type = "number" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Return Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtReturnAmount", null, new { @class = "form-control", @id = "TxtReturnAmount", @name = "TxtReturnAmount", autocomplete = "off", type = "number" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 col-xs-4">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="SaveDetails();">Save</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divView" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Toll Master Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>SR No.</th>
+                                        <th class="wd-15p sorting">Toll Name</th>
+                                        <th class="wd-15p sorting">Passing</th>
+                                        <th class="wd-15p sorting">Ongoing Amount</th>
+                                        <th class="wd-15p sorting">Return Amount</th>
+                                       
+                                    </tr>
+
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-area overflow-hidden" id="divEdittoll" style="display:none">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Edit Toll Master</h4>
+            <div class="ibox-content  text-right">
+                <a onclick="getBack1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+            </div>
+        </div>
+
+    <div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-body p-6">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Toll Name</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownList("EditDDlTollDropDownList", (IEnumerable<SelectListItem>)ViewBag.TollLocation, "--Select--", new { @class = "form-control", @id = "EditDDlTollDropDownList", name = "EditDDlTollDropDownList" })
+
+                                    @*@Html.TextBox("EditTxtTollName", null, new { @class = "form-control", @id = "EditTxtTollName", @name = "EditTxtTollName", autocomplete = "off" })*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Passing Type</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <select class="form-control" id="Editddlpassing">
+                                        <option value="0">--Select--</option>
+                                        <option value="MH">MH</option>
+                                        <option value="GJ">GJ</option>
+                                    </select>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Ongoing Amount</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("EditTxtOngoingamount", null, new { @class = "form-control", @id = "EditTxtOngoingamount", @name = "EditTxtOngoingamount", autocomplete = "off", type = "number" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Return Amount</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("EditTxtReturnAmount", null, new { @class = "form-control", @id = "EditTxtReturnAmount", @name = "EditTxtReturnAmount", autocomplete = "off", type = "number" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 col-xs-4">
+                        <div class="form-group">
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="EditDetails();">Save</button>
+                                    <input id="tollid" style="visibility:hidden" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    </div>
+</div>
+
+
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+<script>
+    function  AddTollname() {
+        $("#Divshowtollprint").show();
+    }
+
+
+    function ShowExpenseFor() {
+        var Tollname = $("#TxtDroplistTollName").val();
+        //alert(expensename);
+        data1 = { 'Tollname': Tollname };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Transporter/SaveTollName",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert("Record added successfully!")
+                alert(data);
+                $('#TxtDroplistTollName').val('');
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        AddExpenseDropDown();
+    }
+
+
+    function AddExpenseDropDown() {
+        $("#Divshowtollprint").hide();
+        $.ajax({
+            url: "/Transporter/AjaxTollefor",
+            // data: '{Containerno: ' + JSON.stringify(Containerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var select = $("#DDlTollDropDownList");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: 0,
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.TollID).html(value.TollName));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+</script>
+<script>
+
+
+    function SaveDetails() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        var TollNames = $("#DDlTollDropDownList option:selected").val();
+        var Passing = document.getElementById('ddlpassing').value;
+        
+        var data1 = { 'TollNames': TollNames, 'Passing': Passing};
+        var data = JSON.stringify(data1);
+
+
+        $.ajax({
+            url: "/Transporter/CheckTollName",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data == 1) {
+                    alert("Record already exists in system!")
+                    $("#tracker-loader").fadeOut("slow");
+
+                } else {
+                    Save();
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Save() {
+      
+        
+        $("#tracker-loader").fadeIn("slow");
+        var TollName = $("#DDlTollDropDownList option:selected").val();
+        var OngoingAmount = document.getElementById('TxtOngoingamount').value;
+        var Returnamount = document.getElementById('TxtReturnAmount').value;
+        var Returnamount = document.getElementById('TxtReturnAmount').value;
+        var Passing = document.getElementById('ddlpassing').value;
+
+        var data1 = { 'TollName': TollName, 'OngoingAmount': OngoingAmount, 'Returnamount': Returnamount, 'Passing': Passing };
+        var data = JSON.stringify(data1);
+      
+        $.ajax({
+            url: "/Transporter/SaveTollMasterDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert("record saved successfully")
+                document.location = '@Url.Action("TollMaster", "Transporter")'
+                $("#tracker-loader").fadeOut("slow");
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function getBack() {
+        $("#divView").hide();
+        $("#divtoll").show();
+        $("#divEdittoll").hide();
+    }
+
+    function getBack1() {
+        $("#divView").show();
+        $("#divtoll").hide();
+        $("#divEdittoll").hide();
+    }
+    function ViewSummary() {
+        $("#divView").show();
+        $("#divtoll").hide();
+        $("#divEdittoll").hide();
+        
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+
+            url: '/Transporter/GetTollMasterDetails',
+            type: 'Post',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#example').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'Toll Master',
+                        "filename": 'TollMaster_List'
+
+                    }
+                    ],
+                    "columns": [
+                        {
+                            "data": "TollID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-info" title="Edit" onclick="EditTolltagdetails(' + row.TollID + ',\'' + row.TollName.replace(/'/g, "\\'") + '\',' + row.Amount + ',' + row.Returnamount + ',\'' + row.Passing.replace(/'/g, "\\'") + '\',' + row.tollMasterid + ')"><i class="fa fa-edit"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "SRno" },
+                        { "data": "TollName" },
+                        { "data": "Passing" },
+                        { "data": "Amount" },
+                        { "data": "Returnamount" },
+                        
+                    ]
+                });
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+
+    function EditTolltagdetails(TollID, TollName, Amount, Returnamount, Passing, tollMasterid) {
+      
+        var passing = Passing.trim
+        $("#divView").hide();
+        $("#divtoll").hide();
+        $("#divEdittoll").show();
+        $("#tollid").val(TollID);
+        $("#EditDDlTollDropDownList").val(tollMasterid);
+        $("#EditTxtOngoingamount").val(Amount);
+        $("#EditTxtReturnAmount").val(Returnamount);
+        $("#Editddlpassing").val(Passing.trim());
+       
+    
+    }
+
+
+    function EditDetails() {
+     var res = validate1();
+            if (res == false) {
+                return false;
+            }
+        
+        $("#tracker-loader").fadeIn("slow");
+        var TollName = $("#EditDDlTollDropDownList option:selected").val();
+        var OngoingAmount = document.getElementById('EditTxtOngoingamount').value;
+        var Returnamount = document.getElementById('EditTxtReturnAmount').value;
+        var TollID = document.getElementById('tollid').value;
+        var PassingEdit = document.getElementById('Editddlpassing').value;
+
+        var data1 = { 'TollName': TollName, 'OngoingAmount': OngoingAmount, 'Returnamount': Returnamount, 'TollID': TollID, 'PassingEdit': PassingEdit};
+        var data = JSON.stringify(data1);
+      
+        $.ajax({
+            url: "/Transporter/EditTollMasterDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert("record modified successfully")
+                document.location = '@Url.Action("TollMaster", "Transporter")'
+                $("#tracker-loader").fadeOut("slow");
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+</script>
+
+<script>
+    function validate() {
+
+        var TollNameValidate = document.getElementById('DDlTollDropDownList').value;
+        var OngoingAmountValidate = document.getElementById('TxtOngoingamount').value;
+        var ReturnamountValidate = document.getElementById('TxtReturnAmount').value;
+
+        var blResult = Boolean;
+        blResult = true;
+
+        document.getElementById('DDlTollDropDownList').style.bordercolor = "gainsboro";
+        document.getElementById('TxtOngoingamount').style.bordercolor = "gainsboro";
+        document.getElementById('TxtReturnAmount').style.bordercolor = "gainsboro";
+
+
+        if (TollNameValidate == "") {
+            document.getElementById("DDlTollDropDownList").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (OngoingAmountValidate == "") {
+            document.getElementById("TxtOngoingamount").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (ReturnamountValidate == "") {
+            document.getElementById("TxtReturnAmount").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    }
+</script>
+<script>
+    function validate1() {
+
+        var TollNameValidate = document.getElementById('EditDDlTollDropDownList').value;
+        var OngoingAmountValidate = document.getElementById('EditTxtOngoingamount').value;
+        var ReturnamountValidate = document.getElementById('EditTxtReturnAmount').value;
+
+        var blResult = Boolean;
+        blResult = true;
+
+        document.getElementById('EditDDlTollDropDownList').style.bordercolor = "gainsboro";
+        document.getElementById('EditTxtOngoingamount').style.bordercolor = "gainsboro";
+        document.getElementById('EditTxtReturnAmount').style.bordercolor = "gainsboro";
+
+
+        if (TollNameValidate == "") {
+            document.getElementById("EditDDlTollDropDownList").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (OngoingAmountValidate == "") {
+            document.getElementById("EditTxtOngoingamount").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (ReturnamountValidate == "") {
+            document.getElementById("EditTxtReturnAmount").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    }
+</script>

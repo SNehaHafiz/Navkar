@@ -1,0 +1,190 @@
+﻿
+@{
+    ViewBag.Title = "Revenue Operations";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    table#example1 tr:last-child {
+        background: #00ff90;
+    }
+
+    table#example1 tr:first-child {
+        background: none;
+    }
+   
+    table#example1 td:first-child {
+        text-align: left;
+    }
+
+    table#example1 {
+      text-align:right;
+    }
+    th {
+        text-align: left;
+    }
+</style>
+
+
+
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">CFS - Revenue</h4>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("01 MMM yyyy 08:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowArrivalContainer()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Event Name</th>
+                                                <th>Count</th>
+                                                <th>Net Amount</th>
+                                                <th>GST</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [1]
+                }
+
+            ],
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'LoadedContainerArrival',
+                "filename": 'LoadedContainerArrival_List'
+
+            }
+            ]
+        });
+
+        ShowArrivalContainer();
+    });
+</script>
+<script type="text/javascript">
+
+
+        function ShowArrivalContainer() {
+
+            var fromdate = $("#FromDate").val()
+            var todate = $("#ToDate").val()
+
+          
+
+            if (Date.parse(fromdate) > Date.parse(todate)) {
+                alert("Invalid Date Range");
+            }
+            else {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Report/AjaxGetReveneOperation',
+                    data: '{FromDate: ' + JSON.stringify(fromdate) + ', ToDate: ' + JSON.stringify(todate) + '}',
+                    //data: JSON.stringify(formData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: true,
+                        success: function (data) {
+                        //alert(JSON.stringify(data));
+                            $('#example1').dataTable({
+                                "destroy": true,
+                                "bLengthChange": false,
+                                "bPaginate": false,
+                               // "bFilter": false,
+                                "paging": false,
+                                "aaData": data,
+                                "columns": [
+                                    { "data": "EventName" },
+                                    { "data": "NoOFRecord" },
+                                    { "data": "NetAmount" },
+                                    { "data": "GST" },
+                                    { "data": "Amount" },
+
+                                ]
+                            });
+                           
+
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+
+
+        }
+    </script>

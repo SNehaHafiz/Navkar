@@ -1,0 +1,388 @@
+﻿
+@{
+    ViewBag.Title = "Cancellation Of SB Entry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    td {
+        text-align: center;
+    }
+</style>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <script src="~/js/GetTableJson.js"></script>
+    <div class=" content-area overflow-hidden" id="divCreate">
+        <div class="page-header">
+            <h4 class="page-title">Cancellation Of SB Entry</h4>
+            <li class="breadcrumb-item">
+                @*<a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>*@
+            </li>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-8">
+                                <div class="form-group">
+                                    <label class="form-label">SB No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsbno", null, new { @class = "form-control ", @id = "txtsbno", Placeholder = "SB No", @autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" name="Add" onclick="fetch(); "><i class="fa fa-check"></i></button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Agency Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.CustomerList, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off", @readonly = "readonly" })*@
+                                            @Html.TextBox("ddlcustomer", null, new { @class = "form-control ", @id = "ddlcustomer", Placeholder = "Agent", @autocomplete = "off", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Exporter Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.DropDownList("ddlexporter", (IEnumerable<SelectListItem>)ViewBag.Exporter, "--Select--", new { @class = "form-control", @id = "ddlexporter", name = "ddlexporter", autocomplete = "off", @readonly = "readonly" })*@
+                                            @Html.TextBox("ddlexporter", null, new { @class = "form-control ", @id = "ddlexporter", Placeholder = "Exporter", @autocomplete = "off", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Cargo Desc</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcargodesc", null, new { @class = "form-control ", @id = "txtcargodesc", autocomplete = "off", Placeholder = "", @readonly = "readonly" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                            Collect Ammendment Charges ?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+
+
+
+                                                <th style="width:80px;color: white;text-align:center"><input type="checkbox" id="flowcheckall" value="" />Select All</th>
+
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">SBNo</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">SB Date</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Container No</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Entry ID</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Cargo Description</th>
+
+
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Cancel Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-danger" onclick="Update()" title="Cancel"><b>Cancel</b></button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function Fetch1() {
+        debugger;
+        var SBNo = document.getElementById('txtsbno').value;
+
+        var data1 = { 'SBNo': SBNo };
+
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetSbDetailsWithCheck',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+
+                            "data": "Cancel",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.EntryID + '">';
+                                return data;
+
+                            }
+                        },
+                    
+                        { "data": "SBNO" },
+                        { "data": "SBDate" },
+                        { "data": "ContNo" },
+                        { "data": "EntryID" },
+                        { "data": "CargoDesc" },
+
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
+<script>
+    //get details in text box
+    function fetch() {
+        debugger;
+
+        var Sbno = $("#txtsbno").val().trim();
+        var data1 = { "Sbno": Sbno };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetSBDetails1',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $('#ddlcustomer').val(data[0].AGName);
+                $('#ddlexporter').val(data[0].Shippername);
+                $('#txtcargodesc').val(data[0].CargoDesc);
+                if (data != "") {
+                    Fetch1();
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function cleartextboxes() {
+        document.location = '@Url.Action("CancelSBEntry", "ModifyModule")';
+    }
+</script>
+
+<script>
+    function Update() {
+        debugger;
+
+        
+
+
+
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        var r = confirm("Are you sure want to cancel this shipping bill ?");
+        if (r == true) {
+           
+
+            var itemcount = checkItemcount();
+            if (itemcount == false) {
+                alert("No Record Found To Save");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        var SBNO = row.cells[1].innerText;
+                        var EntryID = row.cells[4].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (EntryID == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                         //   alert("hiiii");
+                            row = table.rows[i];
+                            SBNO = row.cells[1].innerText;
+                            EntryID = row.cells[4].innerText;
+                            tablearray.push({
+                                'SBNO': SBNO, 'EntryID': EntryID
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+            }//else part end
+            var data1 = {
+                'Debitdata': tablearray, 'Remarks': Remarks
+            };
+            var data = JSON.stringify(data1);
+          //  alert(data);
+            $.ajax({
+                url: "/ModifyModule/CancelSBEntryDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("CancelSBEntry", "ModifyModule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }//end of main called function
+
+        //Check Checkbox selected count
+        function checkItemcount() {
+            var table = $('#example1').DataTable();
+            if (table.rows().count() == 0) {
+                return false;
+            }
+            return true;
+        }
+    }
+</script>
+<script>
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#example1').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+</script>

@@ -1,0 +1,184 @@
+﻿<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Labour Activity Report</title>
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+    <style>
+        body {
+            color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .box {
+            float: left;
+            width: 100%;
+            padding: 0px;
+        }
+
+        .tblBox {
+            border-collapse: collapse; 
+            width: 100%;
+            padding: 0px;
+            float: left;
+        }
+
+        .headingh3 {
+            font-size: 11pt;
+            font-family: 'verdana(batlic)';
+            padding: 2px;
+            text-decoration: underline;
+        }
+
+        th {
+            border: 1px solid black;
+            font-size: 15px;
+            font-family: verdana(batlic);
+            background-color: #ede5e5;
+        }
+
+        td {
+            border: 1px solid black;
+            font-size: 12px;
+            font-family: 'Segoe UI';
+        }
+
+        h5, h4 {
+            font-size: 10pt;
+            font-family: 'Segoe UI';
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-family: 'verdana(batlic)';
+        }
+
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    @foreach (var dr1 in ViewBag.LabourVendorList)
+    {
+        int counter = 1;
+        int counter2 = 1;
+        int PrevVendorId = 0;
+        <h3 class="headingh3" style="text-align:center">From Date:- @ViewBag.FromDate ToDate :- @ViewBag.ToDate</h3><br />
+        <h3 class="headingh3" style="text-align:center">Location Name:- @ViewBag.Code</h3>
+        <h3 class="headingh3" style="text-align:center">Code:- @dr1["Name"]</h3>
+        <table width="100%" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style="width:50px;" rowspan="2">Sr No.</th>
+                        <th style="width:20px;" rowspan="2">Vehicle No</th>
+                        <th style="width:80px;" rowspan="2">Container No</th>
+                        <th style="width:100px;" rowspan="2">Size</th>
+                        <th style="width:80px;" rowspan="2">Type</th>
+                        <th style="width:50px;" rowspan="2">Cargo Desc.</th>
+                        <th style="width:100px;" rowspan="2">Package Type</th>
+                        <th style="width:100px;" colspan="3">TC</th>
+                        <th style="width:100px;" colspan="3">WC</th>
+                    </tr>
+                    <tr>
+                        <th style="width:100px;">PKGSDestuff</th>
+                        <th style="width:100px;">Unit Weight</th>
+                        <th style="width:100px;">Weight</th>
+                        <th style="width:100px;">PKGSDestuff</th>
+                        <th style="width:100px;">Unit Weight</th>
+                        <th style="width:100px;">Weight</th>
+                    </tr>
+                </thead>
+
+            <tbody>
+                @foreach (var dr in ViewBag.LabourTCWCList)
+                {
+                    if (@dr1["VendorId"] == @dr["Vendor"])
+                    {
+                        <tr>
+                            <td style="text-align:left">@counter</td>
+                            <td style="text-align:left">@dr["VehicleNo"]</td>
+                            @if (dr["DuplicateRow"] > 1)
+                            {
+                                <td style="text-align:left;color:red;font-weight:700">@dr["ContainerNo"] <span style="color:red;font-size:large">*</span> </td>
+                            }
+                            else
+                            {
+                                <td style="text-align:left">@dr["ContainerNo"]</td>
+                            }
+
+                            <td style="text-align:left">@dr["Size"]</td>
+                            <td style="text-align:left">@dr["ContainerType"]</td>
+                            <td style="text-align:left">@dr["CargoDesc"]</td>
+                            <td style="text-align:left">@dr["PackageType"]</td>
+                            <td style="text-align:right">@dr["TC_PKGSDestuff"]</td>
+                            <td style="text-align:right">@dr["TC_UnitWeight"]</td>
+                            <td style="text-align:right">@dr["TC_Weight"]</td>
+                            <td style="text-align:right">@dr["WC_PKGSDestuff"]</td>
+                            <td style="text-align:right">@dr["WC_UnitWeight"]</td>
+                            <td style="text-align:right">@dr["WC_Weight"]</td>
+                        </tr>
+                        counter = counter + 1;
+                    }
+                }
+            </tbody>
+        </table>
+        <br />
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width:50px;" rowspan="2">Sr No.</th>
+                    <th style="width:20px;" rowspan="2">Vehicle No</th>
+                    <th style="width:20px;" rowspan="2">Location Name</th>
+                    <th style="width:50px;" rowspan="2">Cargo Desc.</th>
+                    <th style="width:100px;" rowspan="2">Package Type</th>
+                    <th style="width:100px;" colspan="3">TW</th>
+                </tr>
+                <tr>
+                    <th style="width:100px;">PKGSDestuff</th>
+                    <th style="width:100px;">Unit Weight</th>
+                    <th style="width:100px;">Weight</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dr2 in ViewBag.LabourTWList)
+                {
+                    if (@dr1["VendorId"] == @dr2["Vendor"])
+                    {
+                <tr>
+                    <td style="text-align:left">@counter2</td>
+                    <td style="text-align:left">@dr2["VehicleNo"]</td>
+                    <td style="text-align:left">@dr2["Location"]</td>
+                    <td style="text-align:left">@dr2["CargoDesc"]</td>
+                    <td style="text-align:left">@dr2["PackageType"]</td>
+                    <td style="text-align:right">@dr2["TW_PKGSDestuff"]</td>
+                    <td style="text-align:right">@dr2["TW_UnitWeight"]</td>
+                    <td style="text-align:right">@dr2["TW_Weight"]</td>
+                </tr>
+                        counter2 = counter2 + 1;
+                    }
+                }
+            </tbody>
+        </table>
+        <div style="page-break-after:always;">
+            &nbsp;
+        </div>
+    }
+</body>
+</html>

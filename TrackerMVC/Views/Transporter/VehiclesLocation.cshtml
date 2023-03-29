@@ -1,0 +1,199 @@
+﻿
+@{
+    ViewBag.Title = "VehiclesLocation";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="tracker-loader"></div>
+<style>
+    body {
+        font-weight: bolder !important;
+    }
+</style>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">
+            <label id="showlabel"></label> :<label id="lblCount"></label>
+
+        </h4>
+    </div>
+
+    <input type="button" id="btnVariousVehicle" value="Various Location" class="btn btn-success" onclick="VariousVehicle()" />
+    <input type="button" id="btnIdleVehicles" value="Idle Location" class="btn btn-primary" onclick="IdleVehicles()" />
+
+</div>
+
+<div class=" content-area" id="idelvehicles" style="display:none">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="input-group">
+
+                        <button class="btn btn-primary" type="button" id="NTL" onclick="ShowIdleTrailers('NTL');">NTL</button>
+                        <button class="btn btn-primary" type="button" id="NCL" onclick="ShowIdleTrailers('NCL');">NCL</button>
+                    </div><br /><br />
+                    @Html.ActionLink("Export To Excel", "ExportToExcelIdleVechile", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="Varoiusvehicles" style="display:none">
+    
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcel", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $('#example2').DataTable({
+    //        "bLengthChange": false,
+    //        "bInfo": false,
+    //        "bPaginate": false,
+    //        //"bFilter": false,
+    //        "paging": false
+
+    //    });
+
+
+    //});
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+        $("#showlabel").text('Vehicles Location')
+    })
+</script>
+<script>
+    function VariousVehicle() {
+        $("#idelvehicles").hide();
+        $("#Varoiusvehicles").show();
+        $("#showlabel").text('Location Wise Vehicles')
+        ShowLocationWiseTrailers();
+    }
+
+    function IdleVehicles() {
+        $("#idelvehicles").show();
+        $("#Varoiusvehicles").hide();
+        $("#showlabel").text('Idle Vehicles')
+        ShowIdleTrailers('NTL');
+
+        $("#NTL").css({ "background-color": "#7754ce" });
+        $("#NCL").css({ "background-color": "#9f78ff" });
+    }
+</script>
+
+<script type="text/javascript">
+
+    function ShowIdleTrailers(VehicleGroup) {
+        $("#tracker-loader").fadeIn("slow");
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Transporter/AjaxGetIdleVechile',
+            data: '{VehicleGroup: ' + JSON.stringify(VehicleGroup) + '}',
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                $("#example1").empty();
+                RepTableDataJsonwopaging($("#example1"), data, "Location Wise Vehicle", "LocationWiseVehicle");
+                $("#tracker-loader").fadeOut("slow");
+
+                var table = document.getElementById("example1");
+
+                $("#lblCount").text(table.rows.length - 1);
+              
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    $("#NTL").click(function () {
+        $("#NTL").css({ "background-color": "#7754ce" });
+        $("#NCL").css({ "background-color": "#9f78ff" });
+    });
+    $("#NCL").click(function () {
+        $("#NCL").css({ "background-color": "#7754ce" });
+        $("#NTL").css({ "background-color": "#9f78ff" });
+
+    });
+
+</script>
+
+
+<script type="text/javascript">
+
+    function ShowLocationWiseTrailers() {
+        $("#tracker-loader").fadeIn("slow");
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Transporter/AjaxGetLocationWiseVechile',
+            // data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), data, "Location Wise Vehicle", "LocationWiseVehicle");
+                $("#tracker-loader").fadeOut("slow");
+                var table = document.getElementById("example2");
+
+                $("#lblCount").text(table.rows.length - 1);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

@@ -1,0 +1,544 @@
+﻿
+@{
+    ViewBag.Title = "File Data Entry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">File Data Entry</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                            { new SelectListItem { Text = "--Select--", Value = ""},
+                            new SelectListItem { Text = "Import", Value = "Import"},
+                            new SelectListItem { Text = "Container No", Value = "Container No"},
+                            new SelectListItem { Text = "Export", Value = "Export"},
+                            new SelectListItem { Text = "Bond", Value = "Bond"},
+                            new SelectListItem { Text = "Other", Value = "Other"},
+                              }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch", onchange = "OnSearchChange()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divIGMNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGM No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtigmno", null, new { @class = "form-control", @id = "txtigmno", name = "txtIGMNo", autocomplete = "off", placeholder = "IGM No" })
+                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divItemNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Item No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtitemno", null, new { @class = "form-control", @id = "txtitemno", name = "txtItemNo", autocomplete = "off", placeholder = "Item No" })
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divContainerNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcontainerno", null, new { @class = "form-control", @id = "txtcontainerno", name = "txtcontainerno", autocomplete = "off", placeholder = "Container No", @maxlength = 11 })
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divViaNo" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">SB No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtsbno", null, new { @class = "form-control", @id = "txtsbno", name = "txtsbno", autocomplete = "off", placeholder = "SB No" })
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divBond" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">NOC No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtnocno", null, new { @class = "form-control", @id = "txtnocno", name = "txtnocno", autocomplete = "off", placeholder = "Noc No" })
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12" id="divBOE" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">BOE No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtboeno", null, new { @class = "form-control", @id = "txtboeno", name = "txtboeno", autocomplete = "off", placeholder = "BOE No" })
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12" id="divRef" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Refrence No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtrefno", null, new { @class = "form-control", @id = "txtrefno", name = "txtrefno", autocomplete = "off", placeholder = "Refrance No" })
+                                          
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">File No.</label>
+                                    @Html.TextBox("FileNo", null, new { @class = "form-control", @id = "txtfileno", name = "FileNo", autocomplete = "off" })
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    @Html.TextBox("txtremarks", null, new { @class = "form-control", @id = "txtremarks", name = "txtremarks", autocomplete = "off" })
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" onclick="Update()" title="Save"><b>Save</b></button>
+                                            <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">File Data Entry Summary</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col-2">
+                                        <label class="form-label">From</label>
+                                        @Html.TextBox("txtfromdate", null, new { @class = "form-control form_datetime1", @id = "txtfromdate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 08:00") })
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-label">To</label>
+                                        @Html.TextBox("txttodate", null, new { @class = "form-control form_datetime1", @id = "txttodate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                    <div class="col-md-12 col-lg-8">
+                                        <label class="form-label">.</label>
+                                        <button class="btn btn-primary" onclick="Search()" title="Show"><b>Show</b></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success" id="btnSearch" style="margin-top: auto" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+</script>
+
+
+
+<script>
+    function OnSearchChange() {
+        var ddlSearch = $("#ddlSearch").val();
+
+        
+
+
+        if (ddlSearch != "") {
+            if (ddlSearch == "Import") {
+                $("#divIGMNo").show();
+                $("#divItemNo").show();
+                $("#divContainerNo").hide();
+                $("#divViaNo").hide();
+                $("#divRef").hide();
+                $("#divBond").hide();
+                $("#divBOE").hide();
+                $("#txtigmno").val("");
+                $("#txtitemno").val("");
+                $("#txtcontainerno").val("");
+                $("#txtsbno").val("");
+            }
+            else if (ddlSearch == "Container No") {
+                $("#divIGMNo").hide();
+                $("#divItemNo").hide();
+                $("#divContainerNo").show();
+                $("#divViaNo").hide();
+                $("#divBond").hide();
+                $("#divRef").hide();
+                $("#divBOE").hide();
+                $("#txtigmno").val("");
+                $("#txtitemno").val("");
+                $("#txtcontainerno").val("");
+                $("#txtsbno").val("");
+            }
+            else if (ddlSearch == "Export") {
+                $("#divIGMNo").hide();
+                $("#divItemNo").hide();
+                $("#divContainerNo").hide();
+                $("#divBond").hide();
+                $("#divBOE").hide();
+                $("#divRef").hide();
+                $("#divViaNo").show();
+                $("#txtigmno").val("");
+                $("#txtitemno").val("");
+                $("#txtcontainerno").val("");
+                $("#txtsbno").val("");;
+            }
+
+            else if (ddlSearch == "Bond") {
+                $("#divIGMNo").hide();
+                $("#divItemNo").hide();
+                $("#divContainerNo").hide();
+                $("#divViaNo").hide();
+                $("#divBond").show();
+                $("#divBOE").show();
+                $("#divRef").hide();
+
+                $("#txtigmno").val("");
+                $("#txtitemno").val("");
+                $("#txtcontainerno").val("");
+                $("#txtsbno").val("");
+            }
+
+            else if (ddlSearch == "Other") {
+                $("#divIGMNo").hide();
+                $("#divItemNo").hide();
+                $("#divContainerNo").hide();
+                $("#divViaNo").hide();
+                $("#divBond").hide();
+                $("#divBOE").hide();
+                $("#divRef").show();
+                $("#txtigmno").val("");
+                $("#txtitemno").val("");
+                $("#txtcontainerno").val("");
+                $("#txtsbno").val("");
+            }
+        }
+        else {
+            $("#divIGMNo").hide();
+            $("#divItemNo").hide();
+            $("#divContainerNo").hide();
+            $("#divViaNo").hide();
+            $("#divBond").hide();
+            $("#divBOE").hide();
+            $("#divRef").hide();
+            $("#txtigmno").val("");
+            $("#txtitemno").val("");
+            $("#txtcontainerno").val("");
+            $("#txtsbno").val("");
+
+        }
+    }
+
+</script>
+
+<script>
+
+
+     function Update() {
+       
+        var Search = $("#ddlSearch").val().trim();
+        var IGMNo = $("#txtigmno").val().trim();
+        var ItemNO = $("#txtitemno").val().trim();
+       
+         if (Search == "Import") {
+             if (IGMNo == 0) {
+                 document.getElementById('txtigmno').style.borderColor = "red";
+                 alert("Please enter the igm no!")
+
+                 return false;
+             }
+
+
+             if (ItemNO == "") {
+                 document.getElementById('txtitemno').style.borderColor = "red";
+                 alert("Please enter the item no.!")
+
+                 return false;
+             }
+
+
+
+             var data1 = { "IGMNo": IGMNo, "ItemNO": ItemNO };
+             var data = JSON.stringify(data1);
+
+             $.ajax({
+                 type: 'POST',
+                 url: '/exportModel/GetIGmdetails',
+                 data: data,
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: function (data) {
+                     if (data == "1") {
+                         Update1();
+                     } else {
+                         alert("Please check the Igm-Item no!");
+                     }
+                 },
+                 error: function (errormessage) {
+                     alert(errormessage.responseText);
+                     $("#tracker-loader").fadeOut("slow");
+                 }
+             });
+         } else {
+             Update1();
+         }
+
+         
+    }
+
+    
+    function Update1() {
+       
+        var Search = $("#ddlSearch").val().trim();
+        var IGMNo = $("#txtigmno").val().trim();
+        var ItemNO = $("#txtitemno").val().trim();
+        var SBNo = $("#txtsbno").val().trim();
+        var Containerno = $("#txtcontainerno").val().trim();
+        var NOCNo = $("#txtnocno").val().trim();
+        var BOENo = $("#txtboeno").val().trim();
+        var RefrenceNo = $("#txtrefno").val().trim();
+        var FileNo = $("#txtfileno").val().trim();
+        var Remarks = $("#txtremarks").val().trim();
+
+
+        if (Search == 0 ) {
+            document.getElementById('ddlSearch').style.borderColor = "red";
+            alert("Please Select Category !")
+
+            return false;
+        }
+
+
+        if (FileNo == "") {
+            document.getElementById('txtfileno').style.borderColor = "red";
+            alert("Please enter file no. !")
+
+            return false;
+        }
+
+      
+
+        var data1 = { "Search": Search, "IGMNo": IGMNo, "ItemNO": ItemNO, "SBNo": SBNo, "Containerno": Containerno, "NOCNo": NOCNo, "BOENo": BOENo, "RefrenceNo": RefrenceNo, "FileNo": FileNo, "Remarks": Remarks};
+        var data = JSON.stringify(data1);
+    
+        $.ajax({
+            type: 'POST',
+            url: '/exportModel/SaveFileDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("FileDataEntry", "exportModel")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function Search() {
+        var FromDate = $("#txtfromdate").val();
+
+        var ToDate = $("#txttodate").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+       
+        $.ajax({
+
+            url: '/exportModel/FileDataEntryReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJson($("#reportTable"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+</script>
+<script type="text/javascript">
+        // excel icon call button
+    function GetExcelFile() {
+        document.location = '@Url.Action("FileDataEntryExcel", "Gate")';
+    }
+</script>
+<script>
+    $(function () {
+        var currDate = new Date();
+        $(".form_datetime1").datetimepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy hh:ii',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true,
+            forceParse: true,
+            // endDate: currDate
+        })
+            .on('changeDate', function (e) {
+                // Revalidate the date field
+                // $('#eventForm').formValidation('revalidateField', 'date');
+                $('.datetimepicker').hide();
+            });
+        $(".DepartureDateTime").datetimepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy hh:ii',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true,
+            forceParse: true,
+            // endDate: currDate
+        })
+            .on('changeDate', function (e) {
+                // Revalidate the date field
+                // $('#eventForm').formValidation('revalidateField', 'date');
+                $('.datetimepicker').hide();
+            });
+        $(".RemovalDateTime").datetimepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy hh:ii',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true,
+            forceParse: true,
+            // endDate: currDate
+        })
+            .on('changeDate', function (e) {
+                // Revalidate the date field
+                // $('#eventForm').formValidation('revalidateField', 'date');
+                $('.datetimepicker').hide();
+            });
+
+        $(".form_date2").datetimepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true,
+            forceParse: true,
+            timepicker: false,
+            // endDate: currDate
+        })
+            .on('changeDate', function (e) {
+                // Revalidate the date field
+                // $('#eventForm').formValidation('revalidateField', 'date');
+                $('.datetimepicker').hide();
+            });
+
+    });
+</script>

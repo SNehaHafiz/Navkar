@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "ExportReMovementReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area1" id="divcontainerno" >
+    <div class="page-header">
+        <h4 class="page-title">Export Re-Movement Report<lable id="lblSLName"></lable> </h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.ActionLink("Export To Excel", "ExportToExcelExpReMovRep", null, new { @class = "btn btn-primary btn-md" })
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="card1">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="exampleInv"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
+<script>
+
+    function Show() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowVoucherDetails();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+
+    function ShowVoucherDetails() {
+
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/ExportReMovementRep',
+            data: '{FromDate: ' + JSON.stringify($("#FromDate").val()) + ', ToDate: ' + JSON.stringify($("#ToDate").val()) + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                debugger;
+                RepTableDataJson($("#exampleInv"), data, "Warai Invoice", "WaraiInvoice");
+                $("#tracker-loader").fadeOut("slow");
+                
+            },
+            error: function (errormessage) {
+                $("#tracker-loader").fadeOut("slow");
+                alert(errormessage.responseText);
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    };
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+</script>

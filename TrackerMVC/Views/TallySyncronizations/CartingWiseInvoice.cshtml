@@ -1,0 +1,611 @@
+﻿
+@{
+    ViewBag.Title = "CartingWiseInvoice";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden" >
+
+    <div class="page-header">
+        <h4 class="page-title">Category Wise Invoice Export to Tally</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-8 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As On: </label>
+                                <div class="row gutters-xs">
+                                    <div class="col-md-12 col-lg-3">
+
+                                        @Html.TextBox("txtDate", (String)ViewBag.Date, new { @class = "form-control datePicker1", @id = "txtDate", autocomplete = "off", onchange = "CheckDate();", @value = @ViewBag.Date })
+
+                                    </div>
+                                    <div class="col-md-12 col-lg-9">
+                                        <button class="btn btn-primary" type="button" id="Carting" onclick="LoadData('Carting');">Carting</button>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+
+                        <div class="col-md-2 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">No of Records</label>
+                                @Html.TextBox("txtCount", null, new { @class = "form-control", @id = "txtCount", name = "txtCount", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-md-22 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">SGST</label>
+                                @Html.TextBox("txtSGST", null, new { @class = "form-control", @id = "txtSGST", name = "txtSGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-md-22 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">CGST</label>
+                                @Html.TextBox("txtCGST", null, new { @class = "form-control", @id = "txtCGST", name = "txtCGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-md-22 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">IGST</label>
+                                @Html.TextBox("txtIGST", null, new { @class = "form-control", @id = "txtIGST", name = "txtIGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-md-22 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label"> Total GST</label>
+                                @Html.TextBox("txtTotalGST", null, new { @class = "form-control", @id = "txtTotalGST", name = "txtTotalGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-md-22 col-lg-2">
+                            <div class="form-group label-floating">
+                                <label class="form-label">Grand Total</label>
+                                @Html.TextBox("txtTotal", null, new { @class = "form-control", @id = "txtTotal", name = "txtTotal", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+
+                        <input type="hidden" name="txtCategory" id="txtCategory">
+
+
+                    </div>
+
+
+
+                    <div class="table-responsive">
+                        @*<button class="btn btn-primary" name="btnExport" onclick="ExportToExcel()">Export to Excel</button>*@
+                        @Html.ActionLink("Export To Excel", "ExportToExcelTallyInvoiceInfo", null, new { @class = "btn btn-primary btn-md" })
+                        <button class="btn btn-primary" name="btnLock" onclick="Lock()">Lock</button>
+
+                        <table id="tblInvoiceList" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th class="wd-15p sorting" style="width:1px;"> <input type="checkbox" id="flowcheckall" value="" />&nbsp;Select    </th>
+
+                                    <th class="wd-10p sorting">Category</th>
+                                    <th class="wd-10p sorting">Invoice No</th>
+                                    <th class="wd-10p sorting">Invoice Date</th>
+                                    <th class="wd-10p sorting">InvoiceDate</th>
+                                    <th class="wd-10p sorting">Tally Name</th>
+                                    <th class="wd-10p sorting">GST No</th>
+                                    <th class="wd-10p sorting">GST Name</th>
+                                    <th class="wd-10p sorting">State</th>
+                                    <th class="wd-10p sorting">SGST</th>
+                                    <th class="wd-10p sorting">CGST</th>
+                                    <th class="wd-10p sorting">IGST</th>
+                                    <th class="wd-10p sorting">Total GST</th>
+                                    <th class="wd-10p sorting">Grand Total</th>
+                                    <th class="wd-10p sorting">Work Year</th>
+
+
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+
+                    @*<div class="btn-list text-center">
+            <div class="row">
+                <div class=" btn-list col-12">
+                    <button class="btn btn-primary btn-success" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+                </div>
+            </div>
+        </div>*@
+
+
+
+                    <!-- table-wrapper -->
+
+                    <div id="divExcel" style="display:none" >
+                    <div class="table-responsive">
+                        <table id="tblExport" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+
+                                  
+                                    <th class="wd-10p sorting">V_INVOICE_DATE</th>
+                                    <th class="wd-10p sorting">VOUCHER_TYPE</th>
+                                    <th class="wd-10p sorting">REF_T</th>
+                                    <th class="wd-10p sorting">LEDERNAME</th>
+                                    <th class="wd-10p sorting">DR_CR</th>
+                                    <th class="wd-10p sorting">AMOUNT</th>
+                                    
+
+
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+
+                        </div>
+
+
+
+
+                </div>
+            <!-- section-wrapper -->
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+
+
+    function Lock() {
+
+        var category = $('#txtCategory').val();
+
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("tblInvoiceList");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                var InvoiceNo = row.cells[0].childNodes[0].value;
+
+                if (InvoiceNo == checkboxarray[k]) {
+
+                    WorkYear = row.cells[14].innerText;
+
+                    if ($('#txtCategory').val() == 'ALL')
+                    {
+                        //alert(category);
+                        var categoryx = row.cells[1].innerText;
+                        //alert(categoryx);
+                    }
+
+                    tablearray.push({ 'InvoiceNo': InvoiceNo, 'WorkYear': WorkYear, 'Category': categoryx  })
+                }
+            }
+        }
+        //alert(JSON.stringify(tablearray));
+
+        if (tablearray.length == 0) {
+            alert("Please select Invoice to proceed");
+
+        }
+        else {
+            var r = confirm("Do you want lock selected invoices ?");
+            if (r == true) {
+
+                var data1 = { 'Invoicedata': tablearray, 'CategoryName': category };
+                var data = JSON.stringify(data1);
+
+                 alert(data);
+
+                $.ajax({
+                    url: "/TallySyncronizations/LockInvoiceData",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (Data) {
+
+                        alert("Data locked successfully!");
+
+                        document.location = '@Url.Action("CartingWiseInvoice", "TallySyncronizations")';
+
+
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+            else {
+
+            }
+        }
+
+
+
+
+    }
+
+    function ExportToExcel() {
+
+        var category = $('#txtCategory').val();
+        var Date = $("#txtDate").val();
+
+        var data1 = { 'Date': Date, 'Category': category };
+        var data = JSON.stringify(data1);
+
+
+        $.ajax({
+            url: "/TallySyncronizations/GetExporttoExcelData",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (Data) {
+                debugger;
+                var filename = 'Export_CategoryWiseInvoice_' + category + '_' + Date;
+
+                $('#tblExport').dataTable({
+                    "destroy": true,
+                    "initComplete": function () {
+                        $('.buttons-excel').click()
+                    },
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "aaSorting": [],
+                    "order": [],
+
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+                    "aaData": Data,
+                    "columns": [
+                        { "data": "V_INVOICE_DATE" },
+                        { "data": "VOUCHER_TYPE" },
+                        { "data": "REF_T" },
+                        { "data": "LEDERNAME" },
+                        { "data": "DR_CR" },
+                        { "data": "AMOUNT" }
+                        
+                    ]
+                    ,
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'CategoryWiseInvoice',
+                        "filename": filename,
+                        "text":'Export to Excel'
+
+                    }
+
+                    ]
+
+                })
+
+
+
+
+            },
+            error: function (errormessage) {
+                debugger;
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+    
+
+
+
+    function CheckDate() {
+
+        $('#txtCategory').val("");
+        $("#Carting").removeClass("btn btn-success");
+        $("#Carting").addClass("btn btn-primary");
+
+        var table = $('#tblInvoiceList').DataTable();
+
+        table
+            .clear()
+            .draw();
+
+        $('#txtCount').val("");
+        $('#txtSGST').val("");
+        $('#txtCGST').val("");
+        $('#txtIGST').val("");
+        $('#txtTotalGST').val("");
+        $('#txtTotal').val("");
+
+       
+
+    }
+
+
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#tblInvoiceList').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+
+    function LoadData(category) {
+        debugger;
+        $('#txtCategory').val(category);
+
+        $("#flowcheckall").prop('checked', false);
+
+        var Date = $("#txtDate").val();
+
+        if (Date == "") {
+            alert("Please select date");
+        }
+        else {
+
+            if (category == 'Carting') {
+
+                $("#Carting").removeClass("btn btn-primary");
+                $("#Carting").addClass("btn btn-success");
+
+                $("#Carting").removeClass("btn btn-success");
+                $("#Carting").addClass("btn btn-primary");
+
+            }
+
+
+
+            var data1 = { 'Date': Date, 'Category': category };
+            var data = JSON.stringify(data1);
+
+
+            $.ajax({
+                url: "/TallySyncronizations/FetchCategorywiseInvoiceCarting",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (Data) {
+                    debugger;
+                    //alert(JSON.stringify(Data));
+                    //alert(Data[0].GrandTotal);
+
+                    var Total = 0;
+                    for (var i = 0; i < Data.length; i++) {
+                        Total += Data[i].GrandTotal;
+                    }
+
+                    var SGST = 0;
+                    for (var i = 0; i < Data.length; i++) {
+                        SGST += Data[i].SGST;
+                    }
+
+                    var CGST = 0;
+                    for (var i = 0; i < Data.length; i++) {
+                        CGST += Data[i].CGST;
+                    }
+
+                    var IGST = 0;
+                    for (var i = 0; i < Data.length; i++) {
+                        IGST += Data[i].IGST;
+                    }
+
+                    var TotalGST = +SGST + +CGST + +IGST;
+
+
+                    $('#txtCount').val(Data.length);
+                    $('#txtSGST').val(SGST);
+                    $('#txtCGST').val(CGST);
+                    $('#txtIGST').val(IGST);
+                    $('#txtTotalGST').val(TotalGST);
+                    $('#txtTotal').val(Total);
+
+
+                    //alert(Total);
+
+
+                    $('#tblInvoiceList').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bInfo": false,
+                        "bPaginate": false,
+                        //"bFilter": false,
+                        "aaSorting": [],
+                        "order": [],
+
+                        "aoColumnDefs": [
+                            {
+                                'bSortable': false,
+                                'aTargets': [0]
+                            }
+
+                        ],
+                        "aaData": Data,
+                        "columns": [
+                            {
+
+                                "data": "Select",
+                                "render": function (data, type, row, meta) {
+
+                                    data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  value="' + row.InvoiceNo + '">';
+                                    return data;
+
+                                }
+                            },
+                            { "data": "Category" },
+                            { "data": "InvoiceNo" },
+                            { "data": "InvoiceDate" },
+                            { "data": "InvoiceDate1" },
+                            { "data": "TallyName" },
+                            { "data": "GSTNo" },
+                            { "data": "GSTName" },
+                            { "data": "State" },
+                            { "data": "SGST" },
+                            { "data": "CGST" },
+                            { "data": "IGST" },
+                            { "data": "TotalGST" },
+                            { "data": "GrandTotal" },
+                            { "data": "WorkYear" }
+
+
+
+
+
+                        ]
+                        //,
+                        //"dom": 'Bfrtip',
+                        //"buttons": [{
+                        //    "extend": 'excel',
+                        //    "title": 'CategoryWiseInvoice',
+                        //    "filename": 'CategoryWiseInvoice',
+                        //    "text":'Export to Excel'
+
+                        //}
+
+                        //]
+
+                    })
+
+
+
+
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+
+
+        }
+
+    }
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+
+        $('#tblInvoiceList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+            //,
+            //"dom": 'Bfrtip',
+            //"buttons": [{
+            //    "extend": 'excel',
+            //    "title": 'CountryList',
+            //    "filename": 'GetMyREQ_Country_List'
+
+            //}
+
+            //]
+
+        })
+
+
+        $('#tblExport').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+            //,
+            //"dom": 'Bfrtip',
+            //"buttons": [{
+            //    "extend": 'excel',
+            //    "title": 'CountryList',
+            //    "filename": 'GetMyREQ_Country_List'
+
+            //}
+
+            //]
+
+        })
+
+
+        $(function () {
+          
+            $('.datePicker1').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true
+                
+            })
+                .on('changeDate', function (e) {
+
+                    $('.datepicker').hide();
+                });
+        });
+    });
+
+</script>

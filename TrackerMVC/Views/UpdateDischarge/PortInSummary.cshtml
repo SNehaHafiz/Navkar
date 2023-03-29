@@ -1,0 +1,336 @@
+﻿
+@{
+    ViewBag.Title = "Port In Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Port In Details</h4>
+       
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.DropDownList("ddltrain", (IEnumerable<SelectListItem>)ViewBag.TrainList, "--Select-- ", new { @class = "form-control", @id = "ddltrain", name = "ddltrain", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="form-group">
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    <button class="btn btn-primary" style="width:60PX" id="btnSearch" type="button" onclick="ShowPortInDetails()"><i class="fe fe-search"></i></button>
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary btn-success " type="button" id="Save" onclick="Save()" name="Save">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="wd-10p sorting">Planning Date</th>
+                                                <th class="wd-10p sorting ">Process Type</th>
+                                                <th class="wd-10p sorting">Entry ID </th>
+                                                <th class="wd-10p sorting">Container No.</th>
+                                                <th class="wd-10p sorting ">Transport Type</th>
+                                                <th class="wd-10p sorting">Train No </th>
+                                                <th class="wd-10p sorting">Wagon No.</th>
+                                                <th class="wd-10p sorting ">Container Type</th>
+                                                <th class="wd-10p sorting">Trailer No. </th>
+                                                <th class="wd-10p sorting">From Destination</th>
+                                                <th class="wd-10p sorting ">To Destination</th>
+                                                <th class="wd-10p sorting">Planned By </th>
+                                                <th class="wd-10p sorting">Planned ON</th>
+                                                <th class="wd-10p sorting ">Remarks</th>
+                                                <th class="wd-10p sorting">Port In date </th>
+                                                <th class="wd-10p sorting">Port In Remarks</th>
+                                                <th class="wd-10p sorting ">Port In By</th>
+                                                <th class="wd-10p sorting">Loading By </th>
+                                                <th class="wd-10p sorting">Loading Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+           
+        });
+    });
+</script>
+
+
+<script type="text/javascript">
+
+
+    function ShowPortInDetails() {
+
+        var Trainno = $("#ddltrain option:selected").val()
+      
+        
+
+    
+        $.ajax({
+            type: 'POST',
+            url: '/UpdateDischarge/AjaxGetPortInDetails',
+            //data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ',SearchCriteria: ' + JSON.stringify(SearchCriteria) + ',SearchText: ' + JSON.stringify(SearchText) + '}',
+            data: '{Trainno: ' + JSON.stringify(Trainno) + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    $('#example1').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        //"bFilter": false,
+                        "paging": false,
+                        "aaData": data,
+                        "columns": [
+                            {
+
+                                "data": "ContainerNo",
+                                "render": function (data, type, row, meta) {
+
+
+                                    //if (row.selected === 'checked') {
+
+                                    //    alert(Number(row.TEUS));
+                                    //    TotTUES += Number(row.TEUS);
+                                    //}
+
+                                    data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"   value="' + data + '">';
+                                    return data;
+
+                                }
+                            },
+                            { "data": "PlanningDate" },
+                            { "data": "ProcessType" },
+                            {
+                                "data": "EntryID",
+                                "render": function (data, type, row, meta) {
+
+                                    input = '<input type=\"hidden\" name=\"EntryID[]\" class=\" form-control EntryID\" id=\"EntryID\"  value="' + data + '">';
+                                    return data + input;
+                                }
+                            },
+                            { "data": "ContainerNo" },
+                            { "data": "TransType" },
+                            { "data": "TrainNo" },
+                            { "data": "WagonNo" },
+                            { "data": "ContainerNo" },
+                            { "data": "TrailerNo" },
+                            { "data": "FromDestination" },
+                            { "data": "ToDestination" },
+                            { "data": "PlannedBy" },
+                            { "data": "PlannedON" },
+                            { "data": "Remarks" },
+                            { "data": "PortIndate" },
+                            { "data": "PortInRemarks" },
+                            { "data": "PortInBy" },
+                            { "data": "LoadingBy" },
+                          
+                            { "data": "LoadingDate" },
+                            
+                           
+                        ]
+                    });
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+
+
+   
+</script>
+
+
+<script type="text/javascript">
+    function Save() {
+        var res = validate();
+        //  alert(res)
+        if (res == false) {
+            return false;
+        }
+
+        var itemcount = checkItemcount();
+        if (itemcount) {
+
+
+
+            //  var Trainid = $("#ddlTrainDropdown option:selected").val();
+
+            // alert(SMTPDate)
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+            
+
+
+            var tablearray = [];
+            var table = document.getElementById("example1");
+            var row;
+
+
+            //var tablearray = [];
+            //var table = document.getElementById("ContainerList");
+            //var row;
+
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+                    var ContainerNo = row.cells[0].childNodes[0].value;
+
+                   
+                    if (ContainerNo == checkboxarray[k]) {
+
+                        var EntryID = row.cells[3].innerText;
+                      
+
+
+                        tablearray.push({ 'ContainerNo': ContainerNo, 'EntryID': EntryID })
+                    }
+                }
+
+            }
+
+         
+
+      
+        if (tablearray.length == 0) {
+            alert("Please select atleast one container to update port In Date!");
+
+            // alert("hi");
+        }
+        else {
+            // alert("hi");
+            var data1 = { 'Portin': tablearray };
+            var data = JSON.stringify(data1);
+             // alert(data);
+            $.ajax({
+                url: "/UpdateDischarge/UpdatePortIN",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    // alert("Record saved successfully!");
+                    var str = response;
+                    alert(str);
+                    //ShowItemsList();
+                   
+
+
+                    },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+    else {
+            alert("Please select atleast one container to add Port In Date.!");
+    }
+
+    }
+
+    function checkItemcount() {
+
+        var table = $('#example1').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+</script>
+
+<script>
+
+    function validate() {
+
+        var train = document.getElementById('ddltrain').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('ddltrain').style.borderColor = "Gainsboro";
+
+
+        if (train == "") {
+            document.getElementById('ddltrain').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+        if (train == "--Select-- ") {
+            document.getElementById('ddltrain').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>

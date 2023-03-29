@@ -1,0 +1,319 @@
+﻿
+@{
+    ViewBag.Title = "ExpensesHeadMasters";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+@{
+    ViewBag.Title = "ExpensesHeadMaster";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+@*<h2>ExpensesHeadMaster</h2>*@
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Expenses Head Master</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+
+                    <input type="button" class="btn btn-primary" value="Expenses Type Master" onclick="@("window.location.href='" + @Url.Action("ExpensesTypeMaster", "ExpensesHead") + "'");" />
+                    <input type="button" class="btn btn-warning" value="Sub Expenses Master" onclick="@("window.location.href='" + @Url.Action("ExpensesSubHead", "ExpensesHead") + "'");" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry-ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtentryid" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtdate" type="datetime-local" readonly="readonly" class="form-control" value="@ViewBag.Date" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Expenses Group</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlExpensesgroup", (IEnumerable<SelectListItem>)ViewBag.GroupDDL, "--Select--", new { @class = "form-control", @id = "ddlExpensesgroup", name = "ddlExpensesgroup", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> Expenses Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlExpensesType", (IEnumerable<SelectListItem>)ViewBag.ExpensesType, "--Select--", new { @class = "form-control", @id = "ddlExpensestypelist", name = "ddlExpensestypelist" +
+                                           "", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Expenses Sub Head</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlsubExpenseshead", (IEnumerable<SelectListItem>)ViewBag.SubHead, "--Select--", new { @class = "form-control", @id = "ddlsubExpenseshead", name = "ddlsubExpenseshead", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Expenses Head Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtExpHeadName" type="text" placeholder="Expenses Head Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-lg-3 col-xs-12">
+                                <div class="form-group">
+                                    <label class="custom-switch">
+                                        <input type="checkbox" name="custom-switch-checkbox" id="chkIsActive" value="true" checked class="custom-switch-input">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">Is Active?</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Save</button>
+                                        <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Grid Show*@
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Expenses Head  List</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function edittext(EntryID, HeadName, Expenses_Group_Id, Sub_Exp_Head_ID, Expenses_Type_ID) {
+        debugger;
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+        $("#txtentryid").val(EntryID);
+        $("#txtExpHeadName").val(HeadName)
+        $("#ddlExpensesgroup").val(Expenses_Group_Id)
+        $("#ddlsubExpenseshead").val(Sub_Exp_Head_ID)
+        $("#ddlExpensestypelist").val(Expenses_Type_ID)
+
+    }
+    function ShowSSRSummary() {
+
+
+        debugger;
+        var search = document.getElementById('txtsearch').value;
+        var data1 = { 'search': search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/ExpensesHead/Search",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(jsonResult)
+                $("#reportTable").empty();
+                RepTableDataJson($("#tblWorkOrderOpenList"), data, "ExpensesHeadMasters", "ExpensesHeadMasters")
+                //  alert(jsonResult)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+    function Save() {
+        debugger;
+        var EntDate = document.getElementById('txtdate').value;
+        var expheadname = document.getElementById('txtExpHeadName').value;
+        var chkIsActive = document.getElementById('chkIsActive').value;
+        var entryid = document.getElementById('txtentryid').value;
+        var GroupDDL = document.getElementById('ddlExpensesgroup').value;
+        var Subhead = document.getElementById('ddlsubExpenseshead').value;
+        var ExpensType = document.getElementById('ddlExpensestypelist').value;
+
+
+
+
+        if (expheadname == "") {
+            document.getElementById("txtExpHeadName").style.borderColor = "red";
+            alert('Please  Enter  Expenses Head Name!')
+            event.preventDefault();
+            return;
+        }
+
+
+        if (GroupDDL == 0) {
+            document.getElementById("ddlExpensesgroup").style.borderColor = "red";
+            alert('Please  Select Expenses Group!')
+            event.preventDefault();
+            return;
+        }
+
+        if (Subhead == 0) {
+            document.getElementById("ddlsubExpenseshead").style.borderColor = "red";
+            alert('Please  Select Expenses Group!')
+            event.preventDefault();
+            return;
+        }
+
+        if (ExpensType == 0) {
+            document.getElementById("ddlExpensestypelist").style.borderColor = "red";
+            alert('Please  Select Expenses Group!')
+            event.preventDefault();
+            return;
+        }
+
+        var ExpHeadMasterEnt = {};
+        ExpHeadMasterEnt.EntryDate = EntDate;
+        ExpHeadMasterEnt.HeadName = expheadname;
+        ExpHeadMasterEnt.IsActive = chkIsActive;
+        ExpHeadMasterEnt.EntryID = entryid;
+        ExpHeadMasterEnt.ExpGroupID = GroupDDL;
+        ExpHeadMasterEnt.SubExpID = Subhead;
+        ExpHeadMasterEnt.ExpTypeID = ExpensType;
+
+
+        @*expTariffMaster Is Entities Name *@
+        //This Is For Pass Data Through Java Script
+$.ajax({
+    url: "/ExpensesHead/Save",
+    data: '{ExpHeadMasterEnt: ' + JSON.stringify(ExpHeadMasterEnt) + '}',
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("ExpensesHeadMasters", "ExpensesHead")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+    }
+
+</script>

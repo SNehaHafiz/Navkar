@@ -1,0 +1,1194 @@
+﻿@model TrackerMVCEntities.BusinessEntities.TrainMaster
+
+@{
+    ViewBag.Title = "Train";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+<link href="~/css/DateTimePickerBL.css" rel="stylesheet" />
+<script src="~/js/DateTimePickerForBL.js"></script>
+<div>
+    <div id="addTrain">
+        @using (Html.BeginForm("SaveTrainDetails", "Train", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="page-header">
+                <h4 class="page-title">Train Details</h4>
+
+                <div class="form-group">
+                    <label class="form-label"></label>
+                    <div class="row gutters-xs">
+                        <div class="col">
+                            @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                            <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryList()"><i class="fa fa-file-text"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="input-group">
+                                        @* <input type="text" class="form-control" placeholder="Search for...">*@
+                                        <span class="input-group-append " id="tabPurpose">
+
+                                            <button class="btn btn-primary active" id="import" style="text-transform: uppercase;" type="button">Import</button>
+                                            <button class="btn btn-primary" id="export" style="text-transform: uppercase;" type="button">Export </button>
+                                            @*@Html.HiddenFor(model => model.IsImportORExportSelected, new { htmlAttributes = new { @class = "form-control", @id = "selectedImportORExport" } })*@
+                                            <label id="selectedImportORExport" class="display_none"></label>
+                                            @Html.EditorFor(model => model.IsImportORExportSelected, new { htmlAttributes = new { @class = "display_none", @id = "txtSelectedImportORExport", maxlength = 100 } })
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="row">
+
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label mandatory">Train NO</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @Html.EditorFor(model => model.TrainNO, new { htmlAttributes = new { @class = "form-control", @id = "trainNO", autocomplete = "on", maxlength = 100 } })
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label ">Port Name</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @*@Html.EditorFor(model => model.TrainNO, new { htmlAttributes = new { @class = "form-control", @id = "trainNO", autocomplete = "on", maxlength = 100 } })*@
+                                                    @Html.DropDownList("ddlportList",
+                                            (IEnumerable<SelectListItem>)ViewBag.portList,
+                                                    new { @class = "form-control" })
+                                                    @Html.EditorFor(model => model.PortFrom, new { htmlAttributes = new { @class = "display_none", @id = "txtPortFrom", maxlength = 100 } })
+                                                    @Html.EditorFor(model => model.PortTO, new { htmlAttributes = new { @class = "display_none", @id = "txtPortTo", maxlength = 100 } })
+                                                    <label id="portFrom" class="display_none"></label>
+                                                    <label id="portTo" class="display_none"></label>
+                                                    @*@Html.HiddenFor(model => model.PortFrom, new { htmlAttributes = new { @class = "form-control", @id = "portFrom" } })*@
+                                                    @*@Html.HiddenFor(model => model.PortTO, new { htmlAttributes = new { @class = "form-control", @id = "portTo" } })*@
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Operator Name</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+                                                    @*@Html.EditorFor(model => model.TrainNO, new { htmlAttributes = new { @class = "form-control", @id = "trainNO", autocomplete = "on", maxlength = 100 } })*@
+                                                    @Html.DropDownList("ddlOperatorList",
+                                   (IEnumerable<SelectListItem>)ViewBag.OperatorList,
+
+                                                    new { @class = "form-control" })
+                                                </div>
+                                                <button type="button" class="btn btn-icon btn-green" name="addOperator" title="Add Operator" id="addOperator"><i class="fa fa-plus"></i></button>
+                                                @Html.EditorFor(model => model.Operator, new { htmlAttributes = new { @class = "display_none", @id = "txtOperatorName", maxlength = 100 } })
+                                                @Html.EditorFor(model => model.OperatorID, new { htmlAttributes = new { @class = "display_none", @id = "txtOperatorID", maxlength = 100 } })
+                                                <label id="operatorName" class="display_none"></label>
+                                                <label id="operatorID" class="display_none"></label>
+                                                @*@Html.HiddenFor(model => model.Operator, new { htmlAttributes = new { @class = "form-control", @id = "operatorName" } })
+                                                @Html.HiddenFor(model => model.OperatorID, new { htmlAttributes = new { @class = "form-control", @id = "operatorID" } })*@
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-12 col-sm-12 display_none " id="opertaor_wrap">
+                                    <div class="form-group">
+                                        <label class="form-label mandatory">New Operator Name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="" id="newOperatorName">
+                                            <span class="input-group-append">
+                                                <button class="btn btn-green" type="button" id="saveOperator">ADD!</button>
+                                                <button class="btn btn-gray" type="button" id="closeOperator"><i class="fa fa-close"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="row">
+
+                                    <div class="col-lg-12 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Date</label>
+                                            <div class="row gutters-xs">
+                                                <div class="col">
+
+                                                    @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm")})
+                                                    @Html.EditorFor(model => model.DateNTime, new { htmlAttributes = new { @class = "display_none", @id = "txtDateTime", maxlength = 100 } })
+                                                    <label id="dateTime" class="display_none"></label>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+
+
+
+                                <div class="card-footer text-right">
+                                    <div class="form-group">
+                                        <label class="form-label"></label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="submit" id="Save" name="saveProfile" value="Save" class="btn btn-success" />
+                                                @*<input type="button" name="clearProfile" value="Clear" class="btn btn-gray" title="clear" id="clearValue" />*@
+                                                <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+                                                
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+<div class=" content-area overflow-hidden" id="summaryLists" style="display:none">
+    
+     <div class="page-header">
+        
+        <h4 class="page-title">Train Summary: <label id="lblcount"></label></h4>
+        <div class="form-group">
+            
+             <label class="form-label"></label>
+               <div class="row gutters-xs">
+                  <div class="col">
+
+                      <button type="button" class="btn btn-icon btn-success" name="addTrain" title="Add train" id="addTrainScreen" onclick="window.location ='@Url.Action("NewTrainDetails", "Train")' "><i class="fa fa-plus"></i></button>
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+     <div class="row">
+        
+        <div class="col-md-12 col-lg-6">
+            
+             <div class="card">
+                
+
+                  <div class="card-body">
+                   
+
+                     <div class="">
+                        
+                     <div class="form-group">
+                        
+                                <label class="form-label"></label>
+                                <div class="input-group">
+                                
+                               
+                                     <span class="input-group-append " id="tabPurpose">
+                                 
+
+                                           <button class="btn btn-primary active" id="import_View" style="text-transform: uppercase;" type="button" value="I" onclick="import_View();">Import</button>
+                                         <button class="btn btn-primary" id="export_View" style="text-transform: uppercase;" type="button" value="E" onclick="export_View()" >Export </button>
+                                    @*@Html.HiddenFor(model => model.IsImportORExportSelected, new { htmlAttributes = new { @class = "form-control", @id = "selectedImportORExport" } })*@
+                                        <label id="viewselectedImportORExport" class="display_none"></label>
+
+                                    
+                                </span>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+
+
+
+
+                       <div class="table-responsive">
+                           <table id="example2" class="table table-striped table-bordered" style="width:100%">
+
+                               <thead>
+
+
+
+                                   <tr>
+
+                                       <th class="wd-10p sorting">Train NO</th>
+
+                                       <th class="wd-10p sorting">From</th>
+
+                                       <th class="wd-10p sorting">TO</th>
+
+                                       <th class="wd-10p sorting">Operator</th>
+
+                                       <th style="visibility:hidden;width:30px"></th>
+
+                                   </tr>
+
+                               </thead>
+
+
+                           </table>
+                    </div>
+                </div>
+
+               
+                
+            </div>
+               <!-- section-wrapper -->
+
+           
+        </div>
+        
+    </div>
+   
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div>
+    <div id="summaryList"></div>
+</div>*@
+
+<div>
+    <div id="editList_wrapper"></div>
+</div>
+
+@*@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () { 
+        var message = @Html.Raw(Json.Encode(ViewBag.Message))
+        alert(message);
+
+        document.getElementById("trainNO").value = "";
+        document.getElementById("isActive").checked = true;
+    };
+
+    </script>
+}*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+            
+        });
+
+
+
+
+    });
+</script>
+
+
+
+
+
+
+
+
+<script>
+    var portList, operatorList,message;
+    portList  =  @Html.Raw(Json.Encode(ViewBag.portList)) 
+    operatorList = @Html.Raw(Json.Encode(ViewBag.OperatorList)) 
+    message = @Html.Raw(Json.Encode(ViewBag.Message)) 
+
+    window.onload = function () {
+
+        
+        
+
+        //document.getElementById("selectedImportORExport").value = "Import";
+        document.getElementById('selectedImportORExport').value = "I";
+        document.getElementById('txtSelectedImportORExport').value = "I";
+        if (portList.length != 0) { 
+            document.getElementById("portFrom").value = portList[0].Text;
+            document.getElementById("txtPortFrom").value = portList[0].Text;
+            } 
+        document.getElementById("portTo").value = "ICD";
+        document.getElementById("txtPortTo").value = "ICD";
+
+        if (operatorList.length != 0) { 
+            
+            document.getElementById("operatorName").value = operatorList[0].Text; 
+            document.getElementById("operatorID").value = operatorList[0].Value;
+            document.getElementById("txtOperatorName").value = operatorList[0].Text;
+            document.getElementById("txtOperatorID").value = operatorList[0].Value;
+        } 
+       // alert(message)
+        if (message != "") {
+            
+            alert(message);
+        }
+    };
+
+  
+
+   
+   
+    $(document).ready(function () { 
+        $("#FromDate").on("change", function () {
+            var date = document.getElementById("FromDate").value;
+            document.getElementById("txtDateTime").value = date;
+            document.getElementById("dateTime").value = date; 
+        });
+        $("#ddlOperatorList").on("change", function () {
+            var selectedTab = document.getElementById("selectedImportORExport").value;
+            if (selectedTab == "Import") { 
+                if(operatorList.length != 0 ){
+                    for (var i = 0; i < operatorList.length; i++) {
+                        if (operatorList[i].Value == $("#ddlOperatorList").val()) {
+                            document.getElementById("operatorName").value = operatorList[i].Text;
+                            document.getElementById("operatorID").value = $("#ddlOperatorList").val();
+
+                            document.getElementById("txtOperatorName").value = operatorList[i].Text;
+                            document.getElementById("txtOperatorID").value = $("#ddlOperatorList").val();
+                        }
+                    }
+                }
+                
+                
+                
+            } else if (selectedTab == "Export") {
+               
+                if (operatorList.length != 0) {
+                    for (var i = 0; i < operatorList.length; i++) {
+                        if (operatorList[i].Value == $("#ddlOperatorList").val()) {
+                            document.getElementById("operatorName").value = operatorList[i].Text;
+                            document.getElementById("operatorID").value = $("#ddlOperatorList").val();
+
+                            document.getElementById("txtOperatorName").value = operatorList[i].Text;
+                            document.getElementById("txtOperatorID").value = $("#ddlOperatorList").val();
+                        }
+                    }
+                } 
+            } 
+
+        });
+
+        
+
+        $("#ddlportList").on("change", function () {
+            var selectedTab = document.getElementById("selectedImportORExport").value;
+            if (selectedTab == "Import") { 
+                if(portList.length != 0 ){
+                    for (var i = 0; i < portList.length; i++) {
+                        if (portList[i].Value == $("#ddlportList").val()) {
+                            document.getElementById("portFrom").value = portList[i].Text;
+                            document.getElementById("txtPortFrom").value = portList[i].Text;
+                        }
+                    }
+                }
+                
+                
+                document.getElementById("portTo").value = "ICD";
+                document.getElementById("txtPortTo").value = "ICD";
+                
+            } else if (selectedTab == "Export") {
+                document.getElementById("portFrom").value = "ICD";
+                document.getElementById("txtPortFrom").value = "ICD";
+                if (portList.length != 0) {
+                    for (var i = 0; i < portList.length; i++) {
+                        if (portList[i].Value == $("#ddlportList").val()) {
+                            document.getElementById("portTo").value = portList[i].Text;
+                            document.getElementById("txtPortTo").value = portList[i].Text;
+                        }
+                    }
+                } 
+            }
+          
+        });
+
+     
+      
+        $("#trainNO").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/Train/GetNoForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#trainNO").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#newOperatorName").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/Train/GetOperatorNameForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#newOperatorName").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#newOperatorName").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/Train/GetExisitingOperatorName?operatorName=' + $("#newOperatorName").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#newOperatorName").removeClass();
+                        if (data == true) {
+                            $("#newOperatorName").addClass("form-control is-valid state-valid")
+                        } else {
+                            $("#newOperatorName").addClass("form-control is-invalid state-invalid")
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#trainNO").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/Train/GetExisitingTrainNO?trainNo=' + $("#trainNO").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#trainNO").removeClass();
+                        if (data == true) {
+                            $("#trainNO").addClass("form-control is-valid state-valid")
+                        } else {
+                            $("#trainNO").addClass("form-control is-invalid state-invalid")
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#addOperator").on("click", function () {
+            $("#opertaor_wrap").removeClass();
+
+            $("#opertaor_wrap").addClass("display_block");
+
+        });
+        $("#closeOperator").on("click", function () {
+            $("#opertaor_wrap").removeClass();
+
+            $("#opertaor_wrap").addClass("display_none");
+
+        });
+        $("#saveOperator").on("click", function () {
+            var operatorName = $("#newOperatorName").val();
+            $.ajax(
+               {
+                   //url: '/Train/SaveNewOperator?operatorName=' + $("#newOperatorName").val(),
+                   //type: 'GET',
+                   //data: "",
+                   //contentType: 'application/json; charset=utf-8',
+                   //success: function (data) {
+                   //    $("#trainNO").removeClass();
+                   //    if (data == true) {
+                   //        $("#trainNO").addClass("form-control is-valid state-valid")
+                   //    } else {
+                   //        $("#trainNO").addClass("form-control is-invalid state-invalid")
+                   //    }
+                   //},
+                   url: "/Train/SaveNewOperator",
+                   data: '{operatorName: ' + JSON.stringify(operatorName) + '}',
+                   type: "POST",
+                   contentType: "application/json; charset=utf-8",
+                   success: function (message) {
+                       alert(message);
+                       if (message == "Profile add sucessfully") {
+                           var newOption = "<option value='" + operatorName + "'>" + operatorName + "</option>";
+                           $(newOption).insertBefore($("#ddlOperatorList option:last")); //add new option
+                           $("#ddlOperatorList").val(operatorName);
+
+                           $("#opertaor_wrap").removeClass();
+                           $("#newOperatorName").removeClass();
+                           $("#newOperatorName").val("");
+                           $("#newOperatorName").addClass("form-control")
+                           $("#opertaor_wrap").addClass("display_none");
+                       }
+                   },
+
+                   error: function (message) {
+
+                       alert(JSON.stringify(message.responseText));
+
+
+                   }
+               });
+
+        });
+
+        $("#clearValue").on("click", function () {
+            document.getElementById("vesselName").value = "";
+            document.getElementById("isActive").checked = true;
+            $("#trainNO").removeClass();
+
+            $("#trainNO").addClass("form-control");
+
+        });
+
+
+    });
+
+
+
+    $('#import').click(function () {
+        $("#import").removeClass('btn btn-primary');
+        $("#import").addClass('btn btn-primary active');
+        $("#export").removeClass('btn btn-primary active');
+        $("#export").addClass('btn btn-primary');
+        document.getElementById("selectedImportORExport").value = "I";
+        document.getElementById("txtSelectedImportORExport").value = "I";
+
+        if (portList.length != 0) {
+            document.getElementById("portFrom").value = portList[0].Text;
+            document.getElementById("txtPortFrom").value = portList[0].Text;
+        }
+        document.getElementById("portTo").value = "ICD";
+        document.getElementById("txtPortTo").value = "ICD";
+    });
+
+    $('#export').click(function () {
+        $("#export").removeClass('btn btn-primary');
+        $("#export").addClass('btn btn-primary active');
+        $("#import").removeClass('btn btn-primary active');
+        $("#import").addClass('btn btn-primary');
+        document.getElementById("selectedImportORExport").value = "E";
+        document.getElementById("txtSelectedImportORExport").value = "E";
+
+        if (portList.length != 0) {
+            document.getElementById("portFrom").value ="ICD";
+            document.getElementById("txtPortFrom").value ="ICD";
+        }
+        document.getElementById("portTo").value = portList[0].Text;
+        document.getElementById("txtPortTo").value = portList[0].Text;
+    });
+    function portDDL(id, value) { 
+        var selectedTab = document.getElementById("selectedImportORExport").value;
+        var values = document.getElementById("portDDL").value;
+        if (selectedTab == "Import") {
+
+            document.getElementById("portFrom").value = values
+            document.getElementById("txtPortFrom").value = values;
+
+
+            document.getElementById("portTo").value = "ICD";
+            document.getElementById("txtPortTo").value = "ICD";
+
+        } else if (selectedTab == "Export") {
+            document.getElementById("portFrom").value = "ICD";
+            document.getElementById("txtPortFrom").value = "ICD";
+            document.getElementById("portTo").value = values;
+            document.getElementById("txtPortTo").value = values;
+        }
+
+    };
+    function ViewSummaryList() {
+       
+        $("#summaryLists").show();
+        $("#editList_wrapper").hide();
+        $("#addTrain").hide();
+
+        import_View();
+      
+      
+    }
+
+
+
+    function import_View() {
+        var process = "I";
+      
+        $("#import_View").removeClass('btn btn-primary');
+        $("#import_View").addClass('btn btn-primary active');
+        $("#export_View").removeClass('btn btn-primary active');
+        $("#export_View").addClass('btn btn-primary');
+        document.getElementById("viewselectedImportORExport").value = "I";
+        document.getElementById("txtSelectedImportORExport").value = "I";
+
+        if (portList.length != 0) {
+            document.getElementById("portFrom").value = portList[0].Text;
+            document.getElementById("txtPortFrom").value = portList[0].Text;
+        }
+        document.getElementById("portTo").value = "ICD";
+        document.getElementById("txtPortTo").value = "ICD";
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Train/GetTrainSummary',
+           data: '{process: ' + JSON.stringify(process) + '}',
+           // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                // alert(JSON.stringify(data));
+                //lblcount
+
+                $('#lblcount').text(data.length);
+               
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                        { "data": "TrainNO" },
+                        { "data": "PortFrom" },
+                        { "data": "PortTO" },
+                        { "data": "Operator" },
+                         {
+                             "data": "TrainID",
+                             "render": function (data, type, row, meta) {
+                                 if (type === 'display') {
+
+                                     data = '<a class=\"btn btn-sm btn-info\" onclick=\"onEditClick(' + row.TrainID + ',\'' + row.IsImportORExportSelected + '\')\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"\" data-original-title=\"Edit\"><i class=\"fa fa-edit\"></i> </a>';
+                                 }
+
+                                 return data;
+                             }
+
+
+                         }
+                    ], "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'TrainDetails',
+                        "filename": 'TrainDetails_List'
+
+                    }
+                    ]
+                });
+                      
+                   },
+                   error: function () {
+                       alert("error");
+                   }
+               });
+
+    };
+
+    function export_View() {
+        var process = "E";
+
+        $("#export_View").removeClass('btn btn-primary');
+        $("#export_View").addClass('btn btn-primary active');
+        $("#import_View").removeClass('btn btn-primary active');
+        $("#import_View").addClass('btn btn-primary');
+        document.getElementById("viewselectedImportORExport").value = "E";
+        document.getElementById("txtSelectedImportORExport").value = "E";
+
+        if (portList.length != 0) {
+            document.getElementById("portFrom").value = "ICD";
+            document.getElementById("txtPortFrom").value = "ICD";
+        }
+        document.getElementById("portTo").value = portList[0].Text;
+        document.getElementById("txtPortTo").value = portList[0].Text;
+
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Train/GetTrainSummary',
+            data: '{process: ' + JSON.stringify(process) + '}',
+            //data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                // alert(JSON.stringify(data));
+                $('#lblcount').text(data.length);
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                        { "data": "TrainNO" },
+                        { "data": "PortFrom" },
+                        { "data": "PortTO" },
+                        { "data": "Operator" },
+                         {
+                             "data": "TrainID",
+                             "render": function (data, type, row, meta) {
+                                 if (type === 'display') {
+
+                                     data = '<a class=\"btn btn-sm btn-info\" onclick=\"onEditClick(' + row.TrainID + ',\'' + row.IsImportORExportSelected + '\')\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"\" data-original-title=\"Edit\"><i class=\"fa fa-edit\"></i> </a>';
+                                 }
+
+                                 return data;
+                             }
+
+
+                         }
+                    ], "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'TrainDetails',
+                        "filename": 'TrainDetails_List'
+
+                    }
+                    ]
+                });
+
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+    function onEditClick(TrainID, IsImportORExportSelected) {
+       
+
+        //alert(IsImportORExportSelected);
+        //if (IsImportORExportSelected == "I")
+        //{
+        //    import_Update();
+           
+            
+        //} else {
+        //    export_Update();
+        //}
+        $("#editList_wrapper").show();
+        $("#summaryLists").hide();
+       
+        $("#addTrain").hide();
+        var portList, operatorList;
+        portList  =  @Html.Raw(Json.Encode(ViewBag.portList)) 
+        operatorList = @Html.Raw(Json.Encode(ViewBag.OperatorList))
+        $.ajax(
+                  {
+                      url: "/Train/EditTrainSummary",
+                      data: '{trainID: ' + JSON.stringify(TrainID) + '}',
+                      type: "POST",
+                      contentType: "application/json; charset=utf-8",
+                      success: function (message) {
+                          $("#summaryList").hide();
+                          $("#editList_wrapper").show();
+                          
+                         
+                          var div = "" + "<div  class=\" content-area overflow-hidden\">" +
+         
+                             " <div class=\"page-header\">" +
+                                  "<h4 class=\"page-title\">Train Details</h4>"+
+
+                                  "<div class=\"form-group\">" +
+                                      "<label class=\"form-label\"></label>" +
+                                     " <div class=\"row gutters-xs\">" +
+                                       "   <div class=\"col\">"+
+                                           
+                                          "    <button type=\"button\" class=\"btn btn-icon btn-teal\" name=\"summarylist\" title=\"Summary list\" id=\"summarylist\" onclick=\"ViewSummaryList()\"><i class=\"fa fa-file-text\"></i></button>" +
+                                       "   </div>"+
+                          "  </div>"+
+                                "  </div>"+
+                                "  </div>"+
+                           "   <div class=\"row\">"+
+                                 " <div class=\"col-12\">"+
+                                    "  <div class=\"card\">"+
+                                         " <div class=\"card-body\">" +
+                                              "<div class=\"\">"+
+                                                 " <div class=\"form-group\">"+
+                                                    "  <label class=\"form-label\"></label>" +
+                                                     " <div class=\"input-group\">"
+                          var tab = "";
+                         
+                              //tab += " <span class=\"input-group-append \" id=\"tabPurposes\">" +
+                              //                                                        "  <button class=\"btn btn-primary active\" id=\"import_Update\" style=\"text-transform: uppercase;\" type=\"button\" onclick=\"import_Update()\">Import</button>" +
+                              //                                                          "<button class=\"btn btn-primary\" id=\"export_Update\" style=\"text-transform: uppercase;\" type=\"button\" onclick=\"export_Update()\">Export </button>" +
+                              //                                                        "  <label id=\"selectedImportORExport\" class=\"display_none\"></label>" +
+
+                              //                                                    "  </span>"
+                        
+                          if (message.PortTO == "ICD" || message.PortTO == "icd") {
+                              tab += " <span class=\"input-group-append \" id=\"tabPurposes\">" +
+                                                                                      "  <button class=\"btn btn-primary active\" id=\"import_Update\" style=\"text-transform: uppercase;\" type=\"button\" onclick=\"import_Update()\">Import</button>" +
+                                                                                        "<button class=\"btn btn-primary\" id=\"export_Update\" style=\"text-transform: uppercase;\" type=\"button\" onclick=\"export_Update()\">Export </button>" +
+                                                                                      "  <label id=\"selectedImportORExport\" class=\"display_none\"></label>" +
+
+                                                                                  "  </span>"
+                          } else if (message.PortFrom == "ICD" || message.PortFrom == "icd") {
+                              tab += " <span class=\"input-group-append \" id=\"tabPurposes\">" +
+                                                                                      "  <button class=\"btn btn-primary \" id=\"import_Update\" style=\"text-transform: uppercase;\" type=\"button\" onclick=\"import_Update()\">Import</button>" +
+                                                                                        "<button class=\"btn btn-primary active\" id=\"export_Update\" style=\"text-transform: uppercase;\" type=\"button\" onclick=\"export_Update()\">Export </button>" +
+                                                                                      "  <label id=\"selectedImportORExport\" class=\"display_none\"></label>" +
+
+                                                                                  "  </span>"
+                          }
+                          div += tab +=   "  </div>"+
+                                               "   </div>"+
+                                              "</div>"+
+                                              "<div class=\"form-horizontal\">"+
+                                                 " <div class=\"row\">"+
+
+                                                    "  <div class=\"col-lg-4 col-sm-12\">" +
+                                                        "  <div class=\"form-group\">"+
+                                                              "<label class=\"form-label mandatory\">Train NO</label>"+
+                                                            "  <div class=\"row gutters-xs\">"+
+                                                                  "<div class=\"col\">"+
+                                                                     "	<input type=\"text\" class=\"form-control\" id=\"trainNO1\"autocomplete = \"on\", maxlength = 100 >"+
+                                                               "   </div>" +
+
+                                                            "  </div>" +
+                                                          "</div>" +
+                                                    " </div>" +
+
+                                                    "   <div class=\"col-lg-4 col-sm-12\">" +
+                                                        "  <div class=\"form-group\">"+
+                                                            "  <label class=\"form-label \">Port Name</label>" +
+                                                            "  <div class=\"row gutters-xs\">" +
+                                                                "  <div class=\"col\">" +
+                                                                  "  <div class=\"form-group \"> " +
+										"	<select class=\"form-control select2 custom-select\" id=\"portDDL\" onchange=\"portDDL()\">"
+                          var portddl = "";
+                          $.each(portList, function (i, item) {
+                              //$(".donutShadow canvas").peity("donut", { width: 64, height: 64, innerRadius: 28, radius: 30 });
+                            
+                              if (item.Text == message.PortFrom || item.Text == message.PortTO) {
+                                  portddl += "<option onclick=\"portDDL("+  item.Value+","+item.Text +") value=\"" + item.Value + "\" selected>" + item.Text + "</option>"
+                              } else {
+                                  portddl += "<option onclick=\"portDDL(" + item.Value + "," + item.Text + ") value=\"" + item.Value + "\">" + item.Text + "</option>"
+                              }
+
+                          });
+											 
+                          div +=	portddl += "		</select>"+
+										"</div>" +
+                        "	<input type=\"text\" class=\"display_none\" id=\"txtPortFrom\"autocomplete = \"on\", maxlength = 100 value=\"" + message.PortFrom + "\" >" +
+                            "	<input type=\"text\" class=\"display_none\" id=\"txtPortTo\"autocomplete = \"on\", maxlength = 100 value=\"" + message.PortTO + "\" >" +
+                                                                      @*@Html.DropDownList("ddlportList",
+                                                              (IEnumerable<SelectListItem>)ViewBag.portList,
+                                                                      new { @class = "form-control" })
+                                                                      @Html.EditorFor(model => model.PortFrom, new { htmlAttributes = new { @class = "display_none", @id = "", maxlength = 100 } })
+                                                                      @Html.EditorFor(model => model., new { htmlAttributes = new { @class = "display_none", @id = "", maxlength = 100 } })*@
+                          "   <label id=\"portFrom\" class=\"display_none\"></label>" +
+                          "   <label id=\"portTo\" class=\"display_none\"></label>" +
+                         "   </div>" +
+
+                   "  </div>" +
+              "  </div>" +
+          "    </div>" +
+         " <div class=\"col-lg-4 col-sm-12\">" +
+                " <div class=\"form-group\">" +
+                "     <label class=\"form-label\">Operator Name</label>" +
+                  "   <div class=\"row gutters-xs\">" +
+                  "       <div class=\"col\">" +
+                         
+     "  <div class=\"form-group \"> " +
+										"	<select class=\"form-control select2 custom-select\" id=\"operDDL\">"
+                          var operddl = "";
+                          $.each(operatorList, function (i, item) {
+                              if (item.Value == message.OperatorID) {
+                                  operddl += "<option value=\"" + item.Value + "\" selected>" + item.Text + "</option>"
+                              } else {
+                                  operddl += "<option value=\"" + item.Value + "\">" + item.Text + "</option>"
+}
+                             
+
+                          });
+
+                          div += operddl += "		</select>" +
+										"</div>" +
+                           
+                          " </div>"+
+                        
+                          "   <label id=\"operatorName\" class=\"display_none\"></label>" +
+                            " <label id=\"operatorID\" class=\"display_none\"></label>" +
+                                                            " </div>" +
+                                                         " </div>" +
+                                                     " </div>" +
+
+                                                 " </div>" +
+                                                 " <div class=\"col-lg-12 col-sm-12 display_none\" id=\"opertaor_wrap\">" +
+                                                    "  <div class=\"form-group\">"+
+                                                     "     <label class=\"form-label mandatory\">New Operator Name</label>"+
+                                                      "    <div class=\"input-group\">"+
+                                                        "      <input type=\"text\" class=\"form-control\" placeholder=\"\" id=\"newOperatorName\">"+
+                                                          "    <span class=\"input-group-append\">"+
+                                                             "     <button class=\"btn btn-green\" type=\"button\" id=\"saveOperator\">ADD!</button>"+
+                                                             "     <button class=\"btn btn-gray\" type=\"button\" id=\"closeOperator\"><i class=\"fa fa-close\"></i></button>"+
+                                                             " </span>"+
+                                                         " </div>"+
+                                                      "</div>"+
+                                                 " </div>"+
+                                                
+
+
+
+                          "<div class=\"card-footer text-right\">" +
+                           "   <div class=\"form-group\">" +
+                            "      <label class=\"form-label\"></label>" +
+                            "      <div class=\"row gutters-xs\">" +
+                            "        <div class=\"col\">" +
+                                      "    <input type=\"submit\" id=\"Save\" name=\"saveProfile\" value=\"Save\" class=\"btn btn-success\" onclick=\"UpdateTrain(" + message.TrainID + ")\"/>" +
+                                        
+  "   </div>" +
+  "  </div>" +
+  "    </div>" +
+  "  </div>" +
+  " </div>" +
+
+  "  </div>" +
+  "  </div>" +
+  "  </div>" +
+  "  </div>" +
+                         
+    " </div>" 
+  $("#editList_wrapper").html(div);
+  document.getElementById('trainNO1').value = message.TrainNO;
+  document.getElementById("trainNO1").value = message.TrainNO;
+ 
+        //document.getElementById("selectedImportORExport").value = "Import";
+  if (message.PortFrom == "ICD" || message.PortFrom == "icd" || message.PortFrom == "icd") {
+      document.getElementById('selectedImportORExport').value = "Import";
+      document.getElementById('txtSelectedImportORExport').value = "Import";
+        } else {
+            document.getElementById('selectedImportORExport').value = "Export";
+            document.getElementById('txtSelectedImportORExport').value = "Export";
+       }
+      },
+
+                      error: function (message) {
+
+                          alert(JSON.stringify(message.responseText));
+
+
+                      }
+                  });
+
+    }
+
+
+    function import_Update() {
+       
+        $("#import_Update").removeClass('btn btn-primary');
+        $("#import_Update").addClass('btn btn-primary active');
+        $("#export_Update").removeClass('btn btn-primary active');
+        $("#export_Update").addClass('btn btn-primary');
+        document.getElementById("selectedImportORExport").value = "Import";
+        document.getElementById("txtSelectedImportORExport").value = "Import";
+
+        if (portList.length != 0) {
+            document.getElementById("portFrom").value = portList[0].Text;
+            document.getElementById("txtPortFrom").value = portList[0].Text;
+        }
+        document.getElementById("portTo").value = "ICD";
+        document.getElementById("txtPortTo").value = "ICD";
+        
+    };
+
+    function export_Update() {
+        $("#export_Update").removeClass('btn btn-primary');
+        $("#export_Update").addClass('btn btn-primary active');
+        $("#import_Update").removeClass('btn btn-primary active');
+        $("#import_Update").addClass('btn btn-primary');
+        document.getElementById("selectedImportORExport").value = "Export";
+        document.getElementById("txtSelectedImportORExport").value = "Export";
+
+        if (portList.length != 0) {
+            document.getElementById("portFrom").value = "ICD";
+            document.getElementById("txtPortFrom").value = "ICD";
+        }
+        document.getElementById("portTo").value = portList[0].Text;
+        document.getElementById("txtPortTo").value = portList[0].Text;       
+    };
+
+    //function import_Update() {
+    //    $("#import_Update").removeClass('btn btn-primary');
+    //    $("#import_Update").addClass('btn btn-primary active');
+    //    $("#export_Update").removeClass('btn btn-primary active');
+    //    $("#export_Update").addClass('btn btn-primary');
+    //    document.getElementById("viewselectedImportORExport").value = "I";
+    //    document.getElementById("txtSelectedImportORExport").value = "I";
+
+    //    if (portList.length != 0) {
+    //        document.getElementById("portFrom").value = portList[0].Text;
+    //        document.getElementById("txtPortFrom").value = portList[0].Text;
+    //    }
+    //    document.getElementById("portTo").value = "ICD";
+    //    document.getElementById("txtPortTo").value = "ICD";
+    //};
+
+    //function export_Update() {
+    //    $("#export_Update").removeClass('btn btn-primary');
+    //    $("#export_Update").addClass('btn btn-primary active');
+    //    $("#import_Update").removeClass('btn btn-primary active');
+    //    $("#import_Update").addClass('btn btn-primary');
+    //document.getElementById("viewselectedImportORExport").value = "E";
+    //document.getElementById("txtSelectedImportORExport").value = "E";
+
+    //if (portList.length != 0) {
+    //    document.getElementById("portFrom").value = "ICD";
+    //    document.getElementById("txtPortFrom").value = "ICD";
+    //}
+    //document.getElementById("portTo").value = portList[0].Text;
+    //document.getElementById("txtPortTo").value = portList[0].Text;
+
+    //};
+
+
+
+    function UpdateTrain(traindID) {        
+        if (operatorList.length != 0) {
+            for (var i = 0; i < operatorList.length; i++) {
+                if (operatorList[i].Value == document.getElementById("operDDL").value) {
+                    document.getElementById("operatorName").value = operatorList[i].Text;
+                    document.getElementById("operatorID").value = $("#operDDL").val();
+
+                    document.getElementById("txtOperatorName").value = operatorList[i].Text;
+                    document.getElementById("txtOperatorID").value = $("#operDDL").val();
+                }
+            }
+        }
+       console.log(traindID);
+       console.log(document.getElementById("portFrom").value);
+       console.log(document.getElementById("portTo").value);
+       console.log(document.getElementById("operDDL").value);
+       console.log(document.getElementById("operatorID").value);
+       console.log(document.getElementById("operatorName").value);
+       console.log(document.getElementById("trainNO1").value)
+       console.log(document.getElementById("selectedImportORExport").value)
+      
+       $.ajax(
+                       {
+                           url: "/Train/UpdateTrainMasterDetails",
+                           data: '{trainID: ' + JSON.stringify(traindID) + ',trainNO: ' + JSON.stringify(document.getElementById("trainNO1").value) + ',portFrom:' + JSON.stringify(document.getElementById("portFrom").value) + ',portTo:' + JSON.stringify(document.getElementById("portTo").value) + ',operatorID :' + JSON.stringify(document.getElementById("operatorID").value) + ', operatorName:' + JSON.stringify(document.getElementById("operatorName").value) + '}',
+                           type: "POST",
+                           contentType: "application/json; charset=utf-8",
+                           success: function (message) {
+                               if (message == true) {
+                                   alert("Train updated successfully!")
+                                   //$("#summaryList_wrapper").show();
+                                   //$("#UpdateVessel").hide();
+                                   document.getElementById("currentValue").value = vesselname;
+
+
+                               } else {
+                                   alert("Train updation failed. Try again!")
+                               }
+                           },
+
+                           error: function (message) {
+
+                               alert(JSON.stringify(message.responseText));
+
+
+                           }
+                       });
+
+       document.location = '@Url.Action("NewTrainDetails", "Train")';
+}
+   
+</script>
+

@@ -1,0 +1,1263 @@
+﻿
+@{
+    ViewBag.Title = "Weightment Entry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="tracker-loader"></div>
+<div class=" content-area" id="divImportIn">
+    <div class="page-header">
+        <h4 class="page-title">Generate Weightment Slip</h4>
+        <ol class="breadcrumb">
+            <div class="col">
+
+                <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Getsummaryreport();"><i class="fa fa-file-text"></i></button>
+
+
+            </div>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Slip No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSlipNo", null, new { @class = "form-control ", @id = "txtSlipNo", autocomplete = "off", @readonly = "Readonly", Placeholder = "NEW" })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Cycle</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCycle", new List<SelectListItem>
+                                          {  new SelectListItem { Text = "", Value = "0"},
+                                              new SelectListItem { Text = "Import", Value = "Import"},
+                                            new SelectListItem { Text = "Export", Value = "Export"},
+                                            new SelectListItem { Text = "Empty", Value = "Empty"},
+                                            new SelectListItem { Text = "Carting", Value = "Carting"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlCycle" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlVehicleType", new List<SelectListItem>
+                                          {  new SelectListItem { Text = "", Value = "0"},
+                                              new SelectListItem { Text = "Trailer", Value = "Trailer"},
+                                            new SelectListItem { Text = "Truck", Value = "Truck"},
+                                            new SelectListItem { Text = "Container", Value = "Container"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlVehicleType" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle Status</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlVehicleStatus", new List<SelectListItem>
+                                          {  new SelectListItem { Text = "", Value = "0"},
+                                              new SelectListItem { Text = "Empty", Value = "Empty"},
+                                            new SelectListItem { Text = "Full", Value = "Full"},
+
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlVehicleStatus" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Transaction Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlTransactionType", new List<SelectListItem>
+                                          {  new SelectListItem { Text = "", Value = "0"},
+                                              new SelectListItem { Text = "First", Value = "First"},
+                                            new SelectListItem { Text = "Second", Value = "Second"},
+
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlTransactionType" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-xs-12" style="margin-top:28px;">
+                            <div class="form-group">
+                                <input type="checkbox" class="checkbox origin" name="checklist[]" id="chkIsLowBed">
+                                <span style="color:red">Is Manual?</span>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Tyres</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlTyres", new List<SelectListItem>
+                                          {  new SelectListItem { Text = "", Value = "0"},
+                                              new SelectListItem { Text = "4", Value = "4"},
+                                            new SelectListItem { Text = "6", Value = "6"},
+                                             new SelectListItem { Text = "10", Value = "10"},
+                                              new SelectListItem { Text = "14", Value = "14"},
+                                               new SelectListItem { Text = "18", Value = "18"},
+                                                 new SelectListItem { Text = "22", Value = "22"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlTyres"  })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Trailer (Last digits)</label>
+                                        @Html.TextBox("txtTrailerLastNo", null, new { @class = "form-control", @id = "txtTrailerLastNo", name = "txtTrailerLastNo", autocomplete = "off", placeholder = "Enter Last Digits", onchange = "GetTotalPkgsVehicleWise()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">.</label>
+                                        @Html.TextBox("txtTrailerNo", null, new { @class = "form-control", @id = "txtTrailerNo", name = "txtTrailerNo", autocomplete = "off", placeholder = "Trailer No", onblur= "txtTrailerNo()" ,@style= "text-transform:uppercase" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container Count</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlContainerCount", new List<SelectListItem>
+                                          {
+                                              new SelectListItem { Text = "NONE", Value = "NONE"},
+                                            new SelectListItem { Text = "20X1", Value = "20X1"},
+                                            new SelectListItem { Text = "20X2", Value = "20X2"},
+                                            new SelectListItem { Text = "40X1", Value = "40X1"},
+                                            new SelectListItem { Text = "45X1", Value = "45X1"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlContainerCount" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divContainer">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Container No</label>
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off", placeholder = "Container No", @style = "text-transform:uppercase" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divContainerNo2">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Container No-2</label>
+                                        @Html.TextBox("txtContainerNo2", null, new { @class = "form-control", @id = "txtContainerNo2", name = "txtContainerNo2", autocomplete = "off", placeholder = "Container No" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divSize">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Size</label>
+                                        @Html.TextBox("txtSize", null, new { @class = "form-control", @id = "txtSize", name = "txtSize", autocomplete = "off", placeholder = "Size" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divSize2">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Size-2</label>
+                                        @Html.TextBox("txtSize2", null, new { @class = "form-control", @id = "txtSize2", name = "txtSize2", autocomplete = "off", placeholder = "Size" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Receipt No</label>
+                                        @Html.TextBox("txtReceiptNo", null, new { @class = "form-control", @id = "txtReceiptNo", name = "txtReceiptNo", autocomplete = "off", placeholder = "Receipt No" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTareWeight2">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Tare Weight-2</label>
+                                        @Html.TextBox("txtTareWeight2", null, new { @class = "form-control", @id = "txtTareWeight2", name = "txtTareWeight2", autocomplete = "off", placeholder = "Tare Weight-2" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Party Name</label>
+                                        @Html.TextBox("txtPartyName", null, new { @class = "form-control", @id = "txtPartyName", name = "txtPartyName", autocomplete = "off", placeholder = "Party Name" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Vehicle Tare Weight</label>
+                                        @Html.TextBox("txtVehicleTareWeight", null, new { @class = "form-control", @id = "txtVehicleTareWeight", @readonly = "Readonly", name = "txtVehicleTareWeight", autocomplete = "off", placeholder = "Vehicle Tare Weight", OnChange = "VehicleTareWeight()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Tare Weight</label>
+                                        @Html.TextBox("txtTareWeight", null, new { @class = "form-control", @id = "txtTareWeight", name = "txtTareWeight", autocomplete = "off", placeholder = "Tare Weight", OnChange = "TareWeights()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Pay Load</label>
+                                        @Html.TextBox("txtPayLoad", null, new { @class = "form-control", @id = "txtPayLoad", name = "txtPayLoad", autocomplete = "off", placeholder = "Pay Load" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-green btn-xs" id="btnSearchDriver" onclick="Search()">Get Weight</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">KGS</label>
+                                        @Html.TextBox("txtKGS", null, new { @class = "form-control", @id = "txtKGS", name = "txtKGS", autocomplete = "off", placeholder = "" , onblur = "txtKGS_TextChanged()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Gross Weight</label>
+                                        <input type="hidden" class="form-control" id="lblcfs" />
+                                        <input type="hidden" class="form-control" id="lblID" />
+                                        <input type="hidden" class="form-control" id="lblContainerNo" />
+                                        <input type="hidden" class="form-control" id="lblJONo" />
+                                        @Html.TextBox("txtGrossWeight", null, new { @class = "form-control", @id = "txtGrossWeight", @readonly = "Readonly", name = "txtGrossWeight", autocomplete = "off", placeholder = "Gross Weight", OnChange = "txtgrosswt_TextChanged()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Net Weight</label>
+                                        @Html.TextBox("txtNetWeight", null, new { @class = "form-control", @id = "txtNetWeight", @readonly = "Readonly", name = "txtNetWeight", autocomplete = "off", placeholder = "Net Weight" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <label class="form-label">Remarks</label>
+                                        @Html.TextArea("txtRemarks", null, new { @class = "form-control", @id = "txtRemarks", name = "txtRemarks", autocomplete = "off", rows = "2" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-xs-12" style="margin-top:28px;">
+                            <div class="form-group">
+                                <input type="checkbox" class="checkbox origin" name="checklist1[]" id="chkIsLowVGN">
+                                <span style="color:red">Is VGM?</span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-xs-12" style="margin-top:28px;">
+                            <div class="form-group">
+                                Amount:&nbsp;@Html.TextBox("lblamount", null, new { @class = "form-control", @id = "lblamount", name = "lblamount", autocomplete = "off", placeholder = "", @readonly = "Readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-4" style="margin-top:20px;">
+                            <div class="form-group">
+
+                                <button id="btnsave" class="btn btn-success btn-xs" onclick="Save()">Save</button>
+                               
+                                <input type="button" name="clearProfile" value="Clear" class="btn cursor" title="clear" id="clearValue" onclick="Clear()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divviewsummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Weighment Report</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Search</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("--Select--", new List<SelectListItem>
+                                          { new SelectListItem { Text = "ALL", Value = "ALL"},
+                                              new SelectListItem { Text = "Vehicle No", Value = "Vehicle No"},
+                                              new SelectListItem { Text = "Container No", Value = "Container No"},
+                                            new SelectListItem { Text = "Party Name", Value = "Party Name"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlsummarysearchcerteria" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divsearchtext" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" id="lblgetlable"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSearchtext", null, new { @class = "form-control ", @id = "txtSearchtext", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" style="display:none" id="divparty">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Party Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlPartyname", (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select-- ", new { @class = "form-control", @id = "ddlPartyname", name = "ddlPartyname", autocomplete = "off" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="Show" id="btnShow" onclick="GetWeighmentreport()"><i class="fa fa-search"></i></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblReceiptSummaryDet"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function Clear() {
+        document.location = '@Url.Action("WeightmentEntry", "ExportModel")';
+    }
+
+    $(window).on("load", function (e) {
+        var ddlContainerCount = $("#ddlContainerCount").val();
+        if (ddlContainerCount == "NONE") {
+            $("#divTareWeight2").hide();
+            $("#divSize2").hide();
+            $("#divContainerNo2").hide();
+            $("#divSize").hide();
+            $("#divContainer").show();
+        }
+    })
+    $("#ddlContainerCount").change(function () {
+        
+        var ddlContainerCount = $("#ddlContainerCount").val();
+
+        if (ddlContainerCount == "NONE") {
+            $("#divTareWeight2").hide();
+            $("#divSize2").hide();
+            $("#divContainerNo2").hide();
+            $("#divSize").hide();
+            $("#divContainer").show();
+        }
+
+        if (ddlContainerCount == "20X1" || "45X1" ) {
+            $("#divTareWeight2").hide();
+            $("#divSize2").hide();
+            $("#divContainerNo2").hide();
+            $("#divSize").hide();
+            $("#divContainer").show();
+        }
+
+        if (ddlContainerCount == "20X2"  ) {
+            $("#divTareWeight2").show();
+            $("#divSize2").show();
+            $("#divContainerNo2").show();
+            $("#divSize").show();
+            $("#divContainer").show();
+        }
+
+        if (ddlContainerCount ==   "40X1") {
+            $("#divTareWeight2").hide();
+            $("#divSize2").hide();
+            $("#divContainerNo2").hide();
+            $("#divSize").hide();
+            $("#divContainer").show();
+        }
+
+        
+    });
+
+
+    function Getsummaryreport() {
+        $("#divviewsummary").show();
+        $("#divImportIn").hide();
+    }
+
+    function getBack() {
+        $("#divviewsummary").hide();
+        $("#divImportIn").show();
+    }
+
+    function GetTotalPkgsVehicleWise() {
+        
+        var TrailorLastDigit = $("#txtTrailerLastNo").val();
+        var data = { 'TrailorLastDigit': TrailorLastDigit };
+        var data1 = JSON.stringify(data);
+        $.ajax({
+            type: "POST",
+            url: "/ExportModel/TrailorSearch",
+            data: data1,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $("#txtTrailerNo").val(data[0].TrailerNo);
+                $("#txtVehicleTareWeight").val(data[0].txtvehicletarewt);
+                $("#txtNetWeight").val(data[0].txtvehicletarewt);
+                
+                GetVehicleNos(data[0].TrailerNo);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        })
+    }
+
+    function GetVehicleNos(TrailerNo) {
+        
+        $("#txtSlipNo").val();
+        var data1 = { 'TrailerNo': TrailerNo };
+        var data = JSON.stringify(data1);
+
+
+        $.ajax({
+            url: '/ExportModel/TrailerNoSearch',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+          
+                if (data != "") {
+
+                
+                $("#ddlTyres").val(data[0].cmbtyres);
+                $("#ddlVehicleType").val(data[0].cmbvehicletype);
+                $("#ddlVehicleStatus").val(data[0].cmbvehiclestetus);
+                $("#ddlTransactionType").val(data[0].cmbtranstype);
+                $("#txtPayLoad").val(data[0].txtpayload);
+                $("#txtGrossWeight").val(data[0].txtgrosswt);
+                $("#txtReceiptNo").val(data[0].txtreceipt);
+                $("#txtRemarks ").val(data[0].txtremarks);
+                $("#txtSlipNo").val(data[0].txtslipNo);
+                $("#txtPartyName").val(data[0].txtparty);
+                $("#txtVehicleTareWeight").val(data[0].txtvehicletarewt);
+                $("#txtNetWeight").val(data[0].txtnetwt);
+                $("#txtContainerNo").val(data[0].txtcontainerno);
+                $("#lblJONo").val(data[0].lblJONo);
+                $("#txtSize").val(data[0].txtsize);
+                $("#lblContainerNo").val(data[0].lblContainerNo);
+                $("#txtTareWeight").val(data[0].txttarewt);
+                $("#ddlContainerCount").val(data[0].cmbcontype);
+                    GetddlTyres(data[0].cmbtyres, data[0].cmbvehiclestetus, data[0].txtgrosswt, data[0].cmbvehicletype);
+
+                   
+                }
+                GetVehicleWeight(TrailerNo);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+
+    function GetVehicleWeight() {
+
+
+
+
+
+        var TrailorLastDigit = $("#txtTrailerLastNo").val();
+        var data = { 'TrailorLastDigit': TrailorLastDigit };
+        var data1 = JSON.stringify(data);
+        $.ajax({
+            type: "POST",
+            url: "/ExportModel/GetTrailerWeight",
+            data: data1,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                if (data[0].txtvehicletarewt != 0) {
+                    $("#txtVehicleTareWeight").val(data[0].txtvehicletarewt);
+                }
+     
+              
+       
+             
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        })
+    }
+
+    function txtTrailerNo() {
+        var TrailerNo = $("#txtTrailerNo").val();
+        if (TrailerNo != "") {
+            txtvehicleno2_Leave(TrailerNo)
+        }
+    }
+
+    function txtvehicleno2_Leave(TrailerNo) {
+        
+
+        var data1 = { 'TrailerNo': TrailerNo };
+        var data = JSON.stringify(data1);
+
+
+        $.ajax({
+            url: '/ExportModel/TrailerNoSearch',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                
+                if (data != "") {
+
+
+                    $("#ddlTyres").val(data[0].cmbtyres);
+                    $("#ddlVehicleType").val(data[0].cmbvehicletype);
+                    $("#ddlVehicleStatus").val(data[0].cmbvehiclestetus);
+                    $("#ddlTransactionType").val(data[0].cmbtranstype);
+                    $("#txtPayLoad").val(data[0].txtpayload);
+                    $("#txtGrossWeight").val(data[0].txtgrosswt);
+                    $("#txtReceiptNo").val(data[0].txtreceipt);
+                    $("#txtRemarks ").val(data[0].txtremarks);
+                    $("#txtSlipNo").val(data[0].txtslipNo);
+                    $("#txtPartyName").val(data[0].txtparty);
+                    $("#txtVehicleTareWeight").val(data[0].txtvehicletarewt);
+                    $("#txtNetWeight").val(data[0].txtnetwt);
+                    $("#txtContainerNo").val(data[0].txtcontainerno);
+                    $("#lblJONo").val(data[0].lblJONo);
+                    $("#txtSize").val(data[0].txtsize);
+                    $("#lblContainerNo").val(data[0].lblContainerNo);
+                    $("#txtTareWeight").val(data[0].txttarewt);
+                    $("#ddlContainerCount").val(data[0].cmbcontype);
+                    GetddlTyres(data[0].cmbtyres, data[0].cmbvehiclestetus, data[0].txtgrosswt, data[0].cmbvehicletype);
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+    $("#ddlTyres").change(function () {
+        
+        var Tyres = $("#ddlTyres").val();
+        var VehicleStaus = $("#ddlVehicleStatus").val();
+        var GrossWeight = $("#txtGrossWeight").val();
+        var VehicleType = $("#ddlVehicleType").val();
+
+
+
+
+        var data1 = { 'Tyres': Tyres, 'VehicleStaus': VehicleStaus, 'GrossWeight': GrossWeight, 'VehicleType': VehicleType };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/ExportModel/SUb_fetchamt",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                //alert(data[0].lblamount);
+                //$("#lblamount").val(data[0].lblamount);
+
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        })
+
+    });
+
+    function GetddlTyres(cmbtyres, cmbvehiclestetus, txtgrosswt, cmbvehicletype) {
+        
+        //var Tyres = $("#ddlTyres").val();
+        //var VehicleStaus = $("#ddlVehicleStatus").val();
+        //var GrossWeight = $("#txtGrossWeight").val();
+        //var VehicleType = $("#ddlVehicleType").val();
+
+
+
+
+        var data1 = { 'cmbtyres': cmbtyres, 'cmbvehiclestetus': cmbvehiclestetus, 'txtgrosswt': txtgrosswt, 'cmbvehicletype': cmbvehicletype };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/ExportModel/SUb_fetchamts",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                //alert(data[0].lblamount);
+                //$("#lblamount").val(data[0].lblamount);
+
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        })
+
+    }
+    function txtgrosswt_TextChanged() {
+        
+        //var VehicleStatus = $("#ddlVehicleStatus").val();
+        //var TransactionType = $("#ddlTransactionType").val();
+        var TareWeight = $("#txtTareWeight").val();
+
+        if (TareWeight == "") {
+            TareWeight = "0";
+        }
+
+        var GrossWeight = $("#txtGrossWeight").val();
+
+        if (GrossWeight == "") {
+            GrossWeight = "0";
+        }
+        var VehicleTareWeight = $("#txtVehicleTareWeight").val();
+        if (VehicleTareWeight == "") {
+            VehicleTareWeight = "0";
+        }
+        var TareWeight2 = $("#txtTareWeight2").val();
+        if (TareWeight2 == "") {
+            TareWeight2 = "0";
+        }
+        
+            NetWeight = parseInt(GrossWeight) - parseInt(VehicleTareWeight) - parseInt(TareWeight) - parseInt(TareWeight2)
+            $("#txtNetWeight").val(NetWeight);
+        
+        
+    }
+    function VehicleTareWeightChangs() {
+        
+        var VehicleType = $("#ddlVehicleType").val();
+        var VehicleStatus = $("#ddlVehicleStatus").val();
+        var TransactionType = $("#ddlTransactionType").val();
+        var TareWeight = $("#txtTareWeight").val();
+        var txtKGS = $("#txtKGS").val();
+
+        if (TareWeight == "") {
+            TareWeight = "0";
+        }
+
+        var GrossWeight = $("#txtGrossWeight").val();
+
+        if (GrossWeight == "") {
+            GrossWeight = "0";
+        }
+        var VehicleTareWeight = $("#txtVehicleTareWeight").val();
+        if (VehicleTareWeight == "") {
+            VehicleTareWeight = "0";
+        }
+        var TareWeight2 = $("#txtTareWeight2").val();
+        if (TareWeight2 == "") {
+            TareWeight2 = "0";
+        }
+        if (VehicleStatus == "Empty" && TransactionType == "First") {
+            NetWeight = parseInt(GrossWeight) - parseInt(VehicleTareWeight) - parseInt(TareWeight) - parseInt(TareWeight2)
+            $("#txtNetWeight").val(NetWeight);
+        }
+        else {
+            NetWeight = parseInt(GrossWeight) - parseInt(VehicleTareWeight) - parseInt(TareWeight) - parseInt(TareWeight2)
+            $("#txtNetWeight").val(NetWeight);
+        }
+        if (VehicleType == "Trailer" && VehicleStatus == "Empty" && TransactionType == "First") {
+            Weight = parseInt(txtKGS) - parseInt(TareWeight)- parseInt(TareWeight2)
+            $("#txtVehicleTareWeight").val(Weight);
+
+            NetWeights = parseInt(txtKGS) 
+            $("#txtNetWeight").val(NetWeights);
+        }
+        
+    }
+    function VehicleTareWeight() {
+        
+        var VehicleStatus = $("#ddlVehicleStatus").val();
+        var TransactionType = $("#ddlTransactionType").val();
+        var TareWeight = $("#txtTareWeight").val();
+
+        if (TareWeight == "") {
+            TareWeight = "0";
+        }
+
+        var GrossWeight = $("#txtGrossWeight").val();
+
+        if (GrossWeight == "") {
+            GrossWeight = "0";
+        }
+        var VehicleTareWeight = $("#txtVehicleTareWeight").val();
+        if (VehicleTareWeight == "") {
+            VehicleTareWeight = "0";
+        }
+        var TareWeight2 = $("#txtTareWeight2").val();
+        if (TareWeight2 == "") {
+            TareWeight2 = "0";
+        }
+        if (VehicleStatus == "Empty" && TransactionType == "First") {
+            NetWeight = parseInt(GrossWeight) - parseInt(VehicleTareWeight) - parseInt(TareWeight) - parseInt(TareWeight2)
+            $("#txtNetWeight").val(NetWeight);
+        }
+        else {
+            NetWeight = parseInt(GrossWeight) - parseInt(VehicleTareWeight) - parseInt(TareWeight) - parseInt(TareWeight2)
+            $("#txtNetWeight").val(NetWeight);
+        }
+    }
+
+    function TareWeights() {
+        
+        var TareWeight = $("#txtTareWeight").val();
+        if (TareWeight == "") {
+            TareWeight = "0";
+        }
+        var GrossWeight = $("#txtGrossWeight").val();
+        if (GrossWeight == "") {
+            GrossWeight = "0";
+        }
+        var VehicleTareWeight = $("#txtVehicleTareWeight").val();
+        if (VehicleTareWeight == "") {
+            VehicleTareWeight = "0";
+        }
+        var TareWeight2 = $("#txtTareWeight2").val();
+        if (TareWeight2 == "") {
+            TareWeight2 = "0";
+        }
+
+        NetWeight = parseInt(GrossWeight) - parseInt(VehicleTareWeight) - parseInt(TareWeight) - parseInt(TareWeight2)
+        $("#txtNetWeight").val(NetWeight);
+
+
+    }
+
+    function txtKGS_TextChanged() {
+        
+        var txtKGS = $("#txtKGS").val();
+        var VehicleType = $("#ddlVehicleType").val();
+        var VehicleStatus = $("#ddlVehicleStatus").val();
+        var TransactionType = $("#ddlTransactionType").val();
+        
+        var GrossWeight = $("#txtGrossWeight").val();
+        var VehicleTareWeight = $("#txtVehicleTareWeight").val();
+
+        if (VehicleType == "0") {
+            document.getElementById("ddlVehicleType").style.borderColor = "red";
+            alert('Please Select Vehicle Type')
+            event.preventDefault();
+            return;
+        }
+
+        if (VehicleStatus == "0") {
+            document.getElementById("ddlVehicleStatus").style.borderColor = "red";
+            alert('Please Select Vehicle Status')
+            event.preventDefault();
+            return;
+        }
+        if (TransactionType == "0") {
+            document.getElementById("ddlTransactionType").style.borderColor = "red";
+            alert('Please Select Transaction Type')
+            event.preventDefault();
+            return;
+        }
+        if (txtKGS != "") {
+            if (VehicleType == "Trailer" && VehicleStatus == "Full" && TransactionType == "Second") {
+                $("#txtGrossWeight").val(txtKGS);
+            }
+            if (VehicleType == "Trailer" && VehicleStatus == "Empty" && TransactionType == "Second") {
+                $("#txtVehicleTareWeight").val(txtKGS); 
+            }
+            if (VehicleType == "Trailer" && VehicleStatus == "Empty" && TransactionType == "First") {
+                $("#txtVehicleTareWeight").val(txtKGS); 
+            }
+            if (VehicleType == "Trailer" && VehicleStatus == "Full" && TransactionType == "First") {
+                $("#txtGrossWeight").val(txtKGS);
+            }
+            if (VehicleType == "Truck" && VehicleStatus == "Full" && TransactionType == "Second") {
+                $("#txtGrossWeight").val(txtKGS);
+            }
+            if (VehicleType == "Truck" && VehicleStatus == "Empty" && TransactionType == "Second") {
+                $("#txtVehicleTareWeight").val(txtKGS); 
+            }
+            if (VehicleType == "Truck" && VehicleStatus == "Empty" && TransactionType == "First") {
+                $("#txtVehicleTareWeight").val(txtKGS); 
+            }
+            if (VehicleType == "Truck" && VehicleStatus == "Full" && TransactionType == "First") {
+                $("#txtGrossWeight").val(txtKGS);
+            }
+            if (VehicleType == "Container") {
+                $("#txtGrossWeight").val(txtKGS);
+            }
+
+            VehicleTareWeightChangs()
+        }
+    }
+
+</script>
+
+<script>
+    function Save() {
+        
+        var SlipNo = $("#txtSlipNo").val();
+
+        if (SlipNo == "") {
+            var  SlipNo = "NEW"
+        }
+        
+
+        var ddlCycle = $("#ddlCycle").val();
+        var ddlVehicleType = $("#ddlVehicleType").val();
+        var ddlVehicleStatus = $("#ddlVehicleStatus").val();
+        var ddlTransactionType = $("#ddlTransactionType").val();
+        var chkIsLowBed = $("#chkIsLowBed").val();
+        var ddlTyres = $("#ddlTyres").val();
+        var txtTrailerNo = $("#txtTrailerNo").val();
+        var ddlContainerCount = $("#ddlContainerCount").val();
+        var txtContainerNo = $("#txtContainerNo").val();
+        var txtContainerNo2 = $("#txtContainerNo2").val();
+        var txtSize = $("#txtSize").val();
+        var txtSize2 = $("#txtSize2").val();
+        var txtReceiptNo = $("#txtReceiptNo").val();
+        var txtTareWeight2 = $("#txtTareWeight2").val();
+        var txtPartyName = $("#txtPartyName").val();
+        var txtVehicleTareWeight = $("#txtVehicleTareWeight").val();
+        var txtTareWeight = $("#txtTareWeight").val();
+        var txtPayLoad = $("#txtPayLoad").val();
+        var txtKGS = $("#txtKGS").val();
+        var txtGrossWeight = $("#txtGrossWeight").val();
+        var txtNetWeight = $("#txtNetWeight").val();
+        var txtRemarks = $("#txtRemarks").val();
+        var chkIsLowVGN = $("#chkIsLowVGN").val();
+        var lblamount = $("#lblamount").val();
+        var lblJONo = $("#lblJONo").val();
+        var strWorkYear = '2020-21'
+
+        if (txtNetWeight < 0) {
+            alert('vehicle less net weight no accepted in system');
+            
+        }
+
+        if (ddlVehicleType == "") {
+            document.getElementById("ddlVehicleType").style.borderColor = "red";
+            alert('Please Select Vehicle Type')
+            event.preventDefault();
+            return;
+        }
+
+        if (ddlVehicleStatus == "") {
+            document.getElementById("ddlVehicleStatus").style.borderColor = "red";
+            alert('Please Select Vehicle Status')
+            event.preventDefault();
+            return;
+        }
+
+        if (ddlTransactionType == "") {
+            document.getElementById("ddlTransactionType").style.borderColor = "red";
+            alert('Please Select Transaction Type')
+            event.preventDefault();
+            return;
+        }
+
+        if (SlipNo == "NEW" && ddlTransactionType == "Second" ) {
+            document.getElementById("ddlTransactionType").style.borderColor = "red";
+            alert('Invalid Transaction Type ,can not proceed')
+            $("#ddlTransactionType").focus();
+            event.preventDefault();
+            return;
+        }
+
+
+           
+
+        var WeightmentEntities = {};
+        WeightmentEntities.txtslipNo = SlipNo
+        WeightmentEntities.ddlCycle = ddlCycle
+        WeightmentEntities.cmbvehicletype = ddlVehicleType
+        WeightmentEntities.cmbvehiclestetus = ddlVehicleStatus
+        WeightmentEntities.cmbtranstype = ddlTransactionType
+        WeightmentEntities.txtpayload = txtPayLoad
+        WeightmentEntities.CBManually = chkIsLowBed
+        WeightmentEntities.cmbtyres = ddlTyres
+        WeightmentEntities.TrailerNo = txtTrailerNo
+        WeightmentEntities.cmbcontype = ddlContainerCount
+        WeightmentEntities.txtcontainerno = txtContainerNo
+        WeightmentEntities.txtContainerNo2 = txtContainerNo2
+        WeightmentEntities.txtSize = txtSize
+        WeightmentEntities.txtSize2 = txtSize2
+        WeightmentEntities.txtreceipt = txtReceiptNo
+        WeightmentEntities.txtTareWeight2 = txtTareWeight2
+        WeightmentEntities.txtparty = txtPartyName
+        WeightmentEntities.txtvehicletarewt = txtVehicleTareWeight
+        WeightmentEntities.txttarewt = txtTareWeight
+        WeightmentEntities.txtKGS = txtKGS
+        WeightmentEntities.txtgrosswt = txtGrossWeight
+        WeightmentEntities.txtnetwt = txtNetWeight
+        WeightmentEntities.txtremarks = txtRemarks
+        WeightmentEntities.chkIsLowVGN = chkIsLowVGN
+        WeightmentEntities.lblamount = lblamount
+        WeightmentEntities.strWorkYear = strWorkYear
+        WeightmentEntities.lblJONo = lblJONo
+
+
+        var CycleCheck = $("#ddlCycle option:selected").text();
+        var VehicleStatusCheck = $("#ddlVehicleStatus option:selected").text();
+
+
+
+            $.ajax({
+            url: "/ExportModel/Save1",
+            data: '{WeightmentEntities: ' + JSON.stringify(WeightmentEntities) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data)
+                {
+                                var array = data.split(',');
+                                var b = array[0];
+                                var c = parseInt(array[1]);
+  
+                                alert(b);
+                 if (b == "Record Saved Successfully")
+                 {
+                    if (CycleCheck == "Import" && VehicleStatusCheck == "Full")
+                    {
+                        var r = confirm("Are you sure to close entry for this trailer no : '" + txtTrailerNo +"'?");
+                        if (r == true)
+                        {
+                            CloseTrailerStatus(txtTrailerNo);
+                            Printdetails(c);
+                            Clear();
+                        } else
+                        {
+                            Printdetails(c);
+                            window.location.href = '@Url.Action("WeightmentEntry", "ExportModel")';
+                        }
+                    }
+                    else
+                    {
+                        Printdetails(c);
+                           window.location.href = '@Url.Action("WeightmentEntry", "ExportModel")';
+                    }
+                 }
+                },
+                error: function (error)
+                {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+    }
+
+
+
+    function CloseTrailerStatus(Trailerno) {
+         $.ajax({
+             url: "/ExportModel/UpdateweighmentDetailsForTrailer",
+             data: '{Trailerno: ' + JSON.stringify(Trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data)
+                {
+                alert("Record closed successfully!");
+
+                },
+            error: function (error) {
+            let str = error.responseText;
+            var a = str.indexOf("<title>") + 7;
+            var b = str.indexOf("</title>");
+            str = str.substring(a, b);
+            alert("Something went wrong: " + str);
+            }
+            });
+    }
+</script>
+
+
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#tracker-loader").fadeOut("slow");
+    });
+    $('#ddlsummarysearchcerteria').change(function (e) {
+        var SearchNO = $("#ddlsummarysearchcerteria").val();
+        // alert(SearchNO);
+        if (SearchNO == "ALL") {
+            $("#lblgetlable").text("ALL");
+            $("#divparty").hide();
+            $("#divsearchtext").hide();
+            $("#txtSearchtext").val("");
+        }
+        if (SearchNO == "Vehicle No") {
+            $("#divsearchtext").show();
+            $("#divparty").hide();
+            $("#lblgetlable").text("Vehicle No");
+            $("#txtSearchtext").val("");
+        }
+        if (SearchNO == "Container No") {
+            $("#divsearchtext").show();
+            $("#divparty").hide();
+            $("#lblgetlable").text("Container No");
+            $("#txtSearchtext").val("");
+
+        }
+
+        if (SearchNO == "Party Name") {
+            $("#divsearchtext").hide();
+            $("#divparty").show();
+            $("#lblgetlable").text("");
+            $("#txtSearchtext").val("");
+        }
+
+
+
+
+    });
+
+    function GetWeighmentreport() {
+        $("#tracker-loader").fadeIn("slow");
+        var searchcerteria = $("#ddlsummarysearchcerteria").val();
+        var Searchtext = $("#txtSearchtext").val();
+        var FromDate = $("#txtSummaryFromDate").val();
+        var ToDate = $("#txtSummaryToDate").val();
+        $.ajax({
+            url: '/ExportModel/GetWeightmentReportDetails',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', searchcerteria: ' + JSON.stringify(searchcerteria) + ', Searchtext: ' + JSON.stringify(Searchtext) + '}',
+
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                
+                if (data == "0" || data == "[]") {
+
+                    alert('No Receipt found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblReceiptSummaryDet").empty();
+                RepTableDataJson($("#tblReceiptSummaryDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+</script>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelWeightmentReport", "Gate")?';
+
+
+    }
+
+
+
+
+    function Printdetails(Slipno) {
+
+        var data1 = { 'Slipno': Slipno };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: "POST",
+            url: "/ExportModel/WeightmentdetailsPrint",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow");
+                myWindow.document.write(response);
+
+            },
+            failure: function (response) {
+                alert(response);
+                alert(response.responseText);
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        })
+    }
+</script>

@@ -1,0 +1,264 @@
+﻿
+@{
+    ViewBag.Title = "Unlocktransactions";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area" id="divSearchInvoic">
+    <div class=" content-area overflow-hidden">
+        <div class="page-header">
+            <h4 class="page-title">Unlock Transactions</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Viewsummary();"><i class="fa fa-file-text"></i></button>*@
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Criteria</label>
+                                                @Html.DropDownList("ddlCriteria", new List<SelectListItem>
+                                               { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                   new SelectListItem { Text = "Import", Value = "Import"},
+                                                   new SelectListItem { Text = "Export", Value = "Export"},
+                                                 new SelectListItem { Text = "Warai", Value = "Warai"},
+                                                  new SelectListItem { Text = "BOND", Value = "BOND"},
+                                                   new SelectListItem { Text = "MNR", Value = "MNR"},
+                                                                  new SelectListItem { Text = "Domestic", Value = "Domestic"},
+                                                                                 new SelectListItem { Text = "MIS", Value = "MIS"},
+                                                                                 new SelectListItem { Text = "Credit Note", Value = "Credit Note"},
+                                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlCriteria" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Type</label>
+                                                @Html.DropDownList("ddlType", new List<SelectListItem>
+                                               { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                   new SelectListItem { Text = "Invoice", Value = "Invoice"},
+                                                   new SelectListItem { Text = "Receipt", Value = "Receipt"},
+                                                       new SelectListItem { Text = "Credit Note", Value = "Credit Note"},
+                                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlType" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-2 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Invoice/Receipt No</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.TextBox("txtInvoice", null, new { @class = "form-control", @id = "txtInvoice", name = "txtInvoice", autocomplete = "off", placeholder = "Assessment No" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">From</label>
+                                                @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">To</label>
+                                                @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating" style="margin-top: 33px;">
+                                                <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show('SHOW')" type="button">
+                                                    SHOW
+                                                </button>
+                                                <button class=" btn btn-primary" style="margin-top: -7px" id="btnunlock" onclick="Unlock('unlock')" type="button">
+                                                    Unlock
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        @*@Html.ActionLink("Export To Excel", "ExportToExcelGetReport", null, new { @class = "btn btn-primary btn-md" })*@
+                                        <div class="row">
+                                            <div class="col-lg-12 col-sm-12">
+                                                <div class="table-responsive">
+                                                    <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap"></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //function Show(type) {
+    //    // alert("before")
+    //    $("#tracker-loader").fadeIn("fast");
+
+    //    var delayInMilliseconds = 1000; //1 second
+
+    //    setTimeout(function () {
+    //        for (i = 0; i < 100000; i++) {
+    //            i = i + 0;
+    //        }
+    //        ShowSelectedValue(type);
+
+    //    }, delayInMilliseconds);
+
+
+
+    //}
+
+    function Show() {
+        $("#tracker-loader").fadeIn("slow");
+        var res1 = validateSave();
+        var ddlCriteria = $("#ddlCriteria option:selected").val();
+        var ddlType = $("#ddlType option:selected").val();
+        var txtInvoice = $("#txtInvoice").val();
+
+
+        var data1 = { 'ddlCriteria': ddlCriteria, 'ddlType': ddlType, 'txtInvoice': txtInvoice, 'fromDate': $("#txtFromDate").val(), 'ToDate': $("#txtToDate").val()};
+        data = JSON.stringify(data1);
+        //alert(data);
+        $.ajax({
+
+            url: '/Report/Unlocktransactio',
+            type: 'Post',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+                debugger;
+                //alert(jsonResult);
+                RepTableDataJson($("#example2"), jsonResult, "Unlocktransactio", "Unlocktransactio");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+    function Unlock() {
+        $("#tracker-loader").fadeIn("slow");
+        debugger;
+        var ddlCriteria = $("#ddlCriteria option:selected").val();
+        var ddlType = $("#ddlType option:selected").val();
+        var txtInvoice = $("#txtInvoice").val();
+
+        var Fromdate = $("#txtFromDate").val();
+        var Todate = $("#txtToDate").val();
+
+
+        var data1 = { 'ddlCriteria': ddlCriteria, 'ddlType': ddlType, 'txtInvoice': txtInvoice, 'Fromdate': Fromdate, 'Todate': Todate};
+            data = JSON.stringify(data1);
+      //  alert(data);
+        $.ajax({
+            url: "/Report/AjaxUnlockInvoiesDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        document.location = '@Url.Action("Unlocktransactions", "Report")';
+
+    }
+
+    function validateSave() {
+        debugger;
+        var ddlCriteria = document.getElementById('ddlCriteria').value;
+        var ddlType = document.getElementById('ddlType').value;
+        //var txtInvoice = document.getElementById('txtInvoice').value;
+        //alert(ddlCriteria)
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('ddlCriteria').style.borderColor = "Gainsboro";
+        document.getElementById('ddlType').style.borderColor = "Gainsboro";
+        //document.getElementById('txtInvoice').style.borderColor = "Gainsboro";
+
+        if (ddlCriteria == '0') {
+            document.getElementById('ddlCriteria').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        if (ddlType == '0') {
+            document.getElementById('ddlType').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+        //if (txtInvoice == "") {
+        //    document.getElementById('txtInvoice').style.borderColor = "red"
+        //    blResult = blResult && false;
+        //}
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+    }
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+
+    })
+</script>

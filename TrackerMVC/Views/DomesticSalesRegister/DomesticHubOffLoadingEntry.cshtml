@@ -1,0 +1,239 @@
+﻿
+@{
+    ViewBag.Title = "Domestic Hub Off Loading Entry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="page-header">
+    <h4 class="page-title">Domestic Hub Off Loading Entry</h4>
+
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Entry ID</label>
+                            @Html.TextBox("EntryID", null, new { @class = "form-control", @id = "txtEntryID", name = "txtEntryID", autocomplete = "off", value = "NEW", @readonly = true })
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Entry Date</label>
+                            @Html.TextBox("EntryDate", null, new { @class = "form-control form_datetime1", @id = "txtEntryDate", name = "txtEntryDate", autocomplete = "off" })
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+
+                        <div class="form-group label-floating">
+                            <label class="form-label">Container No</label>
+                            @Html.TextBox("ContainerNo", null, new { @class = "form-control ", @id = "txtContainerNo", name = "ContainerNo", autocomplete = "off" })
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label" style="display:none">*</label>
+                            <button id="btnContainerSearch" class="btn btn-primary" onclick="GetContainerDetail()" style="margin-top: 25px;"><i class="fe fe-search"></i></button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Size</label>
+                            @Html.TextBox("Size", null, new { @class = "form-control", @id = "txtSize", name = "Size", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Type</label>
+                            @Html.TextBox("Type", null, new { @class = "form-control", @id = "txtType", name = "Type", autocomplete = "off" })
+                        </div>
+                    </div>
+
+
+
+                    @*<div class="col-sm-6 col-lg-3">
+                            <div class="form-group label-floating">
+                                <label class="form-label">LR No</label>
+                                @Html.TextBox("LRNo", null, new { @class = "form-control", @id = "txtLRNo", name = "LRNo", autocomplete = "off" })
+                            </div>
+                        </div>*@
+
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Location</label>
+                            @Html.DropDownList("ddlLocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlLocation", name = "ddlLocation", autocomplete = "off" })
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Trailer No</label>
+                            @Html.TextBox("TrailerNo", null, new { @class = "form-control", @id = "txtTrailerNo", name = "TrailerNo", autocomplete = "off" })
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Party Name</label>
+                            @Html.TextBox("PartyName", null, new { @class = "form-control", @id = "txtPartyName", name = "PartyName", autocomplete = "off" })
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="form-group label-floating">
+                            <label class="form-label">LR No</label>
+                            @Html.TextBox("LRNo", null, new { @class = "form-control", @id = "txtLRNo", name = "LRNO", autocomplete = "off" })
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-12">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Remarks</label>
+                            @Html.TextArea("txtRemark", null, new { @class = "form-control", @id = "txtRemark", name = "txtRemark", autocomplete = "off", value = ViewBag.txtRemark, @maxlength = 500 })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-lg-12" id="divShowButton">
+                        <div class="form-group" style="float:right">
+                            <div class="row gutters-xs">
+                                <div class="col" style="float:right">
+                                    <input type="button" id="btnSave" name="Save" value="Save" class="btn btn-primary btnShow" onclick="Save()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    var EntryId ;
+
+    function Save() {
+        formData = {};
+        formData.EntryID = $("#txtEntryID").val();
+        formData.Entrydate = $("#txtEntryDate").val();
+        formData.ContainerNo = $("#txtContainerNo").val();
+        formData.Size = $("#txtSize").val();
+        formData.LocationID = $("#ddlLocation").val();
+        formData.TrailerNo = $("#txtTrailerNo").val();
+        formData.Remarks = $("#txtRemark").val();
+        formData.AddedOn = new Date();
+        var isValid = true;
+        if (formData.ContainerNo == "" || formData.ContainerNo == undefined) {
+            $("#txtContainerNo").addClass("is-invalid state-invalid");
+            isValid = isValid && false;
+        } if (formData.LocationID == "--Select--" || formData.LocationID == "") {
+            $("#ddlLocation").addClass("is-invalid state-invalid");
+            isValid = isValid && false;
+        } if (formData.TrailerNo == "" || formData.TrailerNo == undefined) {
+            $("#txtTrailerNo").addClass("is-invalid state-invalid");
+            isValid = isValid && false;
+        } if (formData.Remarks == "" || formData.Remarks == undefined) {
+            $("#txtRemark").addClass("is-invalid state-invalid");
+            isValid = isValid && false;
+        } else {
+            $("#txtContainerNo").removeClass("is-invalid state-invalid");
+            $("#ddlLocation").removeClass("is-invalid state-invalid");
+            $("#txtTrailerNo").removeClass("is-invalid state-invalid");
+            $("#txtRemark").removeClass("is-invalid state-invalid");
+        }
+
+        console.log(isValid);
+        console.log(formData);
+        if (isValid) {
+            var data = { 'HubOffLoadingData': formData };
+            data = JSON.stringify(data);
+            $("#global-loader").fadeIn();
+            $.ajax({
+                url: '/DomesticSalesRegister/SaveDomesticHubOffLoading',
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+
+                success: function (data) {
+                    alert(data.Message);
+                    $("#global-loader").fadeOut();
+                    window.location = "/DomesticSalesRegister/DomesticHubOffLoadingEntry"
+                },
+                error: function (error) {
+                    $("#global-loader").fadeOut();
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+
+            });
+        }
+    }
+
+    function GetContainerDetail() {
+        var ContainerNo = $("#txtContainerNo").val();
+        var isValid = true;
+        if (ContainerNo == "" || ContainerNo == undefined) {
+            $("#txtContainerNo").addClass("is-invalid state-invalid");
+            isValid = isValid && false;
+        } else {
+            $("#txtContainerNo").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid) {
+            var data = { 'ContainerNo': ContainerNo };
+            data = JSON.stringify(data);
+            $("#global-loader").fadeIn();
+            $.ajax({
+                url: '/DomesticSalesRegister/GetDetailsContainerWise',
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+
+                success: function (data) {
+                    console.log(data);
+
+                    $("#txtLRNo").val(data.LRNo);
+                    $("#txtSize").val(data.Size);
+                    $("#txtEntryID").val(data.EntryID);
+                    $("#global-loader").fadeOut();
+                },
+                error: function (error) {
+                    $("#global-loader").fadeOut();
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+
+            });
+        }
+    }
+</script>

@@ -1,0 +1,503 @@
+﻿@model TrackerMVCEntities.BusinessEntities.BCNSBContainerMapping
+@{
+    ViewBag.Title = "BCNMappingSBContainer";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/UserScripts/BCN/BCNMappingSBContainer.js"></script>
+<div class=" content-area" id="divBCNWagon">
+    <div class="page-header">
+        <h4 class="page-title">BCN SB Container Mapping</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewNOCSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "BCNSBForm" }))
+    {
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Condition</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlCondition", new List<SelectListItem>
+                                               { new SelectListItem { Text = "--Select--", Value = ""},
+                                                   new SelectListItem { Text = "<1> Shipping Bill <1> Container", Value = "1SB1Container"},
+                                                   new SelectListItem { Text = "<1> Shipping Bill <Many> Container", Value = "1SBMayContainer"},
+                                                   new SelectListItem { Text = "<Many> Shipping Bill <1> Container", Value = "ManySB1Container"},
+                                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlCondition" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Stuffing Request No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.StuffingRequestNo, new { htmlAttributes = new { @class = "form-control ", @id = "txtStuffingRequestNo", Placeholder = "New", @autocomplete = "off", @readonly = "true" } })
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Request Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.StuffingRequestDate, new { htmlAttributes = new { @class = "form-control ", @id = "txtStuffingRequestDate", Placeholder = "Request Date", @autocomplete = "off", @readonly = "true" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlRRType", new List<SelectListItem>
+                                               { new SelectListItem { Text = "Single RR", Value = "SingleRR"},
+                                                   new SelectListItem { Text = "Multiple RR", Value = "MultipleRR"},
+                                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlRRType" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.ContainerNo, new { htmlAttributes = new { @class = "form-control ", @id = "txtContainerNo", Placeholder = "Container No", @autocomplete = "off" } })
+                                            <input id="EntryId" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="Button" id="btnShow" value="Show" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.Size, new { htmlAttributes = new { @class = "form-control ", @id = "txtSize", Placeholder = "Size", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Agent Seal No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AgenSealNo, new { htmlAttributes = new { @class = "form-control ", @id = "txtAgenSealNo", Placeholder = "Agen Seal No", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Custom Seal No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.CustomSealNo, new { htmlAttributes = new { @class = "form-control ", @id = "txtCustomSealNo", Placeholder = "Custom Seal No", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Container Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.ContainerType, new { htmlAttributes = new { @class = "form-control ", @id = "txtContainerType", Placeholder = "Type", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">ISO Code</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.ISOCode, new { htmlAttributes = new { @class = "form-control ", @id = "txtISOCode", Placeholder = "ISO Code", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Tare Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.TareWeight, new { htmlAttributes = new { @class = "form-control ", @id = "txtTareWeight", Placeholder = "Tare Weight", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Net Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.NetWeight, new { htmlAttributes = new { @class = "form-control ", @id = "txtNetWeight", Placeholder = "Net Weight", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Total Pkgs</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.TotalPkgs, new { htmlAttributes = new { @class = "form-control ", @id = "txtTotalPkgs", Placeholder = "Total Pkgs", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select id="txtTrainNo" class="form-control">
+                                                
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">SB No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.SBNo, new { htmlAttributes = new { @class = "form-control ", @id = "txtSBNo", Placeholder = "SB No", @autocomplete = "off" } })
+                                            <input id="SBEntryId" type="hidden" />
+                                            <input id="hdnClass" type="hidden" />
+                                            <input id="hdnSBQty" type="hidden" />
+                                            <input id="hdnCargoType" type="hidden" />
+                                            <input id="hdnLEONo" type="hidden" />
+                                            <input id="hdnLEODate" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Cargo Desc.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.CargoDesc, new { htmlAttributes = new { @class = "form-control ", @id = "txtCargoDesc", Placeholder = "Cargo Desc.", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Shipping Line</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.ShippingLine, new { htmlAttributes = new { @class = "form-control ", @id = "txtShippingLine", Placeholder = "Shipping Line", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Shipper</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.Shipper, new { htmlAttributes = new { @class = "form-control ", @id = "txtShipper", Placeholder = "Shipper Name", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">CHA Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.CHAName, new { htmlAttributes = new { @class = "form-control ", @id = "txtCHAName", Placeholder = "CHA Name", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Customer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control ", @id = "txtCustomerName", Placeholder = "Customer Name", @autocomplete = "off", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group" style="padding-top:25px">
+                                    @*<label class="form-label" style="visibility:hidden">.</label>*@
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="btnAdd" name="Add" >Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWagonMappingList">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+                                                <th style="width:1px;color: white;">Select</th>
+                                                <th style="width:1px;color: white;">Sr No</th>
+                                                <th style="width:80px;color: white;">Container No</th>
+                                                <th style="width:100px;color: white;">Size</th>
+                                                <th style="width:80px;color: white;">Type</th>
+                                                <th style="width:80px;color: white;">UN No</th>
+                                                <th style="width:100px;color: white;">Temp</th>
+                                                <th style="width:80px;color: white;">ISO Code</th>
+                                                <th style="width:80px;color: white;">Tare Weight</th>
+                                                <th style="width:80px;color: white;">SB No</th>
+                                                <th style="width:80px;color: white;">Train No</th>
+                                                <th style="width:80px;color: white;">Agent Seal No</th>
+                                                <th style="width:80px;color: white;">Custom Seal No</th>
+                                                <th style="width:80px;color: white;">Cargo Desc.</th>
+                                                <th style="width:80px;color: white;">Stuffing Type</th>
+                                                <th style="width:80px;color: white;">Shipper Name</th>
+                                                <th style="width:80px;color: white;">Class</th>
+                                                <th style="width:80px;color: white;">SB Qty</th>
+                                                <th style="width:80px;color: white;">Cargo Type</th>
+                                                <th style="width:80px;color: white;">Leo No</th>
+                                                <th style="width:80px;color: white;">Leo Date</th>
+                                                <th style="width:80px;color: white;">Net Weight</th>
+                                                <th style="width:80px;color: white;">Total Pkgs</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">VIA No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.VIANo, new { htmlAttributes = new { @class = "form-control ", @id = "txtVIANo", Placeholder = "VIA No", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Vessel Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.VesselId, (IEnumerable<SelectListItem>)ViewBag.Vessel, "--Select--", new { @class = "form-control ", @id = "txtVesselName", name = "txtVesselName", onblur = "myRequiredValidation('txtVesselName')" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">POL</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.POL, (IEnumerable<SelectListItem>)ViewBag.Ports, "--Select--", new { @class = "form-control ", @id = "txtPOL", name = "txtPOL", onblur = "myRequiredValidation('txtPOL')" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Cut-Off-Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.CuttOfDate, new { htmlAttributes = new { @class = "form-control ", @id = "txtCuttOfDate", Placeholder = "Cut off Date", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Voyage</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.Voyage, new { htmlAttributes = new { @class = "form-control ", @id = "txtVoyage", Placeholder = "Voyage", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">POD</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.POD, (IEnumerable<SelectListItem>)ViewBag.POL, "--Select--", new { @class = "form-control ", @id = "txtPOD", name = "txtPOD", onblur = "myRequiredValidation('txtPOD')" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control ", @id = "txtRemarks", Placeholder = "Remarks", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Rotation</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.Rotation, new { htmlAttributes = new { @class = "form-control ", @id = "txtRotation", Placeholder = "Rotation", @autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <a href="#">Click here To View Stuffing Request</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnSave" name="login" value="Save" class="btn btn-success" />
+                                            <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="divBCNSummary" class="content-area" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">BCN Container Shipping Bill Summary</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @id = "txtFromDate", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @id = "txtToDate", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "BCNCLPSummaryExport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblCLPDet"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>
+
+<script>
+    function ViewNOCSummary() {
+        $("#divBCNWagon").hide();
+        $("#divBCNSummary").show();
+    }
+
+    function getBack() {
+        $("#divBCNWagon").show();
+        $("#divBCNSummary").hide();
+    }
+</script>

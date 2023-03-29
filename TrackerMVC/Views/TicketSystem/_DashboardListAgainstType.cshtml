@@ -1,0 +1,303 @@
+﻿
+<script src="~/js/sweet-alert.min.js"></script>
+<div id="divMain">
+    <div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+        <div class="page-header">
+            <h4 class="page-title">
+                <a onclick="getBackDashboard()" style="text-decoration:none"><i class="fe fe-arrow-left"></i></a>
+                @{string ScreenName = "";}
+                @if (@ViewBag.Type == "OPENTKT")
+                {
+                    ScreenName = "Open Ticket Summary";
+                }
+                else if (@ViewBag.Type == "OPENNewReqTKT")
+                {
+                    ScreenName = "Open Ticket Type - New Requirement Summary";
+                }
+                else if (@ViewBag.Type == "OPENAwaitApprTKT")
+                {
+                    ScreenName = "Open Ticket Awaited Approval Summary";
+                }
+                else if (@ViewBag.Type == "OPENApprTKT")
+                {
+                    ScreenName = "Open Ticket Approval Summary";
+                }
+                else if (@ViewBag.Type == "OPENCorrectionTKT")
+                {
+                    ScreenName = "Open Ticket Type - Corrections Summary";
+                }
+                else if (@ViewBag.Type == "OPENBugTKT")
+                {
+                    ScreenName = "Open Ticket Type - Bug Summary";
+                }
+                else if (@ViewBag.Type == "OPENBugTKTLessthan72")
+                {
+                    ScreenName = "Open Ticket Type - Bug Summary (Less Than 72 Hrs)";
+                }
+                else if (@ViewBag.Type == "OPENBugTKTGreaterthan72")
+                {
+                    ScreenName = "Open Ticket Type - Bug Summary (Greater Than 72 Hrs)";
+                }
+                else if (@ViewBag.Type == "CLOSEDTKT")
+                {
+                    ScreenName = "Closed Ticket Summary";
+                }
+                else if (@ViewBag.Type == "CLOSEDNewReqTKT")
+                {
+                    ScreenName = "Closed Ticket Type - New Requirement Summary";
+                }
+                else if (@ViewBag.Type == "CLOSEDBugTKT")
+                {
+                    ScreenName = "Closed Ticket Type - Bug Summary";
+                }
+                else if (@ViewBag.Type == "CLOSEDCorrectionTKT")
+                {
+                    ScreenName = "Closed Ticket Type - Corrections Summary";
+                }
+                else
+                {
+                    ScreenName = "Ticket Summary (Total Raised)";
+                }
+                @ScreenName
+            </h4>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div id="divshow1">
+                    <div class="row" style="display:none" id="divfrom">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control datePickerD", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm"), onkeydown = "event.preventDefault()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control datePickerD", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm"), onkeydown = "event.preventDefault()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="row no-gutters">
+                                <div class="col-2">
+                                    <label class="form-label mt-1">Search</label>
+                                </div>
+                                <div class="col-10 form-group">
+
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fe fe-search"></i>
+                                        </span>
+                                        <input type="text" id="searchText" class="form-control" placeholder="Search Here...">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-1 mb-2">
+                            <div class="row no-gutters mb-2">
+                                <div class="pull-right">
+                                    <div id="buttonsCloseTkt"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center table-hover w-100 card-table m-0 text-nowrap" data-page-length='8' id="tblSearchTkt">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <th class="text-white text-center">ACTION</th>
+                                    <th class="text-white text-center">TICKET NO</th>
+                                    <th class="text-white text-center">DESCRIPTION</th>
+                                    <th class="text-white text-center">TICKET TYPE</th>
+                                    <th class="text-white text-center">RAISED BY</th>
+                                    <th class="text-white text-center">RAISED ON</th>
+                                    <th class="text-white text-center">CLOSED BY</th>
+                                    <th class="text-white text-center">CLOSED ON</th>
+                                    <th class="text-white text-center">PENDING SINCE (Hrs.)</th>
+                                </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- table-wrapper -->
+                </div>
+            </div>
+            <!-- section-wrapper -->
+        </div>
+    </div>
+    <div class="row" style="display:none; color:red">
+        <input id="txtUser" value="@ViewBag.Userid" />
+    </div>
+</div>
+<div id="divViewRaisedTicketDetails"></div>
+<script>
+     $(document).ready(function () {
+
+        $('.datePickerD')
+            .datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy',
+                language: "tr",
+                changeMonth: true,
+                changeYear: true,
+
+            });
+        ShowSummary();
+
+    });
+    function getBackDashboard() {
+        //$('#MainDashboard').show();
+        //$("#divMain").hide();
+         document.location = '@Url.Action("Dashboard", "TicketSystem")';
+    }
+     function ShowSummary() {
+         debugger;
+        var FromDate = $("#txtFromDate").val();
+         var ToDate = $("#txtToDate").val();
+         if (FromDate == null || FromDate == undefined || FromDate == "") {
+             Swal.fire("Error!", "Please select From Date .", "error");
+             return;
+         }
+         if (ToDate == null || ToDate == undefined || ToDate == "") {
+             Swal.fire("Error!", "Please select To Date.", "error");
+             return;
+         }
+         var date1 = document.getElementById('txtFromDate').value;
+         var date2 = document.getElementById('txtToDate').value;
+         date1 = new Date(date1);
+         date2 = new Date(date2);
+         if (date1 > date2) {
+             //document.getElementById('txtFromDate').value = "";
+             Swal.fire("Error!", "From Date always smaller than To Date.", "error");
+             return;
+         }
+        $("#global-loader").fadeIn();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Type': '@ViewBag.Type' };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/TicketSystem/AjaxDashboardListAgainstType",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#tblSearchTkt').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": response,
+                    "bPaginate": true,
+                    "bInfo": false,
+                    "paging": true,
+                    order: [],
+                    "searching": true,
+                    "dom": '<"top"i>rt<"bottom float-left m-3"p><"newQuote bottom float-right m-3"><"clear">',
+                    "columns": [
+                        {
+                            "data": "ID",
+                            "orderable": false,
+                            "render": function (data, type, row, meta) {
+                                data = "<div class=\"btn-list text-left\"><button class=\"btn btn-sm btn-success\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"View Ticket\" onclick=\"Viewticket('" + row.ID + "',0)\"><i class=\"fe fe-eye\"></i></button></div>";
+                                return data;
+                            }
+
+                        },
+                        { "data": "TktNo" },
+                        { "data": "Description", "className": "text-left" },
+                        { "data": "TktTypeName", "className": "text-left" },
+                        { "data": "UserName", "className": "text-left" },
+                        { "data": "AddedOn", "className": "text-left" },
+                        { "data": "ClosedByName", "className": "text-left" },
+                        { "data": "ClosedOn", "className": "text-left" },
+                        { "data": "PendingSince", "className": "text-right" }
+
+                    ],
+                    mark: true
+                });
+                var table = $('#tblSearchTkt').DataTable();
+                table = $('#tblSearchTkt').DataTable();
+
+                // #myInput is a <input type="text"> element
+                $('#searchText').on('keyup', function () {
+                    table.search(this.value).draw();
+                });
+
+                var buttons = new $.fn.dataTable.Buttons(table, {
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-sign-out mr-2"></i> Excel',
+                            titleAttr: 'Excel',
+                            className: 'btn btn-outline-info'
+                        },
+                    ]
+                }).container().appendTo($('#buttonsCloseTkt'));
+                $("#global-loader").fadeOut();
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+        });
+
+
+    }
+
+    function Viewticket(ID, IsUpdate) {
+        debugger;
+        $("#global-loader").fadeIn("slow");
+        var data1 = { 'ID': ID, 'IsUpdate': IsUpdate };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/TicketSystem/_ViewRaisedTicket",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $("#global-loader").fadeOut("slow");
+                $('#divViewRaisedTicketDetails').html(response);
+                $('#divViewRaisedTicketDetails').show();
+                $("#divMain").hide();
+
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+        });
+
+    }
+</script>

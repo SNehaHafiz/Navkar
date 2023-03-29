@@ -1,0 +1,335 @@
+﻿
+@{
+    ViewBag.Title = "Update Scanning Type Manuel";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+
+
+<style>
+
+    td {
+        text-align: center;
+    }
+</style>
+
+<div class=" content-area overflow-hidden" id="divCreate">
+    <script src="~/js/GetTableJson.js"></script>
+    <div class=" content-area overflow-hidden" id="divCreate">
+        <div class="page-header">
+            <h4 class="page-title">Update Scanning Type Manuel</h4>
+            <li class="breadcrumb-item">
+                @*<a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>*@
+            </li>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+
+
+                                <div class="form-horizontal">
+                                    <div class="row">
+
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Container No</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.TextBox("txtcontainerno", null, new { @class = "form-control", @id = "txtcontainerno", name = "txtcontainerno", autocomplete = "off", placeholder = "Container No", @maxlength = 11 })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-1 col-sm-12">
+                                            <div class="form-group" style="padding-top:25px">
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <button class="btn btn-primary" type="button" id="btnSearch" name="Search" onclick="Fetch()">Show</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+                                                <th style="width:80px;color: white;text-align:center"><input type="checkbox" id="flowcheckall" value="" />Select All</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Container No</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Size</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Type</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Scan Type</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">JO Date</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">JO No</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Scan Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+
+                                            <select class="form-control" id="ddlstype">
+                                                <option value="0">--Select--</option>
+                                                <option value="NA">NA</option>
+                                                <option value="M">M</option>
+                                                <option value="F">F</option>
+                                                <option value="D">D</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Update Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success" onclick="Update()" title="Cancel"><b>Update</b></button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function Fetch() {
+        debugger;
+        var ContainerNo = document.getElementById('txtcontainerno').value;
+
+        var data1 = { 'ContainerNo': ContainerNo };
+
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/showScanningEntrydetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "bInfo": true,
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+
+                            "data": "Edit",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.JONo + '">';
+                                return data;
+
+                            }
+                        },
+
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "Type" },
+                        { "data": "ScanType" },
+                        { "data": "JODATE" },
+                        { "data": "JONo" },
+
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    
+</script>
+
+
+
+<script>
+    function cleartextboxes() {
+        document.location = '@Url.Action("UpdateScanningType", "ModifyModule")';
+    }
+</script>
+
+<script>
+    function Update() {
+        debugger;
+
+        $("#tracker-loader").fadeIn("slow");
+        
+        var ScanType = $("#ddlstype").val();
+        var Remarks = $("#txtremarks").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+
+
+
+        var r = confirm("Are you sure to update Scan Type ?");
+        if (r == true) {
+
+
+            var itemcount = checkItemcount();
+
+
+            if (itemcount == false) {
+                alert("No Record Found To Update");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        var JONo = row.cells[6].innerText;
+                        
+
+                        // insert with checked condition and declare all details
+                        if (JONo == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                         //   alert("hiiii");
+                            row = table.rows[i];
+                            ContainerNo = row.cells[1].innerText;
+                            JONo = row.cells[6].innerText;
+                    
+                            tablearray.push({
+                                'ContainerNo': ContainerNo, 'JONo': JONo
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+
+                var data1 = {
+                    'Debitdata': tablearray, 'ScanType': ScanType, 'Remarks': Remarks
+                };
+
+                if (tablearray.length == 0) {
+                    alert("Please select record to proceed");
+                    return false;
+                }
+
+            var data = JSON.stringify(data1);
+            alert(data);
+            $.ajax({
+                url: "/ModifyModule/UpdateContainerScanType",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("UpdateScanningType", "ModifyModule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+            }//else part end
+
+        }//end of main called function
+
+        //Check Checkbox selected count
+
+    }
+
+    function checkItemcount() {
+        var table = $('#example1').DataTable();
+        if (table.rows().count() == 0) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#example1').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+</script>

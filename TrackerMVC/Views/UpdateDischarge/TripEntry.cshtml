@@ -1,0 +1,630 @@
+﻿
+@{
+    ViewBag.Title = "TP Request";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area" id="diventry">
+    <div class="page-header">
+        <h4 class="page-title">TP Request</h4>
+        @*<div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="showTPView();"><i class="fa fa-file-text"></i></button>
+
+
+                </div>
+            </div>
+        </div>*@
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Issue Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.TextBox("txtissue", null, new { @class = "form-control", @id = "txtissue", name = "txtissue", autocomplete = "off", @maxlength = 500,  @readonly = "Readonly" })*@
+                                        @Html.TextBox("txtissue", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") ,@readonly = "readonly" })
+
+
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No(Last 4 digits)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                            <label class="form-label">Trailer No </label>
+                            <select id="ddlTrailerNo" class="form-control">
+                                <option value="">--Select--</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Permit Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.TextBox("txtpermittype", null, new { @class = "form-control", @id = "txtpermittype", name = "txtpermittype", autocomplete = "off", @readonly = "readonly", Style = "font-weight: bold; color:white; font-size:20px; text-transform: uppercase;" })*@
+                                        @Html.TextBox("txtpermittype", null, new { @class = "form-control", @id = "txtpermittype", autocomplete = "off", @readonly = true, Style = "font-weight: bold;font-size:20px; text-transform: uppercase;" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Permit Expity</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtpermitexpiry", null, new { @class = "form-control", @id = "txtpermitexpiry", name = "txtpermitexpiry", autocomplete = "off", @readonly = "readonly" , Style = "font-weight: bold;font-size:20px; text-transform: uppercase;" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Driver Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtdrivername", null, new { @class = "form-control", @id = "txtdrivername", name = "txtdrivername", autocomplete = "off", @readonly = "readonly" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">TP Location</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlTolocatioin", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = "0"},
+                                             new SelectListItem { Text = "DAMAN", Value = "DAMAN"},
+                                             new SelectListItem { Text = "BHILAD", Value = "BHILAD"},
+                                           new SelectListItem { Text = "SILVASSA", Value = "SILVASSA"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlTolocatioin" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">TP For</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlTPFor", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = "0"},
+                                             new SelectListItem { Text = "Monthly", Value = "Monthly"},
+                                             new SelectListItem { Text = "Weekly", Value = "Weekly"},
+                                           new SelectListItem { Text = "Fortnightly", Value = "Fortnightly"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlTPFor" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                  
+                    @*<div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Start Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">End Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAmount", null, new { @class = "form-control", @id = "txtAmount", name = "txtAmount", autocomplete = "off", onkeypress = "isValidAmount()" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="btnSave" name="save" value="Save" class="btn btn-success" onclick="SaveTPDetails()" />
+                                        <input type="text" id="driverid" style="visibility:hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- table-wrapper -->
+        </div>
+        <!-- section-wrapper -->
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class=" content-area" id="divView" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">TP Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="wd-15p sorting">Issue Date</th>
+                                        <th class="wd-15p sorting">Trailer NO.</th>
+                                        <th class="wd-15p sorting">Driver name</th>
+                                        <th class="wd-15p sorting">Amount</th>
+                                        <th class="wd-15p sorting">TP Location</th>
+                                        <th class="wd-15p sorting">TP FOr</th>
+                                       
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [1]
+                }
+
+            ],
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'LoadedContainerArrival',
+                "filename": 'LoadedContainerArrival_List'
+
+            }
+            ]
+        });
+
+
+        //Date.prototype.toShortFormat = function () {
+
+        //    var month_names = ["Jan", "Feb", "Mar",
+        //    "Apr", "May", "Jun",
+        //    "Jul", "Aug", "Sep",
+        //    "Oct", "Nov", "Dec"];
+
+        //    var day = this.getDate();
+        //    var month_index = this.getMonth();
+        //    var year = this.getFullYear();
+        //    var time =this.getTime
+        //    return "" + day + " " + month_names[month_index] + " " + year  ;
+        //}
+
+
+        //var today = new Date();
+        //$("#txtissue").val(today.toShortFormat());
+
+
+    });
+</script>
+<script>
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlTrailerNo");
+
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+
+    $('#ddlTrailerNo').change(function (e) {
+        var trailername = $("#ddlTrailerNo option:selected").text();
+
+        $.ajax({
+            url: "/UpdateDischarge/Ajaxgetdriverbytrailer",
+            data: '{trailername: ' + JSON.stringify(trailername) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              
+                $("#txtdrivername").val(data.DriverName)
+                $("#driverid").val(data.DriverID)
+                $("#txtpermittype").val(data.Permit)
+                $("#txtpermitexpiry").val(data.PermitExpiry)
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+   
+
+</script>
+
+
+<script type="text/javascript">
+    function Save() {
+        
+
+        var res = validateSaveFunction();
+        if (res == false) {
+            return false;
+        }
+
+
+        var TPdate = $("#txtissue").val();
+        var Trailerid = $("#ddlTrailerNo option:selected").val();
+
+        var Driverid = $("#driverid").val();
+        //var startdate = $("#FromDate").val();
+        //var enddate = $("#ToDate").val();
+        var amount = $("#txtAmount").val();
+        var TPlocation = $("#ddlTolocatioin option:selected").text();
+        var TPfor = $("#ddlTPFor option:selected").text();
+      
+        var data1 = { 'TPdate': TPdate, 'Trailerid': Trailerid, 'Driverid': Driverid, 'amount': amount, 'TPlocation': TPlocation, 'TPfor': TPfor }
+
+        var data = JSON.stringify(data1);
+      
+
+        $.ajax({
+            url: "/UpdateDischarge/AjaxInsertTPdetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert("Record saved successfully!");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+        document.location = '@Url.Action("TripEntry", "UpdateDischarge")';
+
+
+    }
+
+    function showTPView() {
+        $("#divView").show()
+        $("#diventry").hide()
+        $.ajax({
+            type: 'POST',
+            url: '/UpdateDischarge/ajaxTPSummaryDetails',
+            //data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ',SearchCriteria: ' + JSON.stringify(SearchCriteria) + ',SearchText: ' + JSON.stringify(SearchText) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                //alert(JSON.stringify(data));
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                         {
+                             "data": "trailerno",
+                             "render": function (data, type, row, meta) {
+                                 if (type === 'display') {
+
+                                     data = '<a   href="#" class="btn btn-sm btn-primary" title="Print" onclick="PrintTPSummary('+ row.trailerno +')">Print</a>';
+                                 }
+
+                                 return data;
+                             }
+
+
+                         },
+
+                        { "data": "TPdate" },
+                        { "data": "trailername" },
+                        { "data": "drivername" },
+                        { "data": "amount" },
+                          { "data": "TPLocation" },
+                            { "data": "TPfor" }
+
+
+                    ], "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'TPDetails',
+                        "filename": 'TPDetails_List'
+
+                    }
+                    ]
+                });
+             },
+            error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+        });
+        }
+
+    function getBack() {
+        $("#divView").hide()
+        $("#diventry").show()
+    }
+   
+
+
+
+        function isValidAmount() {
+            $("#txtAmount ").on("keyup", function () {
+                //alert(1);
+                var valid = /^\d{0,10}(\.\d{0,2})?$/.test(this.value),
+                    val = this.value;
+
+                if (!valid) {
+                    alert("Enter valid data!");
+                    this.value = val.substring(0, val.length - 1);
+                }
+                if (this.value == '.') {
+                    //alert("Enter valid data!");
+                    this.value = val.substring(0, val.length - 1);
+                }
+
+
+
+            });
+        }
+
+
+
+      
+
+        function PrintTPSummary(trailerno)
+        {
+        
+                  
+            //  document.location = '@Url.Action("PrintFuelSlipDirect", "LoadingPlan")?Trailerno=' + trailerno;
+            var url = '/UpdateDischarge/PrintTPDetails?Trailerno=' + trailerno
+
+            window.open(url, '_blank');
+    
+        }
+</script>
+
+
+<script>
+
+    function SaveTPDetails() {
+
+        var trailername = $("#ddlTrailerNo option:selected").text();
+        $.ajax({
+            url: "/UpdateDischarge/AjaxCheckTrailerPermit",
+            data: '{trailername: ' + JSON.stringify(trailername) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data == 0) {
+                   Save()
+                } else {
+                    alert("This trailer is not valid for TP permit!");
+                }
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+</script>
+
+
+
+<script>
+    function validateSaveFunction() {
+        //  alert("hi")
+
+        var txtTripDate = document.getElementById('txtissue').value;
+        var txttrarilername = document.getElementById('Trailerno').value;
+        var txtTrainerNo = document.getElementById('ddlTrailerNo').value;
+        //var txtStartDate = document.getElementById('FromDate').value;
+        //var txtEnddate = document.getElementById('ToDate').value;
+        var amount = document.getElementById('txtAmount').value;
+        var tplocation = document.getElementById('ddlTolocatioin').value;
+        var tpfor = document.getElementById('ddlTPFor').value;
+
+      
+        var blResult = Boolean;
+        blResult = true;
+
+        $("#ddlTrailerNo").removeClass("form-control is-invalid state-invalid");
+        $("#ddlTrailerNo").addClass("form-control");
+        document.getElementById("txtissue").style.borderColor = "gainsboro";
+        //document.getElementById("FromDate").style.borderColor = "gainsboro";
+        //document.getElementById("ToDate").style.borderColor = "gainsboro";
+        document.getElementById("txtAmount").style.borderColor = "gainsboro";
+        document.getElementById("Trailerno").style.borderColor = "gainsboro";
+        document.getElementById("ddlTolocatioin").style.borderColor = "gainsboro";
+        document.getElementById("ddlTPFor").style.borderColor = "gainsboro";
+
+
+        if (txtTrainerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ddlTrailerNo").removeClass("form-control is-valid state-valid")
+            $("#ddlTrailerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (txtTrainerNo == "--Select--") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ddlTrailerNo").removeClass("form-control is-valid state-valid")
+            $("#ddlTrailerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (txtTripDate == "") {
+            document.getElementById('txttripdate').style.borderColor = "red"
+
+            blResult = blResult && false;
+        }
+        //if (txtStartDate == "") {
+        //    document.getElementById('FromDate').style.borderColor = "red"
+
+        //    blResult = blResult && false;
+        //}
+        //if (txtEnddate == "") {
+        //    document.getElementById('ToDate').style.borderColor = "red"
+
+        //    blResult = blResult && false;
+        //}
+        if (amount == "") {
+            document.getElementById('txtAmount').style.borderColor = "red"
+
+            blResult = blResult && false;
+        }
+        if (txttrarilername == "") {
+            document.getElementById('Trailerno').style.borderColor = "red"
+
+            blResult = blResult && false;
+        }
+        if (tplocation == "") {
+            document.getElementById('ddlTolocatioin').style.borderColor = "red"
+
+            blResult = blResult && false;
+        }
+        if (tplocation == "0") {
+            document.getElementById('ddlTolocatioin').style.borderColor = "red"
+
+            blResult = blResult && false;
+        }
+        if (tpfor == "") {
+            document.getElementById('ddlTPFor').style.borderColor = "red"
+
+            blResult = blResult && false;
+        }
+        if (tpfor == "0") {
+            document.getElementById('ddlTPFor').style.borderColor = "red"
+
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+    }
+</script>

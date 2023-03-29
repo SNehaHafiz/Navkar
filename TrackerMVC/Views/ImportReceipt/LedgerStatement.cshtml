@@ -1,0 +1,199 @@
+﻿
+@{
+    ViewBag.Title = "LedgerStatement";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<style>
+    .table th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .table td.first.row {
+        text-align: left
+    }
+
+    .table td.second.row {
+        text-align: left
+    }
+
+    .table td.row {
+        text-align: right
+    }
+</style>
+<div id="tracker-loader"></div>
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Ledger Statement</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divCategory1">
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCategory1", (IEnumerable<SelectListItem>)ViewBag.Category, "All", new { @class = "form-control", @id = "ddlCategory1", name = "ddlCategory1", autocomplete = "off" })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12" id="divCustomerName">
+                            <div class="form-group">
+                                <label class="form-label">Party Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="ddlpartyname" />
+                                        <input type="hidden" class="form-control" id="hdnPayFromId" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txxTODate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-4">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">To</label>
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary btn-xs" id="btnSaveDriver" onclick="Showdetails();">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelOnLedgerstatement", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        AutomCom();
+
+    });
+    function AutomCom() {
+        debugger;
+        $("#ddlpartyname").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/ImportReceipt/getPartyNameReceipt",
+                    data: "{ 'prefixText': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        //debugger;
+                        response($.map(data, function (item) {
+                            //debugger;
+                            return {
+                                label: item.AGName,
+                                val: item.AGID
+                            };
+                        }))
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            },
+            select: function (e, i) {
+                //debugger;
+                $("#ddlpartyname").val(i.item.label);
+                $("#hdnPayFromId").val(i.item.val);
+            },
+            minLength: 1
+        });
+    };
+    function Showdetails() {
+
+
+
+        var partyname = $("#hdnPayFromId").val();
+        var partyfullname = $("#ddlpartyname ").val();
+        var Fromdate = $("#txtFromDate").val();
+        var todate = $("#txxTODate").val();
+        var Category = $("#ddlCategory1 option:selected").text();
+        if (partyfullname == "") {
+            partyname = "";
+        }
+        var data1 = { 'partyname': partyname, 'Fromdate': Fromdate, 'todate': todate, 'partyfullname': partyfullname, 'Category': Category};
+        var data = JSON.stringify(data1);
+       
+        $("#tracker-loader").fadeIn("slow");
+
+        $.ajax({
+            type: 'POST',
+            url: '/ImportReceipt/GetLedgerstatement',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

@@ -1,0 +1,152 @@
+﻿@model TrackerMVCEntities.BusinessEntities.FuelEntities
+@{
+    ViewBag.Title = "LocationWiseMovementReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area1" id="divcontainerno">
+    <div class="page-header">
+        <h4 class="page-title">Location Wise Report<lable id="lblSLName"></lable> </h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00"), @id = "txtfromdate" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), @id = "txttodate" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> From Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.FromID, (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlFrom", name = "ddlFrom" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory"> To Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.ToID, (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlTo", name = "ddlTo" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12" id="divTEUS" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <span style="font-weight: bold;font-size:30px"> Total Movement :</span> <label id="lbltwenty" style="font-weight: bold;font-size:30px"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        @Html.ActionLink("Export To Excel", "ExportLocationWiseReport", null, new { @class = "btn btn-primary btn-md" })
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="card1">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="exampleInv"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function Show() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#txtfromdate").val();
+        var ToDate = $("#txttodate").val();
+        var FromLoc = $("#ddlFrom").val();
+        var ToLoc = $("#ddlTo").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'FromLoc': FromLoc, 'ToLoc': ToLoc };
+        data = JSON.stringify(data1);
+      
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetLocationWiseReport',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                RepTableDataJsonwopaging($("#exampleInv"), data, "Warai Invoice", "WaraiInvoice");
+                $("#tracker-loader").fadeOut("slow");
+            //count total row
+                var table = document.getElementById("exampleInv");
+                var row;
+                var TotTEUS1 = 0;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    TotTEUS1 = TotTEUS1 + 1;    
+                }
+                // alert(TotTEUS);
+                $("#lbltwenty").text(TotTEUS1);
+                $("#divTEUS").show();
+            },
+            error: function (errormessage) {
+                $("#tracker-loader").fadeOut("slow");
+                alert(errormessage.responseText);
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    };
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>

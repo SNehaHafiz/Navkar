@@ -1,0 +1,371 @@
+﻿
+@{
+    ViewBag.Title = "ModifyInternalFuelConsumption";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="content-area overflow-hidden" id="divDriver">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify Internal Fuel Consumption</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+
+                    @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>*@
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Slip No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input id="txtSlipNo" type="text" class="form-control" placeholder="Slip No" style="text-transform:uppercase" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" style="width:60PX" id="btnSearch" type="button" onclick="showContainerList()"><i class="fe fe-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "txtTrailerno", @name = "txtTrailerno", autocomplete = "off", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Slip Number</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSlipnumber", null, new { @class = "form-control", @id = "txtSlipnumber", @name = "txtSlipnumber", autocomplete = "off", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Last Reading</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtlastReading", null, new { @class = "form-control", @id = "txtlastReading", @name = "txtlastReading", autocomplete = "off", @type = "number" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Current Reading</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcurrentReading", null, new { @class = "form-control", @id = "txtcurrentReading", @name = "txtcurrentReading", autocomplete = "off", @type = "number" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="divfuel">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Fuel</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFuel", null, new { @class = "form-control", @id = "txtFuel", @name = "txtFuel", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row" id="divUpdateRemarks">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextArea("txtUpdateRemarks", null, new { @class = "form-control", @id = "txtUpdateRemarks", @name = "txtUpdateRemarks", autocomplete = "off", @rows = "4" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="divcancelremakrs" style="display:none">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Cancel Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextArea("txtCancelRemarks", null, new { @class = "form-control", @id = "txtCancelRemarks", @name = "txtCancelRemarks", autocomplete = "off", @rows = "4" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="UpdateVoucherDetails();">Save</button>
+                            <button class="btn btn-danger btn-xs" id="divcancel" onclick="Cancel();">Cancel</button>
+                            <button class="btn btn-danger btn-xs" id="divcancelvouhcer" onclick="CancelVoucherDetails();" style="display:none">Cancel</button>
+                            <button class="btn btn-info btn-xs" id="btnCancelVoucher" onclick="ISfuelPrint();">Reprint Fuel</button>
+                            <button type="button" class="btn btn-icon btn-gray" onclick="Clear()" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function validateUpdate() {
+
+        var txtSlipNo = document.getElementById('txtSlipNo').value;
+        var txtActivityType = document.getElementById('txtUpdateRemarks').value;
+        document.getElementById("txtSlipNo").style.borderColor = "gainsboro";
+        document.getElementById("txtUpdateRemarks").style.borderColor = "gainsboro";
+        var blResult = Boolean;
+        blResult = true;
+        if (txtSlipNo == "") {
+
+            document.getElementById("txtSlipNo").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (txtActivityType == "") {
+
+            document.getElementById("txtUpdateRemarks").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+    function validateCancel() {
+
+        var txtSlipNo1 = document.getElementById('txtSlipNo').value;
+        var cancelremakrs = document.getElementById('txtCancelRemarks').value;
+        document.getElementById("txtSlipNo").style.borderColor = "gainsboro";
+        document.getElementById("txtCancelRemarks").style.borderColor = "gainsboro";
+        var blResult = Boolean;
+        blResult = true;
+        if (txtSlipNo1 == "") {
+
+            document.getElementById("txtSlipNo").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (cancelremakrs == "") {
+
+            document.getElementById("txtCancelRemarks").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+
+        function CancelVoucherDetails() {
+
+        var res = validateCancel();
+        if (res == false) {
+            return false;
+        }
+            var SlipNo = document.getElementById('txtSlipNo').value;
+            var CancelRemarks = document.getElementById('txtCancelRemarks').value;
+
+            var data1 = { 'SlipNo': SlipNo.trim(), 'CancelRemarks': CancelRemarks};
+        var data = JSON.stringify(data1);
+      //  alert(data);
+        $.ajax({
+            url: "/ModifyInternalFuelConsumption/AjaxCancelFuelConsumptionDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("ModifyInternalFuelConsumption", "ModifyInternalFuelConsumption")';
+
+    }
+
+      function Clear() {
+        document.location = '@Url.Action("ModifyInternalFuelConsumption", "ModifyInternalFuelConsumption")';
+    }
+
+    function UpdateVoucherDetails() {
+        var res = validateUpdate();
+        if (res == false) {
+            return false;
+        }
+        var txtSlipNo = document.getElementById('txtSlipNo').value;
+            var txtFuel = document.getElementById('txtFuel').value;
+        var txtUpdateRemarks = document.getElementById('txtUpdateRemarks').value;
+        var lastReading = document.getElementById('txtlastReading').value;
+        var currentReading = document.getElementById('txtcurrentReading').value;
+
+
+        var ModifyInternalFuelConsumption = {};
+        ModifyInternalFuelConsumption.fuelRefNo = txtSlipNo;
+        ModifyInternalFuelConsumption.Qty = txtFuel;
+        ModifyInternalFuelConsumption.Remarks = txtUpdateRemarks;
+        ModifyInternalFuelConsumption.lastReading = lastReading;
+        ModifyInternalFuelConsumption.currentReading = currentReading;
+
+
+    $.ajax({
+        url: "/ModifyInternalFuelConsumption/Save",
+        data: '{ModifyInternalFuelConsumptionEntities: ' + JSON.stringify(ModifyInternalFuelConsumption) + '}',
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+        if(JSON.stringify(result)==0)
+
+        {
+            alert('Record Update successfully');
+            window.location.href = '@Url.Action("ModifyInternalFuelConsumption", "ModifyInternalFuelConsumption")';
+        }
+
+
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+        }
+
+
+    function showContainerList() {
+
+
+        var SlipNo = document.getElementById('txtSlipNo').value;
+        ///var ActivityType = document.getElementById('ddlInOutSearch').value;
+
+        var data1 = { 'SlipNo': SlipNo.trim()};
+        var data = JSON.stringify(data1);
+
+
+
+
+        $.ajax({
+            url: "/ModifyInternalFuelConsumption/AjaxGetSlipFuelDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (data) {
+
+
+                $("#txtTrailerno").val(data[0].TrailerNo);
+                $("#txtSlipnumber").val(data[0].fuelRefNo);
+                $("#txtFuel").val(data[0].Qty);
+                $("#txtlastReading").val(data[0].lastReading);
+                $("#txtcurrentReading").val(data[0].currentReading);
+
+
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+    function Cancel() {
+        $("#divfuel").hide();
+        $("#divcancelremakrs").show();
+        $("#divcancelvouhcer").show();
+        $("#divcancel").hide();
+        $("#divUpdateRemarks").hide();
+    }
+
+
+     function ISfuelPrint() {
+        //     var res = validateUpdate();
+        //if (res == false) {
+        //    return false;
+        //}
+
+         var SlipNo = document.getElementById('txtSlipNo').value;
+         //var CancelRemarks = document.getElementById('txtCancelRemarks').value;
+
+         var data1 = { 'SlipNo': SlipNo.trim() };
+        var data = JSON.stringify(data1);
+      // alert(data);
+
+        $.ajax({
+            url: "/ModifyInternalFuelConsumption/ISprintSave",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("ModifyInternalFuelConsumption", "ModifyInternalFuelConsumption")';
+    }
+
+</script>

@@ -1,0 +1,649 @@
+﻿
+@{
+    ViewBag.Title = "SBWiseMovementAcceptEntry";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+@*<h2>SBWiseMovementAcceptEntry</h2>*@
+
+<style>
+    .hiddenfield {
+        display: none;
+    }
+</style>
+
+<div id="ExportbttcargoJO">
+    <div class="page-header">
+        <h5 class="page-title">Supplier Bill Wise Movement Accept Entries</h5>
+        <a class="btn btn-sm" href="#" style="height:36px;align-content:center;color:white;background-color: #5ed84f;" data-placement="bottom" title="Add" data-original-title="Add" onclick="GetBack()"><i class="fa fa-arrow-left  mt-1"></i> </a>
+
+    </div>
+    <div class="row">
+
+        <div class="col-md-10 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-6">
+
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">SB No</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("txtSBNo", null, new { @class = "form-control ", @id = "txtSBNo", Placeholder = "", @autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button class="btn btn-primary" type="button" id="btnAddSBNo" name="Add" onclick="FetchSBWiseMovementAccDetails()"><i class="fa fa-check"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Size</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("txtSize", null, new { @class = "form-control ", @id = "txtSize", Placeholder = "", @autocomplete = "off" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-7">
+                                    <div class="form-group">
+                                        <label class="form-label" style="display:none">EntryID</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.Hidden("txtEntryID", null, new { @class = "form-control ", @id = "txtEntryID", Placeholder = "", @autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">On Account</label>
+                                        @Html.TextBox("txtOnAccount", null, new { @class = "form-control ", @id = "txtOnAccount", Placeholder = "", @autocomplete = "off" })
+                                        @Html.Hidden("txtAgencyID", null, new { @class = "form-control ", @id = "txtAgencyID", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                               
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Exporter</label>
+                                        @Html.TextBox("txtShipperName", null, new { @class = "form-control ", @id = "txtShipperName", Placeholder = "", @autocomplete = "off", @readonly = "true" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Shipping Line </label>
+                                        @Html.TextBox("txtShippingLine", null, new { @class = "form-control ", @id = "txtShippingLine", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">CHA Name</label>
+                                        @Html.TextBox("txtCHAName", null, new { @class = "form-control ", @id = "txtCHAName", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Cargo No</label>
+                                        @Html.TextBox("txtCargoNo", null, new { @class = "form-control ", @id = "txtCargoNo", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">LEO NO</label>
+                                        @Html.TextBox("txtLEONO", null, new { @class = "form-control ", @id = "txtLEONO", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">LEO Date </label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("txtLEODate", null, new { @class = "form-control form_datetime1", @id = "txtLEODate", Placeholder = "", @autocomplete = "off" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Seal No</label>
+                                        @Html.TextBox("txtSealNo", null, new { @class = "form-control ", @id = "txtSealNo", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Custom Seal</label>
+                                        @Html.TextBox("txtAgentSeal", null, new { @class = "form-control ", @id = "txtAgentSeal", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Transport Type</label>
+                                        @Html.DropDownList("ddlTransportType", new List<SelectListItem>
+                                                  { 
+                                              new SelectListItem { Text = "Road", Value = "1"},
+                                                     }, new { @class = "form-control", autocomplete = "off", @id = "ddlTransportType" })
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Via No</label>
+                                        @Html.TextBox("txtViaNo", null, new { @class = "form-control ", @id = "txtViaNo", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">POL </label>
+                                        @Html.TextBox("txtPOL", null, new { @class = "form-control ", @id = "txtPOL", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">POD </label>
+                                        @Html.TextBox("txtPODName", null, new { @class = "form-control ", @id = "txtPODName", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Vessal Name </label>
+                                        @Html.TextBox("txtVessalName", null, new { @class = "form-control ", @id = "txtVessalName", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Cut off date </label>
+                                        @Html.TextBox("txtCutoffDate", null, new { @class = "form-control form_datetime1", @id = "txtCutoffDate", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Remarks </label>
+                                        @Html.TextBox("txtRemarks", null, new { @class = "form-control ", @id = "txtRemarks", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+
+
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table id="tblExpCTRDetails" class="table table-bordered table-hover th_Background tbl-cart text-nowrap" style="width:100%">
+                                            <thead>
+
+                                                <tr>
+
+                                                    <th>SELECT</th>
+                                                    <th>Container No</th>
+                                                    <th>Size</th>
+
+                                                    <th>Agent Name</th>
+                                                    <th>Shipper Name</th>
+                                                    <th>Shipping Line</th>
+                                                    <th>CHA Name</th>
+                                                    <th>Cargo type</th>
+                                                    <th>Seal No</th>
+                                                    <th>Agent Seal</th>
+                                                    <th>PODName</th>
+                                                    <th class="hiddenfield">Agency ID</th>
+                                                    <th  class="hiddenfield">Entry ID</th>
+                                                </tr>
+                                            </thead>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                  
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success" type="button" id="btnSave" name="Add" onclick="ConfrimMovementAccept()">Save</button>&nbsp;
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" onclick="Clear()" ;title="clear" id="btnclearValue">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+    var ItemList = [];
+    var SBCTRDetailsList = [];
+
+    function FetchSBWiseMovementAccDetails() {
+           var SBNo = $("#txtSBNo").val();
+
+        if (SBNo == "" || SBNo == undefined || SBNo == null || SBNo == 0) {
+            alert("ShippingBill no can not be blank");
+            return false;
+        }
+
+        var data1 = { 'SBNo': SBNo }
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+                type: 'POST',
+                url: '/ExportModel/GetMovementAccDetailsbySBNO',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+           
+                success: function (data) {
+
+                        var CTRData = (data.SBCTRData.MovementAcceptCTRData);
+                         ItemList = (data.SBCTRData.MovementAccCTRItemList);
+                    
+
+                    if (data == 0 || data == "[]") {
+                        alert("Data Not Found");
+                    } else {
+
+                        $("#txtSize").val(CTRData.Size);
+                        $("#txtAgencyID").val(CTRData.AgencyID);
+                        $("#txtOnAccount").val(CTRData.AgentName);
+                        $("#txtShipperName").val(CTRData.Shippername);
+                        $("#txtShippingLine").val(CTRData.SLName);
+                        $("#txtCHAName").val(CTRData.CHAName);
+                        $("#txtCargoNo").val(CTRData.Cargotype);
+                        $("#txtSealNo").val(CTRData.SealNo);
+                        $("#txtAgentSeal").val(CTRData.AgentSeal);
+                        $("#txtEntryID").val(CTRData.EntryID);
+                        $("#txtViaNo").val(CTRData.Viano);
+                        $("#txtPODName").val(CTRData.PODName);
+
+
+                        if (ItemList.length != 0 || ItemList != "[]") {
+                         
+                            BindItemList();
+                        }
+                        
+                    
+                    }
+
+
+
+                }
+        });
+    }
+   
+
+    function BindItemList() {
+     
+          $('#tblExpCTRDetails').dataTable({
+                "destroy": true,
+                "bLengthChange": false,
+                "bInfo": false,
+                "bPaginate": false,
+                "bFilter": true,
+                "aaSorting": [],
+                "order": [],
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [0]
+                    }
+
+                ],
+                "aaData": ItemList,
+                "columns": [
+                 
+                    {
+                        "data": "SrNo",
+                        "render": function (data, type, row, meta) {
+                         
+                            if (row.Select == "1") {
+
+                                data = '<input type="checkbox" name="checklist" class="checklist"  id="checklist' + row.SrNo + '"   value="' + row.SrNo + '"  checked>';
+
+                            } else {
+                                data = '<input type="checkbox" name="checklist" class="checklist"  id="checklist' + row.SrNo+'"  value="' + row.SrNo + '" >';
+
+                            }
+
+                            return data;
+                         }
+                    },
+                    { "data": "ContainerNo" },
+                    { "data": "Size" },                                 
+                    { "data": "AgentName" },
+                    { "data": "Shippername" },
+                    { "data": "SLName" },
+                    { "data": "CHAName" },
+                    { "data": "Cargotype" },
+                    {
+                        "data": "SealNo",
+                       "render": function (data, type, row, meta) {
+                                 if (type === 'display') {
+                                        data = '<input type="text" name="SealNo" class="form-control noborder"  style="width:150px;" id="SealNo' + row.SrNo+'" value="' + data + '" />'
+                                 }
+                                  return data;
+                        }
+                    },
+                    {
+                        "data": "AgentSeal",
+                        "render": function (data, type, row, meta) {
+                                 if (type === 'display') {
+                                        data = '<input type="text" name="AgentSeal" class="form-control noborder"  style="width:150px;" id="AgentSeal' + row.SrNo+'" value="' + data + '" />'
+                                 }
+                                  return data;
+                        }
+                    },                                    
+                    { "data": "PODName" },
+                    { "data": "AgencyID", "className": "hiddenfield" }, 
+                    { "data": "EntryID" , "className": "hiddenfield"}
+                  
+                ]
+
+            });
+    }
+
+
+    function OnSave() {
+
+      
+      var AgencyID =   $("#txtAgencyID").val();
+      var EntryID =   $("#txtEntryID").val();
+      var ViaNo =   $("#txtViaNo").val();
+      var POLID =   $("#txtPOL").val();
+      var LEONO =   $("#txtLEONO").val();
+      var LEODate =   $("#txtLEODate").val();
+      var TransTypeID =   $("#ddlTransportType").val();
+      var Remarks =   $("#txtRemarks").val();
+    
+
+        if (AgencyID == 0 || AgencyID == "" || AgencyID == undefined || AgencyID == null) {
+            alert("Account name  can not be blank");
+            return false;
+        }
+
+        if (EntryID == 0 || EntryID == "" || EntryID == undefined || EntryID == null) {
+            alert("EntryID   can not be blank");
+            return false;
+        }
+
+     
+
+        if (POLID == 0 || POLID == "" || POLID == undefined || POLID == null) {
+            alert("POL can not be blank");
+            return false;
+        }
+
+        if (LEONO == 0 || LEONO == "" || LEONO == undefined || LEONO == null) {
+            alert("LEO NO can not be blank");
+            return false;
+        }
+
+        if (LEODate == 0 || LEODate == "" || LEODate == undefined || LEODate == null) {
+            alert("LEO Date can not be blank");
+            return false;
+        }
+
+        if (TransTypeID == 0 || TransTypeID == "" || TransTypeID == undefined || TransTypeID == null) {
+            alert("Transport Type can not be blank");
+            return false;
+        }
+
+        if (ViaNo == 0 || ViaNo == "" || ViaNo == undefined || ViaNo == null) {
+            alert("Via No can not be blank");
+            return false;
+        }
+
+        if (Remarks == 0 || Remarks == "" || Remarks == undefined || Remarks == null) {
+            Remarks = " ";
+        }
+
+       
+
+        AssignElementsInArray();
+
+        if (SBCTRDetailsList.length == 0 || SBCTRDetailsList=='[]' ) {
+          alert("Please select alet one container no details.");
+          return false;
+        }
+
+        var element = {};
+
+        element.POLID = POLID;    
+        element.TransTypeID = TransTypeID;
+        element.Remarks = Remarks;
+        element.MoveType = " ";
+        element.ISWeighed  = 0;
+        element.LEONO = LEONO;
+        element.LEODate = LEODate;
+        element.Viano = ViaNo;
+
+        var data1 = { 'SBWiseMovementAccData': element , 'SBCTRDetailsList': SBCTRDetailsList }
+        var data = JSON.stringify(data1);
+
+         $.ajax({
+                type: 'POST',
+                url: '/ExportModel/SaveSBWiseMovementAcceptEntry',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+           
+                success: function (responce) {
+                    alert(responce);
+                    document.location = '@Url.Action("SBWiseMovementAcceptEntry", "ExportModel")';
+                  
+             },
+                error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+         });
+
+
+    }
+
+    function ConfrimMovementAccept() {
+
+         var EntryID = $("#txtEntryID").val();
+         var SBNo = $("#txtSBNo").val();
+
+        if (EntryID == "" || EntryID == undefined || EntryID == null || EntryID == 0) {
+            alert("EntryID no can not be blank");
+            return false;
+        }
+         if (SBNo == "" || SBNo == undefined || SBNo == null || SBNo == 0) {
+            alert("SBNo  can not be blank");
+            return false;
+         }
+
+        var POPUP = [];
+        //var ele = {};
+        //ele.ContainerNo = "1";
+        //POPUP.push(ele);
+
+     
+
+        var ContainerNos = "";
+        for (var z = 0; z < ItemList.length; z++ ) {
+            if (ContainerNos  == "") {
+                ContainerNos = ItemList[z].ContainerNo;
+            } else {
+                 ContainerNos = ContainerNos + ","+ ItemList[z].ContainerNo;
+            }
+        }
+
+       
+
+        var data1 = {  'ContainerNos': ContainerNos }
+        var data = JSON.stringify(data1);
+
+          $.ajax({
+                type: 'POST',
+                url: '/ExportModel/GetAcceptedMovementCountSBNO',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+           
+                success: function (data) {
+                    console.log(data);
+                    if (data == 0) {
+                        OnSave();
+                    } else {
+                        var msg = "Movement already accepted for this sb no" + SBNo;
+                        alert(msg);
+                    }
+
+
+              },
+              error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+
+
+    }
+
+    function AssignElementsInArray() {
+           SBCTRDetailsList = [];
+      
+
+       $('.checklist:checked').each(function (i, e) {
+             var x = $(this).val();
+             var z = ItemList.findIndex(p => p.SrNo == x);
+             var element = {};
+
+                   element.SrNo = x;                 
+                   element.ContainerNo = ItemList[z].ContainerNo;
+                   element.Size = ItemList[z].Size;
+                   element.AgentName = ItemList[z].AgentName;
+                   element.Shippername = ItemList[z].Shippername;
+                   element.SLName =ItemList[z].SLName;
+                   element.CHAName = ItemList[z].CHAName;
+                   element.Cargotype = ItemList[z].Cargotype; 
+                   element.SealNo = $("#SealNo" + x).val();
+                   element.AgentSeal = $("#AgentSeal" + x).val();
+                   element.PODName = ItemList[z].PODName;
+                   element.AgencyID =ItemList[z].AgencyID;
+                   element.EntryID = ItemList[z].EntryID;
+          
+             SBCTRDetailsList.push(element);
+       });
+
+
+       
+    }
+       
+    
+</script>

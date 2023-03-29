@@ -1,0 +1,148 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TPEntryEntities>
+
+@{
+    ViewBag.Title = "TP Print";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">TP Print : @Model.Count()</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="Refresh();" class="btn btn-secondary" style="color:white;align-content:center;"><i class="fa fa-refresh" data-placement="bottom" title="refresh"></i>  </a></li>
+        </ol>
+    </div>
+  
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th></th>
+                                            <th class="wd-15p sorting">TP No</th>
+                                            <th class="wd-15p sorting">TP Date</th>
+                                            <th class="wd-15p sorting">Trailer NO.</th>
+                                            <th class="wd-15p sorting">Driver name</th>
+                                            <th class="wd-15p sorting">TP Location</th>
+                                            <th class="wd-15p sorting">TP FOr</th>
+                                            <th class="wd-15p sorting">Amount</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                            <tr>
+                                                <td><a href="#" class="btn btn-sm btn-primary" title="Print" onclick="ApproveTPdetails(@d.trailerno,@d.TPNumber)">Print</a></td>
+                                                <td>@Html.DisplayFor(m => d.TPNO)</td>
+                                                <td>@Html.DisplayFor(m => d.TPdate)</td>
+                                                <td>@Html.DisplayFor(m => d.trailername)</td>
+                                                <td>@Html.DisplayFor(m => d.drivername)</td>
+                                                <td>@Html.DisplayFor(m => d.TPLocation)</td>
+                                                <td>@Html.DisplayFor(m => d.TPfor)</td>
+                                                <td>@Html.DisplayFor(m => d.amount)</td>
+
+
+                                            </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'PendingContainerAgainZeroJo',
+                "filename": 'PendingContainer_List'
+
+            }
+            ]
+        });
+
+
+
+    });
+</script>
+
+<script>
+    function Refresh()
+    {
+         document.location = '@Url.Action("TPDetailsPrint", "UpdateDischarge")';
+
+    }
+</script>
+@*<script type="text/javascript">
+
+
+    function ApproveTPdetails(trailerno,tpNo) {
+       
+        var url = '/UpdateDischarge/PrintTPDetails?Trailerno=' + trailerno +'&tpNo='+tpNo
+        window.open(url, '_blank');
+
+    }
+
+   
+</script>*@
+
+
+<script>
+    function ApproveTPdetails(trailerno, tpNo) {
+        //alert(trailerno);
+        //alert(tpNo);
+        data1 = { 'trailerno': trailerno, 'tpNo': tpNo };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/UpdateDischarge/PrintTPDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+               
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1");
+                myWindow.document.write(response);
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        
+    }
+</script>
+
+
+
+
+
+

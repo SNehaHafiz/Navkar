@@ -1,0 +1,334 @@
+﻿
+@{
+    ViewBag.Title = "Domestic Customer Updation";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    td {
+        text-align: center;
+    }
+</style>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <script src="~/js/GetTableJson.js"></script>
+    <div class=" content-area overflow-hidden" id="divCreate">
+        <div class="page-header">
+            <h4 class="page-title">Update Domestic Customer</h4>
+            <li class="breadcrumb-item">
+                @*<a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>*@
+            </li>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddltrainno", (IEnumerable<SelectListItem>)ViewBag.DomesticTrainList, "--Select--", new { @class = "form-control", @id = "ddltrainno", name = "ddltrainno", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" name="Add" onclick="fetch(); "><b>Show</b></button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Agency Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.CustomerList, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+
+
+
+                                                <th style="width:80px;color: white;text-align:center"><input type="checkbox" id="flowcheckall" value="" />Select All</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Sr No</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Train No</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Container No</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Loaded Date</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Entry ID</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Loaded ID</th>
+
+
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Customer</th>
+
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Update Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function fetch() {
+        debugger;
+        var TrainID = document.getElementById('ddltrainno').value;
+
+        var data1 = { 'TrainID': TrainID };
+
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetDomesticTrainList',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+
+                            "data": "Srno",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.Srno + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "Srno" },
+                        { "data": "TrainNo" },
+                        { "data": "ContainerNo" },
+                        { "data": "LaodedDate" },
+                        { "data": "EntryID" },
+                        { "data": "LoadingID" },
+                        { "data": "AGName" },
+
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+
+<script>
+    function cleartextboxes() {
+        document.location = '@Url.Action("DomesticCustomerUpdate", "ModifyModule")';
+    }
+</script>
+
+<script>
+    function Update() {
+        debugger;
+
+
+
+
+
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var TrainID = $("#ddltrainno").val();
+
+        var AGID = $("#ddlcustomer").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+
+        if (TrainID == "") {
+            isValid = isValid && false;
+            $("#ddltrainno").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddltrainno").removeClass("is-invalid state-invalid");
+        }
+
+
+        if (AGID == "") {
+            isValid = isValid && false;
+            $("#ddlcustomer").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddlcustomer").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        var r = confirm("Are you sure to update ?");
+        if (r == true) {
+
+
+            var itemcount = checkItemcount();
+            if (itemcount == false) {
+                alert("No Record Found To Save");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        var Srno = row.cells[1].innerText;
+                        var EntryID = row.cells[5].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (Srno == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                         //   alert("hiiii");
+                            row = table.rows[i];
+                            LoadingID = row.cells[6].innerText;
+                            EntryID = row.cells[5].innerText;
+                            tablearray.push({
+                                'LoadingID': LoadingID, 'EntryID': EntryID
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+            }//else part end
+            var data1 = {
+                'Debitdata': tablearray, 'TrainID': TrainID, 'AGID': AGID, 'Remarks': Remarks
+            };
+            var data = JSON.stringify(data1);
+          // alert(data);
+            $.ajax({
+                url: "/ModifyModule/UpdateDomesticLoadingDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("DomesticCustomerUpdate", "ModifyModule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }//end of main called function
+
+        //Check Checkbox selected count
+        function checkItemcount() {
+            var table = $('#example1').DataTable();
+            if (table.rows().count() == 0) {
+                return false;
+            }
+            return true;
+        }
+    }
+</script>
+<script>
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#example1').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+</script>
+

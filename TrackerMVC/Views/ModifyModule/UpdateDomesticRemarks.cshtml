@@ -1,0 +1,350 @@
+﻿
+@{
+    ViewBag.Title = "UpdateDomesticRemarks";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .hiderow {
+        display: none
+    }
+</style>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Update Domestic Remarks</h4>
+
+    </div>
+
+    
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Invoice No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtinvoiceno", null, new { @class = "form-control ", @id = "txtinvoiceno", Placeholder = "Invoice No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch(); "><i class="fa fa-check"></i></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+
+                        <div class="col-lg-6 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", Placeholder = "Remarks", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">In-Word</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtinword", null, new { @class = "form-control ", @id = "txtinword", Placeholder = "In Word", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Out-Word</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtoutword", null, new { @class = "form-control ", @id = "txtoutword", Placeholder = "Out Word", @autocomplete = "off" })
+                                        <input type="hidden" id="txtoldremarks" />
+                                        <input type="hidden" id="txtoldinword" />
+                                        <input type="hidden" id="txtoldoutword" />
+                                        <input type="hidden" id="txtoldcommodity" />
+                                        <input type="hidden" id="txtoldQty" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Commodity</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcommodity", null, new { @class = "form-control ", @id = "txtcommodity", Placeholder = "Commodity", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                        <tr>
+                                            <th style="width:1px;color: white;">#</th>
+                                            <th style="width:80px;color: white;">Account Name</th>
+                                            <th style="width:80px;color: white;">Old Quantity</th>
+                                            <th style="width:80px;color: white;">Quantity</th>
+                                            <th  class="hiderow">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"></label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+
+
+                                <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+
+                                <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function Fetch() {
+        debugger;
+
+
+        
+        var InvoiceNo = document.getElementById('txtinvoiceno').value;
+        var data1 = { 'InvoiceNo': InvoiceNo };
+        var data = JSON.stringify(data1);
+
+        
+        
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetInvoiceDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async:false,
+            success: function (data) {
+                debugger;
+                console.log(data);
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                if (data[0].ISACK=='True') {
+                    alert('This Invoice No is already acknowledge.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                if (data[0].IsInvLocked == 'True') {
+                    alert('This Invoice No is locaked.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+
+                $('#txtremarks').val(data[0].Remarks);
+                $('#txtinword').val(data[0].InWord);
+                $('#txtoutword').val(data[0].OutWord);
+                $('#txtcommodity').val(data[0].Commodity);
+            
+                //log old data
+                $('#txtoldremarks').val(data[0].Remarks);
+                $('#txtoldinword').val(data[0].InWord);
+                $('#txtoldoutword').val(data[0].OutWord);
+                $('#txtoldcommodity').val(data[0].Commodity);
+
+                $('#example').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+
+                    "aaData": data,
+                    "columns": [
+                        {
+
+                            "data": "AccountId",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" checked class=\"checklist\" onclick =\" ChkAmtValidate(this) \ "id=\"checklist\" ' + row.SrNo + '   value="' + data + '">';
+                                return data;
+                            }
+                        },
+
+                      
+                        { "data": "AccountName" },
+
+                        { "data": "Qty" },
+                     
+                        {
+                            "data": "Qty",
+                            "render": function (data, type, row, meta) {
+                                
+                                input = '<input type=\"text\" name=\"Qty\" class=\" form-control Qty\"   \" id=\"Qty_' + row.SrNo + '\"  value="' + data + '" >';
+
+                                return input;
+                            }
+                        },
+                        { "data": "SrNo","class":"hiderow" },
+                        
+                    ],
+
+
+                })
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+        $("input:text").val("");
+    }
+</script>
+
+<script>
+    
+    function Update() {
+        debugger;
+        var InvoiceNo = $("#txtinvoiceno").val().trim();
+        var Remarks = $("#txtremarks").val().trim();
+        var InWord = $("#txtinword").val().trim();
+        var OutWord = $("#txtoutword").val().trim();
+        var Commodity = $("#txtcommodity").val().trim();
+       
+
+        //old data store
+        
+        var oldRemarks = $("#txtoldremarks").val().trim();
+        var oldInWord = $("#txtoldinword").val().trim();
+        var oldOutWord = $("#txtoldoutword").val().trim();
+        var oldCommodity = $("#txtoldcommodity").val().trim();
+       
+
+        if (InvoiceNo == "" || InvoiceNo == undefined) {
+            document.getElementById('txtinvoiceno').style.borderColor = "red";
+            alert("Please Fill Invoice No !")
+
+            return false;
+        } else {
+            document.getElementById('txtinvoiceno').style.borderColor = "Gainsboro";
+        }
+
+
+        if (Remarks == "" || Remarks == undefined) {
+            document.getElementById('txtremarks').style.borderColor = "red";
+            alert("Please Enter The Remarks.")
+
+            return false;
+        } else {
+            document.getElementById('txtremarks').style.borderColor = "Gainsboro";
+        }
+        var checkboxarray = [];
+        var tablearray = [];
+        var table = document.getElementById("example");
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+                checkboxarray.push($(this).val());
+            }
+        });
+
+        for (var i = 1; i < table.rows.length; i++) {
+            debugger;
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                var AccountId = row.cells[0].childNodes[0].value;
+                //debugger;
+                if (AccountId == checkboxarray[k]) {
+                    debugger;
+                    var SrNo = row.cells[4].innerHTML;;
+                    var AccountId = AccountId; 
+                    var OldQty = row.cells[2].innerHTML;
+                    var Qty = $("#Qty_"+ SrNo + "").val();
+           
+                    tablearray.push({
+                        'AccountId': AccountId, 'OldQty': OldQty, 'Qty': Qty
+                    })
+                }
+            }
+
+
+        };
+       
+        var data1 = {
+            "InvoiceNo": InvoiceNo, "Remarks": Remarks, "InWord": InWord, "OutWord": OutWord, "Commodity": Commodity, "oldRemarks": oldRemarks, "oldInWord": oldInWord, "oldOutWord": oldOutWord, "oldCommodity": oldCommodity,
+            'tablearray': tablearray};
+        var data = JSON.stringify(data1);
+        
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/UpdateRemarksDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("UpdateDomesticRemarks", "ModifyModule")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

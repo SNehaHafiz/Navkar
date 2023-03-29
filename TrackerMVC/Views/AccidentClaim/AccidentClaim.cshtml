@@ -1,0 +1,494 @@
+﻿
+@{
+    ViewBag.Title = "AccidentClaim";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div id="addTariff">
+    <div class="page-header">
+        <h4 class="page-title">Accident Claim</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtEntryID" type="text" placeholder="Entry ID" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:20px">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="ShowImportDetails()">Show Accident Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                                <label class="form-label">Vehicle No </label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtVehicle" readonly="readonly" type="text" placeholder="Insurance Company Name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Accident Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input ID="txtEffectivetoDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />*@
+                                            @Html.TextBox("txtAccidentDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div class="row">
+
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Accident Place</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtAccidentPlace" type="text" readonly="readonly" placeholder="Accident Place" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Driver Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtDriverName" type="text" readonly="readonly" placeholder="Driver Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Insurance Policy No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtInsurance" type="text" readonly="readonly" placeholder="Insurance Policy No" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Insurance Company Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtInsuranceCompany" readonly="readonly" type="text" placeholder="Insurance Company Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Claim Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input ID="txtEffectivetoDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />*@
+                                            @Html.TextBox("txtClaimDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-2 col-xs-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <label class="custom-switch">
+                                        <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" checked class="custom-switch-input">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">Claim Settled?</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Claim Settlement Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input ID="txtEffectivetoDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />*@
+                                            @Html.TextBox("txtClaimsettleDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Claim Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtClaimAmount" type="text" placeholder="Claim Amount" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-lg-5 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks (If Any)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtRemarks" type="text" placeholder="Remaeks" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return Addsave();">Save</button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" style="display:none" id="divaccidentclaime">
+    <div class="page-header">
+        <h4 class="page-title">Vehicle Claim Report</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();"><i class="fa fa-file-text"></i></button>*@
+                    <a onclick="window.location = '@Url.Action("AccidentClaim", "AccidentClaim")' " class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Add Invoce"></i> </a>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="import_View()" /> </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelImpHC", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr>
+                                          
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@*<div>
+    <div id="summaryList">
+
+    </div>
+</div>
+<script>
+    //onclick="window.location = '@Url.Action("MappSalesPersonCustomerSummary", "MappSalesPersonCustomerSummary")' "
+    function ViewSummary() {
+    //alert("hi");
+
+        $.ajax({
+            url: "/AccidentClaim/AccidentClaimSummary",
+           // data: data,
+
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+
+            //  dataType: "json",
+            success: function (response) {
+                $("#addTariff").hide()
+                $('#summaryList').show()
+                $('#summaryList').html(response);
+            }
+        });
+
+
+
+    }
+</script>*@
+
+
+
+<script>
+    function Addsave() {
+
+        var txtClaimDate = document.getElementById('txtClaimDate').value;
+        var chkIsActiveEdit = document.getElementById('chkIsActiveEdit').checked;
+        var txtClaimsettleDate = document.getElementById('txtClaimsettleDate').value;
+        var txtClaimAmount = document.getElementById('txtClaimAmount').value;
+       
+        var txtRemarks = document.getElementById('txtRemarks').value;
+        var txtEntryID = document.getElementById('txtEntryID').value;
+
+            //alert("hii")
+
+        if (txtClaimAmount == "") {
+            document.getElementById("txtClaimAmount").style.borderColor = "red";
+                alert('Please enter Claim Amount!')
+                event.preventDefault();
+                return;
+            }
+
+
+        var AccidentClaim = {};
+        AccidentClaim.ClaimDate = txtClaimDate;
+        AccidentClaim.IsSettled = chkIsActiveEdit;
+        AccidentClaim.Claim_Settle_Date = txtClaimsettleDate;
+        AccidentClaim.Claim_Amount = txtClaimAmount;
+        
+        AccidentClaim.Claim_Remarks = txtRemarks;
+        AccidentClaim.EntryID = txtEntryID;
+    $.ajax({
+        url: "/AccidentClaim/Save",
+        data: '{AccidentClaimSaveEntities: ' + JSON.stringify(AccidentClaim) + '}',
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+        if(JSON.stringify(result)==0)
+
+        {
+            alert('Record saved successfully');
+            window.location.href = '@Url.Action("AccidentClaim", "AccidentClaim")';
+        }
+
+
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+        }
+
+
+</script>
+<script type="text/javascript">
+
+
+    function ShowImportDetails() {
+
+        
+
+
+
+
+        var EntryID = $("#txtEntryID").val()
+        //var Jono = $("#TxtJoNo").val()
+
+
+        var data = { 'EntryID': EntryID};
+        var data1 = JSON.stringify(data);
+
+        $.ajax({
+            url: "/AccidentClaim/ajaxSearchlistdetails",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+              
+                $("#txtVehicle").val(data[0].trailername);
+                $("#txtAccidentDate").val(data[0].AccidentDate)
+                $("#txtAccidentPlace").val(data[0].Accident_Place)
+                $("#txtDriverName").val(data[0].Driver_Name);
+                $("#txtInsurance").val(data[0].PolicyNo);
+                $("#txtInsuranceCompany").val(data[0].InsuranceCompany);
+               
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<script type="text/javascript">
+
+  
+      
+
+    function import_View() {
+      
+
+        var data = { 'fromDate': $("#FromDate").val(), 'ToDate': $("#ToDate").val() };
+        data = JSON.stringify(data);
+        
+        $.ajax({
+            type: 'POST',
+            url: '/AccidentClaim/GetDataBind',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#example2").empty();
+                RepTableDataJson($("#example2"), jsonResult, "AccidentClaim", "AccidentClaim");
+               
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+              
+            }
+        });
+        //$("#divLoader").hide();
+    }
+    
+</script>
+
+
+<script>
+    function ViewSummary() {
+        $("#addTariff").hide();
+        $("#divaccidentclaime").show();
+    }
+</script>

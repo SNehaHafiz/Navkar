@@ -1,0 +1,227 @@
+﻿
+@{
+    ViewBag.Title = "FCL TO LCL | tracker";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Modify Fcl/Lcl</h4>
+        @* <li class="breadcrumb-item">
+                <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+            </li>*@
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="TxtContainer" type="text" placeholder="Enter Container" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" onclick="return datafetch()" type="button"><i class="fe fe-check"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Line Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="TxtLine" type="text" readonly class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">JO No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="TxtJono" type="text" readonly class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="TxtSize" type="text" readonly class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="TxtFL" type="text" readonly class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="TxtType" type="text" readonly class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">FL Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlFltype", new List<SelectListItem>
+                            { new SelectListItem { Text = "--Select--", Value = ""},
+                            new SelectListItem { Text = "FCL", Value = "FCL"},
+                            new SelectListItem { Text = "LCL", Value = "LCL"},
+
+
+
+                              }, new { @class = "form-control", autocomplete = "off", @id = "ddlFltype"  })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-xs-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button id="btnSave" class="btn btn-success btn-xs" onclick="return Update();">Update</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+     function datafetch() {
+
+        var Container = document.getElementById('TxtContainer').value;
+
+        if (Container == "" || Container.length != 11) {
+            document.getElementById("TxtContainer").style.borderColor = "red";
+            alert('Container No. should not be less or greater than 11 characters!')
+            event.preventDefault();
+            return;
+        }
+
+        var data = { 'Container': Container };
+        data = JSON.stringify(data);
+
+         $.ajax({
+             url: "/ModifyModule/ContainerFetching",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+             success: function (data) {
+                 debugger;
+                 $("#TxtFL").val(data.FL);
+                 var x = document.getElementById('TxtFL').value;
+                 if (x == "LCL") {
+                     alert("Container No. "+Container+" is already in LCL!");
+                     document.getElementById("TxtContainer").focus();
+                     $("#TxtContainer").val("");
+                     event.preventDefault();
+                     return;
+                 }
+                 else {
+                     $("#TxtLine").val(data.Line);
+                     $("#TxtJono").val(data.JONo);
+                     $("#TxtSize").val(data.Size);
+                     $("#TxtType").val(data.Type);
+                 }
+
+            },
+            error: function (errormessage) {
+            alert(errormessage.responseText);
+            }
+         });
+    }
+
+  function Update() {
+        debugger;
+        var Container = document.getElementById('TxtContainer').value;
+      var JoNo = document.getElementById('TxtJono').value;
+      var Fltype = document.getElementById('ddlFltype').value;
+      
+        if (Container == "") {
+            document.getElementById("TxtContainer").style.borderColor = "red";
+            alert('Enter Container No.!')
+            event.preventDefault();
+            return;
+      }
+
+      if (Fltype == "") {
+          document.getElementById("ddlFltype").style.borderColor = "red";
+          alert('please select FL type !')
+          event.preventDefault();
+          return;
+      }
+     
+      data = { 'Container': Container, 'JoNo': JoNo, 'Fltype': Fltype};
+      data = JSON.stringify(data);
+
+    $.ajax({
+        url: "/ModifyModule/SaveFclToLcl",
+        //data: '{Tracker: ' + JSON.stringify(Tracker) + '}',
+        data: data,
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+           alert('Record updated to LCL successfully')
+           window.location.href = '@Url.Action("FclToLcl", "ModifyModule")';
+        },
+        error: function (errormessage) {
+           alert(errormessage.responseText);
+        }
+    });
+}
+
+</script>

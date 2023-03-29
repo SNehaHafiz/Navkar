@@ -1,0 +1,841 @@
+﻿@model TrackerMVCEntities.BusinessEntities.BCNRRDownload
+@{
+    ViewBag.Title = "RailWorkOrder";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area" id="divUpdateNOCStatus">
+    <div class="page-header">
+        <h4 class="page-title">Rail Work Order</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewNOCSummary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "BCNRRForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">File Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlFileType", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                             new SelectListItem { Text = "BCN", Value = "BCN"},
+                                             new SelectListItem { Text = "Container", Value = "Container"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlFileType" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Train No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.TrainNo, new { htmlAttributes = new { @class = "form-control", @id = "TrainNo", Placeholder = "Train No", @autocomplete = "off" } })
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR File</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="file" class="file-path validate" id="fileImport" name="postedFile" />
+                                            <input id="hdnFileCount" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="Button" id="btnImport" value="Import" onclick="getRailDownload();" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.RRNo, new { htmlAttributes = new { @class = "form-control ", @id = "RRNo", Placeholder = "RR No", @autocomplete = "off" } })
+                                            <input type="hidden" id="hdnTrainNo" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">RR Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control form_datetime1", @id = "RRDate", Placeholder = "RR Date", @autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" onclick="showRailMappingData();" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblContList" width="100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+                                                <th style="width:100px;color: white;">Container No</th>
+                                                <th style="width:20px;color: white;">Size</th>
+                                                <th style="width:20px;color: white;">Type</th>
+                                                <th style="width:120px;color: white;">Group Code</th>
+                                                <th style="width:120px;color: white;">Commodity</th>
+                                                <th style="width:120px;color: white;">Packge Type</th>
+                                                <th style="width:80px;color: white;">No of Pkgs</th>
+                                                <th style="width:80px;color: white;">Unit Weight</th>
+                                                <th style="width:100px;color: white;">Total Weight</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnSave" onclick="SaveRailWorkOrder();" value="Save" class="btn btn-success" />
+                                            <input type="button" id="btnclearValue" value="Clear" class="btn btn-gray" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class=" content-area" id="divRRDOwnloadReport" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Rail Work Order Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> Category</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                                          { new SelectListItem { Text = "--Select--", Value = ""},
+                                              new SelectListItem { Text = "Urea", Value = "U"},
+                                              new SelectListItem { Text = "Container", Value = "C"},
+                                              new SelectListItem { Text = "Coil", Value = "O"},
+                                            }, new { @class = "form-control", autocomplete = "off", @id = "ddlCategory" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> Vendor</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.DropDownList("ddlVendor", (IEnumerable<SelectListItem>)ViewBag.VendorList, "ALL", new { @class = "form-control custom-select", @id = "ddlVendor", name = "ddlVendor", autocomplete = "off" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden"> '</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <input type="button" value="Show" class="btn btn-primary" onclick="ShowRailSummary()" />
+                        <input type="button" value="Print" class="btn btn-primary" onclick="PrintLabourReport()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.ActionLink("Export To Excel", "ExportToExcelRailWorkOrder", null, new { @class = "btn btn-primary btn-md" })
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblRailDownloadList"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            var message = @Html.Raw(Json.Encode(ViewBag.Message))
+            alert(message);
+            };
+    </script>
+}
+
+<script>
+    function getBack() {
+        $("#divRRDOwnloadReport").hide();
+        $("#divUpdateNOCStatus").show();
+    };
+
+    function ViewNOCSummary() {
+        $("#divRRDOwnloadReport").show();
+        $("#divUpdateNOCStatus").hide();
+    };
+
+</script>
+<script>
+    function getRailDownload() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        if (window.FormData !== undefined) {
+
+            if (ValidateTrainDet() == false) {
+                $("#tracker-loader").fadeOut("slow");
+                return false;
+            }
+
+            var fileUpload = $("#fileImport").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object
+            var fileData = new FormData();
+            if (files.length == 0) {
+                alert("Please select File!")
+                $("#tracker-loader").fadeOut("slow");
+                return false;
+            }
+            else {
+                //   alert(document.getElementById('fileJOAttachment').files[0].size / 1024)
+                var iSize = document.getElementById('fileImport').files[0].size / 1024
+                $('#hdnFileCount').val(files.length);
+
+                iSize = (Math.round((iSize / 1024) * 100) / 100)
+
+                if (iSize > 5) {
+                    alert("Selected file size more than 5 MB")
+                    $("#tracker-loader").fadeOut("slow");
+                    return false;
+                }
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                if ($("#TrainNo").val() == '') {
+                    alert("Please Enter Train No");
+                    $("#TrainNo").TrainNo.focus();
+                    $("#tracker-loader").fadeOut("slow");
+                    return false;
+                }
+
+                $('#btnImport').attr('disabled', 'disabled');
+
+                // Adding one more key to FormData object
+                fileData.append('TrainNo', $("#TrainNo").val());
+                fileData.append('FileType', $("#ddlFileType").val());
+                fileData.append('RRWagonNo', $("#RRNo").val());
+                fileData.append('Date', $("#RRDate").val());
+                debugger;
+
+                $.ajax({
+                    url: '/WorkOrder/UploadRRFile',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (Data) {
+                        debugger;
+                        try {
+                            if (Data == "File imported Successfully!") {
+
+                                showRailMapping();
+                                //$('#btnImport').removeAttr('disabled', 'disabled');
+                                $("#tracker-loader").fadeOut("slow");
+                            }
+                            else {
+                                $("#divIgmErrorShow").css('visibility', 'visible');
+                                alert(Data);
+                                $("#tracker-loader").fadeOut("slow");
+                            }
+                        }
+                        catch (ex) {
+                            //$('#btnImport').removeAttr('disabled');
+                            $("#tracker-loader").fadeOut("slow");
+                            alert(ex.validationMessage);
+                        }
+                    }
+                });
+                //$('#btnImport').removeAttr('disabled');
+
+            }
+        }
+    }
+
+    function showRailMappingData() {
+        //setTimeout(function () { $("#tracker-loader").fadeIn("slow"); }, 2000);
+        try {
+            showRailMapping();
+            $("#tracker-loader").fadeOut("slow");
+        }
+        catch (ex) {
+            $("#tracker-loader").fadeOut("slow");
+        }
+    }
+
+    function showRailMapping() {
+        $("#tracker-loader").fadeIn("slow");
+        var TotalReceiptAmount = 0;
+        var TotalTDSAmount = 0;
+
+        if ($("#RRNo").val() == "") {
+            alert("RR No cannot be Blank.");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+
+        var data1 = { 'TrainNo': $("#TrainNo").val(), 'WagonRRNo': $("#RRNo").val() };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/WorkOrder/ShowRailMapping',
+            type: 'Post',
+            data: data,
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                if (data.WagonContainerList.length == 0 || data.WagonContainerList == '[]') {
+                    alert('Data Not Found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+
+                $('#tblContList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": false,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+
+                    "aaData": data.WagonContainerList,
+                    "columns": [
+                        {
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"EntryId\" class=\" form-control EntryId\" id=\"EntryId\"  value="' + row.EntryId + '">';
+                                return data + input;
+                            }
+                        },
+                        { "data": "Size" },
+                        { "data": "Type" },
+                        {
+                            "data": "GroupCode",
+                            "render": function (data, type, row, meta) {
+                                input = '<select id="GroupCode' + row.EntryId + '" class="form-control" <option value="">--Select--</option> </select > ';
+                                debugger;
+                                GetGroupCode('GroupCode' + row.EntryId + ',' + data);
+                                return input;
+                            }
+                        },
+                        {
+                            "data": "CargoType",
+                            "render": function (data, type, row, meta) {
+                                input = '<select id="CargoType' + row.EntryId + '" class="form-control" <option value="">--Select--</option> </select > ';
+                                GetCargoType('CargoType' + row.EntryId + ',' + data);
+                                //debugger;
+                                //$("#CargoType").val(data);
+                                return input;
+                            }
+                        },
+                        {
+                            "data": "PackageType",
+                            "render": function (data, type, row, meta) {
+                                //input = '<input type=\"text\" name=\"PackageType\" class=\" form-control PackageType\" \" id=\"PackageType\"  value="' + data + '">';
+                                input = ' <select id="PackageType' + row.EntryId + '" class="form-control" <option value="">--Select--</option>  </select> ';
+                                GetPackageType('PackageType' + row.EntryId + ',' + data);
+                                return input;
+                            }
+                        },
+                        {
+                            "data": "StuffPkgs",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"text\" name=\"StuffPkgs\" class=\" form-control StuffPkgs\" \" id=\"StuffPkgs\" onChange=\" TotalAmt1(this) \" value="' + data + '">';
+
+                                return input;
+                            }
+                        },
+                        {
+                            "data": "UnitWt",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"text\" name=\"UnitWt\" class=\" form-control UnitWt\" \" id=\"UnitWt\" onChange=\" TotalAmt(this) \"  value="' + data + '">';
+
+                                return input;
+                            }
+                        },
+                        {
+                            "data": "TotWeight",
+                            "render": function (data, type, row, meta) {
+                                input = '<input type=\"text\" name=\"TotWeight\" class=\" form-control TotWeight\"  \" id=\"TotWeight\"   \" readonly=\"readonly\"  value="' + row.TotWeight + '">';
+
+                                return input;
+                            }
+                        },
+                    ]
+
+                })
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    }
+
+
+    function ValidateTrainDet() {
+        var retVal = true;
+        if ($("#ddlFileType").val() == "") {
+            alert("Please select File Type.");
+            retVal = false;
+            return retVal;
+        }
+
+        if ($("#TrainNo").val() == "") {
+            alert("Train Number cannot be Blank.");
+            retVal = false;
+            return retVal;
+        }
+
+        if ($("#RRNo").val() == "") {
+            alert("RR Number cannot be Blank.");
+            retVal = false;
+            return retVal;
+        }
+
+        if ($("#RRDate").val() == "") {
+            alert("RR Date cannot be Blank.");
+            retVal = false;
+            return retVal;
+        }
+
+        var data1 = { 'TrainNo': $("#TrainNo").val(), 'FileType': $("#ddlFileType").val(), 'RRNo': $("#RRNo").val() };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/WorkOrder/ValidateTrain',
+            type: 'Post',
+            data: data,
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data != "") {
+                    alert(data);
+                    retVal = false;
+                    return retVal;
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+        var data2 = { 'WagonRRNo': $("#RRNo").val() };
+        data = JSON.stringify(data2);
+
+        $.ajax({
+            url: '/WorkOrder/ValidateDuplicateRRNo',
+            type: 'Post',
+            data: data,
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data > 0) {
+                    alert('RR No Already Exist. Duplicate Entry not Allowed.');
+                    retVal = false;
+                    return retVal;
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+
+        return retVal;
+    }
+
+    function TotalAmt(id) {
+        debugger;
+        var Currentindex = id.closest('tr').rowIndex;
+        var TotalRecptAmount = 0;
+        var TotalTDS = 0;
+
+        var checkboxarray = [];
+
+        var table = document.getElementById("tblContList");
+        var tablearray = [];
+        for (var i = 1; i < table.rows.length; i++) {
+            if (i == Currentindex) {
+                row = table.rows[i];
+                var StuffPkgs = row.cells[6].childNodes[0].value;
+                var UnitWt = row.cells[7].childNodes[0].value;
+                row.cells[8].childNodes[0].value = parseInt(StuffPkgs) * parseInt(UnitWt);
+            }
+        }
+    }
+
+    function TotalAmt1(id) {
+        debugger;
+        var Currentindex = id.closest('tr').rowIndex;
+        var TotalRecptAmount = 0;
+        var TotalTDS = 0;
+
+        var checkboxarray = [];
+
+        var table = document.getElementById("tblContList");
+        var tablearray = [];
+        for (var i = 1; i < table.rows.length; i++) {
+            if (i == Currentindex) {
+                row = table.rows[i];
+                var StuffPkgs = row.cells[6].childNodes[0].value;
+                var UnitWt = row.cells[7].childNodes[0].value;
+                if (UnitWt == "") {
+                    UnitWt = 0;
+                }
+                row.cells[8].childNodes[0].value = parseInt(StuffPkgs) * parseInt(UnitWt);
+            }
+        }
+    }
+
+    function GetPackageType(ControlName) {
+        //debugger;
+
+        var ControlName1 = ControlName.split(",")[0];
+        var PackageId = ControlName.split(",")[1];
+
+        $.ajax({
+            url: '/WorkOrder/getAutoPackageTpyeList',
+            type: 'Post',
+            data: "",
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //debugger;
+                $("#" + ControlName1).empty();
+                $("#" + ControlName1).append($("<option></option>").val('').html('--Select--'));
+                $.each(response, function (index, value) {
+                    //debugger;
+                    $("#" + ControlName1).append($("<option></option>").val(value.PackageId).html(value.PackageName));
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+        if (PackageId > 0) {
+            $("#" + ControlName1).val(PackageId);
+        }
+    };
+
+    function GetGroupCode(ControlName) {
+        //debugger;
+        var ControlName1 = ControlName.split(",")[0];
+        var GroupId = ControlName.split(",")[1];
+
+        $.ajax({
+            url: '/WorkOrder/getAutoGroupCodeTypeList',
+            type: 'Post',
+            data: "",
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //debugger;
+                $("#" + ControlName1).empty();
+                $("#" + ControlName1).append($("<option></option>").val('').html('--Select--'));
+                $.each(response, function (index, value) {
+                    //debugger;
+                    $("#" + ControlName1).append($("<option></option>").val(value.PackageId).html(value.PackageName));
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        debugger;
+        if (GroupId > 0) {
+            $("#" + ControlName1).val(GroupId);
+        }
+    };
+
+    function GetCargoType(ControlName) {
+        //debugger;
+
+        var ControlName1 = ControlName.split(",")[0];
+        var CargoId = ControlName.split(",")[1];
+
+        $.ajax({
+            url: '/WorkOrder/getAutoCargoTypeList',
+            type: 'Post',
+            data: "",
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //debugger;
+                $("#" + ControlName1).empty();
+                $("#" + ControlName1).append($("<option></option>").val('').html('--Select--'));
+                $.each(response, function (index, value) {
+                    //debugger;
+                    $("#" + ControlName1).append($("<option></option>").val(value.PackageId).html(value.PackageName));
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+        if (CargoId > 0) {
+            $("#" + ControlName1).val(CargoId);
+        }
+    };
+
+    function SaveRailWorkOrder() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var counter = 0;
+        var tablearray = [];
+        var table = document.getElementById("tblContList");
+
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            var EntryId = row.cells[0].childNodes[0].value;
+            var ContainerNo = row.cells[0].childNodes[0].data;
+            var Size = row.cells[1].innerHTML;
+            var Type = row.cells[2].innerHTML;
+            var GroupCode = row.cells[3].childNodes[0].value;
+            var Commodity = row.cells[4].childNodes[0].value;
+            var PackageType = row.cells[5].childNodes[0].value;
+            var NoofPkgs = row.cells[6].childNodes[0].value;
+            var UnitWeight = row.cells[7].childNodes[0].value;
+            var TotalWeight = row.cells[8].childNodes[0].value;
+
+            if (GroupCode != "" || Commodity != "") {
+                counter = counter + 1;
+                tablearray.push({ 'EntryId': EntryId, 'ContainerNo': ContainerNo, 'Size': Size, 'Type': Type, 'GroupCode': GroupCode, 'CargoType': Commodity, 'PackageType': PackageType, 'StuffPkgs': NoofPkgs, 'UnitWt': UnitWeight, 'TotWeight': TotalWeight });
+            }
+        }
+
+        if (counter == 0) {
+            alert("Please select Gommodity and Group Code.");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/WorkOrder/RailWorkOrderSave',
+            data: '{WOdata: ' + JSON.stringify(tablearray) + ', TrainNo: ' + JSON.stringify($("#TrainNo").val()) + ',RRNo: ' + JSON.stringify($("#RRNo").val()) + ',FileType: ' + JSON.stringify($("#ddlFileType").val()) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                debugger;
+                if (data > 0) {
+                    alert("Record save Successfully.");
+                    $("#tracker-loader").fadeOut("slow");
+                    window.location = "/WorkOrder/RailWorkOrder";
+                }
+                else {
+                    alert("Record not save Successfully.");
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    }
+
+    function ShowRailSummary() {
+        $("#tracker-loader").fadeIn("slow");
+        var Criteria = $("#ddlCriteria option:selected").text();
+        var FromDate = $("#txtFromDate").val();
+        var ToDate = $("#txtToDate").val();
+        var ddlCategory = $("#ddlCategory").val();
+        var ddlVendor = $("#ddlVendor").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Category': ddlCategory, 'Vendor': ddlVendor };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/WorkOrder/ShowRailWorkOrderReport',
+            type: 'Post',
+            data: data,
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "" || data == "[]") {
+                    alert("Data Not Found.");
+                    $("#tblRailDownloadList").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                }
+                else {
+                    RepTableDataJson($("#tblRailDownloadList"), data, "RailWOrkOrder", "RailWOrkOrderList");
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+</script>
+<script>
+    function PrintLabourReport() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#txtFromDate").val();
+        var ToDate = $("#txtToDate").val();
+        var ddlVendor = $("#ddlVendor").val();
+        var ddlCategory = $("#ddlCategory").val();
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Vendor': ddlVendor, 'Category': ddlCategory };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/WorkOrder/RailActivityReportPrint',
+            type: 'Post',
+            data: data,
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //window.print();
+                $("#tracker-loader").fadeOut("slow");
+                var myWindow = window.open("", "MsgWindow1", 'width=' + 800 + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + 800 + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+                //myWindow.print();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+</script>
+<script>
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+@*$(document).on('click', '#tblContList tr #GroupCode', function (e) {
+        debugger;
+        //var table = $(this);
+        //alert(table);
+        ////alert(table.row(this).data());
+        //var row_object = table.row(this).data();
+        ////var mailidrow = table.row(this).data()['EMAIL_ID'];
+        ////var mailboxidrow = table.row(this).data()['EMAILBOX'];
+        ////var logicalidrow = table.row(this).data()['LOGICAL_ID'];
+        ////var subjectrow = table.row(this).data()['SUBJECT'];
+    });*@ 

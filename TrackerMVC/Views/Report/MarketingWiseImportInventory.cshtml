@@ -1,0 +1,260 @@
+﻿
+@{
+                /**/
+
+                ViewBag.Title = "MarketingWiseImportInventory";
+                Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area" id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Marketing Person Wise Import Inventory</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Sales Person</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.DropDownList("ddlsalesperson", (IEnumerable<SelectListItem>)ViewBag.SalesPersonM, "ALL", new { @class = "form-control", @id = "ddlsalesperson", name = "ddlsalesperson", autocomplete = "off" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowArrivalContainer()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblCustomerWiseInvenoty">
+                                <thead>
+                                    <tr>
+
+                                        <th class="wd-15p sorting">Sales Person</th>
+                                        <th class="wd-15p sorting">20</th>
+                                        <th class="wd-15p sorting">40</th>
+                                        <th class="wd-15p sorting">45</th>
+                                        <th class="wd-15p sorting">Total</th>
+                                        <th class="wd-15p sorting">Teus</th>
+
+
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tblCustomerWiseInvenoty').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'CustomerWiseImportInventory',
+                "filename": 'CustomerWiseImportInventory_List'
+
+            }
+            ]
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+
+    function ShowArrivalContainer() {
+        $("#lbltwenty").text("0");
+        $("#lblforty").text("0");
+        $("#lblfortyfive").text("0");
+        $("#lblTotal").text("0");
+        $("#divTEUS").show();
+        $("#divTEUS1").show();
+        $("#divTEUS2").show();
+        $("#divTEUS3").show();
+        var date = $("#ToDate").val()
+        var SalesID = $("#ddlsalesperson").val();
+        if (SalesID == "") {
+            SalesID = 0;
+        }
+
+        var data1 = { 'SalesID': SalesID, 'date': date };
+        var data = JSON.stringify(data1);
+       // alert(data);
+            $.ajax({
+                type: 'POST',
+                url: '/Report/ajaxgetSalesWiseInventory',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    $('#tblCustomerWiseInvenoty').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        //"bFilter": false,
+                        "paging": false,
+                        "aaData": data,
+                        "columns": [
+                            { "data": "SalesName" },
+                            { "data": "T20" },
+                            { "data": "T40" },
+                            { "data": "T45" },
+                            { "data": "Total" },
+                            { "data": "Teus" }
+
+                        ], "dom": 'Bfrtip',
+
+                        "buttons": [{
+                            "extend": 'excel',
+                            "title": 'CustomerWiseImportReport',
+                            "filename": 'CustomerWiseImportReport_List'
+
+                        }
+                        ]
+                    });
+                    var table = document.getElementById("tblCustomerWiseInvenoty");
+                    var row;
+
+
+                    var COunt = 0;
+                    var Count40 = 0;
+                    var Count45 = 0;
+                    var Countteus = 0;
+
+                    for (var i = 1; i < table.rows.length; i++) {
+                        row = table.rows[i];
+                        //var Size = row.cells[6].childNodes[1].value;
+                        var Size = row.cells[1].innerText;
+                        var Size40 = row.cells[2].innerText;
+                        var Size45 = row.cells[3].innerText;
+                       // var Sizeteus = row.cells[8].innerText;
+                        var size1 = Size;
+                        //var size400 = Size40;
+                        COunt = COunt + Number(size1);
+                        Count40 = Count40 + Number(Size40);
+                        Count45 = Count45 + Number(Size45);
+                        //Countteus = Count40 + Number(Sizeteus);
+                        //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                    }
+                    TotTEUS = COunt + (Count40 * 2) + (Count45 * 2)
+
+                    $("#lbltwenty").text(COunt);
+                    $("#lblforty").text(Count40);
+                    $("#lblfortyfive").text(Count45);
+                    $("#lblTotal").text(TotTEUS);
+
+                    $("#divTEUS").show();
+                    $("#divTEUS1").show();
+                    $("#divTEUS2").show();
+                    $("#divTEUS3").show();
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+
+    }
+</script>

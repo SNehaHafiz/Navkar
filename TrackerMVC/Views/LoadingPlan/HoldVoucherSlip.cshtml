@@ -1,0 +1,256 @@
+﻿
+@{
+    ViewBag.Title = "Hold Voucher Slip";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden" id="AddItems">
+    <div id="divFuelList">
+        <div class="page-header">
+            <h4 class="page-title">
+                Generated Fuel Slip: <label id="lblcount"></label>
+            </h4>
+           
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div id="showItems">
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+
+                                               @Html.TextBox("txtdate", null, new { @class = "form-control", @id = "datePicker", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-1 col-sm-12 " id="divShowButton" >
+                                    <div class="form-group">
+                                        <label class="form-label " style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" name="login" onclick="show()" value="Show" class="btn btn-primary btnShow" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="VoucherList" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="visibility:hidden"></th>
+
+                                                       
+                                                        <th>Voucher No.</th>
+                                                        <th>Voucher Date</th>
+                                                        <th>Trailer No.</th>
+                                                        <th>Passing</th>
+                                                        <th>Driver</th>
+                                                        <th>Transporter</th>
+                                                        <th>From Location</th>
+                                                        <th>To Location</th>
+                                                        <th>Fuel</th>
+                                                        <th>Amount(Cash)</th>
+                                                        <th>Amount(Bank)</th>
+
+                                                    </tr>
+                                                </thead>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                    </div>
+                </div>
+                <!-- Show the table after click of save button  -->
+                <!--End of save button-->
+            </div>
+            <!-- table-wrapper -->
+        </div>
+    </div>
+
+    <!-- section-wrapper -->
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#VoucherList').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+        });
+    })
+</script>
+
+<script>
+    function show()
+    {
+        
+        var Date = $("#datePicker").val();
+        var data = { 'Date': Date };
+        var data1 = JSON.stringify(data);
+        $.ajax({
+            url: "/LoadingPlan/GetGeneratedFuelSlipForHold",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                // alert(JSON.stringify(data));
+                var count = Object.keys(data).length;
+                $("#lblcount").text(count);
+                $('#VoucherList').dataTable({
+                    
+
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": [] ,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "VoucherNo",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = "<button type=\"button\" class=\"" + row.HoldClass + "\" name=\"removebutton\" style=\"height:35px;\" onclick=\"HoldVoucher('" + data + "')\">" + row.ButtonText + "</button>"
+                                  //  data = '<a  onclick="Hold(' + data + ')"  href="#" class="' + row.SubmitCss + '"  title="Submit"><i class="fa fa-stop-circle"></i></a>';
+
+                                    // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        
+                        { "data": "VoucherNo" },
+                        { "data": "VoucherDate" },
+                        { "data": "TrailerNo" },
+                        { "data": "Passing" },
+                        { "data": "driver" },
+                        { "data": "Transportor" },
+                        { "data": "From" },
+                        { "data": "To" },
+                        { "data": "fuel" },
+                        { "data": "amount1" },
+                        { "data": "amount2" }
+                        
+                    ]
+
+                })
+            }
+        });
+    }
+</script>
+
+<script>
+    function HoldVoucher(voucherNo)
+    {
+        var r = false;
+        var ButtonVal = 0;
+        var data = { 'voucherNo': voucherNo };
+        r = confirm("Are you sure want to Hold this Voucher No." + voucherNo + "");
+        if (r)
+        {
+            var table = $('#VoucherList').DataTable();
+            $("table").on("click", ".Hold", function () {
+               // alert($(this).text);
+                $(this).removeClass('btn btn-sm btn-primary Hold');
+                $(this).addClass('btn btn-sm btn-danger Clear');
+                $(this).text('Clear');
+                ButtonVal = 1;
+                alert(ButtonVal);
+            });
+            alert(ButtonVal);
+            if (ButtonVal == 1)
+            {
+                $.ajax({
+                    url: "/LoadingPlan/HoldVoucher",
+                    data: data1,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        alert(response);
+                    }
+                });
+            }
+        }
+    }
+
+</script>
+
+
+<script>
+    function Hold(voucherNo)
+    {        
+        var buttonText = 0;
+        var buttonText1 = "0";
+        var r = false;
+      //  alert(r);
+        var data = { 'voucherNo': voucherNo };
+        r = confirm("Are you sure want to Hold this Voucher No." + voucherNo + "");
+       alert(r);
+        if (r) {
+            var table = $('#VoucherList').DataTable();
+            $("table").on("click", ".Hold", function () {
+
+                alert($(this).text);
+                $(this).removeClass('btn btn-sm btn-primary Hold');
+                $(this).addClass('btn btn-sm btn-danger Clear');
+                $(this).text('Clear');
+               // alert("In button");
+                buttonText = 1;
+                //alert(buttonText);
+            });
+            var data1 = JSON.stringify(data);
+            alert('b'+ buttonText);
+                $.ajax({
+                    url: "/LoadingPlan/HoldVoucher",
+                    data: data1,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        alert(response);
+                    }
+                });
+           
+        }
+        else {
+            var table = $('#VoucherList').DataTable();
+            $("table").on("click", ".Hold", function () {
+                $(this).removeClass('btn btn-sm btn-danger Clear');
+                $(this).addClass('btn btn-sm btn-primary Hold');
+                
+               
+                $(this).text('Clear');
+                // alert("In button");
+
+            });
+          //  alert("1");
+           // alert(r);
+        }
+    }
+</script>

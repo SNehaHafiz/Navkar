@@ -1,0 +1,526 @@
+﻿
+@{
+    ViewBag.Title = "Search Receipt";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<style>
+    td {
+        font-family: sans-serif,Quicksand;
+    }
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .alt {
+        background-color: #e3ebf3;
+        color: #5e77ee;
+        font-weight: bold;
+    }
+</style>
+<style>
+
+
+
+    ul.timeline {
+        list-style-type: none;
+        position: relative;
+    }
+
+        ul.timeline:before {
+            content: ' ';
+            background: #d4d9df;
+            display: inline-block;
+            position: absolute;
+            left: 29px;
+            width: 2px;
+            height: 100%;
+            z-index: 400;
+        }
+
+        ul.timeline > li {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+            ul.timeline > li:before {
+                content: ' ';
+                background: #fff !important;
+                display: inline-block;
+                position: absolute;
+                border-radius: 50%;
+                border: 3px solid #22c0e8;
+                left: 20px;
+                width: 20px;
+                height: 20px;
+                z-index: 400;
+            }
+</style>
+
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class="page-header">
+    <h4 class="page-title">Search Receipt</h4>
+    <div class="ibox-content  text-right">
+        <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        <button id="btnPrint" name="Print" value="Print" class="btn btn-primary" onclick="Print()"><i class="fa fa-print"></i> </button>
+        <button id="btnExcel" name="Export To Excel" value="Excel" class="btn btn-orange" onclick="ExportToExcelBillWiseDetail()"><i class="fa fa-file-excel-o"></i> </button>
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+
+
+        <div class="card">
+            <div class="card-body">
+
+
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-5 col-lg-8" id="cardBasicDetails">
+                        <div class="card">
+                            <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                                <h3 class="card-title text-white">Basic Details</h3>
+                                <div class="card-options ">
+                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6 table-responsive">
+
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                        <tbody>
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Receipt No</strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.ReceiptNo</label></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Pay From</strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.PayFrom</label></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Received amount</strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.ReceivedAmount</label></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Prepared By</strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.GeneratedBy</label></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Remark</strong></td>
+                                                <td><label style="font-weight: bold"> @ViewBag.ReceiptRemarks</label></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-6 table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                        <tbody>
+
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Date </strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.ReceiptDate</label></td>
+
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Receipt Type </strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.Type</label></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Net Amount</strong></td>
+                                                <td><label style="font-weight: bold"> @ViewBag.NetAmount</label></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>TDS</strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.TDSAmount</label></td>
+                                            </tr>
+
+
+
+                                            <tr>
+                                                <td class="text-white btn-primary" style="width:100px"><strong>Excess Amount</strong></td>
+                                                <td><label style="font-weight: bold">@ViewBag.AccessAmount</label></td>
+                                            </tr>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-5 col-lg-4" id="divTimeline">
+                        <div class="card">
+                            <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                                <h3 class="card-title text-white">Timeline</h3>
+                                <div class="card-options ">
+                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                @*<ul class="timeline">
+                                        <li>
+                                            <a class="pl-6" href="#" id="preparedBy" data-toggle="modal" title="View More" data-target="#exampleModal" onclick="EditVoyageData()"><b>Prepared By</b></a>
+                                            <a href="#" class="float-right"><b> User_Name </b> | Date</a>
+                                            <br />
+
+                                        </li>
+                                        <li>
+                                            <a class="pl-6" href="#" id="adjustedBy" data-toggle="modal" title="View More" data-target="#exampleModal" onclick="EditVoyageData()"><b>Adjusted By</b></a>
+                                            <a href="#" class="float-right"><b>User_Name </b>| Date</a>
+                                            <br />
+
+                                        </li>
+                                        <li>
+                                            <a class="pl-6" href="#" id="bankReco" data-toggle="modal" title="View More" data-target="#exampleModal" onclick="EditVoyageData()"><b>Bank Reco</b></a>
+                                            <a href="#" class="float-right"><b>User_Name </b>| Date</a>
+                                            <br />
+
+                                        </li>
+
+                                        <li>
+                                            <a class="pl-6" href="#" id="checkBounce" data-toggle="modal" title="View More" data-target="#exampleModal" onclick="EditVoyageData()"><b>Check </b></a>
+                                            <a href="#" class="float-right"><b>User_Name </b>| Date</a>
+                                            <br />
+
+                                        </li>
+                                        <li>
+                                            <a class="pl-6" href="#" id="journalVoucher" data-toggle="modal" title="View More" data-target="#exampleModal" onclick="EditVoyageData()"><b>Journal Voucher</b></a>
+                                            <a href="#" class="float-right"><b>User_Name </b>| Date</a>
+                                            <br />
+
+                                        </li>
+                                    </ul>*@
+
+
+                                <div id="timelineImport"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card" id="cardTable">
+                    <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                        <h3 class="card-title text-white">Bill Wise Details</h3>
+                        <div class="card-options ">
+                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" width="100%" id="tblbilldetails">
+                                    <thead thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Sr No.</th>
+                                            <th>Invoice No</th>
+                                            <th>Invoice Date</th>
+                                            <th>Invoice Amount</th>
+                                            <th>Net Received Amount</th>
+                                            <th>TDS Amount</th>
+                                            <th>Amount Received With TDS</th>
+                                            <th>Adjust By</th>
+                                            <th>Adjust On</th>
+                                            <th>Bill To Name</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var dr in ViewBag.InvoiceItemList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @if (string.IsNullOrEmpty(dr["Invoice No"]) == false)
+                                                    {<button id="@dr["Invoice No"]" class="btn btn-warning" onclick="ViewInvoice('@dr["Invoice No"]')"><i class="fa fa-eye"></i></button>}
+                                                </td>
+                                                <td style="text-align:right">@dr["SR. No"]</td>
+                                                <td style="text-align:right">@dr["Invoice No"]</td>
+                                                <td style="text-align:right">@dr["Invoice Date"]</td>
+                                                <td style="text-align:right">@dr["Amount"]</td>
+                                                <td style="text-align:right">@dr["Receipt Amount"]</td>
+                                                <td style="text-align:right">@dr["TDS Amount"]</td>
+                                                <td style="text-align:right">@dr["Net Received Amount"]</td>
+                                                <td style="text-align:right">@dr["addedby"]</td>
+                                                <td style="text-align:right">@dr["addedon"]</td>
+                                                <td style="text-align:right">@dr["Bill To Name"]</td>
+                                                <td style="text-align:right">@dr["Remarks"]</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="card">
+                    <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                        <h3 class="card-title text-white">Payment Details</h3>
+                        <div class="card-options ">
+                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" width="100%" id="tblPaymentDetails">
+                                    <thead thead>
+                                        <tr>
+                                            <th>Payment Mode</th>
+                                            <th>Amount</th>
+                                            <th>Chq./DD No</th>
+                                            <th>Chq./DD Date</th>
+                                            <th>Bank Name</th>
+                                            <th>Branch</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var dr in ViewBag.PaymentList)
+                                        {
+                                            <tr>
+                                                <td>@dr["Payment Mode"]</td>
+                                                <td>@dr["Amount"]</td>
+                                                <td>@dr["Mode No"]</td>
+                                                <td>@dr["Mode Date"]</td>
+                                                <td>@dr["Bank Name"]</td>
+                                                <td>@dr["Branch"]</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="card">
+                    <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                        <h3 class="card-title text-white">Bank Reco Details </h3>
+                        <div class="card-options ">
+                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" width="100%" id="tblBankRecoDetails"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                        <h3 class="card-title text-white">Journal Voucher Details </h3>
+                        <div class="card-options ">
+                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" width="100%" id="tblJVdetails"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        var rowNumber = '@ViewBag.InvoiceItemListCount';
+        $("#tblbilldetails tbody tr:nth-child(" + rowNumber + ")").addClass("alt");
+
+        var receiptRefNo = '@ViewBag.receiptNo';
+
+        var data = { 'receiptRefNo': receiptRefNo };
+        var data1 = JSON.stringify(data);
+
+        $.ajax({
+            url: "/ImportReceipt/ImportTimelineReceiptSearch",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                console.log(response);
+                $("#timelineImport").html(response);
+                $("#timelineImport").show();
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+
+        ShowDetails(receiptRefNo)
+        ShowDetails1(receiptRefNo)
+
+    });
+
+
+    function Print() {
+        var receiptNo = '@ViewBag.receiptNo';
+        var workyear = '@ViewBag.workyear';
+
+        var data1 = { 'receiptNo': receiptNo, 'workyear': workyear };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/ImportReceipt/ReImportReceiptPrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function ViewInvoice(invoice) {
+       // alert(invoice);
+        //window.location = "/Report/SearchInvoice?invoiceNo=" + invoice + "";
+        window.open("/Report/SearchInvoice?invoiceNo=" + invoice + "", "_blank");
+    }
+
+    function getBack() {
+        window.location ="/ImportReceipt/ReceiptSearch"
+    }
+
+    function ExportToExcelBillWiseDetail() {
+
+        var receiptNo = '@ViewBag.receiptNo';
+        var workyear = '@ViewBag.workyear ';
+
+        window.location = '@Url.Action("ExportToExcelBillWiseDetail", "ImportReceipt")?receiptNo=' + receiptNo + "&workyear=" + workyear  ;
+
+
+
+    }
+
+    function ShowDetails(receiptRefNo) {
+        $("#tracker-loader").fadeIn("slow");
+
+
+        data1 = { 'receiptNo': receiptRefNo  };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/ImportReceipt/GetDetails',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#tblJVdetails").empty();
+                RepTableDataJson($("#tblJVdetails"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function ShowDetails1(receiptRefNo) {
+        $("#tracker-loader").fadeIn("slow");
+
+
+        data1 = { 'receiptNo': receiptRefNo };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/ImportReceipt/BankRecoDetail',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                $("#tblBankRecoDetails").empty();
+                RepTableDataJson($("#tblBankRecoDetails"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+

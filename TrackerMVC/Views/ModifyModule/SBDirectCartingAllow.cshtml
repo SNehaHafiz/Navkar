@@ -1,0 +1,251 @@
+﻿
+@{
+    ViewBag.Title = "Export SB Wise Direct Carting Allow";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/sweet-alert.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Export SB Wise Direct Carting Allow</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">SB No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtsbno", null, new { @class = "form-control ", @id = "txtsbno", Placeholder = "SB No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch(); "><i class="fa fa-check"></i></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Customer</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcustomer", null, new { @class = "form-control ", @id = "txtcustomer", Placeholder = "Customer", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">CHA</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcha", null, new { @class = "form-control ", @id = "txtcha", Placeholder = "CHA Name", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Cargo Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcargotype", null, new { @class = "form-control ", @id = "txtcargotype", Placeholder = "Cargo Type", @autocomplete = "off", @readonly = "readonly" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Modify Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+                                        <input type="hidden" id="txtentryid" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" title="Update" onclick="return UpdateJOM();">Update</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="Clear();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function Fetch() {
+
+        debugger;
+        var SBNo = $("#txtsbno").val().trim();
+
+        var data1 = { "SBNo": SBNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/ShowSBDirectCartingAllowDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                debugger;
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    return;
+                }
+
+
+
+                $('#txtentryid').val(data[0].EntryID);
+                $('#txtcha').val(data[0].CHAName);
+                $('#txtcustomer').val(data[0].AGName);
+                $('#txtcargotype').val(data[0].CargoDesc);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function UpdateJOM() {
+        $("#global-loader").fadeIn("slow");
+        debugger;
+        var element = {};
+        element.SBNo = $("#txtsbno").val().trim();
+        element.EntryID = $("#txtentryid").val().trim();
+
+        element.Remarks = $("#txtremarks").val().trim();
+
+        var isValid = true;
+        if (element.SBNo == 0 ) {
+            isValid = isValid && false;
+            $("#txtsbno").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtsbno").removeClass("is-invalid state-invalid");
+        }
+
+
+
+        if (element.Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+
+        //Tax Validation
+
+
+
+        var data = { 'Master': element };
+        data = JSON.stringify(data);
+       // alert(data);
+        $.ajax({
+            type: 'post',
+            url: '/ModifyModule/UpdateSBDirectCartingAllowDetails',
+            data: data,
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                if (response.ResponseMessage != '') {
+                    alert(response.ResponseMessage);
+                    document.location = '@Url.Action("SBDirectCartingAllow", "ModifyModule")';
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.Message,
+                        icon: 'error'
+                    })
+                }
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: str,
+                    icon: 'error'
+                });
+            }
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+
+        document.location = '@Url.Action("UpdateExportCargoType", "ModifyModule")';
+    }
+</script>
+

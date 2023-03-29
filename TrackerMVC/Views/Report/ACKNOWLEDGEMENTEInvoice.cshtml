@@ -1,0 +1,1203 @@
+﻿
+@{
+    ViewBag.Title = "SalesRegisterReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+   
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+
+    #tbldaywisedetails > tbody > tr:last-child {
+        background: #5ed84f;
+        color: white;
+    }
+    body {
+        font-weight: bolder !important;
+    }
+</style>
+<div class=" content-area overflow-hidden" id="DivReceiptGenDet">
+    <div class="page-header">
+        <h4 class="page-title">Acknowledgement Of E-Invoices</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Sales Register Report .</label>
+                                <div class="row gutters-xs">
+                                    <div class="col-2">
+                                        @Html.TextBox("FromDate", null, new { @id = "FDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                    </div>
+
+                                    <div class="col-md-12 col-lg-8">
+                                        <button class="btn btn-primary" style="display:none" id="btnSearch" onclick="Show('ALL')" type="button">ALL</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('IMPORT')" type="button">IMPORT</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EXPORT')" type="button">EXPORT</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('BOND')" type="button">BOND</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('DOMESTIC')" type="button">DOMESTIC</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('OTHER')" type="button">OTHER</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('MNR')" type="button">MNR</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('OTHERMNR')" type="button">OTHER MNR</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('Carting')" type="button">Carting</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EDI')" type="button">EDI</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('CreditNote')" type="button">Credit Note</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('ExportCreditNote')" type="button">Export Credit Note</button>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-md-2 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">No of Records</label>
+                                    @Html.TextBox("txtCount", null, new { @class = "form-control", @id = "txtCount", name = "txtCount", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-22 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Net Amount</label>
+                                    @Html.TextBox("NetTotal", null, new { @class = "form-control", @id = "NetTotal", name = "NetTotal", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-22 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Total Gst</label>
+                                    @Html.TextBox("txtCGST", null, new { @class = "form-control", @id = "txtCGST", name = "txtCGST", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-22 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <button class="btn btn-danger" style="margin-top:25px;" id="btnSearch" type="button" onclick="ViewReceiptSummary();">Error</button>
+                                    <button class="btn btn-success" style="margin-top:25px;" id="btnSearch" type="button" onclick="ViewsSummary();">Success</button>
+                                    <button class="btn btn-yellow" style="margin-top:25px;" id="btnSearch" type="button" onclick="daywiseSummary();">Summary</button>
+                                </div>
+                            </div>
+                            <div class="col-md-22 col-lg-3">
+                                <div class="form-group label-floating">
+                                    <label class="form-label">Grand Total</label>
+                                    @Html.TextBox("txtTotal", null, new { @class = "form-control", @id = "txtTotal", name = "txtTotal", autocomplete = "off", style = "text-align:right", @readonly = "readonly" })
+                                </div>
+                            </div>
+
+
+                            <input type="hidden" name="txtCategory" id="txtCategory">
+
+
+                        </div>
+
+
+                    </div>MultipleAck
+                    @Html.ActionLink("Export To Excel", "ExportToExcelSalesRegisterReport", null, new { @class = "btn btn-primary btn-md" })
+                    <button class="btn btn-success" id="btnSearch" type="button" onclick="MultipleAck();">Multiple ACK</button>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area overflow-hidden" id="Divacksummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Acknowledgement Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBacks();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-12 col-lg-8">
+                                        <button class="btn btn-primary" id="btnSearchDay" onclick="ShowWise('Today')" type="button">Today</button>
+                                        <button class="btn btn-primary" id="btnSearchDay" onclick="ShowWise('Yesterday')" type="button">Yesterday</button>
+
+                                        <button class="btn btn-primary" id="btnSearchDay" onclick="ShowWise('Weekly')" type="button">Weekly</button>
+                                        <button class="btn btn-primary" id="btnSearchDay" onclick="ShowWise('Monthly')" type="button">Monthly</button>
+                                        <button class="btn btn-primary" id="btnSearchDay" onclick="ShowWise('Manual')" type="button">Manual</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divtoday">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("todayFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TodayToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-lg-1">
+                            <div class="form-group label-floating">
+                                <label class="form-label" style="visibility:hidden">On</label>
+                                <button class=" btn btn-primary" title="Show" id="btnSearch" onclick="ShowWise('Today')" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divyesterday">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("yesterdayFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 00:00") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("yesterdayToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 23:59") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-lg-1">
+                            <div class="form-group label-floating">
+                                <label class="form-label" style="visibility:hidden">On</label>
+                                <button class=" btn btn-primary" title="Show" id="btnSearch" onclick="ShowWise('Yesterday')" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divweekly">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("WeeklyFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy 00:00") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("WeeklyToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-lg-1">
+                            <div class="form-group label-floating">
+                                <label class="form-label" style="visibility:hidden">On</label>
+                                <button class=" btn btn-primary" title="Show" id="btnSearch" onclick="ShowWise('Weekly')" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divmonthly">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("monthlyFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-30).ToString("dd MMM yyyy 00:00") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("monthlyToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-lg-1">
+                            <div class="form-group label-floating">
+                                <label class="form-label" style="visibility:hidden">On</label>
+                                <button class=" btn btn-primary" title="Show" id="btnSearch" onclick="ShowWise('Monthly')" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display:none" id="divmanualy">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("manualFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-30).ToString("dd MMM yyyy 00:00") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("manualtoDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-lg-1">
+                            <div class="form-group label-floating">
+                                <label class="form-label" style="visibility:hidden">On</label>
+                                <button class=" btn btn-primary" title="Show" id="btnSearch" onclick="Showmanual('Manual')" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetGSTSummaryDetails()"></i></button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tbldaywisedetails"></table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divReceiptSummary" style="display:none">
+    <div class="page-header">
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+            <h4 class="page-title">Acknowledgement Of E-Invoices-Error</h4>
+        </div>
+        
+
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">From Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">To Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary" onclick="ShowError();">Show</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblReceiptSummaryDet"></table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class=" content-area" id="divSecSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Acknowledgement Of E-Invoices-Success</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBacks();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">From Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtSummaryFrom", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFrom", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">To Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtSummaryTo", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryTo", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary" onclick="ShowSuccess();">Show</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+
+
+
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileSuccess()"></i></button>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblReceiptSummary"></table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#example2').DataTable({
+        //    "bLengthChange": false,
+        //    "bInfo": false,
+        //    "bPaginate": false,
+        //    //"bFilter": false,
+        //    "paging": false
+        //    //"dom": 'Bfrtip',
+        //    //"buttons": [{
+        //    //    "extend": 'excel',
+        //    //    "title": 'VoucherDetails',
+        //    //    "filename": 'VoucherDetails_List'
+
+        //    //}
+        //    //]
+        //});
+
+
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+    function Showmanual() {
+        $("#divmanual").show()
+    }
+</script>
+ 
+<script>
+
+
+    function ShowSelectedValue(type) {
+        var Activity = type;
+        var FromDate = $("#FDate").val();
+
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'Fdate': FromDate, 'Activity': Activity, };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackACKNOWLEDGEMENTEInvoiceReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJson($("#reportTable"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                var table = document.getElementById("reportTable");
+                Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+    function Show(type) {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 100000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValue(type);
+
+        }, delayInMilliseconds);
+
+
+
+    }
+</script>
+
+<script type="text/javascript">
+    function Textboxvalue(Activity) {
+
+        var Activity = Activity;
+        var FromDate = $("#FDate").val();
+
+        var ToDate = $("#ToDate").val();
+        var data1 = { 'Fdate': FromDate, 'Activity': Activity, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackACKNOWLEDGEMENTEInvoiceReportTextBoxbind',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                var sum = 0;
+                var Total = 0;
+                for (var i = 0; i < data.length; i++) {
+                    Total += parseInt(data[i].GrandTotal);
+                }
+
+                var NetTotal = 0;
+                for (var i = 0; i < data.length; i++) {
+                    NetTotal += parseInt(data[i].NetTotal);
+                }
+
+                var CGST = 0;
+                for (var i = 0; i < data.length; i++) {
+                    CGST += parseInt(data[i].TotalGST);
+                }
+
+                //var CGST = 0;
+                //for (var i = 0; i < Data.length; i++) {
+                //    CGST += Data[i].CGST;
+                //}
+
+                //var IGST = 0;
+                //for (var i = 0; i < Data.length; i++) {
+                //    IGST += Data[i].IGST;
+                //}
+
+                //var TotalGST = +SGST + +CGST + +IGST;
+
+
+                $('#txtCount').val(data.length);
+                //$('#txtSGST').val(SGST);
+                $('#NetTotal').val(NetTotal);
+                $('#txtCGST').val(CGST);
+                //$('#txtTotalGST').val(TotalGST);
+                $('#txtTotal').val(Total);
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+
+
+    }
+
+    function ACK(InvoiceNo, Category) {
+
+        var r = confirm("Do you want to ACK confirmations for invoice no " + InvoiceNo + " ?");
+        if (r == true) {
+
+            var data = { 'Category': Category, 'InvoiceNo': InvoiceNo };
+            var data1 = JSON.stringify(data);
+            $.ajax({
+                url: "/Report/Ackresult",
+                data: data1,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    swal({
+                        title: JSON.stringify(data),
+                         
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false
+
+                    });
+
+                    return false;
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            })
+        }
+
+    }
+
+
+    function MultipleAck() {
+        $("#tracker-loader").fadeIn("slow");
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+
+            var tablearray = [];
+            var table = document.getElementById("reportTable");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                    var InvoiceNo = row.cells[0].childNodes[0].value;
+
+                    if (InvoiceNo == checkboxarray[k]) {
+
+                        Category = row.cells[3].innerText;
+                        InvoiceNo = row.cells[4].innerText;
+
+
+                        tablearray.push({ 'Category': Category, 'InvoiceNo': InvoiceNo })
+                    }
+                }
+            }
+   
+
+            if (tablearray.length == 0) {
+                alert("Please select ACK to proceed");
+                $("#tracker-loader").fadeOut("slow");
+
+            }
+            else {
+                var r = confirm("Do you want to ACK selected documents?");
+                if (r == true) {
+
+                    var data1 = { 'Invoicedata': tablearray };
+                    var data = JSON.stringify(data1);
+                    $.ajax({
+                        url: "/Report/SaveMultpleAsk",
+                        data: data,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data) {
+                            swal({
+                                title: JSON.stringify(data),
+                                text: "Please Check",
+                                type: "warning",
+                                showCancelButton: false,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Ok",
+                                closeOnConfirm: false
+                            });
+                            return false;
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                        }
+                    })
+
+                }
+                else {
+                    alert("you pressed cancel!")
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            }
+        }
+</script>
+
+
+
+
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("GetTrackACKNOWLEDGEMENTEError", "report")?';
+
+
+    }
+
+
+</script>
+<script>
+
+    function ShowError() {
+
+        var FromDate = $("#txtSummaryFromDate").val();
+
+        var ToDate = $("#txtSummaryToDate").val();
+        var data1 = { 'FromDate': FromDate, ToDate: ToDate, };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackACKNOWLEDGEMENTEInvoiceError',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                
+                RepTableDataJson($("#tblReceiptSummaryDet"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+</script>
+
+
+
+<script type="text/javascript">
+
+    function GetExcelFileSuccess() {
+
+        window.location = '@Url.Action("GetTrackACKNOWLEDGEMENTESuccess", "report")?';
+
+
+    }
+
+
+</script>
+<script>
+
+    function ShowSuccess() {
+       
+        var FromDate = $("#txtSummaryFrom").val();
+
+        var Todate = $("#txtSummaryTo").val();
+        var data1 = { 'FromDate': FromDate, Todate: Todate, };
+        data = JSON.stringify(data1);
+
+      
+        $.ajax({
+
+            url: '/Report/GetTrackACKNOWLEDGEMENTEInvoiceSuccess',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJson($("#tblReceiptSummary"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+    function ViewReceiptSummary() {
+        $("#divReceiptSummary").show();
+        $("#DivReceiptGenDet").hide();
+        $("#Divacksummary").hide();
+    };
+
+
+    function getBack() {
+        $("#DivReceiptGenDet").show();
+        $("#divReceiptSummary").hide();
+        $("#Divacksummary").hide();
+    }
+
+    function ViewsSummary() {
+        $("#divSecSummary").show();
+        $("#DivReceiptGenDet").hide();
+        $("#DivReceiptGenDet").hide();
+        $("#Divacksummary").hide();
+    };
+
+    function getBacks() {
+        $("#DivReceiptGenDet").show();
+        $("#divReceiptSummary").hide();
+        $("#divSecSummary").hide();
+        $("#Divacksummary").hide();
+    }
+
+
+    function daywiseSummary() {
+        $("#Divacksummary").show();
+        $("#DivReceiptGenDet").hide();
+        $("#divReceiptSummary").hide();
+        $("#divSecSummary").hide();
+      
+    }
+
+    function ShowWise(type) {
+
+
+        if (type == "Today") {
+            $("#divtoday").show();
+            $("#divyesterday").hide();
+            $("#divweekly").hide();
+            $("#divmonthly").hide();
+            $("#divmanualy").hide();
+            var FromDate = $("#todayFromDate").val();
+            var Todate = $("#TodayToDate").val();
+            ShowWise1(type, FromDate, Todate);
+        }
+        if (type == "Yesterday") {
+            $("#divtoday").hide();
+            $("#divyesterday").show();
+            $("#divweekly").hide();
+            $("#divmonthly").hide();
+            $("#divmanualy").hide();
+            var FromDate = $("#yesterdayFromDate").val();
+            var Todate = $("#yesterdayToDate").val();
+            ShowWise1(type, FromDate, Todate);
+        }
+        if (type == "Weekly") {
+            $("#divtoday").hide();
+            $("#divyesterday").hide();
+            $("#divweekly").show();
+            $("#divmonthly").hide();
+            $("#divmanualy").hide();
+            var FromDate = $("#WeeklyFromDate").val();
+            var Todate = $("#WeeklyToDate").val();
+            ShowWise1(type, FromDate, Todate);
+        }
+        if (type == "Monthly") {
+            $("#divtoday").hide();
+            $("#divyesterday").hide();
+            $("#divweekly").hide();
+            $("#divmonthly").show();
+            $("#divmanualy").hide();
+            var FromDate = $("#monthlyFromDate").val();
+            var Todate = $("#monthlyToDate").val();
+            ShowWise1(type, FromDate, Todate);
+        }
+        if (type == "Manual") {
+            $("#divtoday").hide();
+            $("#divyesterday").hide();
+            $("#divweekly").hide();
+            $("#divmonthly").hide();
+            $("#divmanualy").show();
+           
+       
+          
+        }
+    }
+
+
+    function Showmanual(type) {
+        $("#tracker-loader").fadeIn("slow");
+        if (type == "Manual") {
+            var FromDate = $("#manualFromDate").val();
+            var Todate = $("#manualtoDate").val();
+        }
+
+        var data1 = { 'Activity': type, 'FromDate': FromDate, 'Todate': Todate };
+        data = JSON.stringify(data1);
+
+
+
+        $.ajax({
+
+            url: '/Report/GetDaywiseDetails',
+            type: 'Post',
+            data: data,
+
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#tbldaywisedetails").empty();
+                RepTableDataJson($("#tbldaywisedetails"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+
+    function ShowWise1(type, FromDate, Todate) {
+        $("#tracker-loader").fadeIn("slow");
+      
+       
+       
+        var data1 = { 'Activity': type, 'FromDate': FromDate, 'Todate': Todate };
+        data = JSON.stringify(data1);
+
+      
+
+        $.ajax({
+
+            url: '/Report/GetDaywiseDetails',
+            type: 'Post',
+            data: data,
+            
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $("#tbldaywisedetails").empty();
+                RepTableDataJson($("#tbldaywisedetails"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+            
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+    function GetGSTSummaryDetails() {
+
+        window.location = '@Url.Action("GetGST_Ack_SummaryDetails", "report")?';
+
+
+    }
+
+
+
+
+    //Code For Close ACK
+
+
+    function CloseAsk(AutoID, InvoiceNo) {
+
+        var r = confirm("Do you want to Close ACK for invoice no " + InvoiceNo + " ?");
+        if (r == true) {
+
+            var data = { 'AutoID': AutoID, 'InvoiceNo': InvoiceNo };
+            var data1 = JSON.stringify(data);
+            $.ajax({
+                url: "/Report/AckCloseResult",
+                data: data1,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert("closed successfully!");
+                    ShowError();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+
+    }
+    
+    function PrintQr() {
+        debugger;
+        var data1 = { 'InvoiceNo': $("#txtinvoiceNo1").val() };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/Report/ImportInvoicePrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                //window.print();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+                //myWindow.print();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+
+
+    function PrintDomesticInvoice(AssessNo, Category, WorkYear) {
+        debugger;
+        if (Category == "Import") {
+            var data1 = { 'Category': "Import Invoice" };
+            data = JSON.stringify(data1);
+        }
+
+        if (Category == "EXPORT") {
+            var data1 = { 'Category': "Export Invoice" };
+            data = JSON.stringify(data1);
+        }
+        if (Category == "BOND") {
+            var data1 = { 'Category': "Bond Invoice" };
+            data = JSON.stringify(data1);
+        }
+
+        if (Category == "DOMESTIC") {
+            var data1 = { 'Category': "Domestic Invoice" };
+            data = JSON.stringify(data1);
+        }
+
+        if (Category == "EMPTY Offloading/MNR") {
+            var data1 = { 'Category': "MNR Invoice" };
+            data = JSON.stringify(data1);
+        }
+        if (Category == "Carting") {
+            var data1 = { 'Category': "Carting" };
+            data = JSON.stringify(data1);
+        }
+
+
+       
+        var txtAssessment = AssessNo;
+        var txtWork = WorkYear;
+
+        if (txtAssessment != "") {
+            $.ajax({
+                url: '/Report/GetMuptiplePrintImport',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    var url = response + txtAssessment + '&WorkYear=' + txtWork;
+                    window.open(url, '_blank');
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+        else {
+            alert("Invalid Assessment No.");
+            return;
+        }
+    };
+
+    function PrintInvoice(AssessNo, Category, WorkYear) {
+        debugger;
+
+ 
+        
+        var data1 = { 'InvoiceNo': AssessNo };
+        data = JSON.stringify(data1);
+
+        if (Category == "EXPORT") {
+            $.ajax({
+                url: '/ExportModel/ExportInvoiceTaxPrint',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    //window.print();
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.close();
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.document.write(response);
+                    //myWindow.print();
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+        }
+        if (Category == "MISC") {
+            $.ajax({
+                url: '/ImportWorkOrder/ImportOtherInvoicePrint',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    //window.print();
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.close();
+                    var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                    myWindow.document.write(response);
+                    //myWindow.print();
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+         
+        }
+      
+    };
+
+</script>

@@ -1,0 +1,1039 @@
+﻿﻿
+@{
+    /**/
+
+    ViewBag.Title = "Job Order Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<link href="~/css/joborder.css" rel="stylesheet" />
+
+<div class=" content-area" id="Divjoborder">
+    <div class="page-header">
+        <h4 class="page-title">
+           Mktg. Wise Job Orders<label id="lblCount"></label><label id="lblCount40"></label>
+        </h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="card1">
+                                <div style="float: right">
+                                    <div class="input-group text-right">
+                                        <button class="btn btn-outline-success" type="button" id="CustomerWiseReport" onclick="CustomerWiseReport('Today')">Customer Wise</button>
+                                        <button class="btn btn-outline-success" type="button" id="SalesWiseReport" onclick="SalesWiseReport('Today');">Sales Wise</button>
+
+
+                                    </div>
+                                </div>
+                                <div style="float: none; clear: both">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Marketing Person</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            @Html.DropDownList("ddlMarketingperson", (IEnumerable<SelectListItem>)ViewBag.SalesPersonM, "ALL", new { @class = "form-control", @id = "ddlMarketingperson", name = "ddlMarketingperson", @Value = "0" })
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-sm-12">
+                                                <label class="form-label" style="visibility:hidden">Marketing Person</label>
+                                                <div class="input-group">
+                                                    <button class="btn btn-outline-info" type="button" id="Today" onclick="JobOrderList('Today');">Today's</button>
+                                                    <button class="btn btn-outline-info" type="button" id="Yesterday" onclick="JobOrderList('Yesterday');">Yesterday's</button>
+                                                    <button class="btn btn-outline-info" type="button" id="Monthly" onclick="JobOrderList('Monthly');">Month's</button>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-lg-12">
+
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th>Jo No.</th>
+                                                                <th>customer NAme</th>
+                                                                <th>Sales Person</th>
+                                                                <th>bl number</th>
+                                                                <th>20</th>
+                                                                <th>40</th>
+                                                                <th>45</th>
+                                                                <th>Total</th>
+                                                                <th>Teus</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="DivCustomerWise" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Customer Wise Report
+        </h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="card1">
+                                <div style="float: right">
+                                    <div class="input-group text-right">
+                                        @*<button class="btn btn-outline-info" type="button" id="CustomerWiseReport" onclick="CustomerWiseReport('Today')">Customer Wise</button>*@
+                                        <button class="btn btn-outline-success" type="button" id="SalesWiseReport" onclick="SalesWiseReport('Today');">Sales Wise</button>
+                                        <button class="btn btn-outline-success" type="button" id="JobOrder" onclick="ViewJObOrder();">Job Order</button>
+
+                                    </div>
+                                </div>
+                                <div style="float: none; clear: both">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="input-group">
+                                                    <button class="btn btn-outline-info" type="button" id="CustomerToday" onclick="CustomerJObOrder('Today');">Today's</button>
+                                                    <button class="btn btn-outline-info" type="button" id="CustomerYesterday" onclick="CustomerJObOrder('Yesterday');">Yesterday's</button>
+                                                    <button class="btn btn-outline-info" type="button" id="CustomerMonthly" onclick="CustomerJObOrder('Monthly');">Month's</button>
+
+
+                                                </div>
+                                            </div>
+                                        </div><br />
+                                        <div class="row">
+                                            <div class="col-lg-2 col-sm-12" id="divTEUSCustomer" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 20 :</span> <label id="lbltwentyCustomer" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS1Customer" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 40 :</span> <label id="lblfortyCustomer" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS2Customer" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfiveCustomer" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS3Customer" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotalCustomer" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-lg-12">
+
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example" style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>customer NAme</th>
+                                                                <th>20</th>
+                                                                <th>40</th>
+                                                                <th>45</th>
+                                                                <th>Total</th>
+                                                                <th>Teus</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class=" content-area" id="DivSalesWise" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Sales Wise Report
+        </h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="card1">
+                                <div style="float: right">
+                                    <div class="input-group text-right">
+                                        <button class="btn btn-outline-success" type="button" id="CustomerWiseReport" onclick="CustomerWiseReport('Today')">Customer Wise</button>
+                                        <button class="btn btn-outline-success" type="button" id="JobOrder" onclick="ViewJObOrder();">Job Order</button>
+
+
+                                    </div>
+                                </div>
+                                <div style="float: none; clear: both">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-sm-12">
+                                                <div class="input-group">
+                                                    <button class="btn btn-outline-info" type="button" id="SalesToday" onclick="SalesWiseJobOrder('Today');">Today's</button>
+                                                    <button class="btn btn-outline-info" type="button" id="SalesYesterday" onclick="SalesWiseJobOrder('Yesterday');">Yesterday's</button>
+                                                    <button class="btn btn-outline-info" type="button" id="SalesMonthly" onclick="SalesWiseJobOrder('Monthly');">Month's</button>
+
+
+                                                </div>
+                                            </div>
+                                        </div><br />
+                                        <div class="row">
+                                            <div class="col-lg-2 col-sm-12" id="divTEUSSales" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 20 :</span> <label id="lbltwentySales" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS1Sales" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 40 :</span> <label id="lblfortySales" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS2Sales" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfiveSales" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12" id="divTEUS3Sales" style="display:none">
+                                                <div class="form-group">
+                                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                                    <div class="row gutters-xs">
+                                                        <div class="col">
+                                                            <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotalSales" style="font-weight: bold"></label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-lg-12">
+
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sales Person</th>
+                                                                <th>20</th>
+                                                                <th>40</th>
+                                                                <th>45</th>
+                                                                <th>Total</th>
+                                                                <th>Teus</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var salesid = 0;
+        var date = "Today";
+        var data1 = { 'salesid': salesid, 'date': date };
+        var data = JSON.stringify(data1);
+        //alert(data);
+        $.ajax({
+
+            url: '/PipeLineReport/AjaxJobOrderDetails',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+
+                    "columns": [
+                        { "data": "JoNO" },
+                        { "data": "customer" },
+                        { "data": "SalesPerson_Name" },
+                        { "data": "blnumber" },
+                        { "data": "Tot20" },
+                        { "data": "Tot40" },
+                        { "data": "Tot45" },
+                        { "data": "Total" },
+                        { "data": "Teus" }
+
+                    ],
+
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'JobOrderDetails',
+                        "filename": 'JobOrderDetails_List'
+
+                    }]
+
+                });
+                var table = document.getElementById("example1");
+                var row;
+
+
+                var COunt = 0;
+                var Count40 = 0;
+                var Count45 = 0;
+                var Countteus = 0;
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[4].innerText;
+                    var Size40 = row.cells[5].innerText;
+                    var Size45 = row.cells[6].innerText;
+                    var Sizeteus = row.cells[8].innerText;
+                    var size1 = Size;
+                    //var size400 = Size40;
+                    COunt = COunt + Number(size1);
+                    Count40 = Count40 + Number(Size40);
+                    Count45 = Count45 + Number(Size45);
+                    //Countteus = Count40 + Number(Sizeteus);
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = COunt + (Count40 * 2) + (Count45 * 2)
+
+                $("#lbltwenty").text(COunt);
+                $("#lblforty").text(Count40);
+                $("#lblfortyfive").text(Count45);
+                $("#lblTotal").text(TotTEUS);
+
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+                $("#divTEUS2").show();
+                $("#divTEUS3").show();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+
+
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [1]
+                }
+
+            ],
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'JobOrderDetails',
+                "filename": 'JobOrderDetails_List'
+
+            }]
+        });
+        $("#Today").addClass("btn btn-outline-info selected");
+        $("#Yesterday").removeClass();
+        $("#Monthly").removeClass();
+        $("#Yesterday").addClass("btn btn-outline-info");
+        $("#Monthly").addClass("btn btn-outline-info");
+
+
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [1]
+                }
+
+            ],
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'JobOrderDetails',
+                "filename": 'JobOrderDetails_List'
+
+            }]
+           
+        });
+    });
+
+
+
+
+
+</script>
+
+<script>
+    function JobOrderList(Date1) {
+
+        //var res = validateSaveFunction();
+        // if (res == false) {
+        //     return false;
+        // }
+        $("#lbltwenty").text(0);
+        $("#lblforty").text(0);
+        $("#lblfortyfive").text(0);
+        $("#lblTotal").text(0);
+
+        $("#divTEUS").hide();
+        $("#divTEUS1").hide();
+        $("#divTEUS2").hide();
+        $("#divTEUS3").hide();
+
+        var salesid = $("#ddlMarketingperson option:selected").val();
+
+        if (salesid == "") {
+            salesid = 0;
+        }
+
+
+
+        var date = Date1;
+        var data1 = { 'salesid': salesid, 'date': date };
+        var data = JSON.stringify(data1);
+        //alert(data);
+
+        $.ajax({
+
+            url: '/PipeLineReport/AjaxJobOrderDetails',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+
+                    "columns": [
+                        { "data": "JoNO" },
+                        { "data": "customer" },
+                        { "data": "SalesPerson_Name" },
+                        { "data": "blnumber" },
+                        { "data": "Tot20" },
+                        { "data": "Tot40" },
+                        { "data": "Tot45" },
+                        { "data": "Total" },
+                        { "data": "Teus" }
+
+                    ],
+
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'JobOrderDetails',
+                        "filename": 'JobOrderDetails_List'
+
+                    }]
+
+                });
+                var table = document.getElementById("example1");
+                var row;
+
+
+                var COunt = 0;
+                var Count40 = 0;
+                var Count45 = 0;
+                var Countteus = 0;
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[4].innerText;
+                    var Size40 = row.cells[5].innerText;
+                    var Size45 = row.cells[6].innerText;
+                    var Sizeteus = row.cells[8].innerText;
+                    var size1 = Size;
+                    //var size400 = Size40;
+                    COunt = COunt + Number(size1);
+                    Count40 = Count40 + Number(Size40);
+                    Count45 = Count45 + Number(Size45);
+                    //Countteus = Count40 + Number(Sizeteus);
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = COunt + (Count40 * 2) + (Count45 * 2)
+
+                $("#lbltwenty").text(COunt);
+                $("#lblforty").text(Count40);
+                $("#lblfortyfive").text(Count45);
+                $("#lblTotal").text(TotTEUS);
+
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+                $("#divTEUS2").show();
+                $("#divTEUS3").show();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+    }
+</script>
+
+<script>
+    $("#Today").click(function () {
+        $("#Today").addClass("btn btn-outline-info selected");
+        $("#Yesterday").removeClass();
+        $("#Monthly").removeClass();
+        $("#Yesterday").addClass("btn btn-outline-info");
+        $("#Monthly").addClass("btn btn-outline-info");
+
+    });
+    $("#Yesterday").click(function () {
+        $("#Yesterday").addClass("btn btn-outline-info selected");
+        $("#Today").removeClass();
+        $("#Monthly").removeClass();
+        $("#Today").addClass("btn btn-outline-info");
+        $("#Monthly").addClass("btn btn-outline-info");
+
+    });
+    $("#Monthly").click(function () {
+        $("#Monthly").addClass("btn btn-outline-info selected");
+        $("#Today").removeClass();
+        $("#Yesterday").removeClass();
+
+        $("#Today").addClass("btn btn-outline-info");
+        $("#Yesterday").addClass("btn btn-outline-info");
+
+    });
+</script>
+
+
+@* Codes for Customer Wise Report*@
+<script>
+    function CustomerWiseReport() {
+        $("#Divjoborder").hide();
+        $("#DivSalesWise").hide();
+        $("#DivCustomerWise").show();
+
+        CustomerJObOrder('Today');
+        $("#CustomerToday").addClass("btn btn-outline-info selected");
+        $("#CustomerYesterday").removeClass();
+        $("#CustomerMonthly").removeClass();
+        $("#CustomerYesterday").addClass("btn btn-outline-info");
+        $("#CustomerMonthly").addClass("btn btn-outline-info");
+
+    }
+
+    function ViewJObOrder() {
+        document.location = '@Url.Action("JobOrderListDetails", "PipeLineReport")';
+    }
+</script>
+<script>
+    function CustomerJObOrder(Day) {
+
+        $("#lbltwentyCustomer").text(0);
+        $("#lblfortyCustomer").text(0);
+        $("#lblfortyfiveCustomer").text(0);
+        $("#lblTotalCustomer").text(0);
+
+        $("#divTEUSCustomer").hide();
+        $("#divTEUS1Customer").hide();
+        $("#divTEUS2Customer").hide();
+        $("#divTEUS3Customer").hide();
+        var date = Day;
+        var data1 = { 'date': date };
+        var data = JSON.stringify(data1);
+        //alert(data);
+
+        $.ajax({
+
+            url: '/PipeLineReport/AjaxCustomerJObOrder',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#example').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+
+                    "columns": [
+                        { "data": "customer" },
+                        { "data": "Tot20" },
+                        { "data": "Tot40" },
+                        { "data": "Tot45" },
+                        { "data": "Total" },
+                        { "data": "Teus" }
+
+                    ],
+
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'JobOrderDetails',
+                        "filename": 'JobOrderDetails_List'
+
+                    }]
+
+                });
+                var table = document.getElementById("example");
+                var row;
+
+
+                var COunt = 0;
+                var Count40 = 0;
+                var Count45 = 0;
+              
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[1].innerText;
+                    var Size40 = row.cells[2].innerText;
+                    var Size45 = row.cells[3].innerText;
+                   
+                    var size1 = Size;
+                    //var size400 = Size40;
+                    COunt = COunt + Number(size1);
+                    Count40 = Count40 + Number(Size40);
+                    Count45 = Count45 + Number(Size45);
+                    //Countteus = Count40 + Number(Sizeteus);
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = COunt + (Count40 * 2) + (Count45 * 2)
+
+                $("#lbltwentyCustomer").text(COunt);
+                $("#lblfortyCustomer").text(Count40);
+                $("#lblfortyfiveCustomer").text(Count45);
+                $("#lblTotalCustomer").text(TotTEUS);
+
+                $("#divTEUSCustomer").show();
+                $("#divTEUS1Customer").show();
+                $("#divTEUS2Customer").show();
+                $("#divTEUS3Customer").show();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+    }
+</script>
+<script>
+    $("#CustomerToday").click(function () {
+        $("#CustomerToday").addClass("btn btn-outline-info selected");
+        $("#CustomerYesterday").removeClass();
+        $("#CustomerMonthly").removeClass();
+        $("#CustomerYesterday").addClass("btn btn-outline-info");
+        $("#CustomerMonthly").addClass("btn btn-outline-info");
+
+    });
+    $("#CustomerYesterday").click(function () {
+        $("#CustomerYesterday").addClass("btn btn-outline-info selected");
+        $("#CustomerToday").removeClass();
+        $("#CustomerMonthly").removeClass();
+        $("#CustomerToday").addClass("btn btn-outline-info");
+        $("#CustomerMonthly").addClass("btn btn-outline-info");
+
+    });
+    $("#CustomerMonthly").click(function () {
+        $("#CustomerMonthly").addClass("btn btn-outline-info selected");
+        $("#CustomerToday").removeClass();
+        $("#CustomerYesterday").removeClass();
+
+        $("#CustomerToday").addClass("btn btn-outline-info");
+        $("#CustomerYesterday").addClass("btn btn-outline-info");
+
+    });
+</script>
+
+@* Codes for Sales Wise Report*@
+
+
+<script>
+    function SalesWiseReport() {
+        $("#Divjoborder").hide();
+        $("#DivCustomerWise").hide();
+        $("#DivSalesWise").show();
+        $("#SalesToday").addClass("btn btn-outline-info selected");
+        $("#SalesYesterday").removeClass();
+        $("#SalesMonthly").removeClass();
+        $("#SalesYesterday").addClass("btn btn-outline-info");
+        $("#SalesMonthly").addClass("btn btn-outline-info");
+        SalesWiseJobOrder('Today');
+      
+
+    }
+</script>
+<script>
+    function SalesWiseJobOrder(Day1) {
+        $("#lbltwentySales").text("");
+        $("#lblfortySales").text("");
+        $("#lblfortyfiveSales").text("");
+        $("#lblTotalSales").text("");
+
+        $("#divTEUSSales").hide();
+        $("#divTEUS1Sales").hide();
+        $("#divTEUS2Sales").hide();
+        $("#divTEUS3Sales").hide();
+
+        var date = Day1;
+        var data1 = { 'date': date };
+        var data = JSON.stringify(data1);
+        //alert(data);
+
+        $.ajax({
+
+            url: '/PipeLineReport/AjaxSalesJObOrder',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+
+                    "columns": [
+                        { "data": "SalesPerson_Name" },
+                        { "data": "Tot20" },
+                        { "data": "Tot40" },
+                        { "data": "Tot45" },
+                        { "data": "Total" },
+                        { "data": "Teus" }
+
+                    ],
+
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'JobOrderDetails',
+                        "filename": 'JobOrderDetails_List'
+
+                    }]
+
+                });
+                var table = document.getElementById("example2");
+                var row;
+
+
+                var COunt = 0;
+                var Count40 = 0;
+                var Count45 = 0;
+
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[1].innerText;
+                    var Size40 = row.cells[2].innerText;
+                    var Size45 = row.cells[3].innerText;
+
+                    var size1 = Size;
+                    //var size400 = Size40;
+                    COunt = COunt + Number(size1);
+                    Count40 = Count40 + Number(Size40);
+                    Count45 = Count45 + Number(Size45);
+                    //Countteus = Count40 + Number(Sizeteus);
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = COunt + (Count40 * 2) + (Count45 * 2)
+
+                $("#lbltwentySales").text(COunt);
+                $("#lblfortySales").text(Count40);
+                $("#lblfortyfiveSales").text(Count45);
+                $("#lblTotalSales").text(TotTEUS);
+
+                $("#divTEUSSales").show();
+                $("#divTEUS1Sales").show();
+                $("#divTEUS2Sales").show();
+                $("#divTEUS3Sales").show();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+    }
+</script>
+<script>
+    $("#SalesToday").click(function () {
+        $("#SalesToday").addClass("btn btn-outline-info selected");
+        $("#SalesYesterday").removeClass();
+        $("#SalesMonthly").removeClass();
+        $("#SalesYesterday").addClass("btn btn-outline-info");
+        $("#SalesMonthly").addClass("btn btn-outline-info");
+
+    });
+    $("#SalesYesterday").click(function () {
+        $("#SalesYesterday").addClass("btn btn-outline-info selected");
+        $("#SalesToday").removeClass();
+        $("#SalesMonthly").removeClass();
+        $("#SalesToday").addClass("btn btn-outline-info");
+        $("#SalesMonthly").addClass("btn btn-outline-info");
+
+    });
+    $("#SalesMonthly").click(function () {
+        $("#SalesMonthly").addClass("btn btn-outline-info selected");
+        $("#SalesToday").removeClass();
+        $("#SalesYesterday").removeClass();
+
+        $("#SalesToday").addClass("btn btn-outline-info");
+        $("#SalesYesterday").addClass("btn btn-outline-info");
+
+    });
+</script>
+
+
+
+<script>
+    $("#CustomerWiseReport").click(function () {
+        $("#CustomerWiseReport").addClass("btn btn-outline-success selectedGreen");
+        $("#SalesWiseReport").removeClass();
+        $("#JobOrder").removeClass();
+        $("#SalesWiseReport").addClass("btn btn-outline-success");
+        $("#JobOrder").addClass("btn btn-outline-success");
+
+    });
+    $("#SalesWiseReport").click(function () {
+        $("#SalesWiseReport").addClass("btn btn-outline-success selectedGreen");
+        $("#CustomerWiseReport").removeClass();
+        $("#JobOrder").removeClass();
+        $("#CustomerWiseReport").addClass("btn btn-outline-success");
+        $("#JobOrder").addClass("btn btn-outline-success");
+
+    });
+    $("#JobOrder").click(function () {
+        $("#JobOrder").addClass("btn btn-outline-success selectedGreen");
+        $("#SalesWiseReport").removeClass();
+        $("#CustomerWiseReport").removeClass();
+
+        $("#SalesWiseReport").addClass("btn btn-success-info");
+        $("#CustomerWiseReport").addClass("btn btn-success-info");
+
+    });
+</script>
+
+
+
+
+
+
+
+
+
+<script>
+    function validateSaveFunction() {
+
+        var txtdrivername = document.getElementById('ddlMarketingperson').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        document.getElementById("ddlMarketingperson").style.borderColor = "gainsboro";
+
+
+
+
+        if (txtdrivername == "") {
+            document.getElementById("ddlMarketingperson").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>

@@ -1,0 +1,727 @@
+﻿
+@{
+    ViewBag.Title = "Fastag Reco Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonPagging.js"></script>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="tracker-loader"></div>
+<div id="addReco">
+    <div class=" content-area">
+        <div class="page-header">
+            <h4 class="page-title">Fastag Payment Reco </h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryList()"><i class="fa fa-file-text"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Entry ID</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="text" id="txtEntryID" class="form-control" readonly placeholder="Entry ID" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Entry Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="datetime-local" id="txtEntryDate" value="@ViewBag.Date" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-12">
+                                    <div class="form-group" style="padding-top:30px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="file" id="fileImport" name="postedFile" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-sm-12">
+                                    <div class="form-group" style="padding-top:25px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @*<input type="Button" id="btnImport" value="Import" class="btn btn-primary" />*@
+                                                <button class="btn btn-primary" id="btnImport" type="button">Import</button>
+                                                <button class="btn btn-primary" id="btnView" style="display:none" type="button">View all</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="wd-10p sorting">Sr No.</th>
+                                                    <th class="wd-10p sorting ">Transaction Date Time</th>
+                                                    <th class="wd-10p sorting">Processed Date Time </th>
+                                                    <th class="wd-10p sorting"> Licence Plate No </th>
+                                                    <th class="wd-10p sorting">Tag Account No. </th>
+                                                    <th class="wd-10p sorting">
+                                                        Group
+                                                    </th>
+                                                    <th class="wd-10p sorting">
+                                                        Activity
+                                                    </th>
+                                                    <th class="wd-10p sorting">
+                                                        Plaza Code
+                                                    </th>
+                                                    <th class="wd-10p sorting">
+                                                        Transaction Description
+                                                    </th>
+                                                    <th class="wd-10p sorting">
+                                                        Unique Transaction ID
+                                                    </th>
+                                                    <th class="wd-10p sorting">
+                                                        Amount(CR)
+                                                    </th>
+                                                    <th class="wd-10p sorting">
+                                                        Amount(DR)
+                                                    </th>
+                                                  
+                                                </tr>
+                                            </thead>
+                                            <tbody style="box-sizing :border-box;">
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-1 col-xs-12">
+                                    <div class="form-group" style="padding-top:25px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button class="btn btn-success pull-right" type="button" id="btnSave" onclick="Save();" name="Save">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 col-xs-12">
+                                    <div class="form-group" style="padding-top:25px">
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <button class="btn btn-default pull-right" type="button" id="btnClear" onclick="Clear();" name="Clear">Clear</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area overflow-hidden" id="summaryLists" style="display:none">
+
+    <div class="page-header">
+        <h4 class="page-title">Fastag Payment Reco Summary</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-success" name="addTrain" title="Import Driver Payment Reco" id="addRecoScreen" onclick="AddReco()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label"> To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-1 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden"> '</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <input type="button" value="Show" title="Show" class="btn btn-primary" onclick="reco_View()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-1 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden"> '</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <input type="button" value="Summary" title="Summary" class="btn btn-info" onclick="SummaryDetails()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-danger" name="clearProfile" title="Cancel" id="btnShow" onclick="CancelDetails()">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="row">
+
+        <div class="col-lg-12 col-sm-12">
+            <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+            <input type="checkbox" id="flowcheckall" value="" />&nbsp;Select
+            <br />
+            <div class="table-responsive">
+                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                    <thead>
+
+                        <tr>
+                            @*<th class="wd-10p sorting">#</th>
+                        <th class="wd-10p sorting">Voucher No</th>
+                        <th class="wd-10p sorting">Voucher Date</th>
+                        <th class="wd-10p sorting">Processed Date Time</th>
+                        <th class="wd-10p sorting">Transaction Date Time</th>
+                        <th class="wd-10p sorting">Licence Plate No</th>
+                        <th class="wd-10p sorting">Tag Account No</th>
+                        <th class="wd-10p sorting">Activity</th>
+                        <th class="wd-10p sorting">Plaza Code</th>
+                        <th class="wd-10p sorting">Transaction Description</th>
+                        <th class="wd-10p sorting">Unique Transaction ID</th>
+                        <th class="wd-10p sorting">Amount CR</th>
+                        <th class="wd-10p sorting">Amount DR</th>
+                        <th class="wd-10p sorting">FASTAG amt</th>
+                        <th class="wd-10p sorting">from location</th>
+                        <th class="wd-10p sorting">To location</th>*@
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+            <!-- section-wrapper -->
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "paging": false
+
+        })
+    })
+    $("#tracker-loader").fadeOut("slow");
+</script>
+<script>
+
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#example2').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+    $(document).ready(function () {
+        $('#btnImport').click(function () {
+
+
+            $("#tracker-loader").fadeIn("slow");
+         
+
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#fileImport").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+                if (files.length == 0) {
+                    alert("Please select File!")
+                    return false;
+                }
+                else {
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+
+                        fileData.append(files[i].name, files[i]);
+                    }
+
+
+                    // Adding one more key to FormData object
+                    // fileData.append('JONo', JONo);
+                    // alert("hi")
+                    $.ajax({
+                        url: '/Transporter/ImportFile',
+
+
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (data) {
+                            // alert(JSON.stringify(data));
+                            //  var str = data;
+                            $('#example1').dataTable({
+                                "destroy": true,
+                                "bLengthChange": false,
+                                "aaData": data,
+                                "paging": false,
+                                "aaSorting": [[0, 'asc']],
+                                "columns": [
+                                    { "data": "SRNo" },
+                                    { "data": "TransactionDateTime" },
+                                    { "data": "ProcessedDateTime" },
+                                    { "data": "LicencePlateNo" },
+                                    { "data": "TagAccountNo" },
+                                    { "data": "Group" },
+                                    { "data": "Activity" },
+                                    { "data": "PlazaCode" },
+                                    { "data": "TransactionDescription" },
+                                    { "data": "UniqueTransactionID" },
+                                    { "data": "AmountCR" },
+                                    { "data": "AmountDR" },
+                                   
+                                ]
+                            })
+                            $("#tracker-loader").fadeOut("slow");
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                            $("#tracker-loader").fadeOut("slow");
+                        }
+
+                    });
+
+                }
+
+            }
+            else {
+                alert("FormData is not supported.");
+                $("#tracker-loader").fadeOut("slow");
+            }
+            $("#fileImport").val('');
+
+        });
+    });
+</script>
+
+<script>
+    function Save() {
+        $("#tracker-loader").fadeIn("slow");
+        var itemcount = checkItemcount();
+        if (itemcount) {
+            var entrydate = document.getElementById('txtEntryDate').value;
+
+
+        
+
+
+            var tablearray = [];
+            var table = document.getElementById("example1");
+            var row;
+
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+               
+                var TransactionDateTime = row.cells[1].innerText;
+                var ProcessedDateTime = row.cells[2].innerText;
+                var LicencePlateNo = row.cells[3].innerText;
+                var TagAccountNo = row.cells[4].innerText;
+                var Group = row.cells[5].innerText;
+                var Activity = row.cells[6].innerText;
+                var PlazaCode = row.cells[7].innerText;
+                var TransactionDescription = row.cells[8].innerText;
+                var UniqueTransactionID = row.cells[9].innerText;
+                var AmountCR = row.cells[10].innerText;
+                var AmountDR = row.cells[11].innerText;
+                
+                tablearray.push({
+                    'TransactionDateTime': TransactionDateTime, 'ProcessedDateTime': ProcessedDateTime, 'LicencePlateNo': LicencePlateNo,
+                    'TagAccountNo': TagAccountNo, 'Group': Group, 'Activity': Activity, 'PlazaCode': PlazaCode, 'TransactionDescription': TransactionDescription,
+                    'UniqueTransactionID': UniqueTransactionID, 'AmountCR': AmountCR, 'AmountDR': AmountDR
+                })
+
+            }
+         
+            var data1 = { 'Paymentdata': tablearray }
+            var data = JSON.stringify(data1);
+
+
+            $.ajax({
+                url: "/Transporter/FastagValidationValidation",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (Data) {
+
+                 
+
+                    if (Data == "") {
+                       
+                        SaveDetails(tablearray, entrydate);
+                    }
+                    else {
+                        alert(Data);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+
+                  
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+
+
+
+      
+
+        }
+        else {
+            alert("Payment details not present!");
+            $("#tracker-loader").fadeOut("slow");
+        }
+
+    }
+    function checkItemcount() {
+
+        var table = $('#example1').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+    function SaveDetails(tablearray, entrydate) {
+
+
+        if (tablearray.length == 0) {
+
+                    alert("Data not found for saving! Cannot proceed.");
+        }
+        else {
+            var data1 = { 'Paymentdata': tablearray, 'entrydate': entrydate };
+            var data = JSON.stringify(data1);
+          
+                    $.ajax({
+                        url: "/Transporter/SavePaymentList",
+                        data: data,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                      
+                        success: function (response) {
+                              var str1 = JSON.stringify(response.validationMessage);
+                                var a = JSON.stringify(response.containerList);
+                           
+                                if (str1 != 0) {
+                                    var message = "Record(s) " + str1 + " saved successfully"
+                                    alert(message);
+                                    document.location = '@Url.Action("FastagRecoDetails", "Transporter")';
+                                }
+                                else {
+
+                                    var message = "Following Voucher(s) has been already saved. Please re-check. \n" + response.containerList;
+                                    var array = message.split(',').join("\n");
+                                    alert(array);
+                                    $("#tracker-loader").fadeOut("slow");
+                                }
+
+
+                        },
+                        error: function (error) {
+                           
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                            $("#tracker-loader").fadeOut("slow");
+                        }
+                    });
+                }
+
+
+
+    }
+</script>
+
+
+<script>
+    function ViewSummaryList() {
+
+        $("#summaryLists").show();
+        $("#addReco").hide();
+
+       
+
+
+    }
+    function AddReco() {
+        $("#summaryLists").hide();
+        $("#addReco").show();
+    }
+
+    function reco_View() {
+
+        $("#tracker-loader").fadeIn("slow");
+        var data = { 'FromDate': $("#txtFromDate").val(), 'ToDate': $("#txtToDate").val()};
+        var data1 = JSON.stringify(data);
+        $.ajax({
+            type: 'POST',
+            url: '/Transporter/GetFastagDetailsForReco',
+            data: data1,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+               
+                if (data == "[]") {
+                    alert("record Not Found");
+                    $("#tracker-loader").fadeOut("slow");
+                } else {
+                    $("#example2").empty();
+                    RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                    $("#tracker-loader").fadeOut("slow");
+                }
+                   
+                   
+                  
+               
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    };
+
+
+    function SummaryDetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var data = { 'FromDate': $("#txtFromDate").val(), 'ToDate': $("#txtToDate").val() };
+        var data1 = JSON.stringify(data);
+        $.ajax({
+            type: 'POST',
+            url: '/Transporter/GetFastagSummaryDetails',
+            data: data1,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+               
+                
+                if (jsonResult == "[]") {
+                    alert("record Not Found");
+                    $("#tracker-loader").fadeOut("slow");
+                } else {
+                    $("#example2").empty();
+                    RepTableDataJsonwopaging($("#example2"), jsonResult, "Voucher Details", "VoucherDetails_List");
+                    $("#tracker-loader").fadeOut("slow");
+                }
+               
+
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToexcelfastagDEtails", "Transporter")?';
+
+
+    }
+
+    function CancelDetails() {
+        var r = confirm("Do you want to Cancel these Voucher No!");
+        if (r == true) {
+            var itemcount = checkItemcount1();
+            
+            
+            if (itemcount == false) {
+                alert("No details selected for saving. Cannot proceed");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+
+                var tablearray = [];
+                var table = document.getElementById("example2");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+
+                    row = table.rows[i];
+
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                        var InvoiceNo = row.cells[11].innerText;
+
+                        if (InvoiceNo == checkboxarray[k]) {
+
+
+                            row = table.rows[i];
+                            UniqueTransactionID = row.cells[11].innerText;
+                            VoucherNo = row.cells[1].innerText;
+
+
+                            tablearray.push({
+                                'UniqueTransactionID': UniqueTransactionID, 'VoucherNo': VoucherNo
+                            })
+
+
+                        }
+                    }
+                }
+
+
+               
+                var data1 = {
+                    'SlipNoList': tablearray
+                }
+                var data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: "/Transporter/CancelFastagDetails",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+
+                    alert("Reocrd Saved successfully!")
+                    document.location = '@Url.Action("FastagRecoDetails", "transporter")'
+
+                },
+
+                error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+            });
+            }
+        } else {
+            alert("You Pressed Cancelled!")
+        }
+    }
+
+
+    function checkItemcount1() {
+
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+        
+      
+        if (checkboxarray.length == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+</script>

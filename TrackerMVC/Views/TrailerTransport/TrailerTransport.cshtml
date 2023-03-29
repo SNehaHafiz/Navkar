@@ -1,0 +1,1480 @@
+﻿@model TrackerMVCEntities.BusinessEntities.TrailerEntities
+
+@{
+    ViewBag.Title = "Trailer";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="page-header" id="divheader">
+    <h4 class="page-title">Vehicle Master</h4>
+    <div class="form-group">
+        <label class="form-label"></label>
+        <div class="row gutters-xs">
+            <div class="col">
+                @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="TrailerSummaryList('TRAILER')"><i class="fa fa-file-text"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="diventrytable">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Entry ID</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        <input id="txtEntryID" type="text" class="form-control" value="NEW" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Entry Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        <input id="txtEntryDate" type="datetime-local" class="form-control" value="@ViewBag.Date" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        <input id="txtTrailerNo" placeholder="Enter Trailer No" type="text" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Owned By</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        <select class="form-control" id="ddlOwnedBy">
+                                            <option value="0">--Select--</option>
+                                            <option value="Own">Own</option>
+                                            <option value="Hired">Hired</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Vehicle Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        @*<select class="form-control" id="ddlVehicleType">
+                                    <option value="0"></option>
+
+
+                                </select>*@
+                                        @Html.DropDownListFor(model => model.VehicleTypeID, (IEnumerable<SelectListItem>)ViewBag.VehicleTypeList, "--Select--", new { @class = "form-control", @id = "ddlVehicleType", name = "ddlVehicleType", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Transporter</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        @*<select class="form-control" id="ddlTransporter">
+                                    <option value="0"></option>
+
+
+                                </select>*@
+                                        @Html.DropDownListFor(model => model.TransID, (IEnumerable<SelectListItem>)ViewBag.TransporterList, "--Select--", new { @class = "form-control", @id = "ddlTransporter", name = "ddlTransporter", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Permit</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select class="form-control" id="ddladdPermit">
+                                            <option value="0">--Select--</option>
+                                            <option value="NP">NP</option>
+                                            <option value="TP">TP</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Permit Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAddpermitdate", null, new { @class = "form-control form_datetime1", @id = "txtAddpermitdate", name = "txtAddpermitdate", autocomplete = "on" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Vehicle Group</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <select class="form-control" id="ddlvehiclegroup">
+                                        <option value="0">--Select--</option>
+                                        <option value="NCL">NCL</option>
+                                        <option value="NTL">NTL</option>
+                                        <option value="TP">TP</option>
+                                        <option value="SOLD">SOLD</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Is Shifting</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <select class="form-control" id="ddlisshifting">
+                                        <option value="0">--Select--</option>
+                                        <option value="True">True</option>
+                                        <option value="false">false</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Vehicle group type</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownListFor(model => model.Vehicletypegroup, (IEnumerable<SelectListItem>)ViewBag.VehicleGroupType, "--Select--", new { @class = "form-control", @id = "ddlVehicletypegroup", name = "ddlVehicletypegroup", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Fuel Type</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownListFor(model => model.Fueltype, (IEnumerable<SelectListItem>)ViewBag.Fueltype, "--Select--", new { @class = "form-control", @id = "ddlFuelType", name = "ddlFuelType", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Vendor Name</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <select class="form-control" id="ddlVendorName">
+                                        <option value="0">--Select--</option>
+                                        <option value="HT1">HT1</option>
+                                        <option value="ARN 1">ARN 1</option>
+                                        <option value="NPT">NPT</option>
+                                        <option value="NCL">NCL</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Purchased Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtPurchasedDate", null, new { @class = "form-control form_datetime1", @id = "txtPurchasedDate", name = "txtPurchasedDate", autocomplete = "on" })
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Sold Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtSoldDate", null, new { @class = "form-control form_datetime1", @id = "txtSoldDate", name = "txtSoldDate", autocomplete = "on" })
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">MFG YR</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                    <input id="txtMFGYR" placeholder="" type="text" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Model</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownListFor(model => model.ModelID, (IEnumerable<SelectListItem>)ViewBag.Model_M, "--Select--", new { @class = "form-control", @id = "ddlModel", name = "ddlModel", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">Mileage</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                    <input id="txtMileage" placeholder="" type="text" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label mandatory">GVW</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                    <input id="txtGVW" placeholder="" type="text" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="display:none">
+                    <div class="col-lg-3 col-xs-12">
+                        <div class="form-group">
+                            <label class="custom-switch">
+                                <input type="checkbox" name="custom-switch-checkbox" id="chkIsActive" value="true" checked class="custom-switch-input">
+                                <span class="custom-switch-indicator"></span>
+                                <span class="custom-switch-description">Is Active?</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1 col-xs-4">
+                        <div class="form-group">
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success btn-xs" id="btnSave" onclick="return AddTrailer();">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-xs-4">
+                        <div class="form-group">
+                            <button class="btn btn-default btn-xs" id="btnClear" onclick="OnClear();">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+<div class=" content-area overflow-hidden" id="divtrailerMaasterView" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">
+            Vehicle Master Summary : <label id="lblcount"></label>
+        </h4>
+
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-success" name="summarylist" title="Summary list" id="summarylist" onclick="window.location = '@Url.Action("TrailerTransport", "TrailerTransport")'"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @*<div class="input-group">
+
+                        <button class="btn btn-flickr" type="button" id="TRAILER" onclick="TrailerSummaryList('TRAILER');">NCL</button>
+                        <button class="btn btn-flickr" type="button" id="KALMAR" onclick="TrailerSummaryList('KALMAR');">NTL</button>
+
+
+                    </div><br />*@
+                    <div class="input-group">
+
+                        <button class="btn btn-primary" type="button" id="TRAILER" onclick="TrailerSummaryList('TRAILER');">TRAILER</button>
+                        <button class="btn btn-primary" type="button" id="KALMAR" onclick="TrailerSummaryList('KALMAR');">KALMAR</button>
+                        <button class="btn btn-primary" type="button" id="FORKLIFT" onclick="TrailerSummaryList('FORKLIFT');">FORKLIFT</button>
+                        <button class="btn btn-primary" type="button" id="HYDRA" onclick="TrailerSummaryList('HYDRA');">HYDRA</button>
+                        <button class="btn btn-primary" type="button" id="CAR" onclick="TrailerSummaryList('CAR');">CAR</button>
+                        <button class="btn btn-primary" type="button" id="BIKE" onclick="TrailerSummaryList('BIKE');">BIKE</button>
+                        <button class="btn btn-primary" type="button" id="OTHERS" onclick="TrailerSummaryList('OTHERS');">OTHERS</button>
+                        <button class="btn btn-primary" type="button" id="OTHERS" onclick="TrailerSummaryList('SOLD');">SOLD</button>
+
+
+                    </div><br /><br />
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>vehicle No.</th>
+                                            <th>Trans Short Name</th>
+                                            <th>Transporter Name</th>
+                                            <th>Owned By</th>
+                                            <th>Passing</th>
+                                            <th>IsShifting</th>
+                                            <th>grade</th>
+                                            <th>Model No.</th>
+                                            <th>Chasis No.</th>
+                                            <th>Engine No.</th>
+                                            <th>Trailer Type</th>
+                                            <th>Vehicle Type</th>
+                                            <th>Trolley No.</th>
+                                            <th>Trolley Size</th>
+                                            <th>Permit</th>
+                                            <th>Permit Expiry</th>
+                                            <th>Vehicle Group</th>
+                                            <th>Vehicle Model Type</th>
+                                            <th>Vehicle Type Group</th>
+                                            <th>Fuel Type</th>
+
+
+                                            <th>Model</th>
+                                            <th>Sold Date</th>
+                                            <th>MFG YR</th>
+                                            <th>Mileage</th>
+                                            <th>GVW</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area overflow-hidden" id="divedit" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Edit Trailer Details </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vehicle No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.TrailerNo, new { htmlAttributes = new { @class = "form-control", @id = "txttrailernumber", autocomplete = "off", maxlength = 20 ,@readonly= true} })*@
+                                            @Html.TextBox("txttrailernumber", null, new { @class = "form-control", @id = "txttrailernumber", name = "txttrailernumber", @maxlength = 15, autocomplete = "on", @readonly = true })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Owned By</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            <select class="form-control" id="ddlOwnedBy1">
+                                                <option value="0">--Select--</option>
+                                                <option value="Own">Own</option>
+                                                <option value="Hired">Hired</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Transporter Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddltransporter1", (IEnumerable<SelectListItem>)ViewBag.Transpoter, "--Select--", new { @class = "form-control", @id = "ddltransporter1", name = "ddltransporter1", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Passing</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtpassing", null, new { @class = "form-control", @id = "txtpassing", name = "txtpassing", @maxlength = 50, autocomplete = "on" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Grade</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtgrade", null, new { @class = "form-control", @id = "txtgrade", name = "txtgrade", @maxlength = 10, autocomplete = "on" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Model No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtmodelno", null, new { @class = "form-control", @id = "txtmodelno", name = "txtmodelno", @maxlength = 20, autocomplete = "on" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Chasis No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchasisno", null, new { @class = "form-control", @id = "txtchasisno", name = "txtchasisno", @maxlength = 20, autocomplete = "on" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Engine No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtengineno", null, new { @class = "form-control", @id = "txtengineno", name = "txtengineno", @maxlength = 20, autocomplete = "on" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddltrailertype">
+                                                <option value="0">--Select--</option>
+                                                <option value="GEN">GEN</option>
+                                                <option value="GENSET">GENSET</option>
+                                                <option value="LOWBED">LOWBED</option>
+                                                <option value="PRIMA">PRIMA</option>
+                                                <option value="SIGNA">SIGNA</option>
+                                                <option value="BHARAT BENZ">BHARAT BENZ</option>
+                                                <option value="4923 SIGNA">4923 SIGNA</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Permit</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="txtpermit">
+                                                <option value="0">--Select--</option>
+                                                <option value="NP">NP</option>
+                                                <option value="TP">TP</option>
+
+                                            </select>
+                                            @*@Html.TextBox("txtpermit", null, new { @class = "form-control", @id = "txtpermit", name = "txtpermit", @maxlength = 20, autocomplete = "on" })*@
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Permit Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtpermitdate", null, new { @class = "form-control form_datetime1", @id = "txtpermitdate", name = "txtpermitdate", @maxlength = 20, autocomplete = "on" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vehicle Group</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddlEditvehiclegroup">
+                                                <option value="0">--Select--</option>
+                                                <option value="NCL">NCL</option>
+                                                <option value="NTL">NTL</option>
+                                                <option value="TP">TP</option>
+                                                <option value="SOLD">SOLD</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Is Shifting</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddlEditisshifting">
+                                                <option value="0">--Select--</option>
+                                                <option value="True">True</option>
+                                                <option value="False">False</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vehicle Model Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddlEditvehicleGroupType">
+                                                <option value="0">--Select--</option>
+                                                <option value="1">4018</option>
+                                                <option value="2">3516</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vehicle Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.VehicleTypeID, (IEnumerable<SelectListItem>)ViewBag.VehicleTypeList, "--Select--", new { @class = "form-control", @id = "ddlEditVehicleType", name = "ddlEditVehicleType", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddltrailerSize">
+                                                <option value="0">--Select--</option>
+                                                <option value="20">20</option>
+                                                <option value="40">40</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Fitness Due Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("TxtFitnessDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vendor Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="EditddlVendorName">
+                                                <option value="0">--Select--</option>
+                                                <option value="HT1">HT1</option>
+                                                <option value="ARN 1">ARN 1</option>
+                                                <option value="NPT">NPT</option>
+                                                <option value="NCL">NCL</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Used Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddlusedfor">
+                                                <option value="0">--Select--</option>
+                                                <option value="Do/Repo">Do/Repo</option>
+                                                <option value="SHIFT">SHIFT</option>
+                                                <option value="REFFER">REFFER</option>
+                                                <option value="LDD">LDD</option>
+                                                <option value="TALOJA">TALOJA</option>
+                                                <option value="ODC">ODC</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Tax Due Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("TxttaxDueDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Policy End Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("TxtPolicyDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Green Tax Due Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("TxtGreenTax", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Puc Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("TxtPucDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy hh:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vehicle group type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlVehicleGrouptypeEdit", (IEnumerable<SelectListItem>)ViewBag.VehicleGroupType, "--Select--", new { @class = "form-control", @id = "ddlVehicleGrouptypeEdit", name = "ddlVehicleGrouptypeEdit", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Fuel Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlFueltypeEdit", (IEnumerable<SelectListItem>)ViewBag.Fueltype, "--Select--", new { @class = "form-control", @id = "ddlFueltypeEdit", name = "ddlFueltypeEdit", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Sold Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSoldDateEdit", null, new { @class = "form-control form_datetime1", @id = "txtSoldDateEdit", name = "txtSoldDateEdit", autocomplete = "on" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">MFG YR</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            <input id="txtMFGYREdit" placeholder="" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Model</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownListFor(model => model.ModelID, (IEnumerable<SelectListItem>)ViewBag.Model_M, "--Select--", new { @class = "form-control", @id = "ddlModel1", name = "ddlModel1", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mileage</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            <input id="txtMileageEDIt" placeholder="" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">GVW</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            <input id="txtGVWEDIT" placeholder="" type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="display:none">
+                            <div class="col-lg-2 col-xs-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <label class="custom-switch">
+                                        <input type="checkbox" name="custom-switch-checkbox" id="chkIsActiveEdit" checked class="custom-switch-input">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">Is Active?</span>
+                                    </label>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-1 col-xs-4">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success btn-xs" id="btnSave" onclick="return Edittrailer();">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="text" id="txttrailerid" name="txttrailerid" style="visibility:hidden" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    window.onload = function () {
+        document.getElementById('txtTrailerNo').focus();
+    }
+</script>
+<script>
+     function OnClear() {
+    window.location.href = '@Url.Action("trailertransport", "trailertransport")';
+    }
+</script>
+<script>
+   function AddTrailer1() {
+     var txtEntryDate = document.getElementById('txtEntryDate').value;
+     var txtTrailerNo = document.getElementById('txtTrailerNo').value;
+     var ddlOwnedBy = document.getElementById('ddlOwnedBy').value;
+    var ddlTransporter = document.getElementById('ddlTransporter').value;
+     var ddlVehicleType = document.getElementById('ddlVehicleType').value;
+       var ddlpermit = document.getElementById('ddladdPermit').value;
+       var permitExpityadd = document.getElementById('txtAddpermitdate').value;
+       var valiVehicletype = document.getElementById('ddlvehiclegroup').value;
+       var validdlshifting = document.getElementById('ddlisshifting').value;
+       var VendorName = document.getElementById('ddlVendorName').value;
+       var VehicleTypeGroup = document.getElementById('ddlVehicletypegroup').value;
+       var fueltype = document.getElementById('ddlFuelType').value;
+
+
+
+     if (txtEntryDate == "") {
+                                document.getElementById("txtEntryDate").style.borderColor = "red";
+                                alert('Please enter Entry Date!')
+                                event.preventDefault();
+                                return;
+                            }
+                            if (txtTrailerNo == "") {
+                                document.getElementById("txtTrailerNo").style.borderColor = "red";
+                                alert('Please enter Trailer No!')
+                                event.preventDefault();
+                                return;
+                            }
+                            if (ddlOwnedBy == 0) {
+                                document.getElementById("ddlOwnedBy").style.borderColor = "red";
+                                alert('Please select Owned By!')
+                                event.preventDefault();
+                                return;
+                            }
+                            if (ddlTransporter == 0) {
+                                document.getElementById("ddlTransporter").style.borderColor = "red";
+                                alert('Please select Transporter!')
+                                event.preventDefault();
+                                return;
+                            }
+                            if (ddlVehicleType == 0) {
+                                document.getElementById("ddlVehicleType").style.borderColor = "red";
+                                alert('Please select Vehicle Type!')
+                                event.preventDefault();
+                                return;
+                               }
+                            if (ddlpermit == 0) {
+                                document.getElementById("ddladdPermit").style.borderColor = "red";
+                             alert('Please select Permit Type!')
+                             event.preventDefault();
+                            return;
+                              }
+                            if (permitExpityadd == "") {
+                              document.getElementById("ddladdPermit").style.borderColor = "red";
+                               alert('Please select Permit Expiry!')
+                                event.preventDefault();
+                                return;
+                                 }
+                              if (valiVehicletype == 0) {
+                                       document.getElementById("ddlvehiclegroup").style.borderColor = "red";
+                              alert('Please select Vehicle Group!')
+                            event.preventDefault();
+                               return;
+       }
+       if (validdlshifting == 0) {
+                                  document.getElementById("ddlisshifting").style.borderColor = "red";
+                              alert('Please select Is Shifting!')
+                            event.preventDefault();
+                               return;
+       }
+       if (VendorName == 0) {
+           document.getElementById("ddlVendorName").style.borderColor = "red";
+           alert('Please select Is Vendor Name!')
+           event.preventDefault();
+           return;
+       }
+       if (VehicleTypeGroup == 0) {
+           document.getElementById("ddlVehicletypegroup").style.borderColor = "red";
+           alert('Please select Is Vehicle Type Group!')
+           event.preventDefault();
+           return;
+       }
+       if (fueltype == 0) {
+           document.getElementById("ddlFuelType").style.borderColor = "red";
+           alert('Please select Is Fuel Type!')
+           event.preventDefault();
+           return;
+       }
+
+                            OnSave();
+                        }
+                        function OnSave() {
+                            var txtEntryDate = document.getElementById('txtEntryDate').value;
+                            var txtTrailerNo = document.getElementById('txtTrailerNo').value;
+                            var ddlOwnedBy = document.getElementById('ddlOwnedBy').value;
+                           var ddlTransporter = document.getElementById('ddlTransporter').value;
+                            var ddlVehicleType = document.getElementById('ddlVehicleType').value;
+                            var chkIsActive = document.getElementById("chkIsActive").checked;
+                            var AddPermit = document.getElementById('ddladdPermit').value;
+                            var AddPermitExpiry = document.getElementById('txtAddpermitdate').value;
+                            var AddVehiclegroup = document.getElementById('ddlvehiclegroup').value;
+                            var AddIsshifting = document.getElementById('ddlisshifting').value;
+                            var AddVendorName = document.getElementById('ddlVendorName').value;
+                            var AddVehicleGrouptype = document.getElementById('ddlVehicletypegroup').value;
+                            var AddFueltype = document.getElementById('ddlFuelType').value;
+
+                            var PurchasedDate = document.getElementById('txtPurchasedDate').value;
+                            var SoldDate = document.getElementById('txtSoldDate').value;
+                            var MFGYR = document.getElementById('txtMFGYR').value;
+                            var Model = document.getElementById('ddlModel').value;
+                            var Mileage = document.getElementById('txtMileage').value;
+                            var GVW = document.getElementById('txtGVW').value;
+
+
+                           // alert(AddIsshifting);
+                            var TrailerTransport = {};
+                            TrailerTransport.EntryDate = txtEntryDate;
+                            TrailerTransport.TrailerNo = txtTrailerNo;
+                            TrailerTransport.OwnedBy = ddlOwnedBy;
+                           TrailerTransport.TransID = ddlTransporter;
+                            TrailerTransport.VehicleTypeID = ddlVehicleType;
+                            TrailerTransport.chkIsActive = chkIsActive;
+                            TrailerTransport.Permit = AddPermit;
+                            TrailerTransport.PermitExpity = AddPermitExpiry;
+                            TrailerTransport.VehicleGroup = AddVehiclegroup;
+                            TrailerTransport.IsShifting = AddIsshifting;
+                            TrailerTransport.VendorName = AddVendorName;
+                            TrailerTransport.Vehicletypegroup = AddVehicleGrouptype;
+                            TrailerTransport.Fueltype = AddFueltype;
+
+
+                            TrailerTransport.PurchasedDate = PurchasedDate;
+                            TrailerTransport.SoldDate = SoldDate;
+                            TrailerTransport.MFGYR = MFGYR;
+                            TrailerTransport.ModelID = Model;
+
+                            TrailerTransport.Mileage = Mileage;
+                            TrailerTransport.GVW = GVW;
+                           // alert(JSON.stringify(TrailerTransport));
+                            $.ajax({
+                                url: "/TrailerTransport/Save",
+                                data: '{TrailerTransport: ' + JSON.stringify(TrailerTransport) + '}',
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (result) {
+                                    alert('Record saved successfully')
+                                    window.location.href = '@Url.Action("TrailerTransport", "TrailerTransport")';
+                                },
+                                error: function (errormessage) {
+                                    alert(errormessage.responseText);
+                                }
+                            });
+                        }
+</script>
+
+@* Codes By Prashant*@
+<script type="text/javascript">
+    function AddTrailer() {
+        var TrailerNumber = $("#txtTrailerNo").val().trim();
+
+        var data1 = { 'TrailerNumber': TrailerNumber };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/TrailerTransport/AjaxCheckTrailerNumber",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response == 1) {
+                    alert("Trailer number already exist!");
+                    document.getElementById('txtTrailerNo').value = "";
+                }
+                else {
+                    AddTrailer1();
+                }
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>
+
+<script>
+    function TrailerSummaryList(vehicletype) {
+
+        debugger;
+
+        $.ajax({
+            url: "/TrailerTransport/AjaxGettrailersDetails",
+            data: '{vehicletype: ' + JSON.stringify(vehicletype) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+ 
+                //if (data.OwnedBy == "Own") {
+                //    var table = document.getElementById("example1");
+                //    var row;
+                //    var TotTEUS1 = 0;
+                //    for (var i = 1; i < table.rows.length; i++) {
+                //        row = table.rows[i];
+                //        TotTEUS1 = TotTEUS1 + 1;
+                //    }
+                //}
+                //$("#lblcount").text(TotTEUS1);
+              
+
+                $("#divtrailerMaasterView").show();
+                $("#divheader").hide();
+                $("#diventrytable").hide();
+                $("#divtrailerMaasterView").show();
+                $("#divheader").hide();
+                $("#diventrytable").hide();
+                $('#example1').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": true,
+                    "aaData": data,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "retrieve": false,
+                    "paging": false,
+                    "columns": [
+                        {
+                            "data": "trailerid",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-info" title="Edit" onclick="EditTrailerDetails(' + row.trailerid + ',\'' + row.trailername.replace(/'/g, "\\'") + '\',\'' + row.OwnedBy.replace(/'/g, "\\'") + '\',\'' + row.TransName.replace(/'/g, "\\'") + '\',\'' + row.Passing.replace(/'/g, "\\'") + '\',\'' + row.Grade.replace(/'/g, "\\'") + '\',\'' + row.ModelNo.replace(/'/g, "\\'") + '\',\'' + row.ChasisNo.replace(/'/g, "\\'") + '\',\'' + row.trailername.replace(/'/g, "\\'") + '\',\'' + row.trailerType.replace(/'/g, "\\'") + '\',\'' + row.Permit.replace(/'/g, "\\'") + '\',\'' + row.PermitExpiry + '\',' + row.TransID + ',' + row.CheckIsActive + ',\'' + row.VehicleGroup.replace(/'/g, "\\'") + '\',\'' + row.Isshiftingint.replace(/'/g, "\\'") + '\',\'' + row.VehicleGrouptype.replace(/'/g, "\\'") + '\',\'' + row.VehicleGrouptypeID.replace(/'/g, "\\'") + '\',\'' + row.Fitness_Due_Date.replace(/'/g, "\\'") + '\',\'' + row.Tax_Due_Date.replace(/'/g, "\\'") + '\',\'' + row.Policy_End_Date.replace(/'/g, "\\'") + '\',\'' + row.Green_Tax_Due.replace(/'/g, "\\'") + '\',\'' + row.Puc_date.replace(/'/g, "\\'") + '\',\'' + row.Usedfor.replace(/'/g, "\\'") + '\',' + row.VehicleTypeidEdit + ',\'' + row.TrolleySizecount.replace(/'/g, "\\'") + '\',\'' + row.Groupid.replace(/'/g, "\\'") + '\',\'' + row.Fuelid.replace(/'/g, "\\'") + '\',\'' + row.Model.replace(/'/g, "\\'") + '\',\'' + row.SoldDate.replace(/'/g, "\\'") + '\',\'' + row.MFGYR.replace(/'/g, "\\'") + '\' ,\'' + row.Mileage.replace(/'/g, "\\'") + '\',\'' + row.GVW.replace(/'/g, "\\'")+ '\')"><i class="fa fa-edit"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data": "trailername" },
+                        { "data": "FuelShortCode" },
+                        { "data": "TransName" },
+                        { "data": "OwnedBy" },
+                        { "data": "Passing" },
+                        { "data": "IsShifting" },
+                        { "data": "Grade" },
+                        { "data": "ModelNo" },
+                        { "data": "ChasisNo" },
+                        { "data": "EngineNo" },
+                        { "data": "trailerType" },
+                        { "data": "VehicleType" },
+                        { "data": "TrolleyNo" },
+                        { "data": "TrolleySizecount" },
+                        { "data": "Permit" },
+                        { "data": "PermitExpiry" },
+                        { "data": "VehicleGroup" },
+                        { "data": "VehicleGrouptype" },
+                        { "data": "GroupName" },
+                        { "data": "FuelType" },
+
+
+                        { "data": "Model" },
+                        { "data": "SoldDate" },
+                        { "data": "MFGYR" },
+                        { "data": "Mileage" },
+                        { "data": "GVW" },
+                    ],
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'TrailersMasterDetails',
+                        "filename": 'TrailersMasterDetails_List'
+
+                    }
+                    ]
+                });
+             
+                var table1 = document.getElementById("example1");
+                var row;
+                var TotTEUS1 = 0;
+                for (var i = 1; i < table1.rows.length; i++) {
+                    row = table1.rows[i];
+                    var OwnedBy = row.cells[4].innerText;
+                    if (OwnedBy == "Own") {
+                        TotTEUS1 = TotTEUS1 + 1;
+                    }
+                }
+
+
+                $('#lblcount').text(TotTEUS1);
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire("Error!", "Something went wrong: " + str, "error");
+            }
+        });
+    }
+
+
+    //function TrailerEntry() {
+    //    $("#divtrailerMaasterView").hide();
+    //    $("#divheader").show();
+    //    $("#diventrytable").show();
+    //}
+</script>
+
+<script>
+    $("#TRAILER").click(function () {
+        $("#TRAILER").css({ "background-color": "#7754ce" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+        $("#CAR").css({ "background-color": "#9f78ff" });
+        $("#BIKE").css({ "background-color": "#9f78ff" });
+    });
+    $("#KALMAR").click(function () {
+        $("#KALMAR").css({ "background-color": "#7754ce" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+        $("#CAR").css({ "background-color": "#9f78ff" });
+        $("#BIKE").css({ "background-color": "#9f78ff" });
+    });
+    $("#FORKLIFT").click(function () {
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#7754ce" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+        $("#CAR").css({ "background-color": "#9f78ff" });
+        $("#BIKE").css({ "background-color": "#9f78ff" });
+    });
+    $("#HYDRA").click(function () {
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#7754ce" });
+        $("#CAR").css({ "background-color": "#9f78ff" });
+        $("#BIKE").css({ "background-color": "#9f78ff" });
+    });
+    $("#OTHERS").click(function () {
+        $("#OTHERS").css({ "background-color": "#7754ce" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+        $("#CAR").css({ "background-color": "#9f78ff" });
+        $("#BIKE").css({ "background-color": "#9f78ff" });
+    });
+    $("#CAR").click(function () {
+        $("#CAR").css({ "background-color": "#7754ce" });
+        $("#BIKE").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+    });
+    $("#BIKE").click(function () {
+        $("#BIKE").css({ "background-color": "#7754ce" });
+        $("#CAR").css({ "background-color": "#9f78ff" });
+        $("#OTHERS").css({ "background-color": "#9f78ff" });
+        $("#TRAILER").css({ "background-color": "#9f78ff" });
+        $("#KALMAR").css({ "background-color": "#9f78ff" });
+        $("#FORKLIFT").css({ "background-color": "#9f78ff" });
+        $("#HYDRA").css({ "background-color": "#9f78ff" });
+    });
+</script>
+
+<script>
+    function EditTrailerDetails(trailerid, trailername, OwnedBy, TransName, Passing, Grade, ModelNo, ChasisNo, EngineNo, trailerType, Permit, PermitExpiry, TransID, CheckIsActive, VehicleGroup, Isshiftingint, VehicleGrouptype, VehicleGrouptypeID,
+        Fitness_Due_Date, Tax_Due_Date, Policy_End_Date, Green_Tax_Due, Puc_date,
+        Usedfor, VehicleTypeidEdit, TrolleySizecount, Groupid, Fuelid, Model, SoldDate, MFGYR, Mileage, GVW) {
+
+      
+
+        $("#divheader").hide();
+        $("#diventrytable").hide();
+        $("#divtrailerMaasterView").hide();
+           $("#divedit").show();
+       
+        document.getElementById('txttrailerid').value = trailerid;
+        document.getElementById('txttrailernumber').value = trailername;
+        document.getElementById('ddlOwnedBy1').value = OwnedBy;
+        document.getElementById('ddltransporter1').value = TransID;
+        document.getElementById('txtpassing').value = Passing;
+        document.getElementById('txtgrade').value = Grade;
+        document.getElementById('txtmodelno').value = ModelNo;
+        document.getElementById('txtchasisno').value = ChasisNo;
+        document.getElementById('txtengineno').value = EngineNo;
+        document.getElementById('ddltrailertype').value = trailerType;
+        document.getElementById('txtpermit').value = Permit;
+        document.getElementById('txtpermitdate').value = PermitExpiry;
+        document.getElementById('ddlEditvehiclegroup').value = VehicleGroup;
+        document.getElementById('TxtFitnessDate').value = Fitness_Due_Date;
+        document.getElementById('TxttaxDueDate').value = Tax_Due_Date;
+        document.getElementById('TxtPolicyDate').value = Policy_End_Date;
+        document.getElementById('TxtGreenTax').value = Green_Tax_Due;
+        document.getElementById('TxtPucDate').value = Puc_date;
+        document.getElementById('ddlusedfor').value = Usedfor;
+        document.getElementById('ddlVehicleGrouptypeEdit').value = Groupid;
+        document.getElementById('ddlFueltypeEdit').value = Fuelid;
+        $("#ddlModel1 option:selected").text(Model);
+        //document.getElementById('ddlModel1').value = Model;
+        document.getElementById('txtSoldDateEdit').value = SoldDate;
+
+
+        document.getElementById('txtMFGYREdit').value = MFGYR;
+        document.getElementById('txtMileageEDIt').value = Mileage;
+        document.getElementById('txtGVWEDIT').value = GVW;
+      
+        document.getElementById('ddlEditVehicleType').value = VehicleTypeidEdit;
+           if (CheckIsActive == 0) {
+               document.getElementById("chkIsActiveEdit").checked = false;
+           } else {
+               document.getElementById("chkIsActiveEdit").checked = true;
+        }
+        document.getElementById('ddlEditisshifting').value = Isshiftingint;
+       
+        document.getElementById('ddlEditvehicleGroupType').value = VehicleGrouptypeID;
+      
+        document.getElementById('ddltrailerSize').value = TrolleySizecount;
+       
+
+
+
+     }
+
+
+
+    function Edittrailer() {
+        debugger;
+         var res = validateEditFunction();
+        if (res == false) {
+           return false;
+         }
+         var trailerid = $("#txttrailerid").val();
+         var trailerNo = $("#txttrailernumber").val();
+         var ownedby = $("#ddlOwnedBy1").val();
+         var Transportername = $("#ddltransporter1").val();
+         var passing = $("#txtpassing").val();
+         var grade = $("#txtgrade").val();
+         var modelno = $("#txtmodelno").val();
+         var chasisno = $("#txtchasisno").val();
+         var engine = $("#txtengineno").val();
+         var trailertype = $("#ddltrailertype").val();
+         var permit = $("#txtpermit").val();
+         var permittype = $("#txtpermitdate").val();
+      
+         var EditchkIsActive = document.getElementById("chkIsActiveEdit").checked;
+         var EditVehicleTYpe = $("#ddlEditvehiclegroup").val();
+         var EditIsshifting = $("#ddlEditisshifting").val();
+         var EditVehicleGroupType = $("#ddlEditvehicleGroupType").val();
+         var PolicyDate = $("#TxtPolicyDate").val();
+         var GreenTax = $("#TxtGreenTax").val();
+         var PucDate = $("#TxtPucDate").val();
+         var UsedFor = $("#ddlusedfor").val();
+         var Taxdate = $("#TxttaxDueDate").val();
+         var Fitnessdate = $("#TxtFitnessDate").val();
+         var EditVEhicleTypeID = $("#ddlEditVehicleType").val();
+         var EditVendorName = $("#EditddlVendorName option:selected").text();
+         var TrailerSize = $("#ddltrailerSize option:selected").val();
+         var VehicleGroupType = $("#ddlVehicleGrouptypeEdit option:selected").val();
+         var FuelType = $("#ddlFueltypeEdit option:selected").val();
+        var Model = $("#ddlModel1").val();
+        var SoldDateEdit = $("#txtSoldDateEdit").val();
+        var MFGYREdit = $("#txtMFGYREdit").val();
+        var MileageEDIt = $("#txtMileageEDIt").val();
+        var GVWEDIT = $("#txtGVWEDIT").val();
+       
+
+         var data1 = {
+             'trailerid': trailerid, 'trailerNo': trailerNo, 'ownedby': ownedby, 'Transportername': Transportername,
+             'passing': passing, 'grade': grade, 'modelno': modelno, 'chasisno': chasisno, 'engine': engine,
+             'trailertype': trailertype, 'permit': permit, 'permittype': permittype, 'EditchkIsActive': EditchkIsActive,
+             'EditVehicleTYpe': EditVehicleTYpe, 'EditIsshifting': EditIsshifting, 'EditVehicleGroupType': EditVehicleGroupType,
+             'PolicyDate': PolicyDate, 'GreenTax': GreenTax, 'PucDate': PucDate, 'UsedFor': UsedFor, 'Taxdate': Taxdate,
+             'Fitnessdate': Fitnessdate, 'EditVEhicleTypeID': EditVEhicleTypeID, 'EditVendorName': EditVendorName, 'TrailerSize': TrailerSize,
+             'VehicleGroupType': VehicleGroupType, 'FuelType': FuelType, 'Model': Model, 'SoldDateEdit': SoldDateEdit, 'MFGYREdit': MFGYREdit,
+             'MileageEDIt': MileageEDIt, 'GVWEDIT': GVWEDIT
+         }
+         var data = JSON.stringify(data1);
+        
+         $.ajax({
+             url: "/TrailerTransport/AjaxUpdateTrailerDetails",
+             data: data,
+             type: "POST",
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function (data) {
+                 alert(data);
+                 window.location.href = '@Url.Action("TrailerTransport", "TrailerTransport")';
+             },
+             error: function (errormessage) {
+                 alert(errormessage.responseText);
+             }
+         });
+
+     }
+</script>
+
+<script>
+    function getBack() {
+
+        $("#divtrailerMaasterView").show();
+        $("#divheader").hide();
+        $("#diventrytable").hide();
+        // $("#divtrailerMaasterView").hide();
+        $("#divheader").hide();
+        $("#diventrytable").hide();
+        $("#divedit").hide();
+
+
+    }
+</script>
+
+<script>
+    function validateEditFunction() {
+
+        var edittrailerno = document.getElementById('txttrailernumber').value;
+        var edirownedby = document.getElementById('ddlOwnedBy1').value;
+        var ddltransporter = document.getElementById('ddltransporter1').value;
+        var valtxtpassing = document.getElementById('txtpassing').value;
+        var valtxtengime = document.getElementById('txtengineno').value;
+        var valtrailertype = document.getElementById('ddltrailertype').value;
+        var valpermit = document.getElementById('txtpermit').value;
+        var valpermitdate = document.getElementById('txtpermitdate').value;
+        var VehicleModelType = document.getElementById('ddlEditvehicleGroupType').value;
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+        document.getElementById("txttrailernumber").style.borderColor = "gainsboro";
+        document.getElementById("ddlOwnedBy1").style.borderColor = "gainsboro";
+        document.getElementById("ddltransporter1").style.borderColor = "gainsboro";
+        document.getElementById("txtpassing").style.borderColor = "gainsboro";
+        document.getElementById("txtengineno").style.borderColor = "gainsboro";
+        document.getElementById("ddltrailertype").style.borderColor = "gainsboro";
+        document.getElementById("txtpermit").style.borderColor = "gainsboro";
+        document.getElementById("txtpermitdate").style.borderColor = "gainsboro";
+        document.getElementById("ddlEditvehicleGroupType").style.borderColor = "gainsboro";
+
+
+        var transportercheck = $("#ddltransporter1 option:selected").val();
+
+
+        if (transportercheck != 37) {
+
+            if (edittrailerno == "") {
+                //  document.getElementById('ContainerNo').style.borderColor = "red"
+                document.getElementById("txttrailernumber").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+
+
+
+            if (edirownedby == "") {
+                document.getElementById("ddlOwnedBy1").style.borderColor = "red";
+
+                blResult = blResult && false;
+            }
+            if (ddltransporter == "") {
+                document.getElementById("ddltransporter1").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+            if (valtxtpassing == "") {
+                document.getElementById("txtpassing").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+
+            if (valtxtengime == "") {
+                document.getElementById("txtengineno").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+            if (valtrailertype == "") {
+                document.getElementById("ddltrailertype").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+            if (valpermit == 0) {
+                document.getElementById("txtpermit").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+            if (valpermitdate == "") {
+                document.getElementById("txtpermitdate").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+            if (VehicleModelType == 0) {
+                document.getElementById("ddlEditvehicleGroupType").style.borderColor = "red";
+                blResult = blResult && false;
+            }
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>

@@ -1,0 +1,720 @@
+﻿
+@{
+    ViewBag.Title = "Additional Movement Request";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area" id="divAddSummary">
+    <div class="page-header">
+        <h4 class="page-title">Additional Movement Request(Fuel)</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="showView();"><i class="fa fa-file-text"></i></button>
+                    <br />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12 ">
+                                <label class="form-label">Container/vehicle No. </label>
+                                <div class="input-group">
+
+                                    <input type="text" class="form-control br-tl-7 br-bl-7 float-right" placeholder="" id="Containerno" Style = "text-transform: uppercase;">
+                                    <div class="input-group-append ">
+                                        <button type="button" class="btn btn-primary br-tr-7 br-br-7" onclick="ShowVoucherNo()">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                        <thead>
+                                            <tr>
+
+                                                <th class="wd-15p sorting"></th>
+                                                <th class="wd-15p sorting">Voucher No.</th>
+                                                <th class="wd-15p sorting">Voucher Date</th>
+                                                <th class="wd-15p sorting">Container No.</th>
+                                                <th class="wd-15p sorting">Size</th>
+                                                <th class="wd-15p sorting">Driver Name</th>
+                                                <th class="wd-15p sorting">From Location</th>
+                                                <th class="wd-15p sorting">TO Location</th>
+                                                <th class="wd-15p sorting">Activity</th>
+                                                <th class="wd-15p sorting">Party</th>
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Activity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.DropDownListFor(model => model.Size, (IEnumerable<SelectListItem>)ViewBag.ContainerSize, "--Select--", new { @class = "form-control", @id = "ddlSize", name = "Size", onblur = "myRequiredValidation('ddlSize')" })*@
+                                            @*@Html.DropDownList("ddlActivity",
+                          (IEnumerable<SelectListItem>)ViewBag.Activity,
+                 "--Select--",
+        new { @class = "form-control" ,})*@
+                                            @Html.Editor("ddlActivity", new { htmlAttributes = new { @class = "form-control", @id = "ddlActivity", @Value = "Multi Location" , @readonly = true} })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">From Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.DropDownListFor(model => model.Size, (IEnumerable<SelectListItem>)ViewBag.ContainerSize, "--Select--", new { @class = "form-control", @id = "ddlSize", name = "Size", onblur = "myRequiredValidation('ddlSize')" })*@
+                                            @Html.DropDownList("ddlFromLocation",
+                                                                               (IEnumerable<SelectListItem>)ViewBag.Location,
+                                                             "--Select--",
+                                                    new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">To Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.DropDownListFor(model => model.Size, (IEnumerable<SelectListItem>)ViewBag.ContainerSize, "--Select--", new { @class = "form-control", @id = "ddlSize", name = "Size", onblur = "myRequiredValidation('ddlSize')" })*@
+                                            @Html.DropDownList("ddToLocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--",
+                                                    new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Fuel</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.Editor("txtFuel", new { htmlAttributes = new { @class = "form-control", @id = "txtFuel" } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">kilo Meter(KM)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtKilometer", null, new { @class = "form-control", @id = "txtKilometer", name = "txtKilometer", autocomplete = "off", @maxlength = 10, onkeypress = "isvalid()" })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.Editor("remarks", new { htmlAttributes = new { @class = "form-control", @id = "remarks" } })
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 col-xs-4">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" id="Save" onclick="Save();">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="divSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List of pending for approval(Fuel) </h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="wd-15p sorting">Request On</th>
+                                        <th class="wd-15p sorting">Voucher No</th>
+                                        <th class="wd-15p sorting">Container No</th>
+                                        <th class="wd-15p sorting">Activity</th>
+                                        <th class="wd-15p sorting">From Location</th>
+                                        <th class="wd-15p sorting">To Location</th>
+                                        <th class="wd-15p sorting">Fuel Quanity</th>
+                                        <th class="wd-15p sorting">Kilo-Meter</th>
+                                        <th class="wd-15p sorting">Remarks</th>
+
+
+
+
+
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+        });
+
+        //$('#example2').DataTable({
+        //    "bLengthChange": false,
+        //    "bInfo": false,
+        //    "bPaginate": false,
+        //    //"bFilter": false,
+        //    "paging": false
+
+        //});
+    });
+
+
+ 
+</script>
+<script>
+
+
+
+    function Save() {
+
+        var Voucherno = $('.checklist:checked').val()
+        var data1 = { 'Voucherno': Voucherno };
+        var data = JSON.stringify(data1);
+
+        //var itemcount = checkItemcount();
+        //if (itemcount) {
+
+
+
+        //    //  var Trainid = $("#ddlTrainDropdown option:selected").val();
+
+        //    // alert(SMTPDate)
+        //    var checkboxarray = [];
+        //    $('input[type=checkbox]').each(function () {
+        //        if (this.checked) {
+
+        //            checkboxarray.push($(this).val());
+        //        }
+        //    });
+
+
+
+        //    var data1 = [];
+        //    var table = document.getElementById("example1");
+        //    var row;
+
+
+        //    //var tablearray = [];
+        //    //var table = document.getElementById("ContainerList");
+        //    //var row;
+
+        //    for (var i = 1; i < table.rows.length; i++) {
+
+        //        row = table.rows[i];
+
+        //        for (var k = 0; k < checkboxarray.length; k++) {
+        //            var AutoID = row.cells[0].childNodes[0].value;
+
+        //            if (AutoID == $('.checklist:checked').val()) {
+        //                var Voucherno = row.cells[1].innerText;
+        //                var Fromlocation = row.cells[6].innerText;
+        //                var Tolocation = row.cells[7].innerText;
+
+
+
+        //                var data1 = { 'Voucherno': Voucherno, 'Fromlocation': Fromlocation, 'Tolocation': Tolocation }
+        //            }
+        //        }
+
+        //    }
+
+        //    if (data1.length == 0) {
+        //        alert("Please select atleast one Voucher No!");
+
+        //        // alert("hi");
+        //    }
+        //    else {
+        //        var data = JSON.stringify(data1);
+                //alert(data);
+                $.ajax({
+                    url: "/UpdateDischarge/ajaxCheckVouchernO",
+                    data: data,
+                    contentType: "application/Json; charset=uft-8",
+                    type: "POST",
+                    dataType: "Json",
+                    success: function (data) {
+                      //  alert(data);
+                        if (data == 1) {
+                            alert("Record already exist!")
+                            ////var r = confirm("Voucher No already Exist's Do you want to Continue");
+                            ////if (r == true) {
+                            ////    alert("You can Continue");
+                            ////}
+                            //else {
+
+                            //    alert("You Pressed Cancel");
+                            //}
+                        }
+                        else {
+                            SaveDetails();
+                        }
+
+
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+
+                });
+
+        //    }
+        //}
+
+    }
+
+    //function checkItemcount() {
+
+    //    var table = $('#example1').DataTable();
+
+    //    if (table.rows().count() == 0) {
+
+    //        return false;
+    //    }
+    //    return true;
+
+    //}
+
+
+
+
+
+
+
+
+        function SaveDetails() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        var Containerno = $("#Containerno").val();
+        var VoucherNo = $('.checklist:checked').val()
+        //var activity = $("#ddlActivity").val();
+        var activity = "22";
+        var FromLocation = $("#ddlFromLocation").val();
+        var Tolocation = $("#ddToLocation").val();
+        var remarks = $("#remarks").val();
+        var Fuel = $("#txtFuel").val();
+        var kilometer = $("#txtKilometer").val();
+       
+        var data1 = {
+            'Containerno': Containerno, 'VoucherNo': VoucherNo, 'activity': activity, 'FromLocation': FromLocation,
+            'Tolocation': Tolocation, 'remarks': remarks, 'Fuel': Fuel, 'kilometer': kilometer
+        };
+        var data = JSON.stringify(data1);
+      //  alert(data);
+        $.ajax({
+            url: "/UpdateDischarge/AjaxSaveAdditionalMovementRequest",
+            data: data,
+            contentType: "application/Json; charset=uft-8",
+            type: "POST",
+            dataType: "Json",
+            success: function (data) {
+                alert("Record saved Successfully!");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+        document.location = '@Url.Action("AdditionalMovementRequest", "UpdateDischarge")';
+    }
+    
+</script>
+<script>
+
+
+    function ShowVoucherNo() {
+        var res1 = validatecontainer();
+        if (res1 == false) {
+            return false
+        }
+
+
+        var Containerno = $("#Containerno").val();
+        $.ajax({
+            url: "/Transporter/AjaxVoucherDetails",
+            data: '{Containerno: ' + JSON.stringify(Containerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "aaSorting": [[2, 'desc']],
+               
+                    "columns": [
+                        {
+
+                            "data": "VoucherNumber",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"   value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+                      
+                        {
+                            "data": "VoucherNumber",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"VoucherNumber[]\" class=\" form-control VoucherNumber\" id=\"VoucherNumber\"  value="' + data + '">';
+                                return data + input;
+                            }
+                        },
+                        { "data": "VoucherDate" },
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "Drivername" },
+                        {
+                            "data": "FromLocation",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"FromLocation[]\" class=\" form-control FromLocation\" id=\"FromLocation\"  value="' + data + '">';
+                                return data + input;
+                            }
+                        },
+                        {
+                            "data": "ToLocation",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"ToLocation[]\" class=\" form-control ToLocation\" id=\"ToLocation\"  value="' + data + '">';
+                                return data + input;
+                            }
+                        },
+                        { "data": "Activity" },
+                        { "data": "Party" },
+                       
+
+
+                    ]
+                });
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+    
+    $(document).on('click', 'input[type="checkbox"]', function () {
+        $('input[type="checkbox"]').not(this).prop('checked', false);
+    });
+
+</script>
+
+
+<script>
+
+    function showView() {
+
+        $("#divAddSummary").hide();
+        $("#divSummary").show();
+
+        $.ajax({
+            url: "/UpdateDischarge/AjaxGetAdditionalMovementRequest",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "Json",
+            success: function (data) {
+                $('#example').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "columns": [
+                        {
+                            "data": "RequestID",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a   href="#" class="btn btn-sm btn-info" title="Approve" onclick="ApproveRequest(' + row.RequestID + ')">Approve</a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data":"RequestOn"},
+                        { "data":"VoucherNo"},
+                        { "data":"ContainerNo"},
+                        { "data":"Activity"},
+                        { "data":"FromLocation"},
+                        { "data": "ToLocation" },
+                        {
+                            "data": "FuelQuanity",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<input type=text id="inputFuel" name="inputFuel" value="' + row.FuelQuanity +'" onkeypress = "return isNumberKey(event)" >';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+                        { "data":"Kilometer"},
+                        { "data":"Remarks"}
+
+
+                    ]
+                });
+
+               
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText)
+            }
+
+        })
+    }
+
+    function getBack() {
+        $("#divAddSummary").show();
+        $("#divSummary").hide();
+    }
+
+    function ApproveRequest(RequestID) {
+
+        var fuel = $("#inputFuel").val();
+        
+        $.ajax({
+            url: "/UpdateDischarge/UpdateApproveRequest",
+            data: JSON.stringify({ 'RequestID': RequestID, 'fuel':fuel}),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "Json",
+            success: function (data) {
+             alert("Record approved successfully!")
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText)
+            }
+
+        })
+       document.location = '@Url.Action("AdditionalMovementRequest", "UpdateDischarge")';
+    }
+    function isNumberKey(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+
+        }
+        return true;
+    }
+    function validatecontainer() {
+        validateContainerno = document.getElementById('Containerno').value;
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById("Containerno").style.borderColor = "gainsboro";
+
+        if (validateContainerno == "") {
+            document.getElementById("Containerno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+    }
+</script>
+
+
+<script>
+    function validate() {
+
+        var ContainerValidate = document.getElementById('Containerno').value;
+        var CheckBoxValidate = document.getElementById('checklist').value;
+      
+      
+        var activityvalidate = document.getElementById('ddlActivity').value;
+        var ddlfromvalidate = document.getElementById('ddlFromLocation').value;
+        var ddltovalidate = document.getElementById('ddToLocation').value;
+       
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+        document.getElementById("Containerno").style.borderColor = "gainsboro";
+        document.getElementById("checklist").style.borderColor = "gainsboro";
+      
+        document.getElementById("ddlActivity").style.borderColor = "gainsboro";
+        document.getElementById("ddlFromLocation").style.borderColor = "gainsboro";
+        document.getElementById("ddToLocation").style.borderColor = "gainsboro";
+       
+
+
+        if (ContainerValidate == "") {
+            document.getElementById("Containerno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+      
+        if (activityvalidate == "--Select--") {
+            document.getElementById("ddlActivity").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (activityvalidate == "") {
+            document.getElementById("ddlActivity").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (ddlfromvalidate == "--Select--") {
+            document.getElementById("ddlFromLocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (ddlfromvalidate == "") {
+            document.getElementById("ddlFromLocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (ddltovalidate == "--Select--") {
+            document.getElementById("ddToLocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (ddltovalidate == "") {
+            document.getElementById("ddToLocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (CheckBoxValidate == false ){
+            document.getElementById("ddToLocation").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+    }
+
+
+   
+  
+
+
+</script>
+
+<script type="text/javascript">
+
+    function isvalid() {
+        $("#txtKilometer ").on("keyup", function () {
+            //alert(1);
+            var valid = /^\d{0,10}(\.\d{0,2})?$/.test(this.value),
+                val = this.value;
+
+            if (!valid) {
+                alert("Enter valid data!");
+                this.value = val.substring(0, val.length - 1);
+            }
+            if (this.value == '.') {
+                //alert("Enter valid data!");
+                this.value = val.substring(0, val.length - 1);
+            }
+
+
+
+        });
+
+    }
+
+   
+</script>

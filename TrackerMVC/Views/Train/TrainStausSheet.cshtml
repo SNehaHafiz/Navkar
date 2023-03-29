@@ -1,0 +1,410 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrainMaster>
+@{
+    ViewBag.Title = "TrainStausSheet";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area" id="Taindetails">
+    <div class="page-header">
+        <h4 class="page-title">Train Status Sheet: <lable id="lblCount"> @Model.Count() </h4>
+        @*<ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="window.location = '@Url.Action("TrainDepartureFromPort", "TrainDeparture_From_Port")' " class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-placement="bottom" title="Back"></i>  </a></li>
+        </ol>*@
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                      
+                        <div class="row">
+
+
+                            <div class="input-group">
+                                @* <input type="text" class="form-control" placeholder="Search for...">*@
+                                <span class="input-group-append " id="tabPurpose">
+
+                                    <button class="btn btn-primary active" id="import" style="text-transform: uppercase;" type="button" onclick="ShowPending()">Pending</button>
+                                    <button class="btn btn-primary" id="export" style="text-transform: uppercase;" type="button" onclick="ShowCompleted()">Completed</button>
+                                    <label id="selectedImportORExport" class="display_none"></label>
+                                </span>
+                            </div>
+
+
+
+
+
+
+                            <div class="col-lg-12 col-sm-12" id="divPending">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th class="wd-10p sorting">Train No.</th>
+                                                <th class="wd-10p sorting ">TEUS</th>
+                                                <th class="wd-10p sorting ">Port</th>
+                                                <th>Port Line No. </th>
+                                                <th>Placement Date & Time </th>
+                                                <th>Removal Date </th>
+                                                <th>Departure Date </th>
+                                                <th>In Transit Since </th>
+                                                <th> </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+
+                                                <tr>
+                                                    <td>@d.SRNo</td>
+                                                    <td>@d.TrainNO <input name=hdTrailerName type=hidden id=trailerName value='@d.TrainNO'></td>
+                                                    <td>@d.TEUS </td>
+                                                    <td>@d.PortName </td>
+                                                    <td>@d.PortLineNo </td>
+                                                    <td>@d.PlacementDate </td>
+                                                    <td>@d.RemovalDate </td>
+
+                                                    <td>@d.DepartureDate </td>
+                                                    <td>@d.InTransitSince </td>
+                                                    <td>
+                                                        <a class="btn btn-sm btn-primary" href="#" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="View" onclick="ShowContainerData('@d.TrainNO');"><i class="fa fa-eye"></i> </a>
+                                                    </td>
+
+
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12 col-sm-12" id="divCompleted" style="display:none">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblCompleted" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th class="wd-10p sorting">Train No.</th>
+                                                <th class="wd-10p sorting ">TEUS</th>
+                                                <th class="wd-10p sorting ">Port</th>
+                                                <th>Port Line No. </th>
+                                                <th>Placement Date & Time </th>
+                                                <th>Removal Date </th>
+                                                <th>Departure Date </th>
+                                                <th>Arrival Time </th>
+                                                <th> </th>
+
+                                            </tr>
+                                        </thead>
+                                       
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-area overflow-hidden" id="ViewContainers" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Container details for Train No:   <label id="TrainNo"> </label> </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="ViewContainerdetails">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function ShowPending() {
+
+        $("#import").removeClass('btn btn-primary');
+        $("#import").addClass('btn btn-primary active');
+        $("#export").removeClass('btn btn-primary active');
+        $("#export").addClass('btn btn-primary');
+
+        $("#divPending").show();
+        $("#divCompleted").hide();
+
+        var table = $('#example1').DataTable();
+
+        $('#lblCount').text(table.rows().count());
+    }
+
+    function ShowCompleted() {
+
+        $("#export").removeClass('btn btn-primary');
+        $("#export").addClass('btn btn-primary active');
+        $("#import").removeClass('btn btn-primary active');
+        $("#import").addClass('btn btn-primary');
+
+
+        $.ajax({
+            url: "/Train/AjaxTrainCompletedList",
+            //data: '{vesselid: ' + JSON.stringify(vesselid) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $("#divPending").hide();
+                $("#divCompleted").show();
+                
+                $('#tblCompleted').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "order": [[8, "desc"]],
+                    "aaData": data,
+                    "columns": [
+                        { "data": "SRNo" },
+                        { "data": "TrainNO" },
+                        { "data": "TEUS" },
+                        { "data": "PortName" },
+                        { "data": "PortLineNo" },
+                        { "data": "PlacementDate" },
+                        { "data": "RemovalDate" },
+                        { "data": "DepartureDate" },
+                        { "data": "TrainArrivedDate" },
+                        {
+                            "data": "TrainNO",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = '<a class=\"btn btn-sm btn-primary\" href=\"#\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-original-title=\"View\" onclick=\"ShowContainerData(\''+ row.TrainNO + '\');\"><i class=\"fa fa-eye\"></i> </a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        }
+                       
+
+                    ]
+                })
+
+                var table = $('#tblCompleted').DataTable();
+
+                $('#lblCount').text(table.rows().count());
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+
+    function ShowContainerData(TrainNo) {
+        // alert(TrainNo);
+
+        var data1 = { 'TrainNo': TrainNo };
+        var data = JSON.stringify(data1);
+
+
+
+
+        $.ajax({
+            url: "/Train/TrainwiseContainerDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $('#TrainNo').text(TrainNo);
+
+
+                $('#ViewContainerdetails').html(response);
+
+                $('#ViewTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    paging: false
+
+                })
+
+                //$('#lblstate').text("Second Level");
+                //$('#HeaderLabel').hide();
+
+                $('#Taindetails').hide();
+                $('#ViewContainers').show();
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+
+    function getBack() {
+
+
+        $('#Taindetails').show();
+        $('#ViewContainers').hide();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            //"order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [4, 5, 6, 7,8,9]
+                }
+
+            ]
+
+
+        })
+        $('#tblCompleted').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "order": [[8, "desc"]],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [4, 5, 6, 7,9]
+                }
+
+            ]
+
+
+        })
+    });
+</script>
+<script>
+    function getcount() {
+        // alert("hi")
+        var checkboxarray = [];
+
+
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+        var count = checkboxarray.length;
+        $("#selected_count").text(count);
+    }</script>
+<script>
+    $(".btnUpdateDeparture").click(function () {
+        var TrainList = new Array();
+
+        var checkboxarray = [];
+
+
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+        if (checkboxarray == "") {
+            alert("Please check at list one Train number for Departure date modify!")
+            return false;
+        }
+
+        var TrainList = [];
+        var table = document.getElementById("example1");
+        var row;
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+                var x = row.cells[0].childNodes[1].value;
+                var y = row.cells[1].childNodes[1].value;
+
+                var a = row.cells[4].childNodes[0].value;
+                var b = row.cells[5].childNodes[0].value;
+                var c = row.cells[6].childNodes[0].value;
+                var z = row.cells[7].childNodes[0].value;
+
+                if (x == checkboxarray[k]) {
+
+                    TrainList.push({ 'TrainNO': y, 'DepartureDate': z ,'RemovalDate': c,'PortLineNo':a,'PlacementDate':b})
+                    //  tablearray.push({ 'CountryID': Countryid, 'PortID': x })
+                }
+            }
+        }
+
+     //   alert(JSON.stringify(TrainList));
+
+        $.ajax({
+            type: 'POST',
+            url: '/Train/TrainModifyDeparture',
+            data: '{ TrainList: ' + JSON.stringify(TrainList) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                alert(data);
+                //  document.location = '@Url.Action("BLSummaryForPODETA", "BL")';
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        this.checked = false
+                    }
+                    $("#selected_count").text(0);
+                });
+            }
+        })
+
+    });
+</script>
+
+

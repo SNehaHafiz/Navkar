@@ -1,0 +1,318 @@
+﻿
+@{
+    ViewBag.Title = "WeighmentModify";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify Weightment Entry</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Work Year</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <select class="form-control" id="ddlyear">
+                                            <option value="0">--Select--</option>
+                                            <option value="2019-20">2019-20</option>
+                                            <option value="2020-21">2020-21</option>
+                                            <option value="2021-22">2021-22</option>
+                                            <option value="2022-23">2022-23</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Slip No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtslipno", null, new { @class = "form-control ", @id = "txtslipno", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch(); "><i class="fa fa-check"></i></button>
+                                        @*<a onclick="Fetch();  Fetch2();" href="#">fetch</a>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtvehicletype", null, new { @class = "form-control ", @id = "txtvehicletype", Placeholder = "", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcontainerno", null, new { @class = "form-control ", @id = "txtcontainerno", Placeholder = "Container No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtvehicleno", null, new { @class = "form-control ", @id = "txtvehicleno", Placeholder = "Vehicle No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Weightment Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtwtdate", null, new { @class = "form-control form_datetime1 ", @id = "txtwtdate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Slip Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtslipdt", null, new { @class = "form-control form_datetime1 ", @id = "txtslipdt", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Size</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtsize", null, new { @class = "form-control ", @id = "txtsize", autocomplete = "off", Placeholder = "" })
+                                        <input type="hidden" id="txtid" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Tare Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txttarewt", null, new { @class = "form-control ", @id = "txttarewt", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Gross Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtgrosswt", null, new { @class = "form-control ", @id = "txtgrosswt", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle Tare Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtvehicletarewt", null, new { @class = "form-control ", @id = "txtvehicletarewt", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Net Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtnetweight", null, new { @class = "form-control ", @id = "txtnetweight", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Get Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtgetweight", null, new { @class = "form-control ", @id = "txtgetweight", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success float-right" onclick="Update()" title="Update"><b>Update</b></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-dark float-right" onclick="Clear()" title="Clear"><b>Clear</b></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<script>
+
+    function Fetch() {
+
+
+        var Slipno = $("#txtslipno").val().trim();
+        var WorkYear = $("#ddlyear").val().trim();
+        var data1 = { "Slipno": Slipno, 'WorkYear': WorkYear };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetWeightMent',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#txtvehicletype').val(data[0].VehicleType);
+                $('#txtcontainerno').val(data[0].ContainerNo);
+                $('#txtvehicleno').val(data[0].VehicleNo);
+                $('#txtwtdate').val(data[0].WeighDate1);
+                $('#txtslipdt').val(data[0].AddedOn);
+                $('#txtsize').val(data[0].Size);
+                $('#txttarewt').val(data[0].TareWeight);
+                $('#txtgrosswt').val(data[0].GrossWeight);
+                $('#txtvehicletarewt').val(data[0].VehicleTareWT);
+                $('#txtnetweight').val(data[0].NetWeight);
+                $('#txtgetweight').val(data[0].GetWeigth);
+                $('#txtid').val(data[0].ID);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function Update() {
+
+        var Date = $("#txtwtdate").val().trim();
+        var SlipDate = $("#txtslipdt").val().trim();
+        var TareWt = $("#txttarewt").val().trim();
+        var GrossWt = $("#txtgrosswt").val().trim();
+        var NetWt = $("#txtnetweight").val().trim();
+        var VtareWt = $("#txtvehicletarewt").val().trim();
+        var GetWt = $("#txtgetweight").val().trim();
+        var Slipno = $("#txtslipno").val().trim();
+        var WorkYear = $("#ddlyear").val().trim();
+        var ID = $("#txtid").val().trim();
+        var Conatainerno = $("#txtcontainerno").val().trim();
+
+        //
+        var data1 = {
+            "Date": Date, "SlipDate": SlipDate, "Tarewt": TareWt, "GrossWt": GrossWt,
+            "NetWt": NetWt, "VtareWt": VtareWt, "GetWt": GetWt, "Slipno": Slipno, "WorkYear": WorkYear, "ID": ID, 'Conatainerno': Conatainerno
+        };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/UpdateWeightment',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert('Record Updated successfully');
+                document.location = '@Url.Action("WeighmentModify", "ModifyModule")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+

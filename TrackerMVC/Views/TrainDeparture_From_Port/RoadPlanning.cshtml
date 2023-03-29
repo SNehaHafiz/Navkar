@@ -1,0 +1,715 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.ContainerDetails>
+@{
+    ViewBag.Title = "RoadPlanning";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+<link href="~/css/DateTimePickerBL.css" rel="stylesheet" />
+<script src="~/js/DateTimePickerForBL.js"></script>
+
+
+
+<div class=" content-area overflow-hidden" id="AddItems">
+    <div class="page-header">
+        <h4 class="page-title">
+            Road Planning
+        </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                   @* <button type="button" class="btn btn-icon btn-teal" onclick="window.location = '@Url.Action("TrainDeparture", "Train")' " name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>*@
+                    <button type="button" class="btn btn-icon btn-teal" onclick="window.location = '@Url.Action("RoadPlanningSummary", "TrainDeparture_From_Port")' " name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No(Last 4 digits)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "Trailerno", name = "Trailerno", autocomplete = "off", placeholder = "Trailer No", @maxlength = 4 })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12" id="divtrailernodrop">
+                            <label class="form-label">Trailer No </label>
+
+                            <select id="ddlTrailerNo" class="form-control">
+                                <option value="">--Select--</option>
+                            </select>
+
+                        </div>
+                        <div class="col-lg-3 col-sm-12" style="display:none" id="divTrailerno">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Trailer No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtTrailerNoFull", null, new { @class = "form-control", @id = "TrailerNoFull", name = "TrailerNoFull", autocomplete = "off", placeholder = "Trailer No", @maxlength = 100 })
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                            
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Port Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlPortDropdown", (IEnumerable<SelectListItem>)ViewBag.portList, "--Select-- ", new { @class = "form-control", @id = "ddlPortDropdown", name = "ddlPortDropdown", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary btn-primary " type="button" id="Add" onclick="ShowItemList()" name="Add">Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button type="button" class="btn btn-instagram pull-right">Selected TEUS: <span id="selected_count" value="0"></span> </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    <div class="btn-list text-center">
+                        <div class="row">
+                            <div class=" btn-list col-12">
+                                <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <div id="showItems">
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th style="width:1px"></th>
+                                                <th style="width:5px">JO No.</th>
+                                                <th style="width:7px">Container No.</th>
+                                                <th style="width:3px">Size</th>
+                                                <th style="width:3px">Discharge Date</th>
+                                                @*<th>Wagon No</th>*@
+                                                <th>Remarks</th>
+
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="btn-list text-center">
+                            <div class="row">
+                                <div class=" btn-list col-12">
+                                    <button class="btn btn-primary btn-success pull-right" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Show the table after click of save button  -->
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+    <!-- section-wrapper -->
+</div>
+
+
+
+
+
+<script type="text/javascript">
+
+    function ShowItemList() {
+  //  alert("hi")
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+
+        var Portid = $("#ddlPortDropdown option:selected").val();
+     //   alert(Portid);
+       // var Trainid = $("#ddlTrainDropdown option:selected").val();
+
+     //   var data1 = { 'Portid': Portid, 'Trainid': Trainid };
+        var data1 = { 'Portid': Portid};
+
+        var data = JSON.stringify(data1);
+    //    alert(data);
+
+        $.ajax({
+            url: "/TrainDeparture_From_Port/AjaxPortwiseRoadContainerList",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var ItemList = JSON.stringify(data.ContainerList);
+              
+                $('#ContainerList').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "aaSorting": [],
+                    "order": [],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [0]
+                        }
+
+                    ],
+
+                    "aaData": data.ContainerList,
+                    "columns": [
+                        {
+
+                            "data": "ContainerNO",
+                            "render": function (data, type, row, meta) {
+
+
+                                //if (row.selected === 'checked') {
+
+                                //    alert(Number(row.TEUS));
+                                //    TotTUES += Number(row.TEUS);
+                                //}
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  onclick=\" CalculateTUES(' + row.TEUS + ')  \"         ' + row.selected +' value="' + data + '">';
+                                return data;
+
+                            }
+                        },
+
+                        {
+                            "data": "JONO",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"JONO[]\" class=\" form-control JONO\" id=\"JONO\"  value="' + data + '">';
+                                return data + input;
+                            }
+                        },
+
+
+
+                        { "data": "ContainerNO" },
+
+                        {
+                            "data": "Size",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"hidden\" name=\"Size[]\" class=\" form-control Size\" id=\"Size\"  value="' + data + '">';
+                                input1 = '<input type=\"hidden\" name=\"TEUS[]\" class=\" form-control TEUS\" id=\"TEUS\"  value="' + row.TEUS + '">';
+                                return data + input + input1;
+                            }
+                        },
+                        { "data": "DischargeDate" },
+
+                        //{
+                        //    "data": "WagonNo",
+                        //    "render": function (data, type, row, meta) {
+
+                        //        input = '<input type=\"text\" name=\"WagonNo[]\" class=\" form-control WagonNo\" id=\"WagonNo\"  value="' + data + '">';
+                        //        return  input;
+                        //    }
+                        //},
+                        {
+                            "data": "Remarks",
+                            "render": function (data, type, row, meta) {
+
+                                input = '<input type=\"text\" name=\"Remarks[]\" class=\" form-control Remarks\" id=\"Remarks\"  value="' + data + '">';
+                                return input;
+                            }
+                        }
+
+                    ]
+
+                })
+
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+
+                var tablearray = [];
+                var table = document.getElementById("ContainerList");
+                var row;
+
+                var TotTEUS = 0;
+                for (var i = 1; i < table.rows.length; i++) {
+
+                    row = table.rows[i];
+
+                    for (var k = 0; k < checkboxarray.length; k++) {
+                        var containerno = row.cells[0].childNodes[0].value;
+
+
+                        if (containerno == checkboxarray[k]) {
+
+
+                            var size = row.cells[3].childNodes[2].value;
+
+                            TotTEUS = Number(TotTEUS) + Number(size);
+
+                        }
+                    }
+                }
+
+                $("#selected_count").text(TotTEUS);
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+    function CalculateTUES(Size) {
+
+        //var count = $("#selected_count").text();
+
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("ContainerList");
+        var row;
+
+        var TotTEUS = 0;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+                var containerno = row.cells[0].childNodes[0].value;
+
+
+                if (containerno == checkboxarray[k]) {
+
+
+                    var size = row.cells[3].childNodes[2].value;
+
+                    TotTEUS = Number(TotTEUS) + Number(size);
+
+                }
+            }
+        }
+
+        $("#selected_count").text(TotTEUS);
+    
+
+
+
+        //var revisedCount = +count + +Size;
+        //$("#selected_count").text(revisedCount);
+
+    }
+
+    function checkItem() {
+
+        //alert("In checkitem");
+
+        var portid = $("#ddlPortDropdown option:selected").val();
+        var categoryid = $("#ddlItemsCategory option:selected").val();
+
+        var datac1 = { 'port': portid,'Category': categoryid };
+        var datac = JSON.stringify(datac1);
+        var status = "";
+
+        //alert(datac);
+
+        $.ajax({
+            url: "/Vendor/CheckVendorItems",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+
+                return (response);
+            }
+
+        });
+    }
+
+
+
+    function Save() {
+        var res = validateForSave();
+      //  alert(res)
+        if (res == false) {
+            return false;
+        }
+
+        var itemcount = checkItemcount();
+        if (itemcount) {
+
+            var portid = $("#ddlPortDropdown option:selected").val();
+          //  var Trainid = $("#ddlTrainDropdown option:selected").val();
+            var TrailerNo = $("#ddlTrailerNo option:selected").text();
+            if (TrailerNo == "--Select--") {
+                var TrailerNo = $("#TrailerNoFull").val();
+
+            }
+
+
+            var checkboxarray = [];
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+
+                    checkboxarray.push($(this).val());
+                }
+            });
+            //alert(JSON.stringify(checkboxarray));
+
+
+            var tablearray = [];
+            var table = document.getElementById("ContainerList");
+            var row;
+
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+
+                for (var k = 0; k < checkboxarray.length; k++) {
+                    var containerno       = row.cells[0].childNodes[0].value;
+
+
+                    if (containerno == checkboxarray[k]) {
+
+                        var jono = row.cells[1].childNodes[1].value;
+                        var size = row.cells[3].childNodes[1].value;
+                        //var wagonno = row.cells[5].childNodes[0].value;
+                        var remark = row.cells[5].childNodes[0].value;
+
+                        //if (wagonno== "") {
+                        //    alert("Wagon number cannot be left blank for Container No.: " + containerno + "")
+                        //    return false;
+                        //}
+
+                        tablearray.push({ 'PortID': portid, 'TrailerNo': TrailerNo, 'JONO': jono, 'ContainerNo': containerno, 'Size': size, 'Remarks': remark })
+                    }
+                }
+            }
+          //  alert(JSON.stringify(tablearray));
+
+            if ($("#selected_count").text() > 2) {
+                alert("TEUS cannot be greater than 2")
+                return false;
+            }
+
+           
+
+            //alert(tablearray.length);
+
+            if (tablearray.length == 0) {
+                alert("Please select atleast one container to add trailer no.!");
+
+
+            }
+            else {
+
+                var data1 = { 'Containerdata': tablearray, 'PortID': portid, 'TrailerNo': TrailerNo };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/TrainDeparture_From_Port/SaveRoadContainerList",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                   // alert("Record saved successfully!");
+                    var str = response;
+                    
+                    var str1 = JSON.stringify(response.validationMessage);
+                    var a = JSON.stringify(response.containerList);
+                  //  alert(str1);
+                   // alert(a);
+                    if (str1 != 0) {
+                        var message = "Record saved successfully"
+                        alert(message);
+                        document.location = '@Url.Action("RoadPlanning", "TrainDeparture_From_Port")';
+                    }
+                    else {
+
+                        var message = "Following container(s) has been already planned. Please re-check. \n" + response.containerList
+                        var array = message.split(',').join("\n");
+                        alert(array);
+                        // alert("Following container no \n" + data.ContainerData.JOValidation.containerList + " \n is already in CFS or still on another ICD!")
+                    
+                    }
+                    
+                   
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+          }
+        }
+        else {
+            alert("Please select atleast one container to add trailer no.!");
+        }
+
+    }
+
+    function validateForSave() {
+        //  alert("hi")
+        var blResult = Boolean;
+        blResult = true;
+        var TrailerNo = document.getElementById('ddlTrailerNo').value;
+        var TrailerFullNo = document.getElementById('TrailerNoFull').value;
+
+       
+        $("#ddlTrailerNo").removeClass("form-control is-invalid state-invalid");
+        $("#ddlTrailerNo").addClass("form-control");
+
+        $("#TrailerNoFull").removeClass("form-control is-invalid state-invalid");
+        $("#TrailerNoFull").addClass("form-control");
+
+        var el = document.getElementById("divtrailernodrop");
+        var style = window.getComputedStyle(el);
+
+      //   alert('e1' + style.display);
+        if (style.display != 'none') {
+
+            if (TrailerNo == "") {
+
+
+                $("#ddlTrailerNo").removeClass("form-control is-valid state-valid");
+                $("#ddlTrailerNo").addClass("form-control is-invalid state-invalid");
+               // alert('Please fill the required fields!');
+                blResult = blResult && false;
+                
+            }
+
+        }
+
+        var e2 = document.getElementById("divTrailerno");
+
+        var style1 = window.getComputedStyle(e2);
+        // alert('e2' + style1.display);
+        if (style1.display != 'none') {
+
+
+            if (TrailerFullNo == "") {
+
+
+                $("#TrailerNoFull").removeClass("form-control is-valid state-valid");
+                $("#TrailerNoFull").addClass("form-control is-invalid state-invalid");
+               // alert('Please fill the required fields!');
+                blResult = blResult && false;
+
+                
+            }
+        }
+
+        if (blResult == false) {
+           alert('Please fill the required fields!');
+        }
+        return blResult;
+    }
+
+    function checkItemcount() {
+
+        var table = $('#ContainerList').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+    //function FillVendorItems() {
+
+
+    //    document.getElementById('ddlPortDropdown').style.borderColor = "Gainsboro";
+    //    document.getElementById('ddlItemsCategory').style.borderColor = "Gainsboro";
+
+    //    $('#showmaterial').hide();
+    //    $('#AddItems').show();
+
+    //}
+    //function getBack() {
+    //    $('#showmaterial').show();
+    //    $('#AddItems').hide();
+    //}
+</script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#ContainerList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+
+
+
+        })
+    });
+
+   
+</script>
+
+<script type="text/javascript">
+    function validate() {
+
+        var port = document.getElementById('ddlPortDropdown').value;
+       // var Train = document.getElementById('ddlTrainDropdown').value;
+
+        var blResult = Boolean;
+        blResult = true;
+        document.getElementById('ddlPortDropdown').style.borderColor = "Gainsboro";
+      //  document.getElementById('ddlTrainDropdown').style.borderColor = "Gainsboro";
+
+        if (port == "") {
+            document.getElementById('ddlPortDropdown').style.borderColor = "red"
+            blResult = blResult && false;
+        }
+
+
+        //if (Train == "") {
+        //    document.getElementById('ddlTrainDropdown').style.borderColor = "red"
+        //    blResult = blResult && false;
+        //}
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+
+</script>
+
+<script>
+    $('#Trailerno').change(function (e) {
+        var trailerno = $("#Trailerno").val();
+        $.ajax({
+            url: "/ManualPortOut/AjaxGetTrailerNo",
+            data: '{trailerno: ' + JSON.stringify(trailerno) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                var select = $("#ddlTrailerNo");
+
+                if (data == "") {
+
+                    $('#divTrailerno').show();
+                    $('#divtrailernodrop').hide();
+                } else {
+                    $('#divTrailerno').hide();
+                    $('#divtrailernodrop').show();
+                }
+                select.empty();
+                select.append($('<option/>', {
+                    value: "",
+                    text: "--Select--"
+                }));
+
+                $.each(data, function (data, value) {
+
+                    select.append($("<option></option>").val(value.trailerid).html(value.trailername));
+                })
+
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    });
+
+
+    
+
+        //function onservice() {
+        //    alert("Under revision..!")
+        //}
+
+
+</script>
+
+
+
+

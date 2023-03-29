@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewBag.Title = "HSNCodeWiseSummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/js/GetTableArray.js"></script>
+<div class=" content-area overflow-hidden">
+
+    <div class="page-header">
+        <h4 class="page-title">HSN Wise Summary</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-12 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+                                            </div>
+                                        </div>
+                                    <div class="col-md-12 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+                                        </div>
+                                        </div>
+                                        <div class="col-md-12 col-lg-8">
+                                            <div class="form-group label-floating" style="margin-top: 28px;">
+                                                <button class="btn btn-primary " type="button" id="ALL" onclick="LoadData('ALL');">ALL</button>
+                                                <button class="btn btn-primary" type="button" id="Import" onclick="LoadData('Import');">Import</button>
+                                                <button class="btn btn-primary" type="button" id="Export" onclick="LoadData('Export');">Export</button>
+                                                <button class="btn btn-primary" type="button" id="Bond" onclick="LoadData('Bond');">Bond</button>
+                                                <button class="btn btn-primary" type="button" id="Other" onclick="LoadData('Other');">Other</button>
+                                                <button class="btn btn-primary" type="button" id="Domestic" onclick="LoadData('Domestic');">Domestic</button>
+                                                <button class="btn btn-primary" type="button" id="MNR" onclick="LoadData('MNR');">MNR</button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    @Html.ActionLink("Export To Excel", "ExportToExcelHSNWiseSummary", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<div class="btn-list text-center">
+            <div class="row">
+                <div class=" btn-list col-12">
+                    <button class="btn btn-primary btn-success" type="button" id="Save" onclick="Save();" name="Save">Save</button>
+                </div>
+            </div>
+        </div>*@
+
+
+
+                    <!-- table-wrapper -->
+
+
+
+
+
+
+                </div>
+                <!-- section-wrapper -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function LoadData(category) {
+
+        $('#txtCategory').val(category);
+
+        $("#flowcheckall").prop('checked', false);
+
+        var fromdate = $("#FromDate").val();
+        var todate = $("#ToDate").val();
+
+        if (fromdate == "") {
+            alert("Please select date");
+        }
+        else {
+            if (category == 'ALL') {
+
+                $("#ALL").removeClass("btn btn-primary");
+                $("#ALL").addClass("btn btn-success");
+
+                $("#Import,#Bond,#Other,#Domestic,#MNR,#Export").removeClass("btn btn-success");
+                $("#Import,#Bond,#Other,#Domestic,#MNR,#Export").addClass("btn btn-primary");
+
+            }
+
+            if (category == 'Import') {
+
+                $("#Import").removeClass("btn btn-primary");
+                $("#Import").addClass("btn btn-success");
+
+                $("#ALL,#Bond,#Other,#Domestic,#MNR,#Export").removeClass("btn btn-success");
+                $("#ALL,#Bond,#Other,#Domestic,#MNR,#Export").addClass("btn btn-primary");
+
+            }
+
+            if (category == 'Export') {
+
+                $("#Export").removeClass("btn btn-primary");
+                $("#Export").addClass("btn btn-success");
+
+                $("#ALL,#Bond,#Other,#Domestic,#MNR,#Import").removeClass("btn btn-success");
+                $("#ALL,#Bond,#Other,#Domestic,#MNR,#Import").addClass("btn btn-primary");
+
+            }
+
+            if (category == 'Bond') {
+
+                $("#Bond").removeClass("btn btn-primary");
+                $("#Bond").addClass("btn btn-success");
+
+                $("#ALL,#Import,#Other,#Domestic,#MNR,#Export").removeClass("btn btn-success");
+                $("#ALL,#Import,#Other,#Domestic,#MNR,#Export").addClass("btn btn-primary");
+
+            }
+
+            if (category == 'Other') {
+
+                $("#Other").removeClass("btn btn-primary");
+                $("#Other").addClass("btn btn-success");
+
+                $("#ALL,#Import,#Bond,#Domestic,#MNR,#Export").removeClass("btn btn-success");
+                $("#ALL,#Import,#Bond,#Domestic,#MNR,#Export").addClass("btn btn-primary");
+
+            }
+
+            if (category == 'Domestic') {
+
+                $("#Domestic").removeClass("btn btn-primary");
+                $("#Domestic").addClass("btn btn-success");
+
+                $("#ALL,#Import,#Bond,#Other,#MNR,#Export").removeClass("btn btn-success");
+                $("#ALL,#Import,#Bond,#Other,#MNR,#Export").addClass("btn btn-primary");
+
+            }
+
+            if (category == 'MNR') {
+
+                $("#MNR").removeClass("btn btn-primary");
+                $("#MNR").addClass("btn btn-success");
+
+                $("#ALL,#Import,#Bond,#Other,#Domestic,#Export").removeClass("btn btn-success");
+                $("#ALL,#Import,#Bond,#Other,#Domestic,#Export").addClass("btn btn-primary");
+
+            }
+
+
+
+            var data1 = { 'fromdate': fromdate, 'todate': todate, 'Category': category };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+
+                url: '/Report/GetHSNCodeWiseSummary',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // alert(data);
+                    debugger;
+                    $("#reportTable").empty();
+                    RepTableDataJson($("#reportTable"), data, "CreditNoteSummary", "CreditNoteSummary");
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            });
+
+
+        }
+
+    }
+</script>

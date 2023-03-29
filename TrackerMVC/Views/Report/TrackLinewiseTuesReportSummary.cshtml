@@ -1,0 +1,153 @@
+﻿
+@{
+    ViewBag.Title = "LineWiseReportSummary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Line Wise Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-2">
+                                        @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-30).ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                    <div class="col-2">
+                                        @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                    <div class="col-2">
+                                        @Html.DropDownList("ddlCFSLocation", new List<SelectListItem>
+                                    { new SelectListItem { Text = "NCL-III", Value = "NCL-3"},
+                                    new SelectListItem { Text = "NCL-II", Value = "NCL-2"},
+                                    new SelectListItem { Text = "NCL-I", Value = "NCL-1"},
+                                      }, new { @class = "form-control", autocomplete = "off", @id = "ddlCFSLocation" })
+                                    </div>
+
+                                    <div class="col-6">
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('IMPORT')" type="button">IMPORT</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EXPORT')" type="button">EXPORT</button>
+                                        <button class="btn btn-primary" id="btnSearch" onclick="Show('EMPTY')" type="button">EMPTY</button>
+                                    </div>
+                                </div>
+                                </div>
+                        </div>
+                      
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12" id="divSizeWise">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>LINE.</th>
+                                                <th>size 20</th>
+                                                <th>size 40.</th>
+                                                <th>size 45 .</th>
+                                                <th>Total</th>
+                                                <th>Tues</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-12 col-lg-12" id="divTypeWise" style="display:none">
+                            <div class="row">
+                                @Html.ActionLink("Export To Excel", "TrackLineNTypeWiseTEUSReport", null, new { @class = "btn btn-primary btn-md" })
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="TypeTable" style="width:100%">
+                                   
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [5]
+            }
+            ]
+        });
+
+    });
+
+    function Show(type) {
+        debugger;
+        var FromDate = document.getElementById("FromDate").value;
+        var ToDate = document.getElementById("ToDate").value;
+        var CFSLocation = document.getElementById("ddlCFSLocation").value;
+        var data1 = { 'Activity': type, 'FromDate': FromDate, 'ToDate': ToDate, 'Yard': CFSLocation }
+        var data = JSON.stringify(data1);
+        $.ajax({
+
+            url: '/Report/GetLineWiseReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                // alert(JSON.stringify(data))
+                $('#reportTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'Line Wise Summary',
+                        "filename": 'LineWiseSummary'
+                    }],
+                    "columns": [
+
+                        { "data": "Lines" },
+                        { "data": "Size20" },
+                        { "data": "Size40" },
+                        { "data": "Size45" },
+                        { "data": "Total" },
+                        { "data": "Tues" }
+                    ],
+
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+        
+    }
+</script>

@@ -1,0 +1,962 @@
+﻿
+@{
+    ViewBag.Title = "ExportWorkOrderSSR";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divWorkOrderSSR">
+    <div class="page-header">
+        <h4 class="page-title">
+            Special Work Order (Export)
+        </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Jo Order No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtJoOrderNo", null, new { @class = "form-control ", @id = "txtJoOrderNo", autocomplete = "off", @maxlength = "11", @placeholder = "New", @readonly = "True" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Job Order Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtJoOrderDate", null, new { @class = "form-control ", @id = "txtJoOrderDate", autocomplete = "off", @placeholder = "New", @readonly = "True" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">SSR Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlSSRType", new List<SelectListItem>
+                                         { new SelectListItem { Text = "General", Value = "General"},
+                                        new SelectListItem { Text = "RePacking", Value = "RePacking"},
+                                        new SelectListItem { Text = "Stuff-Destuff", Value = "Stuff-Destuff"},
+                                        new SelectListItem { Text = "Shifting", Value = "Shifting"},
+                                        new SelectListItem { Text = "BTT", Value = "BTT"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlSSRType" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Jo Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlJoType", (IEnumerable<SelectListItem>)ViewBag.WOType, "--Select--", new { @class = "form-control", @id = "ddlJoType", name = "ddlJoType", autocomplete = "off" })
+                                        @*@Html.DropDownList("ddlJoType", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                             new SelectListItem { Text = "Carting", Value = "Carting"},
+                                             new SelectListItem { Text = "Stuffing", Value = "Stuffing"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlJoType" })*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">SB No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSBNo", null, new { @class = "form-control ", @id = "txtSBNo", autocomplete = "off", @placeholder = "SB No" })
+                                        <input id="hdnSBEntryId" type="hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success " type="button" id="btnShow" onclick="Show()" name="Add">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Cargo Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtCargoType", null, new { @class = "form-control ", @id = "txtCargoType", autocomplete = "off", @placeholder = "Cargo Type", @readonly = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <select id="ddlContainerList" class="form-control">
+                                            <option value="">--Select--</option>
+                                        </select>
+                                    </div>
+                                    <input id="hdnEntryId" type="hidden" />
+                                    <input id="hdnSize" type="hidden" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerType", null, new { @class = "form-control ", @id = "txtContainerType", autocomplete = "off", @placeholder = "Container Type", @readonly = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Stuffing Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtStuffingType", null, new { @class = "form-control ", @id = "txtStuffingType", autocomplete = "off", @readonly = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Agency Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAgencyName", null, new { @class = "form-control ", @id = "txtAgencyName", autocomplete = "off", @readonly = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">No of Pkgs</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtNoofPallets", null, new { @class = "form-control ", @id = "txtNoofPallets", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">No of Shifts</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtNoofShifts", null, new { @class = "form-control ", @id = "txtNoofShifts", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtWeight", null, new { @class = "form-control ", @id = "txtWeight", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-10 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Account Heads</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlAccountHeads",
+                                                                          (IEnumerable<SelectListItem>)ViewBag.AccountList,
+                                                                 "--Select--",
+                                                        new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Amount To Collect</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAcountToCollect", null, new { @class = "form-control", @id = "txtAcountToCollect", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Narration (If Any)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <div class="col">
+                                            @Html.TextBox("txtNarration", null, new { @class = "form-control ", @id = "txtNarration", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label">Vendor Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("txtVendorName",
+                                                                          (IEnumerable<SelectListItem>)ViewBag.VendorList,
+                                                                 "--Select--",
+                                                        new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" id="btnSave" name="login" value="Add" onclick="AddContainer();" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblContainerList" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:7px">#</th>
+                                            <th style="width:7px">Container No</th>
+                                            <th style="width:3px">Size</th>
+                                            <th style="width:1px">AccountId</th>
+                                            <th style="width:1px">Account Header</th>
+                                            <th style="width:1px">Amount</th>
+                                            <th style="width:1px">Weight</th>
+                                            <th style="width:1px">No of Pallets</th>
+                                            <th style="width:1px">No of Shifts</th>
+                                            <th style="width:1px">Narration</th>
+                                            <th style="width:1px;visibility:hidden">.</th>
+                                            <th style="width:1px;visibility:hidden">.</th>
+                                            <th style="width:1px;visibility:hidden">.</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-10 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <div class="col">
+                                            <input type="checkbox" id="chkServiceTax" /> Service Tax Applicable ?
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        Total Amount @Html.TextBox("txtTotalAmount", null, new { @class = "form-control ", @id = "txtTotalAmount", autocomplete = "off",@readonly="true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <div class="col">
+                                            <input type="button" id="btnSave" name="login" value="Save" onclick="SaveSpecialWo();" class="btn btn-primary" />
+                                            <input type="button" id="btnClear" name="login" value="Clear" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divWOrkOrderSSRSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List of SSR </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> From Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> To Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                
+                                    <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetCSVExcel()"></i></button>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#tblContainerList').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            // "bFilter": false,
+            "paging": false,
+            "order": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0]
+                }
+
+            ]
+        });
+
+        $("#ddlContainerList").change(function () {
+            ShowContainerDet();
+        });
+      
+
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    
+        function GetCSVExcel() {
+
+          var FromDate = $("#FromDate").val();
+          var ToDate = $("#ToDate").val()
+
+           $("#tracker-loader").fadeIn("slow");
+            window.location = '@Url.Action("ExportToExcelExportSSR", "WorkOrder")?FromDate=' + FromDate + 'ToDate =' + ToDate;
+
+           $("#tracker-loader").fadeOut("slow");
+
+    }
+    //ddlContainerList
+    function ShowContainerDet() {
+
+        var ddlContainerList = $("#ddlContainerList").val();
+        var ddlSSRType = $("#ddlSSRType").val();
+
+        try {
+            var data1 = { 'ContainerNo': ddlContainerList, 'SSRType': ddlSSRType };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/WorkOrder/getContainerDet",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    if (response.workOrder != null) {
+                        $("#txtContainerType").val(response.workOrder.CargoType);
+                        $("#hdnSize").val(response.workOrder.Size);
+                        $("#hdnEntryId").val(response.workOrder.SBEntryID);
+                        $("#txtNoofPallets").focus();
+                    }
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+
+    function Show() {
+
+        try {
+            var txtSBNo = $("#txtSBNo").val();
+            var ddlSSRType = $("#ddlSSRType").val();
+            var ddlJoType = $("#ddlJoType").val();
+            
+            if (ddlSSRType == "") {
+                alert("Please select SSR Type");
+                return;
+            }
+
+            if (ddlJoType == "") {
+                alert("Please select Jo Type");
+                return;
+            }
+
+            if (txtSBNo == "") {
+                alert("SB No Cannot be Blank.");
+                return;
+            }
+
+
+            var data1 = { 'SBNo': txtSBNo, 'SSRType': ddlSSRType };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/WorkOrder/getInvoiceWorkOrderDet",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    if (response.workOrder != null) {
+                        $("#txtCargoType").val(response.workOrder.CargoType);
+                        $("#txtAgencyName").val(response.workOrder.AgencyName);
+                        $("#txtWeight").val(response.workOrder.Weight);
+                        $("#txtStuffingType").val(response.workOrder.StuffLocation);
+                        $("#hdnSBEntryId").val(response.workOrder.SBEntryID);
+                    }
+
+                    if (response.ContainerData.length > 0) {
+                        var select = $("#ddlContainerList");
+                        select.empty();
+                        select.append($('<option/>', {
+                            value: "",
+                            text: "--Select--"
+                        }));
+
+                        $.each(response.ContainerData, function (data, value) {
+                            debugger;
+                            select.append($("<option></option>").val(value.ContainerNo).html(value.ContainerNo));
+                        })
+                    }
+                    
+
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+        catch (ex) {
+
+        }
+
+
+    }
+
+    function AddContainer() {
+
+        if (ValidateAddCont() == false) {
+            return;
+        }
+
+        var ddlContainerList = $("#ddlContainerList").val();
+        var txtSBNo = $("#txtSBNo").val();
+        var ddlSSRType = $("#txtSBNo").val();
+        var ddlJoType = $("#ddlJoType").val();
+        var txtNoofPallets = $("#txtNoofPallets").val();
+        var txtNoofShifts = $("#txtNoofShifts").val();
+        var txtAcountToCollect = 0;
+        var hdnSize = $("#hdnSize").val();
+        var hdnEntryId = $("#hdnEntryId").val();
+        var hdnSBEntryId = $("#hdnSBEntryId").val();
+        var ddlAccountHeadsName = $("#ddlAccountHeads option:selected").text();
+        var ddlAccountHeads = $("#ddlAccountHeads").val();
+        var txtNarration = $("#txtNarration").val();
+        var txtVendorName = $("#txtVendorName").val();
+        var txtWeight = $("#txtWeight").val();
+        var txtNoofPallets = $("#txtNoofPallets").val();
+        var txtNoofShifts = $("#txtNoofShifts").val();
+
+
+        var TotalAmount = 0;
+        var txtTotalAmount = $("#txtTotalAmount").val();
+
+        var ContainerNo = ddlContainerList + "<input Name=ContainerNo type=hidden id=ContainerNo   value='" + ddlContainerList + "'>";
+        var Size = hdnSize + "<input Name=Size type=hidden id=Size   value=" + hdnSize + ">";
+        var AccountID = ddlAccountHeads + "<input Name=AccountID type=hidden id=AccountID   value=" + ddlAccountHeads + ">";
+        var AccountName = ddlAccountHeadsName + "<input Name=AccountName type=hidden id=AccountName   value='" + ddlAccountHeadsName + "'>";
+        var AcountToCollect = txtAcountToCollect + "<input Name=AcountToCollect type=hidden id=AcountToCollect   value='" + txtAcountToCollect + "'>";
+        var Narration = txtNarration + "<input Name=Narration type=hidden id=Narration   value='" + txtNarration + "'>";
+        var SBEntryId = hdnSBEntryId + "<input Name=SBEntryId type=hidden id=SBEntryId   value=" + hdnSBEntryId + ">";
+        var EntryId = hdnEntryId + "<input Name=EntryId type=hidden id=EntryId   value=" + hdnEntryId + ">";
+        var VendorId = txtVendorName + "<input Name=VendorId type=hidden id=VendorId   value=" + txtVendorName + ">";
+        var Weight = txtWeight + "<input Name=Weight type=hidden id=Weight   value=" + txtWeight + ">";
+        var Pallets = txtNoofPallets + "<input Name=Pallets type=hidden id=Pallets   value=" + txtNoofPallets + ">";
+        var Shifts = txtNoofShifts + "<input Name=Shifts type=hidden id=Shifts   value=" + txtNoofShifts + ">";
+
+        var t = $('#tblContainerList').DataTable();
+        t.row.add([
+            "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem()\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>",
+            ContainerNo,
+            Size,
+            AccountID,
+            AccountName,
+            AcountToCollect,
+            Weight,
+            Pallets,
+            Shifts,
+            Narration,
+            SBEntryId,
+            VendorId,
+            EntryId,
+
+        ]).draw(false);
+
+        addTotalAmount();
+        Clear_Data();
+
+    }
+
+    function addTotalAmount() {
+        var TotalAmount = 0;
+
+        //var table = $('#tblContainerList').DataTable();
+        var table = document.getElementById("tblContainerList");
+
+        if (table != null) {
+            if (table.rows.length > 1) {
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    Amount = row.cells[5].innerHTML;
+
+                    if (Amount > "0") {
+                        TotalAmount = parseInt(TotalAmount) + parseInt(Amount);
+                    }
+                }
+            }
+        }  
+
+        $("#txtTotalAmount").val(TotalAmount);
+
+        //if (table.rows().count() == 0) {
+        //    TotalAmount = 0;
+        //}
+        //else {
+
+        //}
+
+    }
+
+    function ValidateAddCont() {
+        var result = true;
+        var ddlContainerList = $("#ddlContainerList").val();
+        var txtSBNo = $("#txtSBNo").val();
+        var ddlSSRType = $("#txtSBNo").val();
+        var ddlJoType = $("#ddlJoType").val();
+        var txtNoofPallets = $("#txtNoofPallets").val();
+        var txtNoofShifts = $("#txtNoofShifts").val();
+        var txtAcountToCollect = $("#txtAcountToCollect").val();
+        var txtVendorName = $("#txtVendorName").val();
+        var ddlAccountHeads = $("#ddlAccountHeads").val();
+        
+
+        if ($("#ddlSSRType").val() == "Stuffing") {
+            if (ddlContainerList == "") {
+                alert('Please select container No.');
+                result = false;
+                return result;
+            }
+        }
+
+        if (txtSBNo == "") {
+            alert('Please Enter SB No.');
+            result = false;
+            return result;
+        }
+
+        if (ddlAccountHeads == "") {
+            alert('Please Select Account Head');
+            result = false;
+            return result;
+        }
+
+        if (ddlSSRType == "") {
+            alert('Please select SSR Type');
+            result = false;
+            return result;
+        }
+
+        if (ddlJoType == "") {
+            alert('Please select Jo Type.');
+            result = false;
+            return result;
+        }
+
+        //if (txtNoofPallets == "") {
+        //    alert('Please Enter No of Pallets.');
+        //    result = false;
+        //    return result;
+        //}
+
+        //if (txtNoofShifts == "") {
+        //    alert('Please Enter No of Shifts.');
+        //    result = false;
+        //    return result;
+        //}
+
+        //if (txtAcountToCollect == "") {
+        //    alert('Please Enter Acount To Collect.');
+        //    result = false;
+        //    return result;
+        //}
+
+        if (txtVendorName == "") {
+            alert('Please select Vendor Name');
+            result = false;
+            return result;
+        }
+
+        var table = document.getElementById("tblContainerList");
+
+        try {
+            if (table != null) {
+                if (table.rows.length > 1) {
+                    for (var i = 1; i < table.rows.length; i++) {
+                        debugger;
+                        row = table.rows[i];
+                        ContainerNo = row.cells[1].childNodes[0].data;
+
+                        if (ContainerNo != "" || ContainerNo !== null) {
+                            if (ddlContainerList == ContainerNo) {
+                                alert('Dublicate Container Not Allowed.');
+                                result = false;
+                                return result;
+                            }
+                        }
+                    }
+                }
+            }  
+        } catch (ex) {
+
+        }
+        
+
+    };
+
+    function Clear_Data() {
+        debugger;
+        var ddlContainerList = $("#ddlContainerList");
+        //var txtSBNo = $("#txtSBNo");
+        var ddlSSRType = $("#txtSBNo");
+        var ddlJoType = $("#ddlJoType");
+        var txtNoofPallets = $("#txtNoofPallets");
+        var txtNoofShifts = $("#txtNoofShifts");
+        var txtAcountToCollect = $("#txtAcountToCollect");
+        var ddlAccountHeads = $("#ddlAccountHeads");
+        var txtNarration = $("#txtNarration");
+        var txtVendorName = $("#txtVendorName").val();
+
+        ddlContainerList.val('');
+        //txtSBNo.val('');
+        //ddlSSRType.val('');
+        //ddlJoType.val('');
+        txtNoofPallets.val('');
+        txtNoofShifts.val('');
+        txtAcountToCollect.val('');
+        ddlAccountHeads.val('');
+        txtNarration.val('');
+        txtVendorName.val('');
+    }
+
+    function SaveSpecialWo() {
+        debugger;
+        var itemcount = checkItemcount();
+
+        if (itemcount) {
+            var SelectedData = new Array();
+            $('#tblContainerList tbody tr').each(function (i, row) {
+                var data = {};
+
+                $(this).find('input').each(function () {
+
+                    data[this.id] = $(this).val();
+                })
+                SelectedData.push(data);
+
+            });
+
+            //chkServiceTax
+
+            var data1 = { 'WOdata': SelectedData, 'SSRType': $("#ddlSSRType").val(), 'JoType': $("#ddlJoType").val(), 'IsServiceTax': 0 };
+
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/WorkOrder/SpecialWorkOrderSave",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Record saved successfully");
+                        //Clear_Data();
+                        window.location = "/WorkOrder/ExportWorkOrderSSR";
+                    }
+                    else {
+                        alert("Record not saved successfully. Try Again!");
+                        $("#btnsave").removeAttr('disabled');
+                    }
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+        else {
+            alert("Please Add Work Order details");
+        }
+
+    }
+
+    function checkItemcount() {
+
+        var table = $('#tblContainerList').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+    }
+
+</script>
+
+<script>
+    //function CancelItem(container, remarks, jono, surveyID)
+    //{
+    //  //  alert(surveyID);
+    //    var result = confirm("Do you want to remove Remarks for container no. " + container + " ?");
+    //    if (result) {
+           
+    //        var data1 = { 'ContainerNo': container, 'Remarks': remarks, 'jono': jono, 'surveyID': surveyID };
+    //        data = JSON.stringify(data1);
+    //        $.ajax({
+    //            url: "/UpdateSurvey/DeleteRemarks",
+    //            data: data,
+    //            type: "POST",
+    //            contentType: "application/json; charset=utf-8",
+    //            dataType: "json",
+    //            success: function (response) {
+    //                alert(response);
+    //                getContainerList();
+                   
+    //            },
+    //            error: function (errormessage) {
+    //                alert("error");
+    //                alert(errormessage.responseText);
+    //            }
+    //        });
+    //    }
+    //}
+
+    function ShowSSRSummary() {
+
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+
+        try {
+            var data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/WorkOrder/getExpWoSSr",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    RepTableDataJson($("#tblWorkOrderOpenList"), response, "SSrWorkOrderSummary","SSrWorkOrderSummaryList")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+
+    function OpenWOSummary() {
+        $("#divWorkOrderSSR").hide();
+        $("#divWOrkOrderSSRSummary").show();
+    }
+
+    function BackToWorkOrder() {
+        $("#divWorkOrderSSR").show();
+        $("#divWOrkOrderSSRSummary").hide();
+    }
+
+    function CancelSSR(id) {
+        debugger;
+        var Currentindex = id.closest('tr').rowIndex;
+        var table = document.getElementById("tblWorkOrderOpenList");
+        var tablearray = [];
+
+        for (var i = 1; i < table.rows.length; i++) {
+            //debugger;
+            if (i == Currentindex) {
+                row = table.rows[i];
+                SSRNo = row.cells[1].innerHTML;
+            }
+        }
+
+        var data1 = { 'SSRNo': SSRNo };
+        debugger;
+        data = JSON.stringify(data1);
+
+        var confirm =window.confirm("Are you sure want to cancel this SSR ?");
+
+        if (confirm) {
+            // alert(data);
+            $.ajax({
+
+                url: '/WorkOrder/CancelSSR',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    debugger;
+                    alert(data);
+                    window.location = "/WorkOrder/ExportWorkOrderSSR";
+                    ShowSSRSummary();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+
+            });
+        }
+        else {
+            //alert("You Press Cancel");
+        }
+
+        
+    }
+
+    //======================BEGIN=============Print SSR======================================
+    function PrintSSR(id) {
+        debugger;
+        var data1 = { 'SSRNo': id };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/WorkOrder/SSRWorkOrderPrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                debugger;
+                var myWindow = window.open("", "MsgWindow1", 'width=' + 800 + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + 800 + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+                //myWindow.print();
+                //window.print();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    };
+//======================END=============Print SSR======================================
+    
+</script>

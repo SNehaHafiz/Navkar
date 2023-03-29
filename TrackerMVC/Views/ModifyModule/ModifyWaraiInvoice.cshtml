@@ -1,0 +1,359 @@
+﻿
+@{
+    ViewBag.Title = "ModifyWaraiInvoice";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify Warai Invoice</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Invoice No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtinvoiceno", null, new { @class = "form-control ", @id = "txtinvoiceno", Placeholder = "Invoice No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch();"><i class="fa fa-check"></i></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        
+
+                        <div class="col-lg-4 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Invoice Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtinvoicedt", null, new { @class = "form-control ", @id = "txtinvoicedt", Placeholder = "Invoice Date", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Party Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.GSTParty, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtvehicleno", null, new { @class = "form-control ", @id = "txtvehicleno", Placeholder = "Vehicle No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Qty</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtqty", null, new { @class = "form-control ", @id = "txtqty", Placeholder = "Qty", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Cargo WT(Tons)</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcargo", null, new { @class = "form-control ", @id = "txtcargo", Placeholder = "Cargo WT", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Tax</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddltax", (IEnumerable<SelectListItem>)ViewBag.TaxGroup, "--Select--", new { @class = "form-control", @id = "ddltax", name = "ddltax", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Net Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtnetamount", null, new { @class = "form-control ", @id = "txtnetamount", Placeholder = "Net Amount", @autocomplete = "off", @type = "number",@onblur="gstcalculation()" })
+                                        <input type="hidden" id="txtworkyear" />
+                                        <input type="hidden" id="txtassessno" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">CGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("value1", null, new { @class = "form-control ", @id = "value1", Placeholder = "CGST", @autocomplete = "off", @type = "number" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">SGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtsgst", null, new { @class = "form-control ", @id = "value2", Placeholder = "SGST", @autocomplete = "off", @type = "number" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">IGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtigst", null, new { @class = "form-control ", @id = "value3", Placeholder = "IGST", @autocomplete = "off", @type = "number" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Grand Total</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="number" name="sum" id="sum" class="form-control" readonly />
+                                        <input type="hidden" id="oldsum" />
+                                        <input type="hidden" id="oldnet" />
+                                        <input type="hidden" id="oldigst" />
+                                        <input type="hidden" id="oldcgst" />
+                                        <input type="hidden" id="oldsgst" />
+                                        <input type="hidden" id="oldqty" />
+                                        <input type="hidden" id="oldwt" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                    <div class="col-lg-2 col-sm-8">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+
+                                    <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+
+                   <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        $('#txtnetamount,#value1, #value2,#value3').keyup(function () {
+            var netAmt = parseFloat($('#txtnetamount').val()) || 0;
+            var value1 = parseFloat($('#value1').val()) || 0;
+            var value2 = parseFloat($('#value2').val()) || 0;
+            var value3 = parseFloat($('#value3').val()) || 0;
+            $('#sum').val(value1 + value2 + value3 + netAmt);
+        });
+    });
+    
+</script>
+
+<script>
+
+    function Fetch() {
+        debugger;
+        var InvoiceNo = document.getElementById('txtinvoiceno').value;
+        var data1 = { 'InvoiceNo': InvoiceNo };
+        var data = JSON.stringify(data1);
+
+        //AssessNo,WorkYear,VehicleNo,CargoQty,CargoWeight,PartyId,NetTotal,IGST,CGST,SGST,AssessDate 
+
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetWaraiDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#txtassessno').val(data[0].AssessNo);
+                $('#txtvehicleno').val(data[0].VehicleNo);
+                $('#txtqty').val(data[0].CargoQty);
+                $('#txtcargo').val(data[0].CargoWeight);
+                
+                $('#ddlcustomer').val(data[0].PartyID);
+                $('#txtnetamount').val(data[0].NetTotal);
+                $('#value2').val(data[0].CGST);
+                $('#value1').val(data[0].SGST);
+                $('#value3').val(data[0].IGST);
+                $('#txtworkyear').val(data[0].WorkYear);
+                $('#txtinvoicedt').val(data[0].AssessDate);
+                //old log data
+                $('#oldnet').val(data[0].NetTotal);
+                $('#oldcgst').val(data[0].CGST);
+                $('#oldsgst').val(data[0].SGST);
+                $('#oldigst').val(data[0].IGST);
+                $('#oldqty').val(data[0].CargoQty);
+                $('#oldwt').val(data[0].CargoWeight);
+  
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function Update() {
+        debugger;
+        var InvoiceNo = $("#txtinvoiceno").val().trim();
+        var AssessNo = $("#txtassessno").val().trim();
+        var VehicleNo = $("#txtvehicleno").val().trim();
+        var CargoQty = $("#txtqty").val().trim();
+        var CargoWeight = $("#txtcargo").val().trim();
+        var PartyId = $("#ddlcustomer").val().trim();
+        var NetTotal = $("#txtnetamount").val().trim();
+        var CGST = $("#value1").val().trim();
+        var SGST = $("#value2").val().trim();
+        var IGST = $("#value3").val().trim();
+        var WorkYear = $("#txtworkyear").val().trim();
+        var AssessDate = $("#txtinvoicedt").val().trim();
+        //old data
+        var oldCargoQty = $("#oldqty").val().trim();
+        var oldCargoWeight = $("#oldwt").val().trim();
+        var oldNetTotal = $("#oldnet").val().trim();
+        var oldCGST = $("#oldcgst").val().trim();
+        var oldSGST = $("#oldsgst").val().trim();
+        var oldIGST = $("#oldigst").val().trim();
+
+        /// Validations
+        if (InvoiceNo == "" || InvoiceNo == undefined) {
+            document.getElementById('txtinvoiceno').style.borderColor = "red";
+            alert("Please Fill Invoice No !")
+
+        }
+
+
+
+        // Serialisation Of Data
+        var data1 = { "InvoiceNo": InvoiceNo, "AssessNo": AssessNo, "VehicleNo": VehicleNo, "CargoQty": CargoQty, "CargoWeight": CargoWeight, "PartyId": PartyId, "NetTotal": NetTotal, "CGST": CGST, "SGST": SGST, "IGST": IGST, "WorkYear": WorkYear, "AssessDate": AssessDate, "oldCargoQty": oldCargoQty, "oldCargoWeight": oldCargoWeight, "oldNetTotal": oldNetTotal, "oldCGST": oldCGST, "oldSGST": oldSGST, "oldIGST": oldIGST };
+       var data = JSON.stringify(data1);
+        alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/UpdateWaraiInvoiceDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("ModifyWaraiInvoice", "ModifyModule")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }      
+</script>
+
+<script>
+            function cleartextboxes() {
+        //clear text box and dropdownlistitemid
+        document.location = '@Url.Action("ModifyWaraiInvoice", "ModifyModule")';
+    }
+</script>
+
+<script>
+
+            function gstcalculation() {
+        debugger;
+        var TaxID = document.getElementById('ddltax').value;
+        var PartyID = document.getElementById('ddlcustomer').value;
+        var NetAmount = document.getElementById('txtnetamount').value;
+        var data1 = { 'TaxID': TaxID, 'PartyID': PartyID, 'NetAmount': NetAmount };
+        var data = JSON.stringify(data1);
+        
+        
+
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetTaxAmount',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#value1').val(data[0].SGST);
+                $('#value2').val(data[0].CGST);
+                $('#value3').val(data[0].IGST);
+                
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

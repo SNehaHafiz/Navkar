@@ -1,0 +1,159 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrailersEntities>
+
+@{
+    ViewBag.Title = "TrailerTrolly";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Trailer and Trolley Mapping</h4>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-9 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting">Trailer No.</th>
+                                                <th class="wd-10p sorting">Transporter Name</th>
+                                                <th >Trolley</th>
+                                                
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+                                                
+                                                <tr>
+                                                    <td>@d.trailername <input name=hdTrailerName type=hidden id=trailerName value='@d.trailername'></td>
+                                                    <td>@d.TransName <input name=hdTrailerID type=hidden id=trailerid value='@d.trailerid'></td>
+                                                    
+                                                    <td>
+                                                        @Html.DropDownList("ddlTrolley", new SelectList((IEnumerable<SelectListItem>)@ViewBag.TrolleyList, "Value", "Text", d.TrollyID), new { id = "ddlTrolley", @class = "form-control " })
+                                                        @*@Html.DropDownList("ddlTrolley", ViewBag.TrolleyList as SelectList, "--Select--", new { @class = "form-control content", selected = "selected" })*@
+                                                       @*@Html.DropDownListFor(@d.TrollyID, new SelectList(ViewBag.TrolleyList, "TrollyID", "TrolleyNo"), "--- Select Type ---")*@
+                                                     
+                                                    </td>
+                                                    
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <input type="Button" id="btnSave" value="Update" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [2]
+            }
+            ]
+
+        })
+    });
+</script>
+
+<script>
+    $("#btnSave").click(function () {
+
+        var res = CheckDuplicateTrolley();
+      //  alert(res)
+        if (res == false) {
+            return false;
+        }
+        // $rowsToMark.css('backgroundColor', 'azure');
+       
+        var trailerList = new Array();
+        
+        var trailerList = [];
+        var table = document.getElementById("example1");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+          //  alert("hi")
+            row = table.rows[i];
+           
+                    var y = row.cells[1].childNodes[1].value;
+                    var z = row.cells[2].childNodes[1].value; // select option field
+                    // alert(x);
+                    trailerList.push({ 'trailerid': y, 'TrollyID': z })
+               
+        }
+
+
+       // alert(JSON.stringify(trailerList))
+
+        $.ajax({
+            type: 'POST',
+            url: '/Trailer/ModifyTrailerTrolley',
+            data: '{ trailerList: ' + JSON.stringify(trailerList) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                alert(data);
+            }
+        })
+        //  }
+    });
+
+
+
+    
+</script>
+
+<script>
+    function CheckDuplicateTrolley() {
+        var table = document.getElementById("example1");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            var z = row.cells[2].childNodes[1].value;
+          //  var p = row.cells[0].childNodes[1].value;
+          //    alert(p)
+            for (var j = 1; j < table.rows.length && j != i && z != 0; j++) {
+                row1 = table.rows[j];
+                  //  alert(row1)
+               // alert(row1.cells[0].childNodes[0].value);
+
+                if (z == row1.cells[2].childNodes[1].value) {
+                    var c = row.cells[0].childNodes[1].value;
+                  //  alert(row.cells[0].childNodes[1].value);
+                   
+                    alert("Duplicate Trolley entry found for trailer no. " + c + "");
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    }
+</script>
+

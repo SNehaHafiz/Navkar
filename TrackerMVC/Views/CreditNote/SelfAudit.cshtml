@@ -1,0 +1,165 @@
+﻿
+@{
+    ViewBag.Title = "Self Audit";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class="page-header">
+    <h4 class="page-title">Self Audit</h4>
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label">Audit On</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownList("ddlAuditOn", (IEnumerable<SelectListItem>)ViewBag.AuditOn, "--Select--", new { @class = "form-control", @id = "ddlAuditOn", name = "ddlAuditOn", autocomplete = "off" })
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label">From Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("FromDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy"), @id = "FromDate" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label">To Date </label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("ToDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(1).ToString("dd MMM yyyy"), @id = "ToDate" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label">From Values</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("FromValues", null, new { @class = "form-control", @id = "FromValues" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="form-group">
+                            <label class="form-label">To Values</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("ToValues", null, new { @class = "form-control", @id = "ToValues" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="form-group">
+
+                            <div class="row gutters-xs">
+                                <div class="col" style="margin-top: 27px;">
+                                    <button class="btn btn-primary" onclick="getSummary()"><i class="fe fe-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="form-group">
+
+                            <div class="row gutters-xs">
+                                <div class="col" style="margin-top: 27px;">
+                                    <button class="btn btn-orange" id="btnExcel" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-12 col-sm-12">
+                        <div class="table-responsive">
+                            <table id="tblreportTable" class="table table-bordered text-nowrap w-100" style="width:100%">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function getSummary() {
+        var AuditOn = $("#ddlAuditOn option:selected").text();
+        var FromDate = $("#FromDate").val();
+        var ToDate = $("#ToDate").val();
+        var FromValues = $("#FromValues").val();
+        var ToValues = $("#ToValues").val();
+
+        var isValid = true;
+        if (AuditOn == "--Select--") {
+            $("#ddlAuditOn").addClass("is-invalid state-invalid");
+            isValid = isValid && false;
+        } else {
+            $("#ddlAuditOn").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid) {
+            var data1 = { 'AuditOn': AuditOn, 'FromDate': FromDate, 'ToDate': ToDate, 'FromValues': FromValues, 'ToValues': ToValues  };
+            data = JSON.stringify(data1);
+            $("#global-loader").fadeIn();
+            $.ajax({
+
+                url: '/CreditNote/GetSelfAuditSummary',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+                    RepTableDataJson($("#tblreportTable"), data, "SelfAudit", "Self Audit");
+                    $("#global-loader").fadeOut();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#global-loader").fadeOut();
+                }
+            });
+        }
+
+    }
+
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelSelfAudit", "CreditNote")?';
+
+
+    }
+</script>

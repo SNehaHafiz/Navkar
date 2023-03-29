@@ -1,0 +1,1176 @@
+﻿@{
+    ViewBag.Title = "Credit Note";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .hiderow {
+        display: none;
+    }
+</style>
+<script src="~/js/GetTableJsonwopaging.js"></script>
+
+<div id="addHorse">
+    <div class="page-header">
+        <h4 class="page-title">
+            Credit Note
+        </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Summary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Credit Note No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtCreditNoteNo" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Assess No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtAssessno" type="text" placeholder="New" readonly="readonly" class="form-control" onblur="txtAssessno();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtInvoiceNo" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Credit Note Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtCreditNoteDate", null, new { @class = "form-control form_datetime1", @readonly = true, @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Category</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlCategory", (IEnumerable<SelectListItem>)ViewBag.Mode, "--All-- ", new { @class = "form-control", @id = "ddlCategory", name = "ddlCategory", autocomplete = "off" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group" style="padding-top:26px;">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#largeModal" onclick="OpenTariffDetails();"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">GST Number</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtGStnumber" type="text" placeholder="GST Number" readonly class="form-control" />
+                                        <input ID="txtstatecode" style="display:none" type="text" placeholder="GST Number" class="form-control" />
+                                        <input ID="txtGSTid" style="display:none" type="text" placeholder="GST Number" class="form-control" />
+                                        <input ID="txtTotalReceiptAmount" style="display:none" value="0" type="text" placeholder="GST Number" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Address</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAddress", null, new { @class = "form-control ", @id = "txtAddress", name = "txtAddress", autocomplete = "on", @readonly = true })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderDets" style="width:100%;background-color:#f4f5fa !important;">
+                                <thead>
+                                    <tr>
+                                        <th class="wd-15p sorting">Sr No</th>
+                                        <th class="wd-15p sorting">Invoice No</th>
+                                        <th class="wd-10p sorting">Workyear</th>
+                                        <th class="wd-10p sorting">Account Name</th>
+                                        <th class="wd-10p sorting">Container No</th>
+                                        <th class="wd-10p sorting">Size</th>
+                                        <th class="wd-10p sorting">Net Amount</th>
+                                        <th class="wd-10p sorting">Credited Amount</th>
+                                        <th class="wd-10p sorting">Credit Amount</th>
+
+                                        <th class="hiderow" style="width:10px;color: white;text-align:center">AccountID</th>
+                                        <th class="hiderow" style="width:10px;color: white;text-align:center">JONo</th>
+                                        <th class="hiderow" style="width:10px;color: white;text-align:center">TaxID</th>
+                                        <th class="hiderow" style="width:10px;color: white;text-align:center">SGST</th>
+                                        <th class="hiderow" style="width:10px;color: white;text-align:center">CGST</th>
+                                        <th class="hiderow" style="width:10px;color: white;text-align:center">IGST</th>
+                                        <th class="hiderow" style="width:10px;color: white;text-align:center">Grand Total</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Net Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtNetAmount", null, new { @class = "form-control ", @readonly = true, @id = "txtNetAmount", name = "txtNetAmount", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">SGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtSGSTt", null, new { @class = "form-control ", @readonly = true, @id = "txtSGSTt", name = "txtSGSTt", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">CGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtCGST", null, new { @class = "form-control ", @readonly = true, @id = "txtCGST", name = "txtCGST", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">IGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtIGST", null, new { @class = "form-control ", @readonly = true, @id = "txtIGST", name = "txtIGST", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Grand Total</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtGrandTotal", null, new { @class = "form-control ", @readonly = true, @id = "txtGrandTotal", name = "txtGrandTotal", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Credit Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtCreditAmount", null, new { @class = "form-control ", @readonly = true, @id = "txtCreditAmount", name = "txtCreditAmount", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">SGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtCreditSGSTt", null, new { @class = "form-control ", @readonly = true, @id = "txtCreditSGSTt", name = "txtCreditSGSTt", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">CGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtCreditCGST", null, new { @class = "form-control ", @readonly = true, @id = "txtCreditCGST", name = "txtCreditCGST", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">IGST</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                      
+                                        @Html.TextBox("txtCreditIGST", null, new { @class = "form-control ", @readonly = true, @id = "txtCreditIGST", name = "txtCreditIGST", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Credit Total</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtCreditTotal", null, new { @class = "form-control ", @readonly = true, @id = "txtCreditTotal", name = "txtCreditTotal", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-right">
+                        <label class="form-label"></label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+
+                                <button id="btnSave" class="btn btn-success btn-xs" ; onclick="return Save();">Save</button>
+                                <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", name = "txtremarks", autocomplete = "on" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="largeModal" class="modal fade">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content ">
+            <div class=" content-area">
+                <div class="modal-header pd-x-20">
+                    <h4 class="page-title">Invoice Search</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-20">
+                    <div class="card-body hero-feature">
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label class="form-label">Condition</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSearchType", new List<SelectListItem>
+                                              {  new SelectListItem { Text = "ALL", Value = ""},
+                                                  new SelectListItem { Text = "Party Name", Value = "1"},
+                                                new SelectListItem { Text = "Invoice No", Value = "2"},
+                                                }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearchType" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TXtSearchOn", null, new { @class = "form-control", @id = "TXtSearchOn", name = "TXtSearchOn", autocomplete = "off", placeholder = "Search By Party Name or GST No" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group" style="padding-top:26px;">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" id="btnSearch" type="button" onclick="GetDetailsForTariffSearch()"><i class="fe fe-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-xs-12">
+                                <div class="table-responsive push scrolling-table-container">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example3" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="wd-15p sorting">AssessNo</th>
+                                                <th class="wd-10p sorting">WorkYear</th>
+                                                <th class="wd-10p sorting">InvoiceNo</th>
+                                                <th class="wd-10p sorting">GSTName</th>
+                                                <th class="wd-10p sorting">GSTAddress</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-xs-12">
+                                <div class="table-responsive push scrolling-table-container">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example5" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-15p sorting">AssessNo</th>
+                                                <th class="wd-10p sorting">WorkYear</th>
+                                                <th class="wd-10p sorting">InvoiceNo</th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group" style="padding-top:26px;">
+                                    <button id="btnSBAdd" class="btn btn-primary btn-xs" onclick="AddEDIDets()">Add</button>
+                                    @* <input type="button" name="clearProfile" value="Clear" class="btn cursor display_none" title="clear" id="clearValue" />*@
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- modal-dialog -->
+</div>
+
+
+<div class=" content-area" id="divSecSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Credit Note Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBacks();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">From Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtSummaryFrom", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFrom", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">To Date</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtSummaryTo", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryTo", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-2 col-lg-2">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Search Criteria</label>
+                            @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                           { new SelectListItem { Text = "--Select--", Value = "0"},
+                               new SelectListItem { Text = "Assess No", Value = "1"},
+                               new SelectListItem { Text = "Credit Note No", Value = "2"},
+                             new SelectListItem { Text = "GST Name<", Value = "3"},
+                             }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2" style="display:none" id="divAssess">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Search Texto</label>
+                            @Html.TextBox("txtAssessno", null, new { @class = "form-control", @id = "txtAssessno", name = "txtAssessno", autocomplete = "off", style = "text-align:right" })
+                        </div>
+                    </div>
+                     
+
+                    <div class="col-md-2 col-lg-3" style="display:none" id="divParty">
+                        <div class="form-group label-floating">
+                            <label class="form-label">Party Name</label>
+                            @Html.DropDownList("ddlGSTName", (IEnumerable<SelectListItem>)ViewBag.GSTName, "ALL", new { @class = "form-control", @id = "ddlGSTName", name = "ddlGSTName", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="clear" id="btnShowSummary" onclick="Show();">Show</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+
+
+
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileSuccess()"></i></button>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblReceiptSummary"></table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#ddlSearch").change(function () {
+        var ddlSearchby = $("#ddlSearch").val();
+        if (ddlSearchby == "1") {
+            $("#divAssess").show();
+            
+            $("#divParty").hide();
+            
+        }
+        if (ddlSearchby == "2") {
+            $("#divAssess").show();
+            
+            $("#divParty").hide();
+        }
+        if (ddlSearchby == "3") {
+            $("#Assess").hide();
+           
+            $("#divParty").show();
+        }
+ 
+    });
+    function Summary() {
+        $("#divSecSummary").show();
+        $("#addHorse").hide();
+        
+    };
+
+
+    function getBacks() {
+        $("#addHorse").show();
+        $("#divSecSummary").hide();
+      
+    }
+
+
+    function Show() {
+        // var date = document.getElementById("SelectedDate").value;
+
+        var Search = $("#ddlSearch").val();
+        var Assessno = $("#txtAssessno").val();
+ 
+        var ddlGSTName = $("#ddlGSTName").val();
+ 
+        var fromdate = $("#txtSummaryFrom").val();
+        var todate = $("#txtSummaryTo").val();
+        var data1 = { 'fromdate': fromdate, 'todate': todate, 'Search': Search, 'Assessno': Assessno, 'ddlGSTName': ddlGSTName };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/CreditNote/GetCreditNoteSummary',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                // alert(data);
+                
+                $("#tblReceiptSummary").empty();
+                RepTableDataJsonwopaging($("#tblReceiptSummary"), data, "CreditNoteSummary", "CreditNoteSummary");
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+
+    }
+    
+    function OpenTariffDetails() {
+
+        
+
+        $("#tracker-loader").fadeOut("slow");
+        //ddlSearchType
+        ddlCategory
+        var ddlCategory = $("#ddlCategory").val();
+        var SearchType = $("#ddlSearchType").val();
+        var Search = $("#TXtSearchOn").val();
+        if (ddlCategory == "") {
+            document.getElementById("ddlCategory").style.borderColor = "red";
+            alert('Please  Enter  Category!');
+            $("#largeModal1").modal('hide')
+            event.preventDefault();
+            return;
+
+        }
+    
+        var data1 = { 'ddlCategory': ddlCategory, 'SearchType': SearchType, 'Search': Search };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/CreditNote/GetSearch",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $("#largeModal1").modal('show')
+                $('#example3').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+                                data = "<a href=\"#\" class=\"btn btn-sm btn-info\" title=\"Close\" onclick=\"CheckCredit('" + row.AssessNo + "','" + row.WorkYear + "','" + row.InvoiceNo+ "')\"><i class=\"fa fa-check\" style=\"font-size: 16px;\"></i></a>";
+                               
+                                return data;
+                            }
+                        },
+                        { "data": "AssessNo" },
+                        { "data": "WorkYear" },
+                        { "data": "InvoiceNo" },
+                        { "data": "GSTName" },
+                        { "data": "GSTAddress" },
+                   
+                       
+
+                    ]
+                });
+            },
+            error: function (response) {
+                alert(response.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        })
+         
+    }
+    function GetDetailsForTariffSearch() {
+        
+        //ddlsearchtype
+
+        var ddlCategory = $("#ddlCategory").val();
+        var SearchType = $("#ddlSearchType").val();
+        var SearchO = $("#TXtSearchOn").val();
+
+
+        var data1 = { 'ddlCategory': ddlCategory, 'SearchType': SearchType, 'SearchO': SearchO };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: "POST",
+            url: "/CreditNote/GetSearch",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $('#example3').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        {
+                            "data": "data",
+                            "render": function (data, type, row, meta) {
+                                data = "<a href=\"#\" class=\"btn btn-sm btn-info\" title=\"Close\" onclick=\"CheckCredit('" + row.AssessNo + "','" + row.WorkYear + "','" + row.InvoiceNo + "')\"><i class=\"fa fa-check\" style=\"font-size: 16px;\"></i></a>";
+
+                                return data;
+                            }
+                        },
+                        { "data": "AssessNo" },
+                        { "data": "WorkYear" },
+                        { "data": "InvoiceNo" },
+                        { "data": "GSTName" },
+                        { "data": "GSTAddress" },
+
+
+
+                    ]
+                });
+            },
+            error: function (response) {
+                alert(response.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        })
+    }
+
+    function CheckCredit(AssessNo, WorkYear, InvoiceNo) {
+        
+        var data1 = { 'AssessNo': AssessNo, 'WorkYear': WorkYear, 'InvoiceNo': InvoiceNo };
+            var data = JSON.stringify(data1);
+        var exists = $('#example5 tr > td:contains(' + InvoiceNo + ')').length;
+        if (exists == 1) {
+            alert("SB No alredy Added!");
+            $("#tracker-loader").fadeOut("slow");
+            return false;
+        }
+        else {
+
+            var t = $('#example5').DataTable();
+            t.row.add([
+                AssessNo,
+                WorkYear,
+                InvoiceNo,
+                //SBDate
+            ]).draw(false);
+        }
+    }
+
+
+    function AddEDIDets() {
+ 
+            var ddlCategory = $("#ddlCategory").val();
+
+            var SelectedData = new Array();
+            var tablearray = new Array();
+            var table = document.getElementById("example5");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+                row = table.rows[i];
+
+                
+                AssessNo = row.cells[0].innerText;
+
+                WorkYear = row.cells[1].innerText;
+                InvoiceNo = row.cells[2].innerText;
+                 
+                SelectedData.push({
+                    'AssessNo': AssessNo, 'WorkYear': WorkYear, 'InvoiceNo': InvoiceNo
+                })
+            }
+            var data1 = {
+                'Debitdata': SelectedData, 'ddlCategory': ddlCategory
+            };
+            var data = JSON.stringify(data1);
+                          $.ajax({
+                              url: "/CreditNote/SaveTally",
+                            data: data,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                              success: function (data) {
+                                 @*alert(data);
+                                  document.location = '@Url.Action("CreditNote", "CreditNote")';*@
+                                  $("#largeModal").modal('hide')
+                                  Binddetails();
+                                   
+                            },
+                            error: function (errormessage) {
+                                alert(errormessage.responseText);
+                            }
+                        });
+
+
+    }
+
+    function Binddetails() {
+
+        AssessNoArr = [];
+        $.ajax({
+            type: "POST",
+            url: "/CreditNote/GetSearchGrid",
+            //data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                AssessNoArr = data;
+                $('#txtAssessno').val(data[0].AssessNo);
+                $('#tblWorkOrderDets').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        { "data": "Srno" },
+                        { "data": "InvoiceNo" },
+                        { "data": "WorkYear" },
+                        { "data": "accountname" },
+                        { "data": "CONTAINERNO" },
+                        { "data": "Size" },
+                        { "data": "amount" },
+                        { "data": "creditamount" },
+                     
+
+                        {
+                            "data": "PaidAmount",
+                            "render": function (data, type, row, meta) {
+                                data = '<input type=\"textbox\" name=\"txtPaidAmount' + row.PaidAmount + '\" class=\"form-control\" id=\"txtPaidAmount' + row.Srno + '\" onchange=\" ChkAmtValidate(' + row.Srno +')\" style=\"width: 100px;text-transform:uppercase\"    value="' + data + '">';
+                                return data;
+                            }
+                        },
+                        { "data": "AccountID", "className": "hiderow" },
+                        { "data": "JONo", "className": "hiderow" },
+                        { "data": "TaxID", "className": "hiderow" },
+                        { "data": "ZeroAmount", "className": "hiderow" },
+                        { "data": "ZeroAmount", "className": "hiderow" },
+                        { "data": "ZeroAmount", "className": "hiderow" },
+                        { "data": "ZeroAmount", "className": "hiderow" },
+                        //{
+                        //    "data": "ZeroAmount",
+                        //    "render": function (data, type, row, meta) {
+                        //        data = '<input type=\"textbox\" name=\"txtPaidAmount' + row.ZeroAmount + '\"  disabled class=\"form-control\" disabled  id=\"txtPaidAmount' + row.Srno + '\"  style=\"width: 100px;text-transform:uppercase\"    value="' + data + '">';
+                        //        return data;
+                        //    }
+                        //}, {
+                        //    "data": "ZeroAmount",
+                        //    "render": function (data, type, row, meta) {
+                        //        data = '<input type=\"textbox\" name=\"txtPaidAmount' + row.ZeroAmount + '\"  disabled class=\"form-control\" id=\"txtPaidAmount' + row.Srno + '\"  style=\"width: 100px;text-transform:uppercase\"    value="' + data + '">';
+                        //        return data;
+                        //    }
+                        //}, {
+                        //    "data": "ZeroAmount",
+                        //    "render": function (data, type, row, meta) {
+                        //        data = '<input type=\"textbox\" name=\"txtPaidAmount' + row.ZeroAmount + '\"  disabled class=\"form-control\" id=\"txtPaidAmount' + row.Srno + '\"  style=\"width: 100px;text-transform:uppercase\"    value="' + data + '">';
+                        //        return data;
+                        //    }
+                        //}
+                        //, {
+                        //    "data": "ZeroAmount",
+                        //    "render": function (data, type, row, meta) {
+                        //        data = '<input type=\"textbox\" name=\"txtPaidAmount' + row.ZeroAmount + '\"  disabled class=\"form-control\" id=\"txtPaidAmount' + row.Srno + '\"  style=\"width: 100px;text-transform:uppercase\"    value="' + data + '">';
+                        //        return data;
+                        //    }
+                        //},
+                        
+
+                    ]
+                });
+            },
+            error: function (response) {
+                alert(response.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        })
+        txt1Assessno();
+    }
+       
+    
+
+    //$(document).ready(function () {
+    //    $.ajax({
+    //        type: "POST",f
+    //        url: "/CreditNote/GetSearchGrid",
+    //        //data: data,
+    //        contentType: "application/json; charset=utf-8",
+    //        success: function (data) {
+    //            $('#txtAssessno').val(data[0].AssessNo);
+    //            $('#tblWorkOrderDets').dataTable({
+    //                "destroy": true,
+    //                "bLengthChange": false,
+    //                "bPaginate": false,
+    //                //"bFilter": false,
+    //                "paging": false,
+    //                "order": false,
+    //                "aaData": data,
+    //                "columns": [
+
+    //                    { "data": "InvoiceNo" },
+    //                    { "data": "WorkYear" },
+    //                    { "data": "accountname" },
+    //                    { "data": "CONTAINERNO" },
+    //                    { "data": "Size" },
+    //                    { "data": "amount" },
+    //                    { "data": "creditamount" },
+    //                    {
+
+    //                        "data": "PaidAmount",
+    //                        "render": function (data, type, row, meta) {
+    //                            data = '<input type=\"textbox\" name=\"txtPaidAmount' + row.PaidAmount + '\" class=\"form-control\" id=\"txtPaidAmount' + row.PaidAmount + '\"   style=\"width:120px;text-transform:uppercase\"    value="' + data + '">';
+    //                            return data;
+    //                        }
+    //                    },
+
+
+    //                ]
+    //            });
+    //        },
+    //        error: function (response) {
+    //            alert(response.responseText);
+    //            $("#tracker-loader").fadeOut("slow");
+    //        }
+    //    })
+    //    txt1Assessno();
+    //});
+
+    function txt1Assessno() {
+        
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+
+        var Categorys = $("#ddlCategory").val();
+       var AssessNo = $("#txtAssessno").val();
+        var WorkYear ='2020-21'
+     
+
+        var data1 = { "Assessno": AssessNo, "WorkYear": WorkYear, "Categorys": Categorys };
+
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/CreditNote/AjaxGetItemDetails',  
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                
+                $('#txtGStnumber').val(data[0].GSTName);
+                $('#txtstatecode').val(data[0].statecode);
+                $('#txtAddress').val(data[0].GSTAddress);
+                ///$('#txtDOB').val(data[0].DOB);
+                $('#txtGSTid').val(data[0].partyid);
+                $('#txtNetAmount').val(data[0].nettotal);
+                $('#txtSGSTt').val(data[0].sgst);
+                $('#txtCGST').val(data[0].cgst);
+                $('#txtIGST').val(data[0].igst);
+                $('#txtGrandTotal').val(data[0].grandtotal);
+               
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function ChkAmtValidate(id) {
+
+
+
+        var dblNetTotal = 0;
+        var dblIGST = 0;
+        var dblSGST = 0;
+        var dblCGST = 0;
+        var SGSTcal1 = 0;
+
+        var CGSTcal1 = 0;
+        var IGSTcal1 = 0;
+        var Amount5 = 0;
+        
+
+
+        var table = document.getElementById("tblWorkOrderDets");
+
+        for (var i = 1; i < table.rows.length; i++) {
+
+            if (i == id) {
+
+                row = table.rows[i];
+                var Srno = row.cells[0].innerText;
+
+                var amount = row.cells[6].innerText;
+                var creditamount = row.cells[7].innerText;
+                var PaidAmount = $('#txtPaidAmount' + Srno).val();
+                var lblTaxID = row.cells[11].innerText;
+
+                PaidAmount = parseFloat(PaidAmount);
+                amount = parseFloat(amount);
+                creditamount = parseFloat(creditamount);
+                if (Srno == id) {
+                    if (id = Srno) {
+                        if (PaidAmount > (amount + creditamount)) {
+                            alert('Credit amount should not be greater than net amount.');
+                            $('#txtPaidAmount' + Srno).val(0);
+                            $('#txtPaidAmount' + Srno).focus();
+                        }
+                    }
+                    var statecode = $("#txtstatecode").val().trim();
+
+                        var data1 = { "PaidAmount": PaidAmount, "lblTaxID": lblTaxID, "statecode": statecode };
+                        var data = JSON.stringify(data1);
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/CreditNote/GetTaxID',
+                            data: data,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            async: false,
+                            success: function (data) {
+
+
+                                row.cells[12].innerHTML = parseFloat(data[0].txtsgstcredit);;
+                                row.cells[13].innerHTML = parseFloat(data[0].txtcgstcredit);;
+                                row.cells[14].innerHTML = parseFloat(data[0].txtigstcredit);;
+                                row.cells[15].innerHTML = parseFloat(data[0].txtcredittotal);
+
+
+
+                                var table1 = document.getElementById("tblWorkOrderDets");
+                                var row1;
+                                for (var i = 1; i < table1.rows.length; i++) {
+                                    row1 = table1.rows[i];
+
+                                    SRNO1 = row1.cells[0].innerText;
+                                    Amount5 = $('#txtPaidAmount' + SRNO1).val();
+
+                                    SGST1 = row1.cells[12].innerText;
+                                    CGST1 = row1.cells[13].innerText;
+                                    IGST1 = row1.cells[14].innerText;
+
+
+
+                                    dblNetTotal = dblNetTotal + Number(Amount5);
+                                    IGSTcal1 = IGSTcal1 + Number(IGST1);
+                                    CGSTcal1 = CGSTcal1 + Number(CGST1);
+                                    SGSTcal1 = SGSTcal1 + Number(SGST1);
+
+
+
+                                    $('#txtCreditAmount').val(dblNetTotal);
+                                    $('#txtCreditSGSTt').val(SGSTcal1);
+                                    $('#txtCreditCGST').val(CGSTcal1);
+                                    $('#txtCreditIGST').val(IGSTcal1);
+                                    $('#txtCreditTotal').val(dblNetTotal + SGSTcal1 + CGSTcal1 + + IGSTcal1);
+
+                                }
+                            },
+                            error: function (errormessage) {
+                                alert(errormessage.responseText);
+                                $("#tracker-loader").fadeOut("slow");
+                            }
+                        });
+                    
+                    
+
+                  
+                }
+
+
+            }
+
+        }
+
+
+    }
+    
+    function Save() {
+        
+        var CreditNoteNo = $("#txtCreditNoteNo").val();
+        var Assessno = $("#txtAssessno").val();
+        var CreditNoteDate = $("#txtCreditNoteDate").val();
+        var Category = $("#ddlCategory").val();
+        var PartyID = $("#txtGSTid").val();
+        var GrandTotal = $("#txtGrandTotal").val();
+        var remarks = $("#txtremarks").val();
+        var statecode = $("#txtstatecode").val();
+        
+            var SelectedData = new Array();
+            var tablearray = new Array();
+            var table = document.getElementById("tblWorkOrderDets");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+                row = table.rows[i];
+
+                SRNO = row.cells[0].innerText;
+                InvoiceNo = row.cells[1].innerText;
+
+                Workyear = row.cells[2].innerText;
+                AccountName = row.cells[3].innerText;
+                ContainerNo = row.cells[4].innerText;
+                Size = row.cells[5].innerText;
+                NetAmount = row.cells[6].innerText;
+                CreditedAmount = row.cells[7].innerText;
+                CreditAmount = $("#txtPaidAmount" + SRNO + "").val();
+                AccountID = row.cells[9].innerText;
+                JONo = row.cells[10].innerText;
+                TaxID = row.cells[11].innerText;
+                if (CreditAmount != 0) {
+                    SelectedData.push({
+                        'InvoiceNo': InvoiceNo, 'Workyear': Workyear, 'AccountName': AccountName, 'ContainerNo': ContainerNo, 'Size': Size,
+                        'NetAmount': NetAmount, 'CreditedAmount': CreditedAmount, 'CreditAmount': CreditAmount, 'AccountID': AccountID, 'JONo': JONo, 'TaxID': TaxID
+                    })
+                }
+                var data1 = {
+                    'Debitdata': SelectedData, 'CreditNoteNo': CreditNoteNo, 'Assessno': Assessno, 'CreditNoteDate': CreditNoteDate, 'Category': Category, 'PartyID': PartyID, 'GrandTotal': GrandTotal, 'remarks': remarks, 'statecode': statecode
+                };
+                }
+           
+        var data = JSON.stringify(data1);
+
+        var r = confirm("Are u sure to save Credit Note?");
+        if (r == true) {
+            $.ajax({
+                url: "/CreditNote/CreditSave",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+                    //var array = data.split(',');
+                    //var b = array[0];
+                    //var c = array[1];
+                    alert(data);
+
+
+
+                    //var r = confirm("Do you want to print ?");
+                    //if (r == true) {
+                    //    $("#tracker-loader").fadeOut("slow");
+                    //    PrintInvoice(c);
+                    //}
+                   
+                          document.location = '@Url.Action("CreditNote", "CreditNote")';
+               
+
+
+
+
+
+
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        } else {
+
+            alert("You Pressed Cancel!");
+            $("#tracker-loader").fadeOut("slow");
+        }
+                           
+    }
+
+
+  
+</script>       `
+
+<script>
+    function PrintInvoice(CreditNoteNo, WorkYear, ID) {
+        
+
+        var data1 = { 'CreditNoteNo': CreditNoteNo, 'WorkYear': WorkYear, 'ID': ID };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: '/CreditNote/ImportInvoicePrint',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.close();
+                var myWindow = window.open("", "MsgWindow1", 'width=' + screen.availWidth + ',height=' + screen.availHeight + ',resizable=no');
+                myWindow.document.write(response);
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+    };
+
+</script>

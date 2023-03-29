@@ -1,0 +1,189 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using BE = TrackerMVCEntities.BusinessEntities;
+using BM = TrackerMVCBusinessLayer.TrackerMVCBusinessManger;
+using HC=TrackerMVCDataLayer.Helper;
+using TrackerMVC.Filters;
+using System.Data;
+using System.Web.UI.WebControls;
+using System.Web.UI;
+using System.IO;
+using Newtonsoft.Json;
+
+namespace TrackerMVC.Controllers
+{
+    [UserAuthenticationFilter]
+    public class ImportFinalOutController : Controller
+    {
+        BM.ImportFinalOut.ImportFinalOut IFO = new BM.ImportFinalOut.ImportFinalOut();
+        // GET: ImportFinalOut
+        public ActionResult ImportFinalOut()
+        {
+            List<BE.PortEntities> PortList = new List<BE.PortEntities>();
+            List<BE.LineEntities> LineList = new List<BE.LineEntities>();
+            BE.ImportFinalOutEntities ImportFinalList = IFO.getFillDropdownList();
+            PortList = ImportFinalList.PortList;
+            LineList = ImportFinalList.LineList;
+            ViewBag.PortList = new SelectList(PortList, "PortID", "PortName");
+            ViewBag.LineList = new SelectList(LineList, "LineID", "LineName");
+
+            return View();
+        }
+
+        public ActionResult MonthlyOutWordReports()
+        {
+            return View();
+        }
+
+        public JsonResult getImportFinalOutList(string FromDate, string ToDate, string DeliveryType, string For, string PortID, string LineID)
+        {
+            int Userid = Convert.ToInt32(Session["Tracker_userID"]);
+            DataTable ImpFinalOut = new DataTable();
+            //List<BE.ImportFinalOutEntities> ImportList = new List<BE.ImportFinalOutEntities>();
+            //ImportList = IFO.getImportFinalOut(FromDate, ToDate, DeliveryType, For, PortID,LineID);
+
+            HC.DBOperations db = new HC.DBOperations();
+            if(DeliveryType== "DeStuff")
+            {
+                ImpFinalOut = db.sub_GetDatatable("sp_Import_Destuff_Out_Dets '" + FromDate + "','" + ToDate + "','" + DeliveryType + "','" + For + "','" + PortID + "','" + LineID + "'");
+            }
+            else
+            {
+                ImpFinalOut = db.sub_GetDatatable("sp_Import_Out_Dets '" + FromDate + "','" + ToDate + "','" + DeliveryType + "','" + For + "','" + PortID + "','" + LineID + "'");
+            }
+           
+            Session["ImpFinalOut"] = ImpFinalOut;
+            Session["fromdate"] = FromDate;
+            Session["todate"] = ToDate;
+            var jsonResult = Json(JsonConvert.SerializeObject(ImpFinalOut), JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;          
+        }
+
+        public ActionResult ExportToExcelImportFinalOut(string fromdate, string todate)
+        {
+            DataTable CompanyMaster = new DataTable();
+            HC.DBOperations db = new HC.DBOperations();
+            // dt = db.sub_GetDatatable("USP_GetContainerSurveyRemarks '" + containerNo + "'");
+            CompanyMaster = db.sub_GetDatatable("USP_COMPANYDETAILS");
+            var CompanyName = Convert.ToString(CompanyMaster.Rows[0]["con_Name"]);
+            var CompanyAddress = Convert.ToString(CompanyMaster.Rows[0]["AddressI"]);
+            DataTable getMovementICDNew = (DataTable)Session["ImpFinalOut"];
+            string Tittle = "From " + Session["fromdate"] + " To " + Session["todate"] + ".";
+            GridView gridview = new GridView();
+            gridview.DataSource = getMovementICDNew;
+            gridview.DataBind();
+
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", "attachment;filename=ImportFinalOutReport.xls");
+            using (StringWriter sw = new StringWriter())
+            {
+                using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+
+                {
+
+                    // render the GridView to the HtmlTextWriter
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 26px'>" + CompanyName + " <strong></td></tr>");
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 15px'>" + CompanyAddress + " <strong></td></tr>");
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 15px'> Movement At ICD Report<strong></td></tr>");
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 15px'>" + Tittle + " <strong></td></tr>");
+                    htw.Write("<table><tr><td colspan='7'><h6 style='text-align:left'> *output generated by tracker </h6></td></tr>");
+                    gridview.RenderControl(htw);
+                    // Output the GridView content saved into StringWriter
+                    Response.Output.Write(sw.ToString());
+                    Response.Flush();
+                    Response.End();
+                }
+            }
+
+            return View();
+        }
+
+        
+
+        public JsonResult getMonthlyOutWordReport(string FromDate, string ToDate,string Type)
+        {
+            int Userid = Convert.ToInt32(Session["Tracker_userID"]);
+            DataTable ImpFinalOut = new DataTable();
+
+            HC.DBOperations db = new HC.DBOperations();
+            ImpFinalOut = db.sub_GetDatatable("sp_MonthlyOutWordReport '" + FromDate + "','" + ToDate + "','" + Type + "'");
+
+            Session["ImpMonthlyOutWord"] = ImpFinalOut;
+            Session["TYPE"] = Type;
+            Session["fromdate"] = FromDate;
+            Session["todate"] = ToDate;
+            var jsonResult = Json(JsonConvert.SerializeObject(ImpFinalOut), JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
+        }
+
+        public ActionResult ExportToExcelMonthlyOutWordOut(string fromdate, string todate)
+        {
+            DataTable CompanyMaster = new DataTable();
+            HC.DBOperations db = new HC.DBOperations();
+            string FileName = "";
+            string DispName = "";
+            string CType = Session["TYPE"].ToString();
+
+            if (CType == "InWord")
+            {
+                FileName = "InWordReport";
+                DispName = "In Word Wise Report";
+            }
+            else if (CType == "OutWord")
+            {
+                FileName = "OutWordReport";
+                DispName = "Out Word Wise Report";
+            }
+            else
+            {
+                FileName = "SealCuttingReport";
+                DispName = "Seal Cutting Report";
+            }
+
+            // dt = db.sub_GetDatatable("USP_GetContainerSurveyRemarks '" + containerNo + "'");
+            CompanyMaster = db.sub_GetDatatable("USP_COMPANYDETAILS");
+            var CompanyName = Convert.ToString(CompanyMaster.Rows[0]["con_Name"]);
+            var CompanyAddress = Convert.ToString(CompanyMaster.Rows[0]["AddressI"]);
+            DataTable getMovementICDNew = (DataTable)Session["ImpMonthlyOutWord"];
+            string Tittle = "From " + Session["fromdate"] + " To " + Session["todate"] + ".";
+            GridView gridview = new GridView();
+            gridview.DataSource = getMovementICDNew;
+            gridview.DataBind();
+
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", "attachment;filename="+ FileName +".xls");
+            using (StringWriter sw = new StringWriter())
+            {
+                using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+
+                {
+
+                    // render the GridView to the HtmlTextWriter
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 26px'>" + CompanyName + " <strong></td></tr>");
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 15px'>" + CompanyAddress + " <strong></td></tr>");
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 15px'> "+ DispName +"<strong></td></tr>");
+                    htw.Write("<table><tr><td  style='font-weight: bold; text-align: center'; colspan ='7'><strong style='font-size: 15px'>" + Tittle + " <strong></td></tr>");
+                    htw.Write("<table><tr><td colspan='7'><h6 style='text-align:left'> *output generated by tracker </h6></td></tr>");
+                    gridview.RenderControl(htw);
+                    // Output the GridView content saved into StringWriter
+                    Response.Output.Write(sw.ToString());
+                    Response.Flush();
+                    Response.End();
+                }
+            }
+
+            return View();
+        }
+    }
+}

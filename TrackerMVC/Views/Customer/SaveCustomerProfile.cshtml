@@ -1,0 +1,620 @@
+﻿@model TrackerMVCEntities.BusinessEntities.CustomerMaster
+
+@{
+    ViewBag.Title = "New Customer Profile";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<link href="~/css/NewCHAProfile.css" rel="stylesheet" />
+
+<div class="page-header">
+    <h4 class="page-title">Customer Profile</h4>
+    <div class="form-group">
+        <label class="form-label"></label>
+        <div class="row gutters-xs">
+            <div class="col">
+                <button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>
+                <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist"><i class="fa fa-file-text"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("SaveCustomerProfile", "Customer", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            @*<div class="col-sm-3 col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-label">ID</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.AGID, new { htmlAttributes = new { @class = "form-control Number", @id = "agid", @readonly = "Readonly", @Value = "01" } })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Customer Code</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGaID, new { htmlAttributes = new { @class = "form-control", @id = "custCode", autocomplete = "off", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Customer Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGName, new { htmlAttributes = new { @class = "form-control", @id = "custName", autocomplete = "on", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Full Address</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @* @Html.EditorFor(model => model.shipperid, new { htmlAttributes = new { @class = "form-control Number", @id = "shipperid" } })*@
+                                            @Html.EditorFor(model => model.AGAddress, new { htmlAttributes = new { @class = "form-control", @id = "custAddress", maxlength = 500 } })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-lg-2 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">City</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+
+                                                @Html.EditorFor(model => model.AGCity, new { htmlAttributes = new { @class = "form-control", @id = "custCity", autocomplete = "off" } })
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>*@
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Person</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGAuthPerson, new { htmlAttributes = new { @class = "form-control", @id = "contactPerson", autocomplete = "on", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Person Designation</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGAuthPersonDesig, new { htmlAttributes = new { @class = "form-control", @id = "designation", autocomplete = "on", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number 1</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGTelI, new { htmlAttributes = new { @class = "form-control", @id = "contactNo1", autocomplete = "off", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number 2</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGTelII, new { htmlAttributes = new { @class = "form-control", @id = "contactNo2", autocomplete = "off", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Fax Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGFax, new { htmlAttributes = new { @class = "form-control", @id = "fax", autocomplete = "off", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Mobile Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGCellNo, new { htmlAttributes = new { @class = "form-control", @id = "cellNO", autocomplete = "off", maxlength = 50, onkeydown = "numericOnly(this,event)" } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Email Address</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGEMail, new { htmlAttributes = new { @class = "form-control", @id = "emailID", maxlength = 255 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Website</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGWebsite, new { htmlAttributes = new { @class = "form-control", @id = "website", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @*<div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Credit Period</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.EditorFor(model => model.AGEMail, new { htmlAttributes = new { @class = "form-control", @id = "credit" } })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>*@
+                            @*</div>
+                                <div class="row">*@
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.EditorFor(model => model.AGRemarks, new { htmlAttributes = new { @class = "form-control", @id = "remarks", maxlength = 50 } })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                @*<label class="form-label">Is Active</label>*@
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.eMailIDs, new { htmlAttributes = new { @class = "form-control", @id = "emailID" } })*@
+                                        @Html.CheckBoxFor(m => m.IsActive, new { @checked = "checked", @id = "isActive" }) Is Active? @*<label class="form-label">Is Active</label>*@
+                                        @* <label>@Html.CheckBoxFor(m => m.IsActive)&nbsp;@Html.DisplayNameFor(m => m.IsActive)</label>*@
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card-footer text-right">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="submit" id="Save" name="saveProfile" value="Save Profile" class="btn btn-success" />
+                                        @* <input type="button" name="clearProfile" value="Clear" class="btn cursor display_none" title="clear" id="clearValue" />*@
+                                        <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+    window.onload = function () {
+        var message = @Html.Raw(Json.Encode(ViewBag.Message))
+        alert(message);
+        document.getElementById("custCode").value = "";
+        document.getElementById("custName").value = "";
+        document.getElementById("custAddress").value = "";
+        //document.getElementById("custCity").value = "";
+        document.getElementById("contactPerson").value = "";
+        document.getElementById("designation").value = "";
+        document.getElementById("contactNo1").value = "";
+        document.getElementById("contactNo2").value = "";
+        document.getElementById("fax").value = "";
+        document.getElementById("cellNO").value = "";
+        document.getElementById("emailID").value = "";
+        document.getElementById("website").value = "";
+        document.getElementById("credit").value = "";
+        document.getElementById("remarks").value = "";
+        document.getElementById("isActive").checked = true;
+    };
+
+    </script>
+}
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#custName").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/Customer/GetNameForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#custName").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#contactPerson").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/Customer/GetContactPersonForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#contactPerson").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#designation").autocomplete({
+
+            autoFocus: true,
+            scroll: true,
+            source: function (request, response) {
+                //  alert("hi")
+                $.ajax({
+                    url: "/Customer/GetDesignationForAutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    data: { name: request.term },
+                    success: function (data) {
+                        if (!data.length) {
+
+                        }
+                        else {
+
+                            response($.map(data, function (item) {
+
+                                return { value: item };
+
+
+                            }))
+                        }
+                    }
+                })
+            },
+            select: function (e, ui) {
+                $("#designation").val(ui.item.value);
+                // CheckCompanyAvailability(ui.item.value);
+                return false;
+            },
+            messages: {
+                noResults: "", results: ""
+            }
+        });
+
+        $("#custCode").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/Customer/GetExisitingCustomerCode?custCode=' + $("#custCode").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#custCode").removeClass();
+                        if (data == true) {
+                            $("#custCode").addClass("form-control is-valid state-valid");
+                        } else {
+                            $("#custCode").addClass("form-control is-invalid state-invalid");
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#custName").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/Customer/GetExisitingCustomerName?custName=' + $("#custName").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#custName").removeClass();
+                        if (data == true) {
+                            $("#custName").addClass("form-control is-valid state-valid");
+                        } else {
+                            $("#custName").addClass("form-control is-invalid state-invalid");
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#custAddress").on("blur", function () {
+
+            $.ajax(
+                {
+                    url: '/Customer/ValidateAddress?custAddress=' + $("#custAddress").val(),
+                    type: 'GET',
+                    data: "",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#custAddress").removeClass();
+
+                        if (data == true) {
+                            $("#custAddress").addClass("form-control is-valid state-valid");
+                        } else {
+                            $("#custAddress").addClass("form-control is-invalid state-invalid");
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+
+        $("#clearValue").on("click", function () {
+            document.getElementById("custCode").value = "";
+            document.getElementById("custName").value = "";
+            document.getElementById("custAddress").value = "";
+            //document.getElementById("custCity").value = "";
+            document.getElementById("contactPerson").value = "";
+            document.getElementById("designation").value = "";
+            document.getElementById("contactNo1").value = "";
+            document.getElementById("contactNo2").value = "";
+            document.getElementById("fax").value = "";
+            document.getElementById("cellNO").value = "";
+            document.getElementById("emailID").value = "";
+            document.getElementById("website").value = "";
+            document.getElementById("credit").value = "";
+            document.getElementById("remarks").value = "";
+            document.getElementById("isActive").checked = true;
+            $("#custCode").removeClass();
+            $("#custName").removeClass();
+            $("#custAddress").removeClass();
+
+            $("#custCode").addClass("form-control");
+            $("#custName").addClass("form-control");
+            $("#custAddress").addClass("form-control");
+        });
+
+        $("#emailID").on("blur", function () {
+            isEmail($("#emailID").val());
+
+        });
+
+        //var count1 = 0;
+        //$("#contactNo1").on("blur", function () {
+        //    if ($("#contactNo1").val() != "") {
+        //        $("#contactNo1").removeClass();
+        //        $("#contactNo1").addClass("form-control");
+        //        isNumber("#contactNo1", $("#contactNo1").val());
+        //        count1 = 0
+        //    } else {
+        //        if (count1 == 0) {
+        //            alert("Empty Contact No is not valid");
+        //            $("#contactNo1").removeClass();
+        //            $("#contactNo1").addClass("form-control is-invalid state-invalid");
+
+        //            count1++;
+        //        }
+
+        //    }
+
+        //});
+
+
+        //$("#contactNo2").on("blur", function () {
+        //    if ($("#contactNo2").val() != "") {
+        //        $("#contactNo2").removeClass();
+        //        $("#contactNo2").addClass("form-control");
+        //        isNumber("#contactNo2", $("#contactNo2").val());
+        //        count1 = 0
+        //    } else {
+        //        if (count1 == 0) {
+        //            alert("Empty Contact No is not valid");
+        //            $("#contactNo2").removeClass();
+        //            $("#contactNo2").addClass("form-control is-invalid state-invalid");
+
+        //            count1++;
+        //        }
+        //    }
+        //});
+
+
+        //$("#cellNO").on("blur", function () {
+        //    if ($("#cellNO").val() != "") {
+        //        $("#cellNO").removeClass();
+        //        $("#cellNO").addClass("form-control");
+        //        isNumber("#cellNO", $("#cellNO").val());
+        //        count1 = 0
+        //    } else {
+        //        if (count1 == 0) {
+        //            alert("Empty Contact No is not valid");
+        //            $("#cellNO").removeClass();
+        //            $("#cellNO").addClass("form-control is-invalid state-invalid");
+
+        //            count1++;
+        //        }
+        //    }
+
+        //});
+
+    });
+
+    function numericOnly(element, e) {
+        console.log(e.keyCode)
+        // Allow: backspace, delete, tab, escape, enter and . - , ;
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190, 45, 44, 59, 189, 109, 188, 186]) !== -1 ||
+            // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+            console.log(e.keyCode)
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+
+    }
+
+    function isEmail(email) {
+        var regex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        var res1 = regex.test(email);
+        $("#emailID").removeClass();
+        if (email == "") {
+            alert('Please Enter Email Id!');
+            $("#emailID").addClass("form-control is-invalid state-invalid")
+            // document.getElementById('email').value = ""
+            return false;
+        }
+        if (res1 == false) {
+            alert('Please Enter valid Email Id!');
+            $("#emailID").addClass("form-control is-invalid state-invalid")
+            //  document.getElementById('Email').value = ""
+            return res1;
+        }
+        else {
+
+            $("#emailID").addClass("form-control is-valid state-valid")
+        }
+    }
+
+    function isNumber(contactID, contactNO) {
+        console.log(contactNO)
+        var regex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
+        var res2 = regex.test(parseInt(contactNO));
+        $(contactID).removeClass();
+        if (contactNO == "") {
+            $(contactID).addClass("form-control is-invalid state-invalid")
+            alert('Please Enter valid Contact Number!');
+        }
+        if (res2 == false) {
+            $(contactID).addClass("form-control is-invalid state-invalid")
+            alert('Please Enter valid Contact Number!');
+        }
+        else {
+            $(contactID).addClass("form-control is-valid state-valid")
+        }
+    }
+</script>
+

@@ -1,0 +1,346 @@
+﻿
+@{
+    ViewBag.Title = "Activity Cost Mapping";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+        text-align: center;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+        text-align: center;
+    }
+</style>
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h3>Activity Cost Mapping</h3>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Activity Master Summary"></i> </a>
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtactivityid" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtactivityname" type="text" placeholder="Activity Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity Status</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtactivitystatus" type="text" placeholder="Activity Status" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-2 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">&nbsp;</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="custom-switch ">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="isin" value="True" checked class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">IS IN?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">&nbsp;</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="custom-switch ">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="isout" value="True" checked class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">IS OUT?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-2 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">&nbsp;</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="custom-switch ">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="kmin" value="True" checked class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">KM IN?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">&nbsp;</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="custom-switch ">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="kmout" value="True" checked class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">KM OUT?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return SaveActivity();">Save</button>
+
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List Of Activity Cost Mapping</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />*@
+                                            <button class=" btn btn-primary" style="margin-top: auto" title="Show" id="btnSearch" onclick="ShowSSRSummary()" type="button">
+                                                <i class="fe fe-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" id="btnSearch" style="margin-top: auto" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                            @*@Html.ActionLink("Excel To Excel", "ExportActivityMasterReport", null, new { @class = "btn btn-primary btn-md" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+        function BackToWorkOrder() {
+            $("#divCreate").show();
+            $("#divCreateSummary").hide();
+        }
+        function OpenWOSummary() {
+            $("#divCreate").hide();
+            $("#divCreateSummary").show();
+        }
+
+
+
+        function ShowSSRSummary() {
+
+
+            debugger;
+            var search = document.getElementById('txtsearch').value;
+            var data1 = { 'search': search };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/ModifyModule/GetListOfCostMapping",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#reportTable").empty();
+                    RepTableDataJson($("#tblWorkOrderOpenList"), data, "ActivityReport", "ActivityReport")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+        }
+</script>
+<script>
+    //get details in text box
+
+
+    function edittext(AutoID, ActivityINOUt, ActivityStatus) {
+            debugger;
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+        $("#txtactivityid").val(AutoID);
+        $("#txtactivityname").val(ActivityINOUt)
+        $("#txtactivitystatus").val(ActivityStatus)
+    }
+
+
+</script>
+
+<script type="text/javascript">
+        // excel icon call button
+    function GetExcelFile() {
+        window.location = '@Url.Action("ExportToExcelGetListOfCostMapping", "ModifyModule")?';
+    }
+</script>
+
+<script>
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+window.location.href = '@Url.Action("ActivityCostMapping", "ModifyModule")';
+
+    }
+</script>
+
+<script>
+         function SaveActivity() {
+
+         var ActivityMasters = {};
+         ActivityMasters.EntryID = document.getElementById('txtactivityid').value;
+         ActivityMasters.ActivityName = document.getElementById('txtactivityname').value;
+         ActivityMasters.ActivityStatus = document.getElementById('txtactivitystatus').value;
+         ActivityMasters.ISIN   = $('#isin').is(':checked') ? $('#isin').val() : false;
+         ActivityMasters.ISOUT = $('#isout').is(':checked') ? $('#isout').val() : false;
+         ActivityMasters.KMIN = $('#kmin').is(':checked') ? $('#kmin').val() : false;
+         ActivityMasters.KMOUT = $('#kmout').is(':checked') ? $('#kmout').val() : false;
+
+
+         if (ActivityMasters.ActivityName == "") {
+             document.getElementById("txtactivityname").style.borderColor = "red";
+             alert('Please  Enter Activity Name!')
+             event.preventDefault();
+             return;
+         }
+
+         if (ActivityMasters.ActivityStatus == "") {
+             document.getElementById("txtactivitystatus").style.borderColor = "red";
+             alert('Please  enter status!')
+             event.preventDefault();
+             return;
+         }
+
+         var data1 = JSON.stringify(ActivityMasters);
+        // alert(data1);
+
+            $.ajax({
+                url: "/ModifyModule/SaveCostMappingDetails",
+                data: data1,
+                type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+                success: function (item) {
+                    alert(item.Message)
+                    cleartextboxes();
+
+                 },
+                error: function (errormessage) {
+                alert(errormessage.responseText);
+                }
+            });
+        }
+</script>
+
+

@@ -1,0 +1,258 @@
+﻿
+@{
+    ViewBag.Title = "Dock Destuff Cancel Work Order";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Dock Destuff Cancel Work Order</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Wo No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtreceiptno" type="text" placeholder="Wo No" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-15p sorting" style="width:1px;"> <input type="checkbox" id="flowcheckall" value="" />&nbsp;Select    </th>
+
+                                            <th class="wd-10p sorting">Wo No</th>
+                                            <th class="wd-10p sorting">Work Year</th>
+                                            <th class="wd-10p sorting">Container No</th>
+                                            <th class="wd-10p sorting">Jo No</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Cancel" class="btn btn-danger" onclick="Cancel()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+
+
+        });
+
+
+
+    });
+
+
+
+
+    function Show() {
+        var receiptno = $("#txtreceiptno").val();
+    
+        var data1 = { 'WoNo': receiptno};
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/CancelWorkOrder',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                data = JSON.parse(data);
+                $('#reportTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "aaSorting": [],
+                    "order": [],
+                    "aaData": data,
+                    "columns": [
+                        {
+
+                            "data": "Select",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  value="' + row.ContainerNo + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "WoNo" },
+                        { "data": "WorkYear" },
+                        { "data": "ContainerNo" },
+                        { "data": "Jono" },
+
+
+
+
+
+
+                    ]
+                })
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+    
+</script>
+<script>
+    function Cancel() {
+        debugger;
+
+        $("#tracker-loader").fadeIn("slow");
+         
+
+        var r = confirm("Are you sure want to cancel this Work Order ?");
+        if (r == true) {
+
+
+            var itemcount = checkItemcount();
+
+
+            if (itemcount == false) {
+                alert("No Record Found To Cancel");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("reportTable");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        
+                        var WoNo = row.cells[3].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (WoNo == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                         //   alert("hiiii");
+                            row = table.rows[i];
+                            
+                            WoNo = row.cells[1].innerText;
+                            containerNo = row.cells[3].innerText;
+                            JoEntryID = row.cells[4].innerText;
+                            tablearray.push({
+                                'WoNo': WoNo, 'containerNo': containerNo, 'JoEntryID': JoEntryID
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+
+                var data1 = {
+                'Debitdata': tablearray 
+                };
+
+                if (tablearray.length == 0) {
+                    alert("Please select record to proceed");
+                    return false;
+                }
+
+            var data = JSON.stringify(data1);
+        
+            $.ajax({
+                url: "/Report/CancelWorkDetailsData",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("DockDestuffCancelWorkOrder", "Report")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+            }//else part end
+
+        }//end of main called function
+
+        //Check Checkbox selected count
+
+    }
+
+    function checkItemcount() {
+        var table = $('#reportTable').DataTable();
+        if (table.rows().count() == 0) {
+            return false;
+        }
+        return true;
+    }
+</script>

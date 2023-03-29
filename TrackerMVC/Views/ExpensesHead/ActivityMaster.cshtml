@@ -1,0 +1,413 @@
+﻿
+@{
+    ViewBag.Title = "Activity Master";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h3>Activity Master</h3>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Activity Master Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity-ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtactivityid" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtactivityname" type="text" placeholder="Activity Name" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Time-Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddltimetype">
+                                                <option value="0">--Select--</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Max Allow Fuel</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtmaxfuel" type="text" placeholder="Max Allow Fuel" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">&nbsp;</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="custom-switch ">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="islr" value="True" checked class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">Is LR?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">&nbsp;</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="custom-switch ">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="vehicleIO" value="True" checked class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">Vehicle In Out?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity Status</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select class="form-control" id="ddlactivitystatus">
+                                                <option value="0">--Select--</option>
+                                                <option value="I">IN</option>
+                                                <option value="O">OUT</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Fuel Group</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtfg" type="text" placeholder="Fuel Group" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-1">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Max Hours</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txthrs" type="number" placeholder="Hours" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cycle</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtcycle" type="text" placeholder="Cycle" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-3">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">&nbsp;</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <label class="custom-switch ">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="txtisactive" value="True" checked class="custom-switch-input">
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">Is Active?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return SaveActivity();">Save</button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divCreateSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List Of Activity Master</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Search</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                            @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*<input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowSSRSummary();" />*@
+                                            <button class=" btn btn-primary" style="margin-top: auto" title="Show" id="btnSearch" onclick="ShowSSRSummary()" type="button">
+                                                <i class="fe fe-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" style="visibility:hidden"> '</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" id="btnSearch" style="margin-top: auto" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                                            @*@Html.ActionLink("Excel To Excel", "ExportActivityMasterReport", null, new { @class = "btn btn-primary btn-md" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+        function BackToWorkOrder() {
+            $("#divCreate").show();
+            $("#divCreateSummary").hide();
+        }
+        function OpenWOSummary() {
+            $("#divCreate").hide();
+            $("#divCreateSummary").show();
+        }
+
+     function SaveActivity() {
+         debugger;
+         var ActivityID = document.getElementById('txtactivityid').value;
+         var Name = document.getElementById('txtactivityname').value;
+         var TimeType = document.getElementById('ddltimetype').value;
+         var MXfuel = document.getElementById('txtmaxfuel').value;
+         var ISLr = $('#islr').is(':checked') ? $('#islr').val() : false;
+         //var VInOut = document.getElementById('vehicleIO').value;terinory operator
+         var VInOut = $('#vehicleIO').is(':checked') ? $('#vehicleIO').val() : false;
+         var ActStatus = document.getElementById('ddlactivitystatus').value;
+         var FuelG = document.getElementById('txtfg').value;
+         var Max = document.getElementById('txthrs').value;
+         var Cycle = document.getElementById('txtcycle').value;
+         var IsActive = $('#txtisactive').is(':checked') ? $('#txtisactive').val() : false;
+
+
+
+
+         if (Name == "") {
+             document.getElementById("txtactivityname").style.borderColor = "red";
+            alert('Please  Enter Activity Name!')
+            event.preventDefault();
+            return;
+         }
+
+         if (TimeType == 0) {
+             document.getElementById("ddltimetype").style.borderColor = "red";
+             alert('Please  Select Time-Type!')
+             event.preventDefault();
+             return;
+         }
+         if (MXfuel == "") {
+             document.getElementById("ddltimetype").style.borderColor = "red";
+             alert('Please  enter max-fuel!')
+             event.preventDefault();
+             return;
+         }
+         if (ActStatus == 0) {
+             document.getElementById("ddltimetype").style.borderColor = "red";
+             alert('Please  Select Activity-Status!')
+             event.preventDefault();
+             return;
+         }
+         if (FuelG == "") {
+             document.getElementById("ddltimetype").style.borderColor = "red";
+             alert('Please  enter fuel-group!')
+             event.preventDefault();
+             return;
+         }
+
+         var ActivityMasters = {};
+         ActivityMasters.EntryID = ActivityID;
+         ActivityMasters.ActivityName = Name;
+         ActivityMasters.TimeType = TimeType;
+         ActivityMasters.MaxAllow = MXfuel;
+         ActivityMasters.LR = ISLr;
+         ActivityMasters.IO = VInOut;
+         ActivityMasters.ActivityStatus = ActStatus;
+         ActivityMasters.FG = FuelG;
+         ActivityMasters.Max = Max;
+         ActivityMasters.Cycle = Cycle;
+         ActivityMasters.IsActive = IsActive;
+
+
+        //ExpensesHead Is Entities Name
+        //This Is For Pass Data Through Java Script
+$.ajax({
+    url: "/ExpensesHead/SaveActivityMaster",
+    data: '{ActivityMasters: ' + JSON.stringify(ActivityMasters) + '}',
+type: "POST",
+contentType: "application/json; charset=utf-8",
+dataType: "json",
+success: function (result) {
+alert('Record saved successfully')
+
+window.location.href = '@Url.Action("ActivityMaster", "ExpensesHead")';
+},
+error: function (errormessage) {
+alert(errormessage.responseText);
+}
+});
+        }
+
+        function ShowSSRSummary() {
+
+
+            debugger;
+            var search = document.getElementById('txtsearch').value;
+            var data1 = { 'search': search };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/ExpensesHead/ActivityReport",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#reportTable").empty();
+                    RepTableDataJson($("#tblWorkOrderOpenList"), data, "ActivityReport", "ActivityReport")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+
+        }
+</script>
+<script>
+    //get details in text box
+    function edittext(AutoID) {
+        debugger;
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+        $("#txtactivityid").val(AutoID);
+        var AutoID = $("#txtactivityid").val().trim();
+        var data1 = { "AutoID": AutoID };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ExpensesHead/GetActivity',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $('#txtactivityid').val(data[0].EntryID);
+                $('#txtactivityname').val(data[0].ActivityName);
+                $('#ddltimetype').val(data[0].TimeType);
+                $('#txtmaxfuel').val(data[0].MaxAllow);
+                $('#islr').val(data[0].LR);
+                $('#vehicleIO').val(data[0].IO);
+                $('#ddlactivitystatus').val(data[0].ActivityStatus);
+                $('#txtfg').val(data[0].FG);
+                $('#txtcycle').val(data[0].Cycle);
+                $('#txthrs').val(data[0].Max);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+        // excel icon call button
+    function GetExcelFile() {
+        window.location = '@Url.Action("ExportActivityMasterReport", "ExpensesHead")?';
+    }
+</script>
+<script>
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+        $("input:text").val("");
+
+    }
+</script>
+

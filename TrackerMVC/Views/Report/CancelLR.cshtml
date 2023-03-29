@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "CancelLR";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Cancel Lorry Receipt</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">LR No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input ID="txtlr" type="text" placeholder="LR No" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function Show() {
+        var LRNo = $("#txtlr").val();
+        var data1 = { 'LRNo': LRNo};
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/CancelReceiptLRReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJson($("#reportTable"), data, "CancelReceiptLRReport", "CancelReceiptLRReport");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function Cancel(LRNo) {
+        debugger;
+
+
+        var r = confirm("Are you sure want to cancel this LR?");
+        if (r == true) {
+
+
+            var data1 = { 'LRNo': LRNo };
+            data = JSON.stringify(data1);
+
+        $.ajax({
+        type: "POST",
+            url: "/report/CancelLRWithReason",
+            data: data,
+        contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                alert(response);
+    window.location.href = '@Url.Action("CancelLR", "Report")';
+    },
+        error: function (errormessage) {
+        // alert("error");
+        alert(errormessage.responseText);
+        }
+        });
+
+        }
+
+        };
+</script>
+
+

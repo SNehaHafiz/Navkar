@@ -1,0 +1,233 @@
+﻿
+@{
+    ViewBag.Title = "Customer and category wise outstanding";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="tracker-loader"></div>
+<style>
+    .table th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .table td.first.row {
+        text-align: left
+    }
+
+    .table td.second.row {
+        text-align: left
+    }
+
+    .table td.row {
+        text-align: right
+    }
+</style>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">
+            <label id="showlabel"></label> :<label id="lblCount"></label><br />
+            <label>Rs</label> :<label id="lblrupcount"></label>
+
+        </h4>
+    </div>
+
+    <input type="button" id="btnVariousVehicle" value="Customer Wise OutStanding" class="btn btn-success" onclick="CategorywiseoutstandingClick()" />
+    <input type="button" id="btnIdleVehicles" value="Customer & Category Wise Outstanding" class="btn btn-primary" onclick="CustomerCategoryWiseOutstandingclick()" />
+
+</div>
+
+<div class=" content-area" id="idelvehicles" style="display:none">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelCustomerandCategoryDetailsreport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="Varoiusvehicles" style="display:none">
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @Html.ActionLink("Export To Excel", "ExportToExcelCustomerandcategorywiseDetailsreport", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead>
+
+                                        <tr></tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $('#example2').DataTable({
+    //        "bLengthChange": false,
+    //        "bInfo": false,
+    //        "bPaginate": false,
+    //        //"bFilter": false,
+    //        "paging": false
+
+    //    });
+
+
+    //});
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+        $("#showlabel").text('Customer & Category Wise Outstanding')
+    })
+</script>
+<script>
+    function CategorywiseoutstandingClick() {
+        $("#idelvehicles").show();
+        $("#Varoiusvehicles").hide();
+        $("#showlabel").text('Customer Wise OutStanding');
+        $("#lblrupcount").text(0);
+        Categorywiseoutstanding();
+    }
+
+    function CustomerCategoryWiseOutstandingclick() {
+        $("#idelvehicles").hide();
+        $("#Varoiusvehicles").show();
+        $("#showlabel").text('Customer & Category Wise Outstanding');
+        $("#lblrupcount").text(0);
+        CustomerCategoryWiseOutstanding();
+     
+        $("#NTL").css({ "background-color": "#7754ce" });
+        $("#NCL").css({ "background-color": "#9f78ff" });
+    }
+</script>
+
+<script type="text/javascript">
+
+    function Categorywiseoutstanding() {
+
+        $("#tracker-loader").fadeIn("slow");
+  
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/AjaxCustomerandcategorywiseoutstanding',
+          //  data: '{VehicleGroup: ' + JSON.stringify(VehicleGroup) + '}',
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                $("#example1").empty();
+                RepTableDataJsonwopaging($("#example1"), data, "Location Wise Vehicle", "LocationWiseVehicle");
+                $("#tracker-loader").fadeOut("slow");
+
+                var table = document.getElementById("example1");
+
+                $("#lblCount").text(table.rows.length - 1);
+                var row;
+                var Count12 = 0;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    var Size = row.cells[2].innerText;
+                    var size1 = Size;
+                    Count12 = Count12 + Number(size1);
+                    var n = Count12.toFixed(2);
+                }
+             
+                $("#lblrupcount").text(n);
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    $("#NTL").click(function () {
+        $("#NTL").css({ "background-color": "#7754ce" });
+        $("#NCL").css({ "background-color": "#9f78ff" });
+    });
+    $("#NCL").click(function () {
+        $("#NCL").css({ "background-color": "#7754ce" });
+        $("#NTL").css({ "background-color": "#9f78ff" });
+
+    });
+
+</script>
+
+
+<script type="text/javascript">
+
+    function CustomerCategoryWiseOutstanding() {
+        $("#tracker-loader").fadeIn("slow");
+
+     
+        $.ajax({
+            type: 'POST',
+            url: '/Report/AjaxCustomerandcategorywiseoutstanding2',
+            // data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                $("#example2").empty();
+                RepTableDataJsonwopaging($("#example2"), data, "Location Wise Vehicle", "LocationWiseVehicle");
+                $("#tracker-loader").fadeOut("slow");
+                var table1 = document.getElementById("example2");
+
+                $("#lblCount").text(table1.rows.length - 1);
+                var row;
+                var Count1 = 0;
+                for (var i = 1; i < table1.rows.length; i++) {
+                    row = table1.rows[i];
+                    var Size2 = row.cells[3].innerText;
+                    var size3 = Size2;
+                    Count1 = Count1 + Number(size3);
+                    var n1 = Count1.toFixed(2);
+                }
+              
+                $("#lblrupcount").text(n1);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+

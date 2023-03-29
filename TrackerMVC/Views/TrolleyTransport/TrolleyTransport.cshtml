@@ -1,0 +1,252 @@
+﻿@*@model TrackerMVCEntities.BusinessEntities.Trolleytransport*@
+
+@{
+    ViewBag.Title = "TrolleyTransport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<div id="addTrolley">
+    <div class="page-header">
+        <h4 class="page-title">Trolley Master</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();"><i class="fa fa-file-text"></i></button>*@
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();" ><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry ID </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtentryID" type="text" placeholder="New" readonly="readonly" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry Date </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtentryDate" type="datetime-local" readonly value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trolley Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtTrolleyNumber" type="text" placeholder="Trolley Number" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Installed Tyres</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtInstalled" type="text" placeholder="Installed Tyres" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trolley Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlTrolleyType", (IEnumerable<SelectListItem>)ViewBag.TransporterList, "--Select--", new { @class = "form-control", @id = "ddlTrolleyType", name = "ddlTrolleyType", autocomplete = "off" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtWeight" type="text" placeholder="Weight" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlSize", (IEnumerable<SelectListItem>)ViewBag.VehicleTypeList, "--Select--", new { @class = "form-control", @id = "ddlSize", name = "ddlsize", autocomplete = "off" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+
+                                    <button id="btnSave" class="btn btn-success btn-xs" onclick="return AddTrailer();">Save</button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div id="summaryList">
+
+
+    </div>
+</div>
+<script>
+        function AddTrailer() {
+
+            var txtentryDate = document.getElementById('txtentryDate').value;
+
+            var txtTrolleyNumber = document.getElementById('txtTrolleyNumber').value;
+            //alert("hii")
+            var txtInstalled = document.getElementById('txtInstalled').value;
+            var ddlTrolleyType = document.getElementById('ddlTrolleyType').value;
+            var txtWeight = document.getElementById('txtWeight').value;
+            var ddlSize = document.getElementById('ddlSize').value;
+            //alert("hii")
+            if (txtentryDate == "") {
+                document.getElementById("txtentryDate").style.borderColor = "red";
+                alert('Please enter Entry Date!')
+                event.preventDefault();
+                return;
+            }
+            if (txtTrolleyNumber == "") {
+                document.getElementById("txtTrolleyNumber").style.borderColor = "red";
+                alert('Please enter Trolley Number!')
+                event.preventDefault();
+                return;
+            }
+            if (txtInstalled == "") {
+                document.getElementById("txtInstalled").style.borderColor = "red";
+                alert('Please select Installed Tyres!')
+                event.preventDefault();
+                return;
+            }
+            if (ddlTrolleyType == 0) {
+                document.getElementById("ddlTrolleyType").style.borderColor = "red";
+                alert('Please select Trolley Type!')
+                event.preventDefault();
+                return;
+            }
+            if (txtWeight == "") {
+                document.getElementById("txtWeight").style.borderColor = "red";
+                alert('Please select Weight!')
+                event.preventDefault();
+                return;
+            }
+            if (ddlSize == 0) {
+                document.getElementById("ddlSize").style.borderColor = "red";
+                alert('Please select Size!')
+                event.preventDefault();
+                return;
+            }
+            var Trolleytransport = {};
+            Trolleytransport.EntryDate = txtentryDate;
+            Trolleytransport.TrolleyNumber = txtTrolleyNumber;
+            Trolleytransport.InstalledTyres = txtInstalled;
+            Trolleytransport.ID = ddlTrolleyType;
+            Trolleytransport.Weight = txtWeight;
+            Trolleytransport.ContainerSizeID = ddlSize;
+
+    $.ajax({
+        url: "/Trolleytransport/Save",
+        data: '{Trolleytransport: ' + JSON.stringify(Trolleytransport) + '}',
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+        if(JSON.stringify(result)==0)
+        {
+            alert('Trolley number already exist! ')
+        }
+        else
+        {
+            alert('Record saved successfully');
+            window.location.href = '@Url.Action("Trolleytransport", "Trolleytransport")';
+        }
+    
+    
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+        }
+
+  
+</script>
+<script>
+    //onclick="window.location = '@Url.Action("TrolleySummary", "TrolleyTransport")' "
+    function ViewSummaryTrolley() {
+      //  alert("hi");
+
+        $.ajax({
+            url: "/TrolleyTransport/TrolleySummary",
+           // data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //  dataType: "json",
+            success: function (response) {
+                $("#addTrolley").hide()
+                $('#summaryList').show()
+                $('#summaryList').html(response);
+            }
+        });
+
+
+        
+    }
+</script>
+
+

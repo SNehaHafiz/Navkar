@@ -1,0 +1,44 @@
+﻿
+@model IEnumerable<TrackerMVCEntities.BusinessEntities.SideMenuEntities>
+
+       @{
+           
+                @GetTreeMenus(Session["MenuList"] as IEnumerable<TrackerMVCEntities.BusinessEntities.SideMenuEntities>, 0)
+
+
+    }   
+
+@helper GetTreeMenus(IEnumerable<TrackerMVCEntities.BusinessEntities.SideMenuEntities> siteMenu, Nullable<int> parentID)
+{
+
+    foreach (var i in siteMenu.Where(a => a.ParentID.Equals(parentID)))
+    {
+
+        // var submenu = siteMenu.Where(a => a.ParentID.Equals(i.MenuID)).Count();
+        var submenu = siteMenu.Where(a => a.ParentID.Equals(i.MenuID)).ToList();
+        string action = i.Action;
+        string controller = i.ControllerName;
+        <li onclick="setDefaultHeight()">
+            <a href="#@i.MenuID" class="accordion-toggle wave-effect" data-toggle="collapse" aria-expanded="false">
+                <i class="@i.menuIcon"></i> @i.MenuName
+            </a>
+            <ul class="collapse list-unstyled" id=@i.MenuID data-parent="#accordion">
+
+                @foreach (var e in submenu)
+                {
+                    <li>
+                        <a href="/@e.ControllerName/@e.Action">
+                            <span>@e.MenuName</span>
+
+                        </a>
+                    </li>
+
+                }
+            </ul>
+        </li>
+        @*@GetTreeMenus(siteMenu, i.MenuID)*@
+    }
+
+}
+
+           

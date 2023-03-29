@@ -1,0 +1,464 @@
+﻿@{
+    ViewBag.Title = "Own Container Master";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+
+<div id="Entry">
+    <div class="page-header">
+        <h4 class="page-title">Own Container Master</h4>
+        <button class="btn btn-icon btn-teal" title="Summary list" data-toggle="tooltip" data-placement="bottom" onclick="ShowSummary()"><i class="fa fa-file-text"></i></button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">ID</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="number" class="form-control" id="ID" placeholder="New" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Container No</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" class="form-control" id="ContainerNo" placeholder="Container No" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Size</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("Size", (IEnumerable<SelectListItem>)ViewBag.Size, "--Select--", new { @class = "form-control", @id = "Size", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Type</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("Type", (IEnumerable<SelectListItem>)ViewBag.Type, "--Select--", new { @class = "form-control", @id = "Type", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Condition</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("Condition", (IEnumerable<SelectListItem>)ViewBag.Condition, "--Select--", new { @class = "form-control", @id = "Condition", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Status</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <select class="form-control" id="Status">
+                                    <option value="">--Select--</option>
+                                    <option value="Loaded">Loaded</option>
+                                    <option value="Empty">Empty</option>
+                                     
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Location</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("Location", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "Location", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">ISO Code</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.DropDownList("ISOCode", (IEnumerable<SelectListItem>)ViewBag.ISOCode, "--Select--", new { @class = "form-control", @id = "ISOCode", autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Tare Wt</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="number" class="form-control" id="TareWt" placeholder="Tare Wt" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Permissible Wt</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="number" class="form-control" id="PermissibleWt" placeholder="Permissible Wt" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Own/Lease</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <select class="form-control" id="OwnLease">
+                                    <option value="">--Select--</option>
+                                    <option value="Own">Own</option>
+                                    <option value="Lease">Lease</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Purchase Date</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                @Html.TextBox("PurchaseDate", null, new { @class = "form-control datePicker", @id = "PurchaseDate", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Leaser Name</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" class="form-control" id="LeaserName" placeholder="Leaser Name" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Lease From</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" class="form-control" id="LeaseFrom" placeholder="Lease From" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Lease Till</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" class="form-control" id="LeaseTill" placeholder="Lease Till" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-xs-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory" style="visibility:hidden">.</label>
+                        <label class="custom-switch">
+                            <input type="checkbox" class="custom-switch-input" id="IsActive" checked />
+                            <span class="custom-switch-indicator"></span>
+                            <span class="custom-switch-description">Is Active?</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    <button class="btn btn-success" title="Save" data-toggle="tooltip" data-placement="bottom" onclick="Save()"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Summary" style="display: none">
+    <div class="page-header">
+        <h4 class="page-title">Own Container Master Summary</h4>
+        <button class="btn btn-icon btn-success" title="Back" data-toggle="tooltip" data-placement="bottom" onclick="ShowEntry()"><i class="fa fa-arrow-left"></i></button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory">Search</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" class="form-control" id="Search" placeholder="Search" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label mandatory" style="visibility: hidden">Search</label>
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <button class="btn btn-primary" title="Search" data-toggle="tooltip" data-placement="bottom" onclick="Load()"><i class="fa fa-search"></i></button>
+                                <button class="btn btn-orange" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                   
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelOwnContainerMaster", "report")?';
+
+
+    }
+    $(function () {
+        $(".datePicker").datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'dd M yyyy',
+            language: "tr",
+            changeMonth: true,
+            changeYear: true,
+        });
+    });
+
+    function ShowSummary() {
+        $("#Entry").hide();
+        $("#Summary").show();
+    }
+
+    function ShowEntry() {
+        $("#Summary").hide();
+        $("#Entry").show();
+    }
+
+    function Save() {
+        var ID = $("#ID").val();
+        var ContainerNo = $("#ContainerNo").val();
+        var Size = $("#Size").val();
+        var Type = $("#Type").val();
+        var Condition = $("#Condition").val();
+        var Status = $("#Status").val();
+        var Location = $("#Location").val();
+        var ISOCode = $("#ISOCode").val();
+        var TareWt = $("#TareWt").val();
+        var PermissibleWt = $("#PermissibleWt").val();
+        var OwnLease = $("#OwnLease").val();
+        var PurchaseDate = $("#PurchaseDate").val();
+        var LeaserName = $("#LeaserName").val();
+        var LeaseFrom = $("#LeaseFrom").val();
+        var LeaseTill = $("#LeaseTill").val();
+        var IsActive = $("#IsActive").is(':checked');
+
+        if (ContainerNo == "") {
+            alert("Please enter container no.");
+            return false;
+        }
+        if (Size == "") {
+            alert("Please enter size.");
+            return false;
+        }
+        if (Type == "") {
+            alert("Please enter type.");
+            return false;
+        }
+        if (Condition == "") {
+            alert("Please enter condition.");
+            return false;
+        }
+        if (Status == "") {
+            alert("Please enter status.");
+            return false;
+        }
+        if (Location == "") {
+            alert("Please enter location.");
+            return false;
+        }
+        if (ISOCode == "") {
+            alert("Please enter iso code.");
+            return false;
+        }
+        if (TareWt == "") {
+            alert("Please enter tare weight.");
+            return false;
+        }
+        if (PermissibleWt == "") {
+            alert("Please enter permissible weight.");
+            return false;
+        }
+        if (OwnLease == "") {
+            alert("Please enter own/lease.");
+            return false;
+        }
+        if (LeaserName == "") {
+            alert("Please enter leaser name.");
+            return false;
+        }
+        if (LeaseFrom == "") {
+            alert("Please enter lease from.");
+            return false;
+        }
+        if (LeaseTill == "") {
+            alert("Please enter lease till.");
+            return false;
+        }
+
+        data1 = {
+            'ContainerNo': ContainerNo, 'Size': Size, 'Type': Type, 'Condition': Condition,
+            'Status': Status, 'Location': Location, 'ISOCode': ISOCode, 'TareWt': TareWt,
+            'PermissibleWt': PermissibleWt, 'OwnLease': OwnLease,
+            'PurchaseDate': PurchaseDate, 'LeaserName': LeaserName,
+            'LeaseFrom': LeaseFrom, 'LeaseTill': LeaseTill, 'IsActive': IsActive
+        };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            type: "POST",
+            url: "/Report/SaveOwnContainerMaster",
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                alert(response);
+                location.reload();
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+    }
+
+    function Load() {
+        var Search = $("#Search").val();
+
+        data1 = { 'Search': Search };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            type: "POST",
+            url: '/Report/LoadOwnContainerMaster',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No data found.');
+                    $("#example").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#example").empty();
+                RepTableDataJson($("#example"), data, "QC Entry", "QC_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function RepTableDataJson(tableName, data, title, fileName) {
+        try {
+            if (tableName == null) {
+                alert("table not exist.");
+            }
+            if ($.fn.DataTable.isDataTable(tableName)) {
+                tableName.DataTable().destroy();
+                tableName.empty();
+            }
+            var parseJSONResult = jQuery.parseJSON(data);
+            if (parseJSONResult != null && parseJSONResult.length > 0) {
+                var dynamicColumns = [];
+                var i = 0;
+                $.each(parseJSONResult[0], function (key, value) {
+                    var obj = { sTitle: key };
+                    dynamicColumns[i] = obj;
+                    i++;
+                });
+                var rowDataSet = [];
+                var i = 0;
+                $.each(parseJSONResult, function (key, value) {
+                    var rowData = [];
+                    var j = 0;
+                    $.each(parseJSONResult[i], function (key, value) {
+                        rowData[j] = value;
+                        j++;
+                    });
+                    rowDataSet[i] = rowData;
+
+                    i++;
+                });
+                tableName.dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "pageLength": 25,
+                    "aaData": rowDataSet,
+                    "bInfo": true,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": true,
+                    "order": [0, 1, 2, 3, 4, 5],
+                    "columns": dynamicColumns,
+                    "deferRender": true,
+                    "bSort": false,
+                    "dom": 'Bfrtip',
+                    "searching": true,
+                    "buttons": [
+                    ]
+                });
+            }
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+    }
+</script>

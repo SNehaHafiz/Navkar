@@ -1,0 +1,402 @@
+﻿
+@{
+    ViewBag.Title = "Destuff To Loaded GP Conversion";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+
+<script src="~/js/GetTableJson.js"></script>
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Destuff To Loaded GP Conversion</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Gate Pass No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtgpno", null, new { @class = "form-control ", @id = "txtgpno", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" name="Add" onclick="Fetch(); "><b>Show</b></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">GP Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        @Html.TextBox("txtgpdate", null, new { @class = "form-control ", @id = "txtgpdate", Placeholder = "GP Date", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">IGM No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtigmno", null, new { @class = "form-control ", @id = "txtigmno", Placeholder = "IGM No", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Item No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtitemno", null, new { @class = "form-control ", @id = "txtitemno", Placeholder = "Item No", @autocomplete = "off", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Delivery Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtdeltype", null, new { @class = "form-control ", @id = "txtdeltype", autocomplete = "off", Placeholder = "Delivery Type", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Line Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtline", null, new { @class = "form-control ", @id = "txtline", autocomplete = "off", Placeholder = "Line Name", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<div class="row">
+            <div class="col-lg-12 col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblWorkOrderOpenList" style="width:100%;"></table>
+                </div>
+            </div>
+        </div>*@
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:20px">Select</th>
+                                            <th style="width:20px">JO No</th>
+                                            <th style="width:50px">Container No</th>
+                                            <th style="width:10px">Size</th>
+                                            
+
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success" onclick="Update()" title="Convert"><b>Convert</b></button>
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<script>
+
+    function Fetch() {
+
+
+        var GPNo = $("#txtgpno").val().trim();
+
+
+        var data1 = { "GPNo": GPNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetImportGPDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+                $('#txtgpdate').val(data[0].EntryDate);
+                $('#txtigmno').val(data[0].IGMNo);
+                $('#txtitemno').val(data[0].IGM_ItemNo);
+                $('#txtdeltype').val(data[0].DeliveryType);
+                $('#txtline').val(data[0].SLName);
+                if (data != "") {
+                    Fetch1();
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function Update() {
+        debugger;
+
+
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var GPNo = $("#txtgpno").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (GPNo == "") {
+            isValid = isValid && false;
+            $("#txtgpno").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtgpno").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please Fill Required Fields");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        var r = confirm("Are you sure to make Destuff To Loaded Gate Pass ?");
+        if (r == true) {
+
+
+            var itemcount = checkItemcount();
+            if (itemcount == false) {
+                alert("No Record Found To Convert");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        var containerNo = row.cells[2].innerText;
+                        var JONo = row.cells[1].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (containerNo == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                         //   alert("hiiii");
+                            row = table.rows[i];
+                            JONo = row.cells[1].innerText;
+                            
+                            containerNo = row.cells[2].innerText;
+                            
+                            tablearray.push({
+                                'JONo': JONo, 'containerNo': containerNo
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+            }//else part end
+            var data1 = {
+                'Debitdata': tablearray, 'Remarks': Remarks,'GPNo':GPNo
+            };
+
+            if (tablearray.length == 0) {
+                alert("Please select record to proceed");
+                return false;
+            }
+            var data = JSON.stringify(data1);
+            alert(data);
+            $.ajax({
+                url: "/ModifyModule/UpdateDeliveryTypeDToL",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("LoadedToDestuffGP", "ModifyModule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }//end of main called function
+
+        //Check Checkbox selected count
+        function checkItemcount() {
+            var table = $('#example1').DataTable();
+            if (table.rows().count() == 0) {
+                return false;
+            }
+            return true;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function Fetch1() {
+        debugger;
+        var Search = document.getElementById('txtgpno').value;
+
+
+        var data1 = {  'GPNo': Search };
+
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetImportGridGPCDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "bInfo": true,
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+                            "data": "Select",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.containerNo + '">';
+                                return data;
+                            }
+                        },
+                        { "data": "JONo" },
+                        { "data": "containerNo" },
+                        { "data": "Size" },
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>

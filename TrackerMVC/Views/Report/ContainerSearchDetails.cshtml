@@ -1,0 +1,325 @@
+﻿
+@{
+    /**/
+
+    ViewBag.Title = "Scanning Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class="content-area overflow-hidden">
+
+        <div class="page-header">
+            <h4 class="page-title">Brief Search</h4>
+        </div>
+        @*<div class="row">
+
+        </div>*@
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtContainerno" type="text" class="form-control" placeholder="Container No" style="text-transform:uppercase" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" style="width:60PX" id="btnSearch" type="button" onclick="showContainerList()"><i class="fe fe-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-1 col-sm-12" style="display:none" id="divscan">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Scan</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtScan" type="text" class="form-control" style="text-transform:uppercase;background-color:peru;color:white" readonly="readonly" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12" style="display:none" id="divscannull">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Scan</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtScannull" type="text" class="form-control" readonly="readonly" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*@Html.ActionLink("Export To Excel", "ExportToExcel", null, new { @class = "btn btn-primary btn-md" })*@
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSize", null, new { @class = "form-control", @id = "txtSize", @name = "txtSize", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Packages</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPackage", null, new { @class = "form-control", @id = "txtPackage", @name = "txtPackage", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtweight", null, new { @class = "form-control", @id = "txtweight", @name = "txtweight", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Scan Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSacnLocation", null, new { @class = "form-control", @id = "txtSacnLocation", @name = "txtSacnLocation", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGM No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIgmNo", null, new { @class = "form-control", @id = "txtIgmNo", @name = "txtIgmNo", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Item No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtItemNo", null, new { @class = "form-control", @id = "txtItemNo", @name = "txtItemNo", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">POL</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPol", null, new { @class = "form-control", @id = "txtPol", @name = "txtPol", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Sacn Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSacnLocation", null, new { @class = "form-control", @id = "txtSacnLocation", @name = "txtSacnLocation", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-4 col-xs-12 col-sm-12 ">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Vessel Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtVesselName", null, new { @class = "form-control", @id = "txtVesselName", @name = "txtVesselName", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-xs-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Consignee</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtConsignee", null, new { @class = "form-control", @id = "txtConsignee", @name = "txtConsignee", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-xs-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Goods Description</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextArea("txtIGM_Goods", null, new { @class = "form-control", @id = "txtIGM_Goods", @name = "txtIGM_Goods", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#example2').DataTable({
+        //    "bLengthChange": false,
+        //    "bInfo": false,
+        //    "bPaginate": false,
+        //    //"bFilter": false,
+        //    "paging": false
+        //    //"dom": 'Bfrtip',
+        //    //"buttons": [{
+        //    //    "extend": 'excel',
+        //    //    "title": 'VoucherDetails',
+        //    //    "filename": 'VoucherDetails_List'
+
+        //    //}
+        //    //]
+        //});
+
+
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+<script type="text/javascript">
+  
+    function showContainerList() {
+        var PackageList = [];
+        $("#divscan").hide();
+        $("#divscannull").hide();
+        $("#txtSize").val("");
+        $("#txtPackage").val("");
+        $("#txtweight").val("");
+        $("#txtSacnLocation").val("");
+        $("#txtIgmNo").val("");
+        $("#txtItemNo").val("");
+        $("#txtIGM_Goods").val("");
+        $("#txtConsignee").val("");
+        $("#txtPol").val("");
+        $("#txtVesselName").val("");
+      
+
+     
+           
+            $("#txtScan").val("");
+       
+            $("#txtScannull").val("");
+       
+        $("#tracker-loader").fadeIn("slow");
+
+        var ContainerNo = $("#txtContainerno").val();
+
+        data1 = { 'ContainerNo': ContainerNo };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Report/GetContainerDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+               // alert(data);
+                var List = JSON.parse(data);
+                for (i = 0; i < List.length; i++) {
+                    var element = {};
+                    element.Packages = List[i].Packages;
+                    element.Size = List[i].Size;
+                    element.Weight = List[i].Weight;
+                    element.ScanLocation = List[i].ScanLocation;
+                    element.IGMNo = List[i].IGMNo;
+                    element.ItemNo = List[i].ItemNo;
+                    element.IGM_goodsdesc = List[i].IGM_goodsdesc;
+                    element.Consignee = List[i].Consignee;
+                    element.POL = List[i].POL;
+                    element.Vesselname = List[i].Vesselname;
+                    element.scantype = List[i].scantype;
+                    PackageList.push(element);
+                }
+                //alert(PackageList[0].Packages);
+                $("#txtSize").val(PackageList[0].Size);
+                $("#txtPackage").val(PackageList[0].Packages);
+                $("#txtweight").val(PackageList[0].Weight);
+                $("#txtSacnLocation").val(PackageList[0].ScanLocation);
+                $("#txtIgmNo").val(PackageList[0].IGMNo);
+                $("#txtItemNo").val(PackageList[0].ItemNo);
+                $("#txtIGM_Goods").val(PackageList[0].IGM_goodsdesc);
+                $("#txtConsignee").val(PackageList[0].Consignee);
+                $("#txtPol").val(PackageList[0].POL);
+                $("#txtVesselName").val(PackageList[0].Vesselname);
+              // alert(PackageList[0].scantype);
+                if (PackageList[0].scantype != " ") {
+                    $("#divscan").show()
+                    $("#divscannull").hide()
+                    $("#txtScan").val("Yes");
+                    
+                } else {
+                    $("#divscan").hide()
+                    $("#divscannull").show()
+                    $("#txtScannull").val("No");
+                }
+               
+
+                //$("#example2").empty();
+                //RepTableDataJson($("#example2"), data, "Voucher Details", "VoucherDetails_List");
+
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+            
+        });
+        $("#tracker-loader").fadeOut("slow");
+    }
+</script>

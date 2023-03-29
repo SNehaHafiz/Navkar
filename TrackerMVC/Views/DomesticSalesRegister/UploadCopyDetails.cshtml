@@ -1,0 +1,242 @@
+﻿<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>﻿
+
+    @model TrackerMVCEntities.BusinessEntities.DomesticCargoEntites
+
+    
+ <div class=" content-area" id="divCloseLR">
+            <div class="page-header">
+                <h4 class="page-title">Upload Invoice Copy</h4>
+                <div class="ibox-content  text-right">
+                    <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label mandatory">JO No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtJoNo", null, new { @class = "form-control", @readonly = true, @id = "TxtJoNo", name = "TxtJoNo", autocomplete = "off", placeholder = "Jo No", @Value = ViewBag.JoNo })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Jo Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtJoDate", null, new { @class = "form-control", @readonly = true, @id = "TxtJoDate", name = "TxtJoDate", autocomplete = "off", placeholder = "Jo Date", @Value = ViewBag.Jodate })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Invoice No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtInvoiceNo", null, new { @class = "form-control", @readonly = true, @id = "TxtInvoiceNo", name = "TxtInvoiceNo", autocomplete = "off", placeholder = "Invoice No", @Value = ViewBag.InvoiceNo })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Batch</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("Txtbatch", null, new { @class = "form-control", @readonly = true, @id = "Txtbatch", name = "Txtbatch", autocomplete = "off", placeholder = "Batch", @Value = ViewBag.Batch })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Destination</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtDestination", null, new { @class = "form-control", @readonly = true, @id = "TxtDestination", name = "TxtDestination", autocomplete = "off", placeholder = "Destination", @Value = ViewBag.Destination })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">BillIng Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtBillingDate", null, new { @class = "form-control", @readonly = true, @id = "TxtBillingDate", name = "TxtBillingDate", autocomplete = "off", placeholder = "BillingDate", @Value = ViewBag.BillingDate })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory"> Document Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@html.dropdownlistfor(model => model.docid, (ienumerable<selectlistitem>)viewbag.doclist, new { @class = "form-control ", @id = "ddldoclist", name = "ddldoclist" })*@
+                                        @Html.DropDownList("ddlDocList", (IEnumerable<SelectListItem>)ViewBag.DocList, "--Select--", new { @class = "form-control", @id = "ddlDocList", name = "ddlDocList", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory" style="visibility:hidden">ype</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="file" id="fileImport" name="postedFile" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory" style="visibility:hidden">Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="Button" id="btnImport" value="Import" class="btn btn-primary" />*@
+                                        <button type="button" class="btn btn-primary __web-inspector-hide-shortcut__ mb-1" id="btnImport" onclick="UploadClick();">Upload <i class="fa fa-upload fa-spin ml-2"></i></button>
+
+
+                                        <button class="btn btn-primary" id="btnView" style="display:none" type="button">View all</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8 col-sm-12">
+                            <div class="table-responsive">
+                                <table id="example3" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    <thead style="display:none">
+                                        <tr>
+
+                                            <th class="wd-10p sorting">Document Type</th>
+
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    
+
+
+<script>
+    $(document).ready(function () {
+        GetDocList();
+    })
+</script>
+<script>
+   function UploadClick() {
+
+            $("#tracker-loader").fadeIn("slow");
+            if (window.FormData !== undefined) {
+                var fileUpload = $("#fileImport").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+                var InvoiceNo = $("#TxtInvoiceNo").val();
+                var DocID = $("#ddlDocList option:selected").val()
+
+                if (files.length == 0) {
+                    alert("Please select File!");
+                    $("#tracker-loader").fadeOut("slow");
+                    return false;
+                }
+                else {
+                    for (var i = 0; i < files.length; i++) {
+
+                        fileData.append(files[i].name, files[i]);
+                    }
+                    fileData.append('InvoiceNo', InvoiceNo);
+                    fileData.append('DocID', DocID);
+                    $.ajax({
+                        url: '/DomesticSalesRegister/ImportFile',
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (data) {
+                            swal(data, "", "success");
+                            GetDocList();
+                            $("#ddlDocList").val('');
+                            $("#tracker-loader").fadeOut("slow");
+                        },
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                            $("#tracker-loader").fadeOut("slow");
+                        }
+                    });
+                }
+            }
+            else {
+                alert("FormData is not supported.");
+                $("#tracker-loader").fadeOut("slow");
+            }
+            $("#fileImport").val('');
+        }
+    function checkItemcount() {
+
+        var table = $('#example3').DataTable();
+        alert(table.rows().count());
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+    function OnCLear() {
+        document.location = '@Url.Action("UploadInvoiceCopy", "domesticSalesRegister")';
+    }
+
+    function GetDocList() {
+
+        $("#tracker-loader").fadeIn("slow");
+        var InvoiceNo = $("#TxtInvoiceNo").val();
+        var datac = { 'InvoiceNo': InvoiceNo }
+        var datac = JSON.stringify(datac);
+        $.ajax({
+            url: "/DomesticSalesRegister/GetUplaodedCopy",
+            data: datac,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#example3").empty();
+                RepTableDataJson($("#example3"), data, "Scanned List", "ScannedList");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        })
+    }
+</script>
+
+

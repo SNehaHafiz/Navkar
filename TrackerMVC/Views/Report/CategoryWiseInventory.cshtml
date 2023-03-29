@@ -1,0 +1,324 @@
+﻿ @model IEnumerable<TrackerMVCEntities.BusinessEntities.PendingContainersForJoUpdationsEntities>
+
+@{
+    ViewBag.Title = "CategoryWiseInventory";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Category Wise Inventory</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> Inventory As On</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtAsonDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="All" class="btn btn-primary" onclick="ShowAll()" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">20's</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txt20", null, new { @class = "form-control", @id = "txt20", name = "txt20", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#9F78FF;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">40's</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txt40", null, new { @class = "form-control", @id = "txt40", name = "txt40", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#FDB901;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">45's</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txt45", null, new { @class = "form-control", @id = "txt45", name = "txt45", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#9F78FF;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Teus</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <b>
+                                            <label>
+                                                @Html.TextBox("txtteus", null, new { @class = "form-control", @id = "txtteus", name = "txtteus", autocomplete = "off", rows = "2", @maxlength = 500, @readonly = true, Style = "font-weight: bold;text-align:right;background:#5ED84F;color:white" })
+
+                                            </label>
+                                        </b>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelCategoryWiseInventory", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                    @*<thead>
+                            <tr>
+
+                                <th style="width:1px">Sr No.</th>
+                                <th>Activity</th>
+                                <th>Status</th>
+                                <th>Container No.</th>
+                                <th>Size</th>
+                                <th>Type</th>
+                                <th>In Date</th>
+                                <th>Line Name</th>
+                                <th>Dwell Days</th>
+
+                            </tr>
+                        </thead>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+        </div>
+    </div>
+</div>
+    </div>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $('#example2').DataTable({
+    //        "bLengthChange": false,
+    //        "bInfo": false,
+    //        "bPaginate": false,
+    //        //"bFilter": false,
+    //        "paging": false,
+    //        "dom": 'Bfrtip',
+    //        "buttons": [{
+    //            "extend": 'excel',
+    //            "title": 'PendingContainerAgainZeroJo',
+    //            "filename": 'PendingContainer_List'
+
+    //        }
+    //        ]
+    //    });
+
+       
+       
+
+    //});
+</script>
+<script>
+
+    function Show()
+    {
+        TeusDetails()
+       // alert("hi");
+        var txtAsonDate = $("#txtAsonDate").val();
+
+       // alert(txtAsonDate)
+       
+        var data1 = JSON.stringify({
+            'AsonDate': $("#txtAsonDate").val()
+           
+        });
+
+     
+     
+         $.ajax({
+         
+             url: '/Report/getInventory',
+             type: 'Post',
+             data: data1,
+             async: false,
+             contentType: 'application/json; charset=utf-8',
+             success: function (data) {
+                 debugger;
+                 RepTableDataJson($('#example2'), data, "Category Wise Inventory", "CategoryWIseInventory");
+
+                 TeusDetails();
+             },
+             error: function (errormessage) {
+                 alert(errormessage.responseText);
+             }
+             
+             
+         });
+    }
+
+    function ShowAll() {
+        TeusDetailsAll()
+        // alert("hi");
+        var txtAsonDate = $("#txtAsonDate").val();
+        // alert(txtAsonDate)
+
+        var data1 = JSON.stringify({
+            'AsonDate': $("#txtAsonDate").val()
+
+        });
+
+        //  alert(data1);
+        $.ajax({
+         
+            url: '/Report/getInventoryAll',
+            type: 'Post',
+            data: data1,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                debugger;
+                RepTableDataJson($('#example2'), data, "Category Wise Inventory", "CategoryWIseInventory");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+    }
+    function TeusDetails(AsonDate) {
+        //alert('hii')
+
+        debugger;
+        
+
+        var data1 = JSON.stringify({
+            'AsonDate': $("#txtAsonDate").val()
+
+        });
+        $.ajax({
+            url: "/Report/teusSearchStocks",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                //debugger;
+                //alert(JSON.stringify(data[0].AssessNo))
+                //alert(JSON.stringify(data))
+                $("#txt20").val(data[0].txt20);
+                $("#txt40").val(data[0].txt40);
+                $("#txt45").val(data[0].txt45);
+                $("#txtteus").val(data[0].Teus);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        })
+    }
+
+
+    function TeusDetailsAll(AsonDate) {
+        //alert('hii')
+
+        debugger;
+
+
+        var data1 = JSON.stringify({
+            'AsonDate': $("#txtAsonDate").val()
+
+        });
+        $.ajax({
+            url: "/Report/teusSearchStockAll",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                //debugger;
+                //alert(JSON.stringify(data[0].AssessNo))
+                //alert(JSON.stringify(data))
+                $("#txt20").val(data[0].txt20);
+                $("#txt40").val(data[0].txt40);
+                $("#txt45").val(data[0].txt45);
+                $("#txtteus").val(data[0].Teus);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        })
+    }
+</script>

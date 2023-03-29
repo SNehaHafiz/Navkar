@@ -1,0 +1,280 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.PendingContainersForJoUpdationsEntities>
+
+@{
+    ViewBag.Title = "MovementAtICD";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Movement at ICD</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> Search Criteria</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlCriteria", (IEnumerable<SelectListItem>)ViewBag.CriteriaList, new { @class = "form-control", @id = "ddlCriteria", name = "ddlCriteria" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelMovementIcd", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+
+
+                                        @*@foreach (var d in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(m => d.SrNo)</td>
+                                    <td>@Html.DisplayFor(m => d.JONo)</td>
+                                    <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                    <td>@Html.DisplayFor(m => d.SealNo)</td>
+                                    <td>@Html.DisplayFor(m => d.TruckNo)</td>
+                                    <td>@Html.DisplayFor(m => d.EIRNo)</td>
+                                    <td>@Html.DisplayFor(m => d.EIRDate)</td>
+                                    <td>@Html.DisplayFor(m => d.InDate)</td>
+                                    <td>@Html.DisplayFor(m => d.AddedBy)</td>
+
+                                </tr>
+
+
+                            }*@
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+
+
+<script>
+
+
+    function ShowSelectedValue() {
+        var Criteria = $("#ddlCriteria option:selected").text();
+        var FromDate = $("#txtFromDate").val();
+        var ToDate = $("#txtToDate").val()
+        var data1 = { 'FromDate': FromDate, 'Criteria': Criteria, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/getMovementICDNew',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+
+                RepTableDataJson($("#reportTable"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+
+    function Show() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValue();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+</script>
+
+@*<script>
+
+        function ShowSelectedValue() {
+            // alert("hi");
+            var Criteria = $("#ddlCriteria option:selected").text();
+            var FromDate = $("#txtFromDate").val();
+            var ToDate =  $("#txtToDate").val()
+            var data1 = { 'FromDate': FromDate, 'Criteria': Criteria, 'ToDate': ToDate };
+            data = JSON.stringify(data1);
+
+            $.ajax({
+
+                url: '/Report/getMovementICDNew',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+
+                    RepTableDataJson($("#example2"), data, "SalesRegisterReport", "SalesRegisterReport_list");
+                    var table = document.getElementById("example2");
+                    //Textboxvalue(Activity)
+                    $("#tracker-loader").fadeOut("slow");
+
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+
+            });
+        }
+
+        function Show() {
+            // alert("before")
+            $("#tracker-loader").fadeIn("fast");
+
+            var delayInMilliseconds = 1000; //1 second
+
+            setTimeout(function () {
+                for (i = 0; i < 100000; i++) {
+                    i = i + 0;
+                }
+                ShowSelectedValue();
+
+            }, delayInMilliseconds);
+
+
+
+        }
+    </script>*@
+
+
+
+
+
+
+

@@ -1,0 +1,1560 @@
+﻿
+@{
+    ViewBag.Title = "ImportAndExportMovementReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<style>
+    /*table#tbldirect td:first-child {
+        text-align: left;
+        padding: 10px 10px 0px 10px;
+        cursor: pointer;
+        background-color: #9f78ff;
+        color: white;
+    }*/
+
+    table#tbldirect td {
+        text-align: right;
+    }
+
+    .table-responsive {
+        overflow: hidden;
+    }
+
+    .tblCustom {
+        /*font-weight: bold;*/
+        text-align: center;
+    }
+
+    .tblFirst {
+        background-color: #9f78ff !important;
+        /*font-weight: bold;*/
+        text-align: left;
+        color: #fff !important;
+    }
+</style>
+
+<div id="tracker-loader"></div>
+
+
+<div class=" content-area">
+    <div class="page-header">
+
+        <h4 class="page-title">ICD & CFS Combined Report</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+                        @*<div class="form-group">
+                                <div class="row gutters-xs">
+
+                                    <div class="col-12">
+                                        <button class="btn btn-primary" id="btnSearchCombined" onclick="ShowCombined()" type="button">Combined Movement</button>
+                                        <button class="btn btn-primary" id="btnSearchCFSMov" onclick="ShowCFSMOV()" type="button">CFS Movement</button>
+                                        <button class="btn btn-primary" id="btnSearchICDFull" onclick="ShowCombined()" type="button">ICD Full Report</button>
+                                        <button class="btn btn-primary" id="btnSearchCFSFull" onclick="ShowCombined()" type="button">CFS Full Report</button>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="input-group">
+
+                            <span class="input-group-append " id="tabPurpose">
+                                <button class="btn btn-primary active" id="btnSearchCombined" style="text-transform: uppercase;" type="button" onclick="ShowCombined()">Combined Movement </button>
+                                <button class="btn btn-primary" id="btnSearchCFSMov" style="text-transform: uppercase;" type="button" onclick="ShowCFSMOV()">CFS Movement </button>
+                                <button class="btn btn-primary" id="btnSearchICDFull" style="text-transform: uppercase;" type="button" onclick="ShowICDFull()">ICD Full Report </button>
+                                <button class="btn btn-primary" id="btnSearchCFSFull" style="text-transform: uppercase;" type="button" onclick="ShowCFSFull()">CFS Full Report </button>
+
+                            </span>
+                        </div>
+                    </div>
+                    <br /><br />
+                    <div id="divCombined">
+                        <div class="row mb-0">
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold">@ViewBag.LastMonthName</p>
+                                        </div>
+
+                                        @*<div class="inline">
+
+
+                                            </div>*@
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Process</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.List_LastICD)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;padding: 10px 10px 0px 10px; cursor: pointer;">@d["Process"]</td>
+
+                                                        <td style="text-align:center">@d["Import"]</td>
+                                                        <td style="text-align:center">@d["Export"] </td>
+                                                        <td style="text-align:center">@d["Total"] </td>
+
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2"></div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold">@ViewBag.LastMonthCompareName</p>
+                                        </div>
+
+                                        @*<div class="inline">
+
+
+                                            </div>*@
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImportLast" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Process</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.List_LastICDCompare)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;padding: 10px 10px 0px 10px; cursor: pointer;">@d["Process"]</td>
+
+                                                        <td style="text-align:center">@d["Import"]</td>
+                                                        <td style="text-align:center">@d["Export"] </td>
+                                                        <td style="text-align:center">@d["Total"] </td>
+
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @*<div class="col-lg-6"> </div>*@
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold">@ViewBag.CurrentMonthName</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Process</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+
+
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.ListICD)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;padding: 10px 10px 0px 10px; cursor: pointer;">@d["Process"]</td>
+
+                                                        <td style="text-align:center;">@d["Import"]</td>
+                                                        <td style="text-align:center;">@d["Export"] </td>
+                                                        <td style="text-align:center;">@d["Total"] </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2"></div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold">@ViewBag.CurrentMonthCompareName</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Process</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+
+
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.ListICDCompare)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;padding: 10px 10px 0px 10px; cursor: pointer;">@d["Process"]</td>
+
+                                                        <td style="text-align:center;">@d["Import"]</td>
+                                                        <td style="text-align:center;">@d["Export"] </td>
+                                                        <td style="text-align:center;">@d["Total"] </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            @*<div class="col-lg-6"> </div>*@
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                                <div class="widget-line mt-5 margin_wrap">
+                                                    <h3 style="font-weight:bold">Last 24 HRS</h3>
+                                                </div>
+
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold">@ViewBag.Last24HrsName</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Process</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.ListLastday)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;padding: 10px 10px 0px 10px; cursor: pointer;">@d["Process"]</td>
+
+                                                        <td style="text-align:center;">@d["Import"]</td>
+                                                        <td style="text-align:center;">@d["Export"] </td>
+                                                        <td style="text-align:center;">@d["Total"] </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2"></div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                                <div class="widget-line mt-5 margin_wrap">
+                                                    <h3 style="font-weight:bold">Last 24 HRS</h3>
+                                                </div>
+
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold">@ViewBag.Last24HrsCompareName</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Process</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.ListLastdayCompare)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;padding: 10px 10px 0px 10px; cursor: pointer;">@d["Process"]</td>
+
+                                                        <td style="text-align:center;">@d["Import"]</td>
+                                                        <td style="text-align:center;">@d["Export"] </td>
+                                                        <td style="text-align:center;">@d["Total"] </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                                <div class="widget-line mt-5 margin_wrap">
+                                                    <h3 style="font-weight:bold">Last 24 HRS</h3>
+                                                </div>
+
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold">@ViewBag.Last12HrsName</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Process</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.ListToday)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;padding: 10px 10px 0px 10px; cursor: pointer;">@d["Process"]</td>
+
+                                                        <td style="text-align:center;">@d["Import"]</td>
+                                                        <td style="text-align:center;">@d["Export"] </td>
+                                                        <td style="text-align:center;">@d["Total"] </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        @*code for Port Pendency*@
+                        <div class="row">
+
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                                <div class="widget-line mt-5 margin_wrap">
+                                                    <h3 style="font-weight:bold">Port Pendency</h3>
+                                                </div>
+
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="font-weight:bold;margin-bottom: 5px">Port Pendency</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">ICD</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">CFS</th>
+                                                </tr>
+                                                <tr>
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Rail</th>
+
+
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @*@foreach (var d in ViewBag.PortPendency as List<TrackerMVCEntities.BusinessEntities.ImportExportProcessActivitycs>)*@
+                                                @*{*@
+
+                                                <tr>
+                                                    <td style="text-align:center;">@ViewBag.PortPendencyICDRoad</td>
+                                                    <td style="text-align:center;">@ViewBag.PortPendencyICDRail </td>
+                                                    <td style="text-align:center;">@ViewBag.PortPendencyCFSRoad </td>
+                                                    <td style="text-align:center;">@ViewBag.PortPendencyCFSRail </td>
+
+
+
+                                                </tr>
+                                                @*}*@
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                                <div class="widget-line mt-5 margin_wrap">
+                                                    <h3 style="font-weight:bold">Inventory</h3>
+                                                </div>
+
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="font-weight:bold;margin-bottom: 5px">Inventory</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Yard</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import Empty</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import Load</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export Loaded</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.InventoryList as List<TrackerMVCEntities.BusinessEntities.ImportExportProcessActivitycs>)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;">@d.process</td>
+                                                        <td style="text-align:center;">@d.BalInventory </td>
+                                                        <td style="text-align:center;">@d.Inventory </td>
+                                                        <td style="text-align:center;">@d.ExportBalInventory </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                                <div class="widget-line mt-5 margin_wrap">
+                                                    <h3 style="font-weight:bold">Inventory</h3>
+                                                </div>
+
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="font-weight:bold;margin-bottom: 5px">@ViewBag.Last24HrsName (Delivery)</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Yard</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">FCL Destuff</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">LCL Destuff</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">IMP Loaded Delivery</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.Destuffdetails as List<TrackerMVCEntities.BusinessEntities.ImportExportProcessActivitycs>)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;">@d.process</td>
+                                                        <td style="text-align:center;">@d.FCLDestuff </td>
+                                                        <td style="text-align:center;">@d.LCLDestuff </td>
+                                                        <td style="text-align:center;">@d.IMPLoadedDelivery </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        @*<div class="inline">
+                                                <div class="widget-line mt-5 margin_wrap">
+                                                    <h3 style="font-weight:bold">Inventory</h3>
+                                                </div>
+
+                                            </div>*@
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="font-weight:bold;margin-bottom: 5px">@ViewBag.Last12HrsName (Delivery)</p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="divdirect">
+                                        <table class="table card-table table-vcenter text-nowrap" id="TblImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+
+
+
+
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Yard</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">FCL Destuff</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">LCL Destuff</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">IMP Loaded Delivery</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.TodayDestuffdetails as List<TrackerMVCEntities.BusinessEntities.ImportExportProcessActivitycs>)
+                                                {
+
+                                                    <tr>
+                                                        <td class="bg-primary text-white" style="text-align:center;">@d.process</td>
+                                                        <td style="text-align:center;">@d.FCLDestuff </td>
+                                                        <td style="text-align:center;">@d.LCLDestuff </td>
+                                                        <td style="text-align:center;">@d.IMPLoadedDelivery </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <br /><br />
+                        @Html.ActionLink("Export To Excel", "ExportToExcelImportExportMovmentReport", null, new { @class = "btn btn-primary btn-md" })
+
+                    </div>
+                    <div id="divCFSMovement" style="display:none">
+                        <div class="row mb-0">
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold"><label id="lblLastMonthCFSMov" class="mb-0"></label></p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblLastMonthCFSMovement" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Total Teus</th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-0">
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold"><label id="lblCurrentMonthCFSMov" class="mb-0"></label></p>
+                                        </div>
+
+                                        @*<div class="inline">
+
+
+                                            </div>*@
+                                    </div>
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblCurrentMonthCFSMovement" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Total Teus</th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mb-0">
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1" @*style="border: 1px solid #9f78ff;"*@ id="importArrivalMainCard">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold"><label id="lblLast24HRSCFSMov" class="mb-0"></label></p>
+                                        </div>
+
+                                        @*<div class="inline">
+
+
+                                            </div>*@
+                                    </div>
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblLast24HRSCFSMovement" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">Import</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="2">Export</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Total Teus</th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="1"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr></tr>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="divICDFullReport" style="display:none">
+                        <div class="row mb-0">
+                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold"><label id="lblMonthName" class="mb-0"></label></p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblICDFullImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import Done</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:left;font-weight:bold;"></th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">Teus</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-0">
+                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1">
+                                    @*<div style="background-color:#28afd0;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                            <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                                <h5 style="font-weight:bold;color:white"><label id="lblLastMonthCFSMov" class="mb-0"></label></h5>
+                                            </div>
+                                        </div>*@
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblICDFullExport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export Done</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:left;font-weight:bold"></th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+
+                                                    <th style="color:white;text-align:center;font-weight:bold">Teus</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-0">
+                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1">
+                                    @*<div style="background-color:#28afd0;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                            <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                                <h5 style="font-weight:bold;color:white"><label id="lblLastMonthCFSMov" class="mb-0"></label></h5>
+                                            </div>
+                                        </div>*@
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblICDFullExportRepo" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export Repo(Port & Hazira)</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:left;font-weight:bold;"></th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">Teus</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="divCFSFullReport" style="display:none">
+                        <div class="row mb-0">
+                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1">
+                                    <div style="background-color:#ffff00;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                        <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                            <p style="text-align:center;margin-bottom: 5px;font-weight:bold"><label id="lblMonthNameCFS" class="mb-0"></label></p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblCFSFullImport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Import Done</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:left;font-weight:bold;"></th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">Teus</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-0">
+                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1">
+                                    @*<div style="background-color:#28afd0;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                            <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                                <h5 style="font-weight:bold;color:white"><label id="lblLastMonthCFSMov" class="mb-0"></label></h5>
+                                            </div>
+                                        </div>*@
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblCFSFullExport" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Export Done</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:left;font-weight:bold"></th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+
+                                                    <th style="color:white;text-align:center;font-weight:bold">Teus</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-0">
+                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                <div class="card text-center mb-1">
+                                    @*<div style="background-color:#28afd0;border-top-left-radius: 4px;border-top-right-radius:4px">
+                                            <div class="widget-line mt-5 margin_wrap" style="margin-top: 12px !important">
+                                                <h5 style="font-weight:bold;color:white"><label id="lblLastMonthCFSMov" class="mb-0"></label></h5>
+                                            </div>
+                                        </div>*@
+                                    <div class="table-responsive" style="margin-top:-7px">
+                                        <table class="table card-table table-vcenter text-nowrap" id="tblCFSFullExportRepo" style="width:100% ;height:100%;border-bottom-left-radius: 4px">
+                                            <thead class="text-white" style="background-color:#7bc144">
+                                                <tr>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Empty (Import & Export)</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Road</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;" colspan="3">Rail</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold;">Total</th>
+
+                                                </tr>
+                                                <tr>
+                                                    <th style="color:white;text-align:left;font-weight:bold;"></th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">20</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">40</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">45</th>
+                                                    <th style="color:white;text-align:center;font-weight:bold">Teus</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody><tr></tr></tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+        CFSMOV();
+        ICDFULL()
+        CFSFULL()
+    })
+    function CFSMOV() {
+        $.ajax({
+            url: "/Report/GetCFSImportExportMovement",
+            //data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $('#tblLastMonthCFSMovement').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ImportExportRailRoadLastMonthCFS,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4] }
+                    ],
+                    "columns": [
+                        {
+                            "data": "ImportRoad",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ImportRail",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ExportRoad",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ExportRail",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTeus",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+                $('#tblCurrentMonthCFSMovement').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ImportExportRailRoadCurrentMonthCFS,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4] }
+                    ],
+                    "columns": [
+                        {
+                            "data": "ImportRoad",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ImportRail",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ExportRoad",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ExportRail",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTeus",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+                $('#tblLast24HRSCFSMovement').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ImportExportRailRoadLast24HrsCFS,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4] }
+                    ],
+                    "columns": [
+                        {
+                            "data": "ImportRoad",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ImportRail",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ExportRoad",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "ExportRail",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTeus",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+                document.getElementById("lblCurrentMonthCFSMov").innerText = data.CurrentMonthName;
+                document.getElementById("lblLastMonthCFSMov").innerText = data.LastMonthName;
+                document.getElementById("lblLast24HRSCFSMov").innerText = data.Last24HRSName;
+            }
+        })
+    }
+    function ICDFULL() {
+        $.ajax({
+            url: "/Report/GetICDFullImportExportMovement",
+            //data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $('#tblICDFullImport').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ICDFullImport,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4, 5, 6, 7] }
+                    ],
+                    "columns": [
+                        {
+                            "data": "PortName",
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                if (row.PortName = "") {
+                                    $(td).css('background-color', '#7bc144')
+                                }
+                                else {
+                                    //$(td).css('background-color', '#9f78ff')
+                                    $(td).attr('class', 'tblFirst')
+
+                                }
+                            }
+                        },
+                        {
+                            "data": "Road20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTues",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+                $('#tblICDFullExport').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ICDFullExport,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4, 5, 6, 7] }
+                    ],
+                    "columns": [
+                        {
+                            "data": "PortName",
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                if (row.PortName = "") {
+                                    $(td).css('background-color', '#7bc144')
+                                }
+                                else {
+                                    //$(td).css('background-color', '#9f78ff')
+                                    $(td).attr('class', 'tblFirst')
+
+                                }
+                            }
+                        },
+                        {
+                            "data": "Road20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTues",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+                $('#tblICDFullExportRepo').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ICDFullExportRepo,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4, 5, 6, 7] }
+                    ],
+                    "columns": [
+
+                        {
+                            "data": "PortName",
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                if (row.PortName = "") {
+                                    $(td).css('background-color', '#7bc144')
+                                }
+                                else {
+                                    //$(td).css('background-color', '#9f78ff')
+                                    $(td).attr('class', 'tblFirst')
+
+                                }
+                            }
+                        },
+                        {
+                            "data": "Road20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTues",
+                            "className": "tblCustom"
+                        }
+                    ]
+                    //,
+                    //"rowCallback": function (row, data, dataIndex) {
+
+                    //    if (data.PortName == "") {
+                    //        // alert(trainId);
+                    //        $(row).attr('style', 'background-color: #7bc144');
+                    //    }
+                    //    else {
+                    //        $(row).attr('style', 'background-color: #9f78ff');
+
+                    //    }
+                    //}
+                })
+
+                document.getElementById("lblMonthName").innerText = data.MonthName;
+            }
+        })
+    }
+    function CFSFULL() {
+        $.ajax({
+            url: "/Report/GetCFSFullImportExportMovement",
+            //data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $('#tblCFSFullImport').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ICDFullImport,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4, 5, 6, 7] }
+                    ],
+                    "columns": [
+                        {
+                            "data": "PortName",
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                if (row.PortName = "") {
+                                    $(td).css('background-color', '#7bc144')
+                                }
+                                else {
+                                    $(td).attr('class', 'tblFirst')
+
+                                }
+                            }
+                        },
+                        {
+                            "data": "Road20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTues",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+                $('#tblCFSFullExport').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ICDFullExport,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4, 5, 6, 7] }
+                    ],
+                    "columns": [
+                        {
+                            "data": "PortName",
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                if (row.PortName = "") {
+                                    $(td).css('background-color', '#7bc144')
+                                }
+                                else {
+                                    $(td).attr('class', 'tblFirst')
+
+                                }
+                            }
+                        },
+                        {
+                            "data": "Road20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTues",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+                $('#tblCFSFullExportRepo').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data.ICDFullExportRepo,
+                    "paging": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "order": [],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [0, 1, 2, 3, 4, 5, 6, 7] }
+                    ],
+                    "columns": [
+
+                        {
+                            "data": "PortName",
+                            createdCell: function (td, cellData, rowData, row, col) {
+                                if (row.PortName = "") {
+                                    $(td).css('background-color', '#7bc144')
+                                }
+                                else {
+                                    $(td).attr('class', 'tblFirst')
+
+                                }
+                            }
+                        },
+                        {
+                            "data": "Road20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Road45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail20",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail40",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "Rail45",
+                            "className": "tblCustom"
+                        },
+                        {
+                            "data": "TotalTues",
+                            "className": "tblCustom"
+                        }
+                    ]
+                })
+
+                document.getElementById("lblMonthNameCFS").innerText = data.MonthName;
+            }
+        })
+    }
+    function ShowCombined() {
+        $("#divCombined").show();
+        $("#divCFSMovement").hide();
+        $("#divICDFullReport").hide();
+        $("#divCFSFullReport").hide();
+    }
+    function ShowCFSMOV() {
+        $("#divCombined").hide();
+        $("#divCFSMovement").show();
+        $("#divICDFullReport").hide();
+        $("#divCFSFullReport").hide();
+    }
+    function ShowICDFull() {
+        $("#divCombined").hide();
+        $("#divCFSMovement").hide();
+        $("#divICDFullReport").show();
+        $("#divCFSFullReport").hide();
+    }
+    function ShowCFSFull() {
+        $("#divCombined").hide();
+        $("#divCFSMovement").hide();
+        $("#divICDFullReport").hide();
+        $("#divCFSFullReport").show();
+    }
+    $("#btnSearchCFSMov").click(function () {
+        $("#btnSearchCFSMov").css({ "background-color": "#7754ce" });
+        $("#btnSearchCombined").css({ "background-color": "#9f78ff" });
+        $("#btnSearchICDFull").css({ "background-color": "#9f78ff" });
+        $("#btnSearchCFSFull").css({ "background-color": "#9f78ff" });
+    });
+    $("#btnSearchCombined").click(function () {
+        $("#btnSearchCFSMov").css({ "background-color": "#9f78ff" });
+        $("#btnSearchCombined").css({ "background-color": "#7754ce" });
+        $("#btnSearchICDFull").css({ "background-color": "#9f78ff" });
+        $("#btnSearchCFSFull").css({ "background-color": "#9f78ff" });
+    });
+    $("#btnSearchICDFull").click(function () {
+        $("#btnSearchCFSMov").css({ "background-color": "#9f78ff" });
+        $("#btnSearchCombined").css({ "background-color": "#9f78ff" });
+        $("#btnSearchICDFull").css({ "background-color": "#7754ce" });
+        $("#btnSearchCFSFull").css({ "background-color": "#9f78ff" });
+    });
+    $("#btnSearchCFSFull").click(function () {
+        $("#btnSearchCFSMov").css({ "background-color": "#9f78ff" });
+        $("#btnSearchCombined").css({ "background-color": "#9f78ff" });
+        $("#btnSearchICDFull").css({ "background-color": "#9f78ff" });
+        $("#btnSearchCFSFull").css({ "background-color": "#7754ce" });
+    });
+</script>
+

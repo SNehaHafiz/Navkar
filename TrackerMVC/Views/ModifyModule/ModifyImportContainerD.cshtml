@@ -1,0 +1,364 @@
+﻿@model TrackerMVCEntities.BusinessEntities.JobOrderMEntities
+@{
+    ViewBag.Title = "ModifyImportContainerD";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/sweet-alert.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+    <div class="page-header">
+        <h4 class="page-title">Import Container Modification</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtcontainerno", null, new { @class = "form-control ", @id = "txtcontainerno", Placeholder = "Container No", maxlength = 11, @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" title="Show" name="Add" onclick="Fetch(); "><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlcontainertype", (IEnumerable<SelectListItem>)ViewBag.Type, "--Select--", new { @class = "form-control", @id = "ddlcontainertype", name = "ddlcontainertype", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Jo Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddljotype", (IEnumerable<SelectListItem>)ViewBag.JoTypes, "--Select--", new { @class = "form-control", @id = "ddljotype", name = "ddljotype", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Size</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                        @Html.DropDownListFor(model => model.Size, (IEnumerable<SelectListItem>)ViewBag.ContainerSize, "--Select--", new { @class = "form-control", @id = "ddlSize", name = "Size", onblur = "myRequiredValidation('ddlSize')" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Cargo Type</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownListFor(model => model.Cargotypeid, (IEnumerable<SelectListItem>)ViewBag.CargoType, "--Select--", new { @class = "form-control", @id = "ddlCargotype", name = "Cargotypeid", onblur = "myRequiredValidation('ddlCargotype')" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">ISO Code</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownListFor(model => model.ISOCode, (IEnumerable<SelectListItem>)ViewBag.ISOCodes, "--Select--", new { @class = "form-control", @id = "ddlISOCode", name = "ISOCode", onblur = "myRequiredValidation('ddlISOCode')" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">PKGS</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtpkgs", null, new { @class = "form-control ", @id = "txtpkgs", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Gross WT</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtgrosswt", null, new { @class = "form-control ", @id = "txtgrosswt", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Seal No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtsealno", null, new { @class = "form-control ", @id = "txtsealno", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">BL Number</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtblno", null, new { @class = "form-control ", @id = "txtblno", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Tare Weight</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txttarewt", null, new { @class = "form-control ", @id = "txttarewt", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @*<div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">In Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtindate", null, new { @class = "form-control form_datetime1 ", @id = "txtindate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" title="Save" onclick="return UpdateJOM();"><i class="fa fa-save"></i></button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <button name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="Clear();"> <i class="fa fa-refresh"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function Fetch() {
+
+        debugger;
+        var ContainerNo = $("#txtcontainerno").val().trim();
+
+        var data1 = { "ContainerNo": ContainerNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetContainerWiseDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+
+                if (data == 0 || data == '[]') {
+
+                    alert('Data Not Found.');
+                    return;
+                }
+
+                $('#ddlcontainertype').val(data.ContainerTypeID);
+                $('#ddlCargotype').val(data.Cargotypeid);
+                $('#txtpkgs').val(data.Qty);
+                $('#txtblno').val(data.BL_Number);
+                $('#txtsealno').val(data.SealNo);
+                $('#txttarewt').val(data.Tare_Weight);
+                $('#txtgrosswt').val(data.GrossWT);
+                $('#ddlISOCode').val(data.ISOID);
+                $('#ddlSize').val(data.Size);
+                $('#ddljotype').val(data.JoTypeId);
+                $('#txtremarks').val(data.Remarks);
+
+
+                // Size, containertype, AGName
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+<script>
+    function UpdateJOM() {
+        $("#global-loader").fadeIn("slow");
+        debugger;
+        var element = {};
+        element.ContainerNo = $("#txtcontainerno").val().trim();
+        element.ContainerTypeID = $("#ddlcontainertype").val().trim();
+        element.Cargotypeid = $("#ddlCargotype").val().trim();
+        element.Qty = $("#txtpkgs").val().trim();
+        element.BL_Number = $("#txtblno").val().trim();
+        element.SealNo = $("#txtsealno").val().trim();
+        element.Tare_Weight = $("#txttarewt").val().trim();
+        element.GrossWT = $("#txtgrosswt").val().trim();
+        element.ISOID = $("#ddlISOCode").val().trim();
+        element.Size = $("#ddlSize  option:selected").text();
+        element.JoTypeId = $("#ddljotype").val().trim();
+        element.Remarks = $("#txtremarks").val().trim();
+
+
+        var isValid = true;
+        if (element.ContainerTypeID == 0 ) {
+            isValid = isValid && false;
+            $("#ddlcontainertype").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddlcontainertype").removeClass("is-invalid state-invalid");
+        }
+
+        if (element.Cargotypeid == 0) {
+            isValid = isValid && false;
+            $("#ddlCargotype").addClass("is-invalid state-invalid");
+        }
+        else {
+            $("#ddlCargotype").removeClass("is-invalid state-invalid");
+        }
+        if (element.Qty == "") {
+            isValid = isValid && false;
+            $("#txtpkgs").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtpkgs").removeClass("is-invalid state-invalid");
+        }
+        if (element.BL_Number == "") {
+            isValid = isValid && false;
+            $("#txtblno").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtblno").removeClass("is-invalid state-invalid");
+        }
+        if (element.Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+        if (element.ISOID == "") {
+            isValid = isValid && false;
+            $("#ddlISOCode").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddlISOCode").removeClass("is-invalid state-invalid");
+        }
+
+        if (element.Size == "") {
+            isValid = isValid && false;
+            $("#ddlSize").addClass("is-invalid state-invalid");
+        } else {
+            $("#ddlSize").removeClass("is-invalid state-invalid");
+        }
+        if (element.SealNo == "") {
+            isValid = isValid && false;
+            $("#txtsealno").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtsealno").removeClass("is-invalid state-invalid");
+        }
+        if (isValid == false) {
+            alert("Please fill all required field");
+            $("#global-loader").fadeOut("slow");
+            return;
+        }
+
+        //Tax Validation
+
+
+
+        var data = { 'Master': element };
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: 'post',
+            url: '/ModifyModule/UpdateJOBMDetails',
+            data: data,
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                if (response.ResponseMessage != '') {
+                    alert(response.ResponseMessage);
+                    document.location = '@Url.Action("ModifyImportContainerD", "ModifyModule")';
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.Message,
+                        icon: 'error'
+                    })
+                }
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                Swal.fire({
+                    title: 'Error!',
+                    text: str,
+                    icon: 'error'
+                });
+            }
+        });
+    }
+    function Clear() {
+document.location = '@Url.Action("ModifyImportContainerD", "ModifyModule")';
+
+    }
+</script>

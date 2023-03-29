@@ -1,0 +1,270 @@
+﻿
+@{
+    ViewBag.Title = "Export Stuffing Plan";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Export Stuffing Plan</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-8">
+                            <div class="form-group">
+                                <label class="form-label">Export Stuffing Plan (As on)</label>
+                                <div class="row gutters-xs">
+                                   
+                                    <div class="col-md-2 col-lg-3">
+                                        <div class="form-group label-floating">
+                                            @Html.TextBox("AsonDate", null, new { @id = "AsonDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd-MMM-yyyy hh:mm") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-22 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label"></label>
+                                            <button class="btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show('SHOW')" type="button">SHOW</button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>  
+                        </div>
+
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr No.</th>
+                                            <th>Allow ID.</th>
+                                            <th>Stuffing Date.</th>
+                                            <th>Stuffing Type</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Teus</th>
+                                            <th>Line Name</th>
+                                            <th>Booking No</th>
+                                            <th>Allotment</th>
+                                            <th>Clearance Status</th>
+                                            <th>Do EXP Validity</th>
+                                            <th>Party Name</th>
+                                            <th>POL</th>
+                                                <th>POD Name</th>
+                                            <th>Vessel Name</th>
+                                            <th>CHA Name</th>
+                                            <th>Remarks</th>
+                                            <th>Added By</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#reportTable').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [5]
+            }
+            ]
+        });
+
+    });
+
+
+
+    function Show(type) {
+        // var date = document.getElementById("SelectedDate").value;
+        var Activity = type;
+        var Asondate = $("#AsonDate").val();
+
+        var data1 = { 'Asondate': Asondate};
+        data = JSON.stringify(data1);
+
+        // alert(data);
+        $.ajax({
+
+            url: '/Report/GetTrackExportStuffingPlanReport',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                //alert(JSON.stringify(data))
+                //alert(data[0].GrandTotal);
+               
+                $('#reportTable').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+
+                    "columns": [
+                     { "data": "Srno" },
+                       { "data": "AllowID" },
+                    { "data": "StuffingDate" },
+                    { "data": "StuffingType" },
+                      { "data": "Size" },
+                    { "data": "Type" },
+                    { "data": "Teus" },
+                    { "data": "LineName" },
+                    { "data": "BookingNo" },
+                    { "data": "Allotment" },
+                   { "data": "ClearanceStatus" },
+                    { "data": "DoValidity" },
+                    { "data": "PartyName" },
+                { "data": "POL" },
+                 { "data": "PODName" },
+               { "data": "VesselName" },
+               { "data": "CHAName" },
+               { "data": "Remarks" },
+                    { "data": "AddedBy" },
+
+                    ],
+
+                    "dom": 'Bfrtip',
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'ExportStuffingPlanReport',
+                        "filename": 'ExportStuffingPlanReport'
+
+                    }]
+
+                });
+
+                var table = document.getElementById("reportTable");
+                var row;
+                      
+
+                var TotTEUS1 = 0;
+                var TotTEUS2 = 0;
+                var TotTEUS3 = 0;
+                var TotTEUS = 0;
+
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    //var Size = row.cells[6].childNodes[1].value;
+                    var Size = row.cells[4].innerText;
+
+                    //alert(Size)
+
+                    if (Size == 20) {
+                        TotTEUS1 = Number(TotTEUS1) + 1;
+                    }
+                    if (Size == 40) {
+                        TotTEUS2 = Number(TotTEUS2) + 2;
+                    }
+                    if (Size == 45) {
+                        TotTEUS3 = Number(TotTEUS3) + 2;
+                    }
+                    //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                }
+                TotTEUS = TotTEUS1 + TotTEUS2 + TotTEUS3
+                // alert(TotTEUS);
+                $("#lbltwenty").text(TotTEUS1);
+                $("#lblforty").text(TotTEUS2);
+                $("#lblfortyfive").text(TotTEUS3);
+                $("#lblTotal").text(TotTEUS);
+
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+                $("#divTEUS2").show();
+                $("#divTEUS3").show();
+
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        });
+
+
+    }
+</script>
+
+
+

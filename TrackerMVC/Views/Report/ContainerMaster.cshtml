@@ -1,0 +1,404 @@
+﻿
+@{
+    ViewBag.Title = "ContainerMaster";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div id="tracker-loader"></div>
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .buttons-excel {
+        background: #fc7303 !important;
+        color: white !important;
+    }
+
+    .buttons-pdf {
+        /*margin-left:48px;*/
+        background: #fdb901;
+        color: white !important;
+    }
+
+    .buttons-pdf {
+        background: #fdb901;
+        color: white !important;
+    }
+</style>
+
+
+<div class=" content-area overflow-hidden" id="showview">
+    <div class="page-header">
+        <h4 class="page-title">Transport Vendor Bill Summary</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Search On</label>
+                                            @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                                           { new SelectListItem { Text = "--Select--", Value = ""},
+                                               new SelectListItem { Text = "Container No", Value = "Container No"},
+                                             new SelectListItem { Text = "Invoice No", Value = "Invoice No"},
+                                              new SelectListItem { Text = "Transport Name", Value = "Transport Name"},
+                                             }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2" style="display:none" id="divConatiner">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Contrainer No</label>
+                                            @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off", style = "text-align:right" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2" style="display:none" id="divinvoiceNo">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Invoice NO</label>
+                                            @Html.TextBox("txtinvoiceNo", null, new { @class = "form-control", @id = "txtinvoiceNo", name = "txtinvoiceNo", autocomplete = "off", style = "text-align:right" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Transport Name</label>
+                                            @Html.DropDownList("ddlTransport", (IEnumerable<SelectListItem>)ViewBag.VendorFill, "ALL", new { @class = "form-control", @id = "ddlTransport", name = "ddlTransport", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From Date</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "txtFromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To date</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "txtToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-18 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label" style="visibility:hidden">To</label>
+                                            <button class=" btn btn-primary" id="btnSearch" onclick="ShowFCLDestuffTallySummaryDetails()" type="button">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12">
+                                        <div class="form-group">
+                                            <div class="form-label">Details</div>
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input" id="chkIsActive" onclick='showdaywise(this);'>
+                                                <span class="custom-switch-indicator"></span>
+
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+                            <div class="input-group">
+
+                                @*<span class="input-group-append " id="tabPurpose">
+                                        <button class="btn btn-success active btn-lg m-0" id="BtnTotal" style="width: 120px !important;font-weight:bold" value="" type="button" onclick="ShowFCLDestuffTallySummary('')">Total:  <span id="lbltotal" style="font-weight:bold"></span></button>
+                                        <button class="btn btn-success btn-lg m-0" id="Btn20" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowFCLDestuffTallySummary('20')">20:  <span id="lbl20" style="font-weight:bold"></span> </button>
+                                        <button class="btn btn-success btn-lg m-0" id="Btn40" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowFCLDestuffTallySummary('40')">40:  <span id="lbl40" style="font-weight:bold"></span></button>
+                                        <button class="btn btn-success btn-lg m-0" id="Btn45" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowFCLDestuffTallySummary('45')">45:  <span id="lbl45" style="font-weight:bold"></span></button>
+                                        <button class="btn btn-success btn-lg m-0" id="BtnTEUS" style="width: 120px !important;font-weight:bold" type="button" onclick="ShowFCLDestuffTallySummary('')">TEUS:  <span id="lblTeus" style="font-weight:bold"></span></button>
+                                    </span>*@
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <br />
+                    <div class="row">
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1Ex">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportTransport", "Report")?';
+
+
+    }
+
+
+</script>
+<script>
+    $("#BtnTotal").click(function () {
+        $("#BtnTotal").addClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn20").click(function () {
+        $("#Btn20").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn40").click(function () {
+        $("#Btn40").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn45").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#Btn45").click(function () {
+        $("#Btn45").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#BtnTEUS").removeClass("active");
+
+    });
+    $("#BtnTEUS").click(function () {
+        $("#BtnTEUS").addClass("active");
+        $("#BtnTotal").removeClass("active");
+        $("#Btn20").removeClass("active");
+        $("#Btn40").removeClass("active");
+        $("#Btn45").removeClass("active");
+
+    });
+    $(document).ready(function () {
+
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+    function showdaywise(cb) {
+        debugger;
+        var value = cb.checked
+
+
+
+        if (value == false) {
+
+            ShowFCLDestuffTallySummaryDetails('');
+
+        }
+        else {
+            ShowFCLDestuffTallySummaryDetailsitemwise('');
+        }
+
+    }
+
+    function ShowFCLDestuffTallySummaryDetails() {
+        debugger
+        $("#tracker-loader").fadeIn("slow");
+        var ddlSearch = document.getElementById('ddlSearch').value;
+
+        var e = document.getElementById("ddlSearch");
+        var DepartmentID = e.options[e.selectedIndex].value;
+        var Search = "";
+        if (DepartmentID == "Invoice No") {
+            Search = $("#txtinvoiceNo").val();
+        }
+        if (DepartmentID == "Container No") {
+            Search = $("#txtContainerNo").val();
+        }
+
+
+        document.getElementById('chkIsActive').checked = false;
+        var Transport = document.getElementById("ddlTransport").value;
+        var FromDate = document.getElementById("txtFromDate").value;
+        var ToDate = document.getElementById("txtToDate").value;
+
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Transport': Transport, 'ddlSearch': ddlSearch, 'Search': Search };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+
+            url: '/Report/GetShowFCLDestuffTallyList',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+
+                $("#example1Ex").empty();
+                RepTableDataJsonwopaging($("#example1Ex"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+
+    function ShowFCLDestuffTallySummaryDetailsitemwise() {
+        debugger
+        $("#tracker-loader").fadeIn("slow");
+
+        var ddlSearch = "Details";
+
+        var e = document.getElementById("ddlSearch");
+        var DepartmentID = e.options[e.selectedIndex].value;
+        var Search = "";
+
+
+
+        document.getElementById('chkIsActive').checked = false;
+        var Transport = '0';
+        var FromDate = document.getElementById("txtFromDate").value;
+        var ToDate = document.getElementById("txtToDate").value;
+
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Transport': Transport, 'ddlSearch': ddlSearch, 'Search': Search };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+
+            url: '/Report/GetShowFCLDestuffTallyList',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (jsonResult) {
+
+                $("#example1Ex").empty();
+                RepTableDataJsonwopaging($("#example1Ex"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+</script>
+<script>
+    $("#ddlSearch").change(function () {
+        var ddlSearchby = $("#ddlSearch option:selected").text();
+        if (ddlSearchby == "Container No") {
+            $("#divConatiner").show();
+            $("#divinvoiceNo").hide();
+
+        }
+        if (ddlSearchby == "Invoice No") {
+            $("#divConatiner").hide();
+            $("#divinvoiceNo").show();
+
+        }
+
+        if (ddlSearchby == "--Select--") {
+            $("#divConatiner").hide();
+            $("#divinvoiceNo").hide();
+
+        }
+    });
+
+
+
+    function CancelTransBill(Invoiceno) {
+        {
+
+
+
+            var element = {};
+
+
+            element.Invoiceno = Invoiceno;
+
+            var data1 = { "AM": element };
+            var data = JSON.stringify(data1);
+
+
+
+
+            $.ajax({
+                type: 'post',
+                url: '/loadingplan/CANCELTRANSPORTBILL',
+                data: data,
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                success: function (item) {
+
+                    if (item.Status == 1) {
+                        {
+                            swal.fire({
+                                title: "",
+                                text: item.Message,
+                                icon: "warning",
+                            }).then(function (isConfirm) {
+                                if (isConfirm) {
+                                    ShowFCLDestuffTallySummaryDetails();
+                                }
+                            });
+                            return false;
+
+                        }
+                    }
+                    else if (item.Status == 0)
+
+                        ShowFCLDestuffTallySummaryDetails();
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "Something went wrong " + str,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    };
+
+</script>

@@ -1,0 +1,172 @@
+﻿
+@{
+    ViewBag.Title = "External Movement Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">External Movement Report</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Search Criteria</label>
+                                            @Html.DropDownList("ddlSearchCriteria", new List<SelectListItem>
+                                         { new SelectListItem { Text = "Container Wise List", Value = "ContainerWise"},
+                                             new SelectListItem { Text = "Summary List", Value = "SummaryList"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearchCriteria" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "FromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-10).ToString("dd MMM yyyy 00:00") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">To</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "ToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Search By</label>
+                                            @Html.DropDownList("ddlCriteria", new List<SelectListItem>
+                                        { new SelectListItem { Text = "All", Value = "0"},
+                                           new SelectListItem { Text = "Line Name", Value = "1"},
+                                            new SelectListItem { Text = "Transporter", Value = "2"}
+                                           }, new { @class = "form-control", autocomplete = "off",onchange="OnSearchChange()" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4" id="divLine" style="display:none">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Line</label>
+                                            @Html.DropDownList("ddlLine", (IEnumerable<SelectListItem>)ViewBag.LineList, "ALL", new { @class = "form-control", @id = "ddlLine", name = "ddlLine", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4" id="divTransporter" style="display:none">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">Transporter</label>
+                                            @Html.DropDownList("ddlTransporter", (IEnumerable<SelectListItem>)ViewBag.TransporterList, "ALL", new { @class = "form-control", @id = "ddlTransporter", name = "ddlTransporter", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-lg-1">
+                                        <div class="form-group label-floating" style="margin-top: 33px;">
+                                            <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show()" type="button">
+                                                SHOW
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelListofMvComplete", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="form-group">
+                        <label class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-append " id="tabPurpose">
+                                <button class="btn btn-primary " id="containerlist" style="text-transform: uppercase;" type="button" onclick="btncontainerList()">Containers List</button>
+                                <button class="btn btn-primary active" id="summarylist" style="text-transform: uppercase;" type="button" onclick="ShowExtSummary()">Summary </button>
+                            </span>
+                        </div><br />
+                        <div class="row" id="divsummary" style="display:none">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblIGMLineSummary"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divContainerList">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Show() {
+        var SearchText;
+        var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+        var SearchCriteria = $("#ddlCriteria").val();
+
+            if (SearchCriteria == 1) {
+                SearchText = $("#ddlLine").val();
+            }
+            else if (SearchCriteria == 2) {
+                SearchText = $("#ddlTransporter").val();
+            }
+            else {
+                SearchText = "";
+            }
+        data1 = { 'FromDate': $("#FromDate").val(), 'ToDate': $("#ToDate").val(), 'SearchCriteria': $("#ddlCriteria").val(), 'SearchText': SearchText, 'CriteriaType': ddlSearchCriteria };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/UpdateExternalMovement/GetExternalReport",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (data == "[]" || data == "") {
+                    alert("No Data Found.");
+                }
+                else {
+                    RepTableDataJson($('#reportTable'), data.ContainerList, "", "");
+                    RepTableDataJson($('#tblIGMLineSummary'), data.ContainerSummary, "", "");
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+    function OnSearchChange() {
+        var SearchCriteria = $("#ddlCriteria").val();
+        if (SearchCriteria == 1) {
+            $("#divLine").show();
+            $("#divTransporter").hide();
+        }
+        else if (SearchCriteria == 2) {
+            $("#divLine").hide();
+            $("#divTransporter").show();
+        }
+        else {
+            $("#divLine").hide();
+            $("#divTransporter").hide();
+        }
+    }
+
+    function btncontainerList() {
+        $("#divsummary").hide();
+        $("#divContainerList").show();
+    }
+
+    function ShowExtSummary() {
+        $("#divsummary").show();
+        $("#divContainerList").hide();
+    }
+
+</script>

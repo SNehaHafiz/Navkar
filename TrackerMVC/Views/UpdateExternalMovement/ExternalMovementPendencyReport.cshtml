@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "ExternalMovementPendencyReport";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden" id="divDOList">
+    <div class="page-header">
+        <h4 class="page-title">List of Pending Movement Report</h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @*<a onclick="OpenDOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Do Summary"></i> </a>*@
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Search Criteria</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <div class="form-group label-floating">
+                                            @Html.DropDownList("ddlSearchCriteria", new List<SelectListItem>
+                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                             new SelectListItem { Text = "Container Wise List", Value = "ContainerWise"},
+                                             new SelectListItem { Text = "Summary List", Value = "SummaryList"},
+                                           }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearchCriteria" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <div class="form-group label-floating">
+                                            <input type="button" class="btn btn-primary" onclick="Show()" value="Show" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     @Html.ActionLink("Export To Excel", "ExportToExcelListofMvPending", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="divDoSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List of Pending Movement Report </h4>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a onclick="BackToDOList();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="DO List"></i> </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblDoLRSummary" style="width:100%;">
+                                       
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function OpenDOSummary() {
+        $("#divDOList").hide();
+        $("#divDoSummary").show();
+    }
+
+    function BackToDOList() {
+        $("#divDOList").show();
+        $("#divDoSummary").hide();
+    }
+
+    $(document).ready(function () {
+        //Show();
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+<script>
+
+    function ViewDO(BookingNo) {
+        //alert(BookingNo);
+        $("#tracker-loader").fadeIn("slow");
+
+        var data1 = { 'BookingNo': BookingNo};
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/UpdateExternalMovement/ListDOSummary",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                if (data == "" || data == "[]") {
+                    alert("No data found.");
+                } else {
+                    RepTableDataJson($('#tblDoLRSummary'), data.LorryList, "ExportRep", "ExportRep");
+                    $("#divDOList").hide();
+                    $("#divDoSummary").show();
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            },
+
+            error: function (errormessage) {
+                $("#tracker-loader").fadeOut("slow");
+                alert(errormessage.responseText);
+            }
+        });
+
+        $("#tracker-loader").fadeOut("slow");
+
+    }
+
+    function Show() {
+        $("#tracker-loader").fadeIn("fast");
+        var SearchCriteria = $("#ddlSearchCriteria").val();
+        var data1 = { 'SearchCriteria': SearchCriteria };
+        var data = JSON.stringify(data1);
+       // alert(data);
+        try {
+            $.ajax({
+                url: '/UpdateExternalMovement/getListofPenginMov',
+                type: 'Post',
+                data: data,
+                async: true,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == "" || data == "[]") {
+                        alert("No data found.");
+                    } else {
+                        RepTableDataJson($('#reportTable'), data, "ExportRep", "ExportRep");
+                    }
+
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+
+            });
+        }
+        catch (ex) {
+            $("#tracker-loader").fadeOut("slow");
+            alert(ex.message);
+        }
+    }
+</script>

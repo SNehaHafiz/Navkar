@@ -1,0 +1,168 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrailersEntities>
+
+@{
+    ViewBag.Title = "TrailerGrade";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+@*<script>
+   
+    $('#example').dataTable({
+        "aoColumnDefs": [
+            { 'bSortable': false, 'aTargets': [1] }
+        ]
+    });
+</script>*@
+
+
+<div class=" content-area">
+    <div class="page-header">
+        <h4 class="page-title">Trailer Grading</h4>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-8 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting">Trailer No.</th>
+                                                <th class="wd-10p sorting">Transporter Name</th>
+                                                <th style=" width:10%">Grade</th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+                                                <tr>
+                                                    <td>@d.trailername <input name=hdTrailerID type=hidden id=trailerid value='@d.trailerid'></td>
+                                                    <td>@d.TransName </td>
+
+                                                    <td><input class="form-control Grade" style="text-transform: uppercase;"  type="text" id="Grade" maxlength="1" onchange="ValidateGrade();" value='@d.Grade' /></td>
+                                                   
+                                                </tr>
+                                            }
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <input type="Button" id="btnSave" value="Update" class="btn btn-success" />
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": true,
+            "paging": false,
+            "aoColumnDefs": [
+            {
+                'bSortable': false,
+                'aTargets': [2]
+            }
+            ]
+
+        })
+    });
+</script>
+<script>
+    $("#btnSave").click(function () {
+        var trailerList = new Array();
+      //  var itemcount = checkItemcount();
+       
+      //  if (itemcount != false) {
+            $('#example1 tbody tr').each(function (i, row) {
+                var data = {};
+                $(this).find('input').each(function () {
+                    data[this.id] = $(this).val();
+                })
+                trailerList.push(data);
+            })
+
+          //  alert(JSON.stringify(trailerList))
+            $.ajax({
+                type: 'POST',
+                url: '/Trailer/ModifyTrailerGrade',
+                data: '{ trailerList: ' + JSON.stringify(trailerList) + '}',
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    alert(data);
+                }
+            })
+      //  }
+        });
+    
+    function checkItemcount() {
+
+        var tabel = document.getElementById('example1');
+        var rijen = tabel.rows.length;
+
+        for (i = 0; i < rijen; i++) {
+            var inputs = tabel.rows.item(i).getElementsByTagName("input");
+            var inputslengte = inputs.length;
+
+            for (var j = 0; j < inputslengte; j++) {
+                var inputval = inputs[j].value;
+                if (inputval == '') {
+                    alert("Please Add Grade!")
+                    return false;
+
+                }
+               
+               // alert(inputval);
+            }
+            
+        }
+    }
+    </script>
+
+
+<script>
+    function ValidateGrade(element, event)
+    {
+        $('.Grade').on('blur', function (e) {
+            var str = $(this).val();
+            //  allLetter($(this).val())
+
+            // var letters = /^[A-E]+$/;
+
+
+            if (['A', 'B', 'C','D','E','a','b','c','d','e'].includes(str))
+            {
+
+            }
+            else
+            {
+                
+                $(this).val("");
+               // alert("Please enter Grade between A to E")
+            }
+
+
+        })
+    }
+
+    
+    </script>
+

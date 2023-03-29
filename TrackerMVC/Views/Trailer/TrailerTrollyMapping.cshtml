@@ -1,0 +1,545 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.TrailersEntities>
+@{
+    ViewBag.Title = "TrailerTrollyMapping";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/js/GetTableJson.js"></script>
+<div id="addHorse">
+    <div class="page-header">
+        <h4 class="page-title">Trailer and Trolley Mapping</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Summary();"><i class="fa fa-file-text"></i></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row gutters-xs" style="margin-top:-10px;">
+                        <div class="col">
+                            <span class="input-group-append " id="tabPurpose">
+
+                                <button type="button" class="btn btn-icon btn-info" title="Mapp " onclick="Mapp()">Mapp</button>
+                                <button type="button" class="btn btn-icon btn-danger" title="Remove " onclick="Remove()">Remove</button>
+                            </span>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="row" style="margin-top:10px;display:none" id="divTrailerNo">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Trailer No</label>
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" placeholder="All Trailer" class="form-control" id="ddlTrailerNo" onchange="VelTrailerNo()" />
+                                        <input type="hidden" class="form-control" id="hdnTrailerNoId" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="margin-top:10px;display:none" id="divTrolleryNo">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Trollery No</label>
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="text" placeholder="All Trollery" class="form-control" id="ddlTrolleryNo" onchange="VelTrolleryNo()" />
+                                        <input type="hidden" class="form-control" id="hdnTrolleryNoId" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="margin-top:10px;display:none" id="divSave">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btSave" class="btn btn-success btn-xs" onclick="return AddSave();">Save</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="display:none" id="RemoveSummary">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        @*<button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileListpending()"></i></button>*@
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="Listpending"></table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+
+
+    function VelTrailerNo() {
+         var TrailerNo = $("#ddlTrailerNo").val().trim();
+
+
+
+        var data1 = { "TrailerNo": TrailerNo };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Trailer/Validation_Trailer',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data != "") {
+                    $("#ddlTrailerNo").val('')
+                    swal({
+                        title: JSON.stringify(data),
+                        text: "Please Check",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false
+
+                    });
+                    return false;
+
+                }
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function VelTrolleryNo() {
+        var TrolleryNo = $("#ddlTrolleryNo").val().trim();
+
+
+
+        var data1 = { "TrolleryNo": TrolleryNo };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Trailer/Validation_Trolley',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data != "") {
+                    $("#ddlTrolleryNo").val('')
+                    swal({
+                        title: JSON.stringify(data),
+                        text: "Please Check",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false
+
+                    });
+                    return false;
+
+                }
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+
+        function Mapp(){
+            $("#divTrailerNo").show();
+            $("#divTrolleryNo").show();
+            $("#divSave").show();
+            $("#RemoveSummary").hide();
+        }
+        $(document).ready(function () {
+
+            $("#ddlTrailerNo").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Horse/getUSP_Gettrailers",
+                        data: "{ 'prefixText': '" + request.term + "'}",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            //
+                            response($.map(data, function (item) {
+                                //
+                                return {
+                                    label: item.TrailerNo,
+                                    val: item.TrailerID
+
+                                };
+                            }))
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                        }
+                    })
+                },
+                select: function (e, i) {
+                    //
+                    $("#ddlTrailerNo").val(i.item.label);
+                    $("#hdnTrailerNoId").val(i.item.val);
+
+                },
+                minLength: 1
+            });
+            $("#ddlTrolleryNo").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Trailer/getTrolleyNo",
+                        data: "{ 'prefixText': '" + request.term + "'}",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            //
+                            response($.map(data, function (item) {
+                                //
+                                return {
+                                    label: item.TrolleyNo,
+                                    val: item.TrolleyID
+
+                                };
+                            }))
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                        }
+                    })
+                },
+                select: function (e, i) {
+                    //
+                    $("#ddlTrolleryNo").val(i.item.label);
+                    $("#hdnTrolleryNoId").val(i.item.val);
+
+                },
+                minLength: 1
+            });
+        });
+
+
+</script>
+<script>
+    function AddSave() {
+        debugger;
+        var TrailerNo = $("#ddlTrailerNo").val().trim();
+
+        var TrolleryNo = $("#ddlTrolleryNo").val().trim();
+
+
+
+        if (TrailerNo == "") {
+            document.getElementById('ddlTrailerNo').style.borderColor = "red";
+            alert("Please Enter Trailer No !")
+
+            return false;
+        }
+
+
+
+        if (TrolleryNo == "") {
+            document.getElementById('ddlTrolleryNo').style.borderColor = "red";
+            alert("Please Enter Trollery No !")
+
+            return false;
+        }
+
+
+        var data1 = { "TrailerNo": TrailerNo, "TrolleryNo": TrolleryNo };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Trailer/Update',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                alert(data);
+                document.location = '@Url.Action("TrailerTrollyMapping", "Trailer")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function Remove() {
+
+        $("#divTrailerNo").hide();
+        $("#divTrolleryNo").hide();
+        $("#divSave").hide();
+        $("#RemoveSummary").show();
+        $.ajax({
+            url: '/Trailer/Summary',
+            type: 'Post',
+
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                if (data == "0" || data == "[]") {
+                    //  ControlCtrl.TableReceiptSummaryDet.empty();
+                    alert('No Data found.');
+                    return;
+                }
+                $("#Listpending").empty();
+                RepTableDataJson($("#Listpending"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function Removes(TrolleyNo) {
+
+
+        var data1 = { "TrolleyNo": TrolleyNo };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Trailer/UpdateRemove',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                document.location = '@Url.Action("TrailerTrollyMapping", "Trailer")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+@*-----Summary----*@
+
+
+
+
+
+
+<script>
+    function Summary() {
+        $("#divTrailerSummary").show();
+        $("#addHorse").hide();
+    }
+</script>
+
+
+
+
+
+
+
+
+<div class=" content-area" style="display:none" id="divTrailerSummary">
+    <div class="page-header">
+        <h4 class="page-title">Trailer and Trolley Mapping</h4>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-9 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-10p sorting">Trailer No.</th>
+                                                <th class="wd-10p sorting">Transporter Name</th>
+                                                <th>Trolley</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            @foreach (var d in Model)
+                                            {
+
+                                                <tr>
+                                                    <td>@d.trailername <input name=hdTrailerName type=hidden id=trailerName value='@d.trailername'></td>
+                                                    <td>@d.TransName <input name=hdTrailerID type=hidden id=trailerid value='@d.trailerid'></td>
+
+                                                    <td>
+                                                        @Html.DropDownList("ddlTrolley", new SelectList((IEnumerable<SelectListItem>)@ViewBag.TrolleyList, "Value", "Text", d.TrollyID), new { id = "ddlTrolley", @class = "form-control " })
+                                                        @*@Html.DropDownList("ddlTrolley", ViewBag.TrolleyList as SelectList, "--Select--", new { @class = "form-control content", selected = "selected" })*@
+                                                        @*@Html.DropDownListFor(@d.TrollyID, new SelectList(ViewBag.TrolleyList, "TrollyID", "TrolleyNo"), "--- Select Type ---")*@
+
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <input type="Button" id="btnSave" value="Update" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        $(document).ready(function () {
+            $('#example1').dataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "bPaginate": false,
+                "bFilter": true,
+                "paging": false,
+                "aoColumnDefs": [
+                    {
+                        'bSortable': false,
+                        'aTargets': [2]
+                    }
+                ]
+
+            })
+        });
+</script>
+<script>
+        $("#btnSave").click(function () {
+
+            //  var res = CheckDuplicateTrolley();
+            ////  alert(res)
+            //  if (res == false) {
+            //      return false;
+            //  }
+            // $rowsToMark.css('backgroundColor', 'azure');
+
+            var trailerList = new Array();
+
+            var trailerList = [];
+            var table = document.getElementById("example1");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+                //  alert("hi")
+                row = table.rows[i];
+
+                var y = row.cells[1].childNodes[1].value;
+                var z = row.cells[2].childNodes[1].value; // select option field
+                // alert(x);
+                trailerList.push({ 'trailerid': y, 'TrollyID': z })
+
+            }
+
+
+            //alert(JSON.stringify(trailerList))
+            var data1 = { 'trailerList': trailerList };
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/Trailer/ModifyTrailerTrolley',
+                //data: '{ trailerList: ' + JSON.stringify(trailerList) + '}',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //async: true,
+                success: function (data) {
+                    alert(data);
+                }, error(error) {
+                    console.log(error.responseText)
+                }
+            })
+            //  }
+        });
+
+
+
+
+</script>
+<script>
+        function CheckDuplicateTrolley() {
+            var table = document.getElementById("example1");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+                row = table.rows[i];
+                var z = row.cells[2].childNodes[1].value;
+                //  var p = row.cells[0].childNodes[1].value;
+                //    alert(p)
+                for (var j = 1; j < table.rows.length && j != i && z != 0; j++) {
+                    row1 = table.rows[j];
+                    //  alert(row1)
+                    // alert(row1.cells[0].childNodes[0].value);
+
+                    if (z == row1.cells[2].childNodes[1].value) {
+                        var c = row.cells[0].childNodes[1].value;
+                        //  alert(row.cells[0].childNodes[1].value);
+
+                        alert("Duplicate Trolley entry found for trailer no. " + c + "");
+                        return false;
+                    }
+                }
+
+            }
+            return true;
+        }
+</script>

@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "Export Vehicle Inventory Details";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="tracker-loader"></div>
+
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .buttons-excel {
+        background: #fc7303 !important;
+        color: white !important;
+    }
+
+    .buttons-pdf {
+        /*margin-left:48px;*/
+        background: #fdb901;
+        color: white !important;
+    }
+
+    .buttons-pdf {
+        background: #fdb901;
+        color: white !important;
+    }
+</style>
+
+
+<div class=" content-area overflow-hidden" id="showview">
+    <div class="page-header">
+        <h4 class="page-title">Export Vehicle Inventory Details</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+
+                                    <div class="col-md-2 col-lg-2" style="display:none">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">From Date</label>
+                                            @Html.TextBox("FromDate", null, new { @id = "txtFromDate", @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label">As On</label>
+                                            @Html.TextBox("ToDate", null, new { @id = "txtToDate", @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-18 col-lg-2">
+                                        <div class="form-group label-floating">
+                                            <label class="form-label" style="visibility:hidden">To</label>
+                                            <button class=" btn btn-primary" id="btnSearch" onclick="ShowFCLDestuffTallySummaryDetails()" type="button">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+
+
+                    <br />
+                    <div class="row">
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1Ex">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("ExportToExcelPending", "ExportModel")?';
+
+
+    }
+
+
+</script>
+<script>
+ 
+    $(document).ready(function () {
+
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+   
+    function ShowFCLDestuffTallySummaryDetails() {
+        debugger
+        $("#tracker-loader").fadeIn("slow");
+        
+ 
+        var ToDate = document.getElementById("txtToDate").value;
+        var FromDate = document.getElementById("txtFromDate").value;
+        var data1 = { 'FromDate': FromDate,   'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+
+            url: '/ExportModel/ExportVehicleInventory',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+             dataType: "json",
+
+            success: function (jsonResult) {
+
+                $("#example1Ex").empty();
+                RepTableDataJsonwopaging($("#example1Ex"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+
+
+     
+
+</script>
+ 

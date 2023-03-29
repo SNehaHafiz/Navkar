@@ -1,0 +1,630 @@
+﻿<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Import Labour Activity Report</title>
+    <link href="~/css/printstyle.css" rel="stylesheet" />
+    <style>
+        body {
+            color: black;
+        }
+
+        .marginTop{
+            margin-top:10px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .tblBox {
+            border-collapse: collapse; 
+            width: 100%;
+        }
+
+        .headingh3 {
+            font-size: 11pt;
+            font-family: 'verdana(batlic)';
+            text-decoration: underline;
+        }
+
+        th {
+            border: 1px solid black;
+            font-size: 15px;
+            font-family: verdana(batlic);
+            background-color: #ede5e5;
+        }
+
+        td {
+            border: 1px solid black;
+            font-size: 12px;
+            font-family: 'Segoe UI';
+        }
+
+        h5, h4 {
+            font-size: 10pt;
+            font-family: 'Segoe UI';
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-family: 'verdana(batlic)';
+        }
+
+    </style>
+</head>
+<body>
+    @foreach (var dr1 in ViewBag.LabourVendorList)
+    {
+        double TotalPkgs = 0;
+        double TotalWeight = 0;
+        double TotalExamedPkgs = 0;
+        double TotalExamedWeight = 0;
+
+        double TotalPkgsThapi = 0;
+        double TotalWeightThapi = 0;
+        double TotalExamedPkgsThapi = 0;
+        double TotalExamedWeightThapi = 0;
+
+        double TotalPkgsDrum = 0;
+        double TotalWeightDrum = 0;
+        double TotalExamedPkgsDrum = 0;
+        double TotalExamedWeightDrum = 0;
+
+        double TotalPkgsSeal = 0;
+        double TotalWeightSeal = 0;
+        double TotalExamedPkgsSeal = 0;
+        double TotalExamedWeightSeal = 0;
+
+        double TotalPkgsLabourThapi = 0;
+        double TotalWeightLabourThapi = 0;
+        double TotalExamedPkgsLabourThapi = 0;
+        double TotalExamedWeightLabourThapi = 0;
+
+       
+        int checkData1 = 0;
+        int checkData2 = 0;
+        int checkData3 = 0;
+        int checkData4 = 0;
+        int checkData5 = 0;
+        int counter = 1;
+        int counter1 = 1;
+        int counter2 = 1;
+        int counter3 = 1;
+        int counter4 = 1;
+        int counter5 = 1;
+
+        <div style="width:100%; text-align:center; height:100%;">
+            <div style="width:100%;height:100%;">
+                <div class="row marginTop">
+                    <h3 class="headingh3">From Date:- @ViewBag.FromDate ToDate :- @ViewBag.ToDate</h3>
+                </div>
+                <div class="row marginTop">
+                    <h3 class="headingh3">Location Name:- @ViewBag.Code</h3>
+                </div>
+                <div class="row marginTop">
+                    <h3 class="headingh3">Code:- @dr1["Name"]</h3>
+                </div>
+                <div class="row" style="border:1px">
+                    <h3>Exam List</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr No</th>
+                                <th style="width:80px;">Vehicle No</th>
+                                <th style="width:80px;">Descriptions</th>
+                                <th style="width:80px;">Container No</th>
+                                <th style="width:80px;">IGM No</th>
+                                <th style="width:100px;">Size</th>
+                                <th style="width:80px;">Type</th>
+                                <th style="width:50px;">Package</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Examined/Loose</th>
+                                <th style="width:100px;">Examined Weight</th>
+                                <th style="width:100px;">Thappi</th>
+                                <th style="width:100px;">Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.LabourCustomExamList)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData1 = checkData1 + 1;
+
+                                    TotalPkgs = TotalPkgs + @dr["Package"];
+                                    TotalWeight = TotalWeight + @dr["WEIGHT"];
+                                    TotalExamedPkgs = TotalExamedPkgs + @dr["ExaminedLoose"];
+                                    TotalExamedWeight = TotalExamedWeight + @dr["ExaminedWeight"];
+                            <tr>
+                                <td style="text-align:left">@counter&nbsp;</td>
+                                <td style="text-align:left">@dr["VehicleNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Descriptions"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["IGMNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerType"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Package"]&nbsp;</td>
+                                <td style="text-align:left">@dr["WEIGHT"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedLoose"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedWeight"]&nbsp;</td>
+                                <td style="text-align:right">@dr["Thappi"] &nbsp;</td>
+                                <td style="text-align:right">@dr["Bond"] &nbsp;</td>
+                            </tr>
+                                    counter = counter + 1;
+                                }
+                            }
+                            @if (checkData1 > 0)
+                            {
+                            <tr>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">Total </td>
+                                <td style="text-align:left">@TotalPkgs &nbsp;</td>
+                                <td style="text-align:left">@TotalWeight &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedPkgs &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedWeight &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row marginTop">
+                    <h3>Destuff Thapi List</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr No</th>
+                                <th style="width:80px;">Vehicle No</th>
+                                <th style="width:80px;">Descriptions</th>
+                                <th style="width:80px;">Container No</th>
+                                <th style="width:80px;">IGM No</th>
+                                <th style="width:100px;">Size</th>
+                                <th style="width:80px;">Type</th>
+                                <th style="width:50px;">Package</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Examined/Loose</th>
+                                <th style="width:100px;">Examined Weight</th>
+                                <th style="width:100px;">Thappi</th>
+                                <th style="width:100px;">Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.LabourDestuffThapiList)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData2 = checkData2 + 1;
+
+                                    TotalPkgsThapi = TotalPkgsThapi + @dr["Package"];
+                                    TotalWeightThapi = TotalWeightThapi + @dr["WEIGHT"];
+                                    TotalExamedPkgsThapi = TotalExamedPkgsThapi + @dr["ExaminedLoose"];
+                                    TotalExamedWeightThapi = TotalExamedWeightThapi + @dr["ExaminedWeight"];
+
+                            <tr>
+                                <td style="text-align:left">@counter1&nbsp;</td>
+                                <td style="text-align:left">@dr["VehicleNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Descriptions"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["IGMNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerType"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Package"]&nbsp;</td>
+                                <td style="text-align:left">@dr["WEIGHT"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedLoose"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedWeight"]&nbsp;</td>
+                                <td style="text-align:right">@dr["Thappi"] &nbsp;</td>
+                                <td style="text-align:right">@dr["Bond"] &nbsp;</td>
+                            </tr>
+                                    counter1 = counter1 + 1;
+                                }
+                            }
+                            @if (checkData2 > 0)
+                            {
+                            <tr>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">Total </td>
+                                <td style="text-align:left">@TotalPkgsThapi &nbsp;</td>
+                                <td style="text-align:left">@TotalWeightThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedPkgsThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedWeightThapi &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row marginTop">
+                    <h3>Labour Drum List</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr No</th>
+                                <th style="width:80px;">Vehicle No</th>
+                                <th style="width:80px;">Descriptions</th>
+
+                                <th style="width:80px;">Container No</th>
+                                <th style="width:80px;">IGM No</th>
+                                <th style="width:100px;">Size</th>
+                                <th style="width:80px;">Type</th>
+                                <th style="width:50px;">Package</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Examined/Loose</th>
+                                <th style="width:100px;">Examined Weight</th>
+                                <th style="width:100px;">Thappi</th>
+                                <th style="width:100px;">Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.LabourDrumList)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData3 = checkData3 + 1;
+
+                                    TotalPkgsDrum = TotalPkgsDrum + @dr["Package"];
+                                    TotalWeightDrum = TotalWeightDrum + @dr["WEIGHT"];
+                                    TotalExamedPkgsDrum = TotalExamedPkgsDrum + @dr["ExaminedLoose"];
+                                    TotalExamedWeightDrum = TotalExamedWeightDrum + @dr["ExaminedWeight"];
+
+                            <tr>
+                                <td style="text-align:left">@counter2&nbsp;</td>
+                                <td style="text-align:left">@dr["VehicleNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Descriptions"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["IGMNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerType"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Package"]&nbsp;</td>
+                                <td style="text-align:left">@dr["WEIGHT"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedLoose"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedWeight"]&nbsp;</td>
+                                <td style="text-align:right">@dr["Thappi"] &nbsp;</td>
+                                <td style="text-align:right">@dr["Bond"] &nbsp;</td>
+                            </tr>
+                                    counter2 = counter2 + 1;
+                                }
+                            }
+                            @if (checkData3 > 0)
+                            {
+                            <tr>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">Total </td>
+                                <td style="text-align:left">@TotalPkgsDrum &nbsp;</td>
+                                <td style="text-align:left">@TotalWeightDrum &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedPkgsDrum &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedWeightDrum &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row marginTop">
+                    <h3>Labour Seal List</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr No</th>
+                                <th style="width:80px;">Vehicle No</th>
+                                <th style="width:80px;">Descriptions</th>
+
+                                <th style="width:80px;">Container No</th>
+                                <th style="width:80px;">IGM No</th>
+                                <th style="width:100px;">Size</th>
+                                <th style="width:80px;">Type</th>
+                                <th style="width:50px;">Package</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Examined/Loose</th>
+                                <th style="width:100px;">Examined Weight</th>
+                                <th style="width:100px;">Thappi</th>
+                                <th style="width:100px;">Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.LabourSealingList)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData4 = checkData4 + 1;
+
+                                    TotalPkgsSeal = TotalPkgsSeal + @dr["Package"];
+                                    TotalWeightSeal = TotalWeightSeal + @dr["WEIGHT"];
+                                    TotalExamedPkgsSeal = TotalExamedPkgsSeal + @dr["ExaminedLoose"];
+                                    TotalExamedWeightSeal = TotalExamedWeightSeal + @dr["ExaminedWeight"];
+
+                            <tr>
+                                <td style="text-align:left">@counter3&nbsp;</td>
+                                <td style="text-align:left">@dr["VehicleNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Descriptions"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["IGMNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerType"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Package"]&nbsp;</td>
+                                <td style="text-align:left">@dr["WEIGHT"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedLoose"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedWeight"]&nbsp;</td>
+                                <td style="text-align:right">@dr["Thappi"] &nbsp;</td>
+                                <td style="text-align:right">@dr["Bond"] &nbsp;</td>
+                            </tr>
+                                    counter3 = counter3 + 1;
+                                }
+                            }
+                            @if (checkData4 > 0)
+                            {
+                                <tr>
+                                    <td style="text-align:left">&nbsp; </td>
+                                    <td style="text-align:left">&nbsp; </td>
+                                    <td style="text-align:left">&nbsp; </td>
+                                    <td style="text-align:left">&nbsp; </td>
+                                    <td style="text-align:left">Total </td>
+                                    <td style="text-align:left">@TotalPkgsSeal &nbsp;</td>
+                                    <td style="text-align:left">@TotalWeightSeal &nbsp;</td>
+                                    <td style="text-align:right">@TotalExamedPkgsSeal &nbsp;</td>
+                                    <td style="text-align:right">@TotalExamedWeightSeal &nbsp;</td>
+                                    <td style="text-align:right"> &nbsp;</td>
+                                    <td style="text-align:right"> &nbsp;</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row marginTop">
+                    <h3>Labour Thapi List</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr No</th>
+                                <th style="width:80px;">Vehicle No</th>
+                                <th style="width:80px;">Descriptions</th>
+
+                                <th style="width:80px;">Container No</th>
+                                <th style="width:80px;">IGM No</th>
+                                <th style="width:100px;">Size</th>
+                                <th style="width:80px;">Type</th>
+                                <th style="width:50px;">Package</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Examined/Loose</th>
+                                <th style="width:100px;">Examined Weight</th>
+                                <th style="width:100px;">Thappi</th>
+                                <th style="width:100px;">Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.LabourTapiEntryList)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData5 = checkData5 + 1;
+
+                                    TotalPkgsLabourThapi = TotalPkgsLabourThapi + @dr["Package"];
+                                    TotalWeightLabourThapi = TotalWeightLabourThapi + @dr["WEIGHT"];
+                                    TotalExamedPkgsLabourThapi = TotalExamedPkgsLabourThapi + @dr["ExaminedLoose"];
+                                    TotalExamedWeightLabourThapi = TotalExamedWeightLabourThapi + @dr["ExaminedWeight"];
+
+                            <tr>
+                                <td style="text-align:left">@counter4&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["VehicleNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Descriptions"]&nbsp;</td>
+                                <td style="text-align:left">@dr["IGMNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerType"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Package"]&nbsp;</td>
+                                <td style="text-align:left">@dr["WEIGHT"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedLoose"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedWeight"]&nbsp;</td>
+                                <td style="text-align:right">@dr["Thappi"] &nbsp;</td>
+                                <td style="text-align:right">@dr["Bond"] &nbsp;</td>
+                            </tr>
+                                    counter4 = counter4 + 1;
+                                }
+                            }
+                            @if (checkData5 > 0)
+                            {
+                            <tr>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">Total </td>
+                                <td style="text-align:left">@TotalPkgsLabourThapi &nbsp;</td>
+                                <td style="text-align:left">@TotalWeightLabourThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedPkgsLabourThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedWeightLabourThapi &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row marginTop">
+                    <h3>Labour Bond Loading List</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr No</th>
+                                <th style="width:80px;">Vehicle No</th>
+                                <th style="width:80px;">Descriptions</th>
+                                <th style="width:80px;">Container No</th>
+                                <th style="width:80px;">IGM No</th>
+                                <th style="width:100px;">Size</th>
+                                <th style="width:80px;">Type</th>
+                                <th style="width:50px;">Package</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Examined/Loose</th>
+                                <th style="width:100px;">Examined Weight</th>
+                                <th style="width:100px;">Thappi</th>
+                                <th style="width:100px;">Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.tblBondLoading)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData5 = checkData5 + 1;
+
+                                    TotalPkgsLabourThapi = TotalPkgsLabourThapi + @dr["Package"];
+                                    TotalWeightLabourThapi = TotalWeightLabourThapi + @dr["WEIGHT"];
+                                    TotalExamedPkgsLabourThapi = TotalExamedPkgsLabourThapi + @dr["ExaminedLoose"];
+                                    TotalExamedWeightLabourThapi = TotalExamedWeightLabourThapi + @dr["ExaminedWeight"];
+
+                            <tr>
+                                <td style="text-align:left">@counter4&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["VehicleNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Descriptions"]&nbsp;</td>
+                                <td style="text-align:left">@dr["IGMNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerType"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Package"]&nbsp;</td>
+                                <td style="text-align:left">@dr["WEIGHT"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedLoose"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedWeight"]&nbsp;</td>
+                                <td style="text-align:right">@dr["Thappi"] &nbsp;</td>
+                                <td style="text-align:right">@dr["Bond"] &nbsp;</td>
+                            </tr>
+                                    counter4 = counter4 + 1;
+                                }
+                            }
+                            @if (checkData5 > 0)
+                            {
+                            <tr>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">Total </td>
+                                <td style="text-align:left">@TotalPkgsLabourThapi &nbsp;</td>
+                                <td style="text-align:left">@TotalWeightLabourThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedPkgsLabourThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedWeightLabourThapi &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row marginTop">
+                    <h3>Labour Bond Unloading List</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="tblBox">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;">Sr No</th>
+                                <th style="width:80px;">Vehicle No</th>
+                                <th style="width:80px;">Descriptions</th>
+
+                                <th style="width:80px;">Container No</th>
+                                <th style="width:80px;">IGM No</th>
+                                <th style="width:100px;">Size</th>
+                                <th style="width:80px;">Type</th>
+                                <th style="width:50px;">Package</th>
+                                <th style="width:100px;">Weight</th>
+                                <th style="width:100px;">Examined/Loose</th>
+                                <th style="width:100px;">Examined Weight</th>
+                                <th style="width:100px;">Thappi</th>
+                                <th style="width:100px;">Bond</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dr in ViewBag.tblBondUnLoading)
+                            {
+                                if (@dr1["VendorId"] == @dr["Vendor"])
+                                {
+                                    checkData5 = checkData5 + 1;
+
+                                    TotalPkgsLabourThapi = TotalPkgsLabourThapi + @dr["Package"];
+                                    TotalWeightLabourThapi = TotalWeightLabourThapi + @dr["WEIGHT"];
+                                    TotalExamedPkgsLabourThapi = TotalExamedPkgsLabourThapi + @dr["ExaminedLoose"];
+                                    TotalExamedWeightLabourThapi = TotalExamedWeightLabourThapi + @dr["ExaminedWeight"];
+
+                            <tr>
+                                <td style="text-align:left">@counter4&nbsp;</td>
+                                <td style="text-align:left">@dr["VehicleNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Descriptions"]&nbsp;</td>
+
+                                <td style="text-align:left">@dr["ContainerNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["IGMNo"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Size"]&nbsp;</td>
+                                <td style="text-align:left">@dr["ContainerType"]&nbsp;</td>
+                                <td style="text-align:left">@dr["Package"]&nbsp;</td>
+                                <td style="text-align:left">@dr["WEIGHT"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedLoose"]&nbsp;</td>
+                                <td style="text-align:right">@dr["ExaminedWeight"]&nbsp;</td>
+                                <td style="text-align:right">@dr["Thappi"] &nbsp;</td>
+                                <td style="text-align:right">@dr["Bond"] &nbsp;</td>
+                            </tr>
+                                    counter4 = counter4 + 1;
+                                }
+                            }
+                            @if (checkData5 > 0)
+                            {
+                            <tr>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">&nbsp; </td>
+                                <td style="text-align:left">Total </td>
+                                <td style="text-align:left">@TotalPkgsLabourThapi &nbsp;</td>
+                                <td style="text-align:left">@TotalWeightLabourThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedPkgsLabourThapi &nbsp;</td>
+                                <td style="text-align:right">@TotalExamedWeightLabourThapi &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                                <td style="text-align:right"> &nbsp;</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+           
+        </div>
+    }
+</body>
+</html>

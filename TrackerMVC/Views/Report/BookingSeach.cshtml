@@ -1,0 +1,251 @@
+﻿@{
+    ViewBag.Title = "BookingSeach";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area" id="divSearchInvoic">
+    <div class=" content-area overflow-hidden">
+        <div class="page-header">
+            <h4 class="page-title">Booking Wise Details</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Viewsummary();"><i class="fa fa-file-text"></i></button>*@
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+
+
+
+                                        <div class="col-lg-2 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Booking No</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.TextBox("txtbookingNo", null, new { @class = "form-control", @id = "txtbookingNo", name = "txtbookingNo", autocomplete = "off", placeholder = "Booking No" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating" style="margin-top: 33px;">
+                                                <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="Show('SHOW')" type="button">
+                                                    SHOW
+                                                </button>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-1 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">20</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <b>
+                                                            <label>
+                                                                @Html.TextBox("txt20", null, new { @class = "form-control", @readonly = "Readonly", @id = "txt20", name = "txt20", autocomplete = "on" })
+                                                            </label>
+                                                        </b>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-1 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">40</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <b>
+                                                            <label>
+                                                                @Html.TextBox("txt40", null, new { @class = "form-control", @readonly = "Readonly", @id = "txt40", name = "txt40", autocomplete = "on" })
+                                                            </label>
+                                                        </b>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-1 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">45</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <b>
+                                                            <label>
+                                                                @Html.TextBox("txt45", null, new { @class = "form-control", @readonly = "Readonly", @id = "txt45", name = "txt45", autocomplete = "on" })
+                                                            </label>
+                                                        </b>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-1 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Teus</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <b>
+                                                            <label>
+                                                                @Html.TextBox("txtteus", null, new { @class = "form-control", @readonly = "Readonly", @id = "txtteus", name = "txtteus", autocomplete = "on" })
+                                                            </label>
+                                                        </b>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*@Html.ActionLink("Export To Excel", "ExportToExcelGetReport", null, new { @class = "btn btn-primary btn-md" })*@
+
+
+
+
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="table-responsive">
+                                                <table id="example1" class="table table-bordered table-hover tbl-cart text-nowrap"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @Html.ActionLink("Export To Excel", "ExportToExcelGetTeus", null, new { @class = "btn btn-primary btn-md" })
+                                    <div class="row">
+                                        <div class="col-lg-12 col-sm-12">
+                                            <div class="table-responsive">
+                                                <table id="example2" class="table table-bordered table-hover tbl-cart text-nowrap"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Show() {
+        debugger;
+     
+        var txtbookingNo = $("#txtbookingNo").val();
+
+
+        var data1 = { 'txtbookingNo': txtbookingNo, };
+        
+        data = JSON.stringify(data1);
+        ContainerDetails(txtbookingNo);
+        TeusDetails(txtbookingNo)
+        //alert(data);
+        $.ajax({
+
+            url: '/Report/BookingSeachDetails',
+            type: 'Post',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                debugger;
+                //alert(jsonResult);
+                RepTableDataJson($("#example1"), jsonResult, "BookingSeachDetails", "BookingSeachDetails");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+                
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+
+        });
+    }
+    function ContainerDetails(Booking) {
+        //alert('hii')
+        
+        debugger;
+
+        var data1 = { 'Booking': Booking };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/BookingSeachContainer",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+
+
+                RepTableDataJson($("#example2"), data, "BookingSeachContainer", "BookingSeachContainer");
+                //var table = document.getElementById("reportTable");
+                //Textboxvalue(Activity)
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+
+    function TeusDetails(Booking) {
+        //alert('hii')
+
+        debugger;
+
+        var data1 = { 'Booking': Booking };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/teusSearch",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                //debugger;
+                //alert(JSON.stringify(data[0].AssessNo))
+                //alert(JSON.stringify(data))
+                $("#txt20").val(data[0].txt20);
+                $("#txt40").val(data[0].txt40);
+                $("#txt45").val(data[0].txt45);
+                $("#txtteus").val(data[0].Teus);
+         
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        })
+    }
+</script>

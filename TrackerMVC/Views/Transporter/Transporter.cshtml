@@ -1,0 +1,677 @@
+﻿@model TrackerMVCEntities.BusinessEntities.TransportEntities
+
+@{
+    ViewBag.Title = "Transporter";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .tabs-menu ul li .active {
+        background-color: orange
+    }
+
+    .custom-switch-input:checked ~ .custom-switch-indicator {
+        background: #64A5FE;
+    }
+</style>
+<div class="content-area overflow-hidden">
+    <div id="divTransportor">
+    <div class="page-header">
+        <h4 class="page-title">Transporter Master</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                  
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTransport();"><i class="fa fa-file-text"></i></button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body p-6">
+                    <div class="panel panel-primary">
+                        <div class="tab-menu-heading" style="background-color: #64A5FE">
+                            <div class="tabs-menu ">
+                                <!-- Tabs -->
+                                <ul class="nav panel-tabs">
+                                    <li class=""><a href="#transporter" class="active" style="border-radius:0px;color:white;" data-toggle="tab">Transporter</a></li>
+                                    <li><a href="#bankdetails" style="border-radius:0px;color:white" data-toggle="tab">Bank Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel-body tabs-menu-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active " id="transporter">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Trans ID</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                       
+                                                        <input id="txtTransID" type="text" class="form-control" placeholder="NEW" readonly />
+                                                        @*@Html.TextBox("txtTransID", null,  new { @class = "form-control",  Placeholder = "NEW" } )*@
+                                                      @*  @Html.EditorFor(model => model.TransID, new { htmlAttributes = new { @class = "form-control ", @id = "txtTransID", Placeholder = "NEW" } })*@
+
+                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Registration Date</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                       @* <input id="txtRegDate" class="form-control form_datetime1" @Value=DateTime.Now.ToString("dd mmm yyyy 08:00") />*@
+                                                        @Html.TextBox("txtRegDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Transporter Name</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtTransporterName" placeholder="Enter Transporter Name" type="text" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Address</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <textarea type="text" rows="2" placeholder="Remarks" class="form-control" id="txtAddress"></textarea>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Contact Person</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtContactPerson" placeholder="Enter Contact Person Name" type="text" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Contact No</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtContactNo" type="text" class="form-control" placeholder="Enter Contact No" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Email</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtEmailID" type="email" class="form-control" placeholder="Enter Email ID" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="custom-switch">
+                                                <input type="checkbox" name="custom-switch-checkbox" id="chkIsActive" value="1" checked class="custom-switch-input">
+                                                @*@Html.EditorFor(model => model.IsActive, new { htmlAttributes = new { @class = "custom-switch-input", @id = "chkIsActive", type = "checkbox", name = "chkIsActive", @Value = ViewBag.Checked, autocomplete = "off", checked } })*@
+
+                                                <span class="custom-switch-indicator"></span>
+                                                <span class="custom-switch-description">Is Active?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="bankdetails">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Bank Name</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        @*<select class="form-control" id="ddlBankName">
+                                                                <option value="0">--Select--</option>
+                                                            </select>*@
+                                                        @Html.DropDownListFor(model => model.BankID, (IEnumerable<SelectListItem>)ViewBag.BankList, "--Select--", new { @class = "form-control", @id = "ddlBankName", name = "ddlBankName", autocomplete = "off" })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Account Number</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtAccountNumber" placeholder="Enter Account Number" type="text" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">IFSC Code</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtIFSCCode" placeholder="Enter IFSC Code" type="text" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Account Name</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtAccountName" placeholder="Enter Account Name" type="text" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Branch Name</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtBranchName" placeholder="Enter Branch Name" type="text" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Email</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @*@Html.EditorFor(model => model.CHACode, new { htmlAttributes = new { @class = "form-control", @id = "chaCode", autocomplete = "off", maxlength = 20 } })*@
+                                                        <input id="txtEmailIDBank" placeholder="Enter Email ID" type="email" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-1 col-sm-12">
+                                            <div class="form-group">
+
+                                                <div class="row gutters-xs">
+                                                    <div class="col" style="padding-top:25px">
+                                                        <input type="button" id="Add" name="Add" value="Add" onclick="ShowContainerList()" class="btn btn-primary" />
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="row">
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="banklist" style="width:100%;background-color:#f4f5fa !important;">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th class="wd-15p sorting">Bank Name</th>
+                                                        <th class="wd-10p sorting">Account No</th>
+                                                        <th class="wd-10p sorting">IFSC Code</th>
+                                                        <th class="wd-10p sorting">Account Name</th>
+                                                        <th class="wd-10p sorting">Branch Name</th>
+                                                        <th class="wd-10p sorting">Email ID</th>
+                                                        
+
+
+                                                        <th style="visibility:hidden"></th>
+
+                                                    </tr>
+                                                </thead>
+
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:20px">
+                        <div class="col-md-1 col-xs-4">
+                            <div class="form-group">
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-success btn-xs" id="btnSave" onclick="return AddTrailer();">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-xs-4">
+                            <div class="form-group">
+                                <button class="btn btn-default btn-xs" id="btnClear" onclick="OnClear();">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="divTransportorsummaryList">
+
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#banklist').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false
+            
+           
+        });
+
+
+
+    });
+</script>
+
+<script type="text/javascript">
+    window.onload = function () {
+        Clear();
+        
+    }
+    function Clear() {
+        $("#txtTransporterName").val("")
+        $("#txtAddress").val("")
+        $("#txtContactPerson").val("")
+
+        $("#txtContactNo").val("")
+        $("#txtEmailID").val("")
+        $("#ddlBankName").val("")
+        $("#txtAccountNumber").val("")
+        $("#txtIFSCCode").val("")
+        $("#txtAccountName").val("")
+        $("#txtBranchName").val("")
+        $("#txtEmailIDBank").val("")
+
+        $.ajax({
+            type: 'POST',
+            url: '/Transporter/DeleteTempAllRecords',
+            //  data: '{viewModel: ' + JSON.stringify(viewModel) + ', containerData: ' + JSON.stringify(SelectedData) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+            }
+        });
+        var table = $('#banklist').DataTable();
+        table
+            .clear()
+            .draw();
+    }
+</script>
+
+<script>
+
+    function ShowContainerList() {
+        //  alert($("#JoNo").val())
+        //var res = validate();
+        //if (res == false) {
+        //    return false;
+        //}
+        //var containerNoVal = ContainerNumberValidation();
+        //// alert(containerNoVal);
+        //if (containerNoVal == false) {
+        //    alert("Invalid Container No.")
+        //    return false;
+        //}
+
+        var ddlBankName = $("#ddlBankName option:selected").text();
+        var ddlBankID = $("#ddlBankName option:selected").val();
+        var txtAccountNumber = $("#txtAccountNumber").val();
+        var txtIFSCCode = $("#txtIFSCCode").val();
+        var txtAccountName = $("#txtAccountName").val();
+        var txtBranchName = $("#txtBranchName").val();
+        var txtEmailIDBank = $("#txtEmailIDBank").val();
+        
+        //var UserID = Session("tracker_UserID");
+
+
+        //var ContainerNo = $("#ContainerNo").val() + "<input Name=ContainerNo type=hidden id=ContainerNo   value=" + txtContainerNo + ">";
+        //var FL = $("#ddlFL option:selected").text() + "<input Name=FLid type=hidden id=FL   value=" + FLid + ">";
+        //var ContainerSize = $("#ddlSize option:selected").text() + "<input Name=Size type=hidden id=Size   value=" + Size + ">";
+        //var ISOCodeName = $("#ddlISOCode option:selected").text() + "<input Name=ISOCodeID type=hidden id=ISOCode   value=" + ISOCode + ">";
+        //var Cargotype = $("#ddlCargotype option:selected").text() + "<input Name=Cargotypeid type=hidden id=Cargotypeid   value=" + Cargotypeid + ">";
+        //var Commodity_group = $("#ddlCommodity_group option:selected").text() + "<input Name=Commodity_group_id type=hidden id=Commodity_group_id   value=" + Commodity_group_id + ">";
+        //var JONo = $("#JONo").val();
+        
+        var data1 = { 'BankName': ddlBankName, 'AccountNo': txtAccountNumber, 'IFSCCode': txtIFSCCode, 'AccountName': txtAccountName, 'BranchName': txtBranchName, 'EmailID': txtEmailIDBank, 'BankID': ddlBankID };
+        
+        var data = JSON.stringify(data1);
+
+        var exists = $('#banklist tr > td:contains(' + ddlBankName + ')').length;
+
+        if (exists == 1) {
+
+            alert("Bank Name alredy exist!");
+            document.getElementById('ddlBankName').value = "";
+        }
+        else {
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/Transporter/AddTempBankData',
+                data: data,
+                //data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+
+                    // if (data.Containerlist != "Some Invalid data in File.") {
+                    $('#banklist').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        /// "aaData": data,
+                        "aaData": data.Banklist,
+                        "columns": [
+                            { "data": "BankName" },
+                            { "data": "AccountNo" },
+                            { "data": "IFSCCode" },
+                            { "data": "AccountName" },
+                            { "data": "BranchName" },
+                            { "data": "EmailID" },
+
+                            {
+                                "data": "TempID",
+                                "render": function (data, type, row, meta) {
+                                    if (type === 'display') {
+
+                                        data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                                        // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                    }
+
+                                    return data;
+                                }
+
+
+                            }
+                        ]
+                    });
+                    // }
+                    document.getElementById('txtAccountNumber').value = "";
+                    document.getElementById('txtIFSCCode').value = "";
+                    document.getElementById('txtAccountName').value = "";
+                    document.getElementById('txtBranchName').value = "";
+                    document.getElementById('txtEmailIDBank').value = "";
+                    document.getElementById('ddlBankName').value = "";
+                }
+
+            });
+        }
+        
+    }
+    function CancelItem(TempID) {
+
+
+        var r = confirm("Do you want to Delete Entry?");
+        if (r == true) {
+
+            //var table = $('#containerList').DataTable();
+            //$('#containerList tbody').on('click', '.removebutton', function () {
+
+            //    table
+            //        .row($(this).parents('tr'))
+            //        .remove()
+            //        .draw();
+
+            //});
+            var data1 = { 'ContainerId': TempID }
+            var data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/Transporter/DeleteBankData',
+
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    // alert(JSON.stringify(data))
+                    if (data != "Some Invalid data in File.") {
+                        $('#banklist').dataTable({
+                            "destroy": true,
+                            "bLengthChange": false,
+                            "aaData": data,
+                            "columns": [
+                                { "data": "BankName" },
+                                { "data": "AccountNo" },
+                                { "data": "IFSCCode" },
+                                { "data": "AccountName" },
+                                { "data": "BranchName" },
+                                { "data": "EmailID" },
+
+                                {
+                                    "data": "TempID",
+                                    "render": function (data, type, row, meta) {
+                                        if (type === 'display') {
+
+                                            data = "<button type=\"button\" class=\"btn btn-icon btn-primary btn-danger removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"CancelItem('" + data + "')\"><i class=\"fe fe-trash\" style=\"font-size: 16px;\"></i></button>"
+
+                                            // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                        }
+
+                                        return data;
+                                    }
+
+
+                                }
+                            ]
+                        });
+                    }
+                }
+            });
+        }
+        else {
+            alert("You Pressed Cancel");
+        }
+    }
+    function validateSaveFunction() {
+        // alert("hifg");
+        //var count = document.getElementById('banklist').count;
+
+        var txtRegDate = document.getElementById('txtRegDate').value;
+        var txtTransporterName = document.getElementById('txtTransporterName').value;
+        var txtAddress = document.getElementById('txtAddress').value;
+        var txtContactPerson = document.getElementById('txtContactPerson').value;
+        var txtContactNo = document.getElementById('txtContactNo').value;
+        var txtEmailID = document.getElementById('txtEmailID').value;
+        
+        
+
+        document.getElementById("txtRegDate").style.borderColor = "gainsboro";
+        document.getElementById("txtTransporterName").style.borderColor = "gainsboro";
+        document.getElementById("txtAddress").style.borderColor = "gainsboro";
+        document.getElementById("txtContactPerson").style.borderColor = "gainsboro";
+        document.getElementById("txtContactNo").style.borderColor = "gainsboro";
+        document.getElementById("txtEmailID").style.borderColor = "gainsboro";
+
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (txtRegDate == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"            
+            document.getElementById("txtRegDate").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+        if (txtTransporterName == "") {
+            document.getElementById("txtTransporterName").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (txtAddress == "") {
+            document.getElementById("txtAddress").style.borderColor = "red";
+
+            blResult = blResult && false;
+        }
+        if (txtContactPerson == "") {
+            document.getElementById("txtContactPerson").style.borderColor = "red";
+            blResult = blResult && false;
+        }        
+        if (txtContactNo == "") {
+            document.getElementById("txtContactNo").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (txtEmailID == "") {
+            document.getElementById("txtEmailID").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+    $("#btnSave").click(function () {
+        var res = validateSaveFunction();
+        if (res == false) {
+            return false;
+        }
+        var itemcount = checkItemcount();
+        if (itemcount) {
+            var txtRegDate = document.getElementById('txtRegDate').value;
+            var txtTransporterName = document.getElementById('txtTransporterName').value;
+            var txtAddress = document.getElementById('txtAddress').value;
+            var txtContactPerson = document.getElementById('txtContactPerson').value;
+            var txtContactNo = document.getElementById('txtContactNo').value;
+            var txtEmailID = document.getElementById('txtEmailID').value;
+            var chkIsActive = document.getElementById('chkIsActive').value;
+            var txtTransID = $("#txtTransID").val();
+
+            
+
+            var Transporter = {};
+            Transporter.RegDate = txtRegDate;
+            Transporter.TRANSNAME = txtTransporterName;
+            Transporter.ADDRESS = txtAddress;
+            Transporter.CONTACTPERSON = txtContactPerson;
+            Transporter.MOBILENO = txtContactNo;
+            Transporter.EMAILIDT = txtEmailID;            
+            Transporter.IsActive = chkIsActive;
+            Transporter.TransID = txtTransID;
+
+
+            $.ajax({
+                url: "/Transporter/Save",
+                data: '{Transporter: ' + JSON.stringify(Transporter) + '}',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {                
+                alert('Record saved successfully')
+                window.location.href = '@Url.Action("Transporter", "Transporter")';
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });           
+        }
+        return false;
+    });
+    function checkItemcount() {
+
+        var table = $('#banklist').DataTable();
+
+        if (table.rows().count() == 0) {
+            alert("Please add Bank details!")
+            document.getElementById('ddlBankName').focus();
+            return false;
+        }
+        return true;
+
+    }
+</script>
+
+<script>
+    //onclick="window.location = '@Url.Action("TrolleySummary", "TrolleyTransport")' "
+    function ViewSummaryTransport() {
+      //  alert("hi");
+
+        $.ajax({
+            url: "/Transporter/TransporterSummary",
+           // data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //  dataType: "json",
+            success: function (response) {
+
+
+                $("#divTransportor").hide()
+                $('#divTransportorsummaryList').show()
+                $('#divTransportorsummaryList').html(response);
+            }
+        });
+
+
+
+    }
+</script>

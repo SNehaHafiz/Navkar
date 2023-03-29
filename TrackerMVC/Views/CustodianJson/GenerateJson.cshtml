@@ -1,0 +1,1613 @@
+﻿@model TrackerMVCEntities.CustodianJson.Custodian
+@{
+    ViewBag.Title = "GenerateJson";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+
+    #tbldaywisedetails > tbody > tr:last-child {
+        background: #5ed84f;
+        color: white;
+    }
+
+    body {
+        font-weight: bolder !important;
+    }
+</style>
+<div id="tracker-loader"></div>
+<script src="~/js/GetTableJson.js"></script>
+<script src="~/js/GetTableJsonwopaging.js"></script>
+<div id="Summary">
+    <div class="page-header">
+        <h4 class="page-title">
+            Generate Json
+
+        </h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+
+                    <button class="btn btn-facebook" style="margin-top:25px;" title="List of pending file to generate" id="btnSearch" type="button" onclick="ViewpendingList();">Generate SF</button>
+                    <button class="btn btn-success" style="margin-top:25px;" title="List of pending file to generate" id="btnSearch" type="button" onclick="ListOfPendingSPGenerate();">SF Status</button>
+                    <button class="btn btn-blue" style="margin-top:25px;" title="List of pending file to generate" id="btnSearch" type="button" onclick="ViewpendingListASR();">Generate ASR</button>
+                    <button class="btn btn-success" style="margin-top:25px;" title="List of pending file to generate" id="btnSearch" type="button" onclick="ListOfPendingASRGenerate();">ASR Status</button>
+                    @*<button class="btn btn-yellow" style="margin-top:25px;" title="List of pending file to generate" id="btnSearch" type="button" onclick="Viewpending();">List</button>*@
+                    <button class="btn btn-success" style="margin-top:25px;" title="Success" id="btnSearch" type="button" onclick="Success();">Success</button>
+                    <button class="btn btn-danger" style="margin-top:25px;" title="Errors" id="btnSearch" type="button" onclick="Errors();">Error</button>
+                    <button class="btn btn-GatePass" style="margin-top:25px;" title="Summary" id="btnSummary" type="button" onclick="Summary();">Summary</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-sm-12 col-md-3">
+            <div class="row no-gutters">
+                <div class="col-4">
+                    <label class="form-label mt-1">File Type</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownList("FileType", new List<SelectListItem>
+{
+new SelectListItem{ Text="Select Type", Value = "Select Type" },
+new SelectListItem{ Text="SF", Value = "SF" , Selected=true},
+new SelectListItem{ Text="ASR", Value = "ASR" },
+new SelectListItem{ Text="AR", Value = "AR" },
+new SelectListItem{ Text="DP", Value = "DP" },
+}, new { @class = "form-control", @id = "ddlFileType" })
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <div class="row no-gutters">
+                <div class="col-4">
+                    <label class="form-label mt-1">From <i class="fa fa-calendar"></i></label>
+                </div>
+                <div class="col-8">
+                    @Html.TextBox("FromDate", null, new { @class = "form-control datePickerD", @id = "fromDate", name = "fromDate", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <div class="row no-gutters">
+                <div class="col-3">
+                    <label class="form-label mt-1">To <i class="fa fa-calendar"></i></label>
+                </div>
+                <div class="col-8">
+                    @Html.TextBox("ToDate", null, new { @class = "form-control datePickerD", @id = "toDate", name = "toDate", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-sm-12 col-md-3">
+            <div class="row no-gutters">
+                <div class="col-4">
+                    <label class="form-label mt-1">Search <i class="fa fa-search"></i></label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownList("Criteria", new List<SelectListItem>
+{
+new SelectListItem{ Text="Container No", Value = "Container No" , Selected=true},
+}
+               , new { @class = "form-control", @id = "ddlCriteria" })
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-3" id="divSearch">
+            <div class="form-group">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <i class="fe fe-search"></i>
+                    </span>
+                    @Html.TextBox("SearchText", null, new { @class = "form-control", @id = "searchText", name = "searchText", autocomplete = "off", placeHolder = "Search By Container No" })
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-warning" onclick="GeenerateJson()"><i class="fa fa-search" style="font-size:14px"></i></button>
+        </div>
+    </div>
+    <div id="divJson">
+    </div>
+</div>
+@using (Html.BeginForm("DownLoadFile", "CustodianJson", FormMethod.Post))
+{
+    <input type="hidden" id="hfFileId" name="id" />
+    <input type="submit" id="btnDownload" value="Download" style="display:none" />
+}
+
+<div class=" content-area" id="divReceiptSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">List of pending file to generate</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-success" name="clearProfile" title="Show receipt details" id="btnShow" onclick="GetList()"><i class="fa fa-search"></i></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileListpending()"></i></button>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="Listpending"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divErroSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Error</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack1();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-success" name="clearProfile" title="Show receipt details" id="btnShow" onclick="GetError()"><i class="fa fa-search"></i></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileErrorDet()"></i></button>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblErrorDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divSuccessSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Success</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack2();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-success" name="clearProfile" title="Show receipt details" id="btnShow" onclick="GetSuccess()"><i class="fa fa-search"></i></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileSuccess()"></i></button>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblSuccessDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" content-area" id="divPendingSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Generate SF</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack5();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-sm-12 col-md-3" style="margin-top:25px;">
+            <div class="row no-gutters">
+                <div class="col-4">
+                    <label class="form-label mt-1">File Type</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownList("FileTypeSF", new List<SelectListItem>
+{
+new SelectListItem{ Text="Select Type", Value = "Select Type" },
+new SelectListItem{ Text="SF", Value = "SF" , Selected=true},
+   }, new { @class = "form-control", @id = "FileTypeSF" })
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDates", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDates", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDates", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDates", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-green" name="Ready" title="Ready" id="btnShow" onclick="GetPendingSF()">Ready</button>
+                        <button type="button" class="btn btn-icon btn-red" name="Unready" title="Unready" id="btnShow" onclick="Unready()">Unready</button>
+                        <button type="button" class="btn btn-icon btn-ReGenerate" name="Re-Generate" title="Re-Generate" id="btnShow" onclick="ReGenerate()">Re-Generate</button>
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        @*<button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileSuccess()"></i></button>*@
+                        <input type="checkbox" class="checkbox origin" name="checklist[]" id="chkIsScanSF">
+                        <span>All Check ?</span>
+
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblPendinfDet"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-primary" onclick="CreateJsonMultSF()"><i class="fa fa-download" style="font-size:14px"></i></button>
+        </div>
+    </div>
+
+</div>
+<div class=" content-area" id="divPendingSummaryASF" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Generate ASR</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack6();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-sm-12 col-md-3" style="margin-top:25px;">
+            <div class="row no-gutters">
+                <div class="col-4">
+                    <label class="form-label mt-1">File Type</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownList("FileTypeASF", new List<SelectListItem>
+{
+new SelectListItem{ Text="Select Type", Value = "Select Type" },
+new SelectListItem{ Text="ASR", Value = "ASR" , Selected=true},
+   }, new { @class = "form-control", @id = "FileTypeASF" })
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDatesASR", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDatesASR", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDatesASR", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDatesASR", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-green" name="Ready" title="Ready" id="btnShow" onclick="GetPendingASF()">Ready</button>
+                        <button type="button" class="btn btn-icon btn-red" name="Unready" title="Unready" id="btnShow" onclick="UnreadyASF()">Unready</button>
+                        <button type="button" class="btn btn-icon btn-ReGenerate" name="Re-Generate" title="Re-Generate" id="btnShow" onclick="ReGenerateASF()">Re-Generate</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        @*<button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileSuccess()"></i></button>*@
+
+                        <input type="checkbox" class="checkbox origin" name="checklist[]" id="chkIsScan">
+                        <span>All Check ?</span>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblPendinfDetasf"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-primary" onclick="CreateJsonMultASF()"><i class="fa fa-download" style="font-size:14px"></i></button>
+        </div>
+    </div>
+
+</div>
+<div class=" content-area" id="divListofPendingSpGererate" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">SF Status Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack7();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="row">
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDatesGererate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDatesGererate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDatesGererate", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDatesGererate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="ibox-content  text-right">
+            <button class="btn btn-success" style="margin-top:25px;" title="success" id="btnSearch" type="button" onclick="LoadData('Success');">Success</button>
+            <button class="btn btn-danger" style="margin-top:25px;" title="Failed" id="btnSearch" type="button" onclick="LoadData('Failed');">Failed</button>
+            <button class="btn btn-blue" style="margin-top:25px;" title="SF Approved" id="btnSearch" type="button" onclick="LoadData('SF Approved');">SF Approved</button>
+            <button class="btn btn-yellow" style="margin-top:25px;" title="SF Pending Approval" id="btnSearch" type="button" onclick="LoadData('SF Pending Approval');">SF Pending Approval</button>
+            <button class="btn btn-dark" style="margin-top:25px;" title="Ack Not Received" id="btnSearch" type="button" onclick="LoadData('Ack Not Received');">Ack Not Received</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileStatusSF()"></i></button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="PendingSpGererate"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    function Viewpending() {
+    $("#Summary").hide();
+        $("#divReceiptSummary").show();
+    }
+
+
+    function getBack() {
+        $("#Summary").show();
+        $("#divReceiptSummary").hide();
+    }
+    function ViewpendingList() {
+        $("#Summary").hide();
+        $("#divPendingSummary").show();
+    }
+
+
+    function getBack5() {
+        $("#Summary").show();
+        $("#divPendingSummary").hide();
+    }
+    function ViewpendingListASR() {
+        $("#Summary").hide();
+        $("#divPendingSummaryASF").show();
+    }
+
+
+    function getBack6() {
+        $("#Summary").show();
+        $("#divPendingSummaryASF").hide();
+    }
+    function ListOfPendingSPGenerate() {
+        $("#Summary").hide();
+        $("#divListofPendingSpGererate").show();
+    }
+
+    function getBack7() {
+        $("#Summary").show();
+        $("#divListofPendingSpGererate").hide();
+    }
+
+    function GetList() {
+
+        var FromDate = $("#txtSummaryFromDate").val();
+        var ToDate = $("#txtSummaryToDate").val();
+        $.ajax({
+            url: '/Report/getListyDet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#Listpending").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#Listpending").empty();
+                RepTableDataJson($("#Listpending"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function Errors() {
+        $("#Summary").hide();
+        $("#divErroSummary").show();
+    }
+
+
+    function getBack1() {
+        $("#Summary").show();
+        $("#divErroSummary").hide();
+    }
+
+    function GetError() {
+
+        var FromDate = $("#txtSummaryFromDate").val();
+        var ToDate = $("#txtSummaryToDate").val();
+        $.ajax({
+            url: '/Report/getErroDet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                if (data == "0" || data == "[]") {
+                    //  ControlCtrl.TableReceiptSummaryDet.empty();
+                    alert('No Data found.');
+                    $("#tblErrorDet").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblErrorDet").empty();
+                RepTableDataJson($("#tblErrorDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function Success() {
+        $("#Summary").hide();
+        $("#divSuccessSummary").show();
+    }
+
+
+    function getBack2() {
+        $("#Summary").show();
+        $("#divSuccessSummary").hide();
+    }
+
+    function GetSuccess() {
+
+        var FromDate = $("#txtSummaryFromDate").val();
+        var ToDate = $("#txtSummaryToDate").val();
+        $.ajax({
+            url: '/Report/GetSuccessDet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + '}',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+
+                if (data == "0" || data == "[]") {
+                    //  ControlCtrl.TableReceiptSummaryDet.empty();
+                    alert('No Data found.');
+                    $("#tblSuccessDet").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblSuccessDet").empty();
+                RepTableDataJson($("#tblSuccessDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+                //RepTableDataJson($(ControlCtrl.TableReceiptSummaryDet), data, "Receipt Summary", "ReceiptSummaryDet");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function GetExcelFileListpending() {
+
+        window.location = '@Url.Action("ExportToExcelListpending", "report")?';
+
+
+    }
+
+    function GetExcelFileErrorDet() {
+
+        window.location = '@Url.Action("ExportToExcelError", "report")?';
+
+
+    }
+
+    function GetExcelFileSuccess() {
+
+        window.location = '@Url.Action("ExportToExcelSuccess", "report")?';
+
+
+    }
+
+</script>
+<script>
+
+    function GeenerateJson() {
+        var ConainterNo = document.getElementById("searchText").value;
+        if (ConainterNo == "") {
+            alert("Please enter valid input");
+            return false;
+        }
+        var FileType = document.getElementById("ddlFileType").value
+        if (FileType == "") {
+            alert("Please enter valid file type");
+            return false;
+        }
+
+        var Criteria = document.getElementById("ddlCriteria").value
+        if (FileType == "") {
+            alert("Please enter valid criteria");
+            return false;
+        }
+        $("#global-loader").fadeIn("slow");
+
+        var data = { 'FileType': FileType, 'ContainerNo': ConainterNo, 'FilterType': Criteria };
+        data = JSON.stringify(data);
+        $.ajax({
+            url: "/CustodianJson/_GenerateJson",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            async: true,
+            success: function (response) {
+                $('#divJson').html(response);
+                $('#divJson').show();
+                $("#global-loader").fadeOut("slow");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#global-loader").fadeOut("slow");
+
+            }
+        });
+    }
+
+    $('#ddlCriteria').change(function () {
+        var Criteria = $("#ddlCriteria").val();
+
+        if (Criteria == 'All') {
+            $("#searchText").val('');
+            $("#searchText").attr('placeholder', 'Search By ' + Criteria);
+            $("#searchText").hide();
+            $("#divSearch").hide();
+        } else {
+            $("#searchText").val('');
+            $("#searchText").attr('placeholder', 'Search By ' + Criteria);
+            $("#searchText").show();
+            $("#divSearch").show();
+        }
+
+    });
+
+    $('#ddlFileType').change(function () {
+        var Criteria = $("#ddlFileType").val();
+        var FileType = document.getElementById('ddlCriteria');
+
+        if (Criteria == 'SF') {
+
+            FileType.options[0] = new Option('Container No', 'Container No');
+
+        }
+        else if (Criteria == 'ASR') {
+
+            FileType.options[0] = new Option('SB No', 'SB No');
+        }
+        else if (Criteria == 'AR') {
+
+            FileType.options[0] = new Option('SB No', 'SB No');
+        }
+        else if (Criteria == 'DP') {
+
+            FileType.options[0] = new Option('SB No', 'SB No');
+        }
+
+        Criteria = $("#ddlCriteria").val();
+
+        if (Criteria == 'All') {
+            $("#searchText").val('');
+            $("#searchText").attr('placeholder', 'Search By ' + Criteria);
+            $("#searchText").hide();
+            $("#divSearch").hide();
+        } else {
+            $("#searchText").val('');
+            $("#searchText").attr('placeholder', 'Search By ' + Criteria);
+            $("#searchText").show();
+            $("#divSearch").show();
+        }
+
+
+
+    });
+
+</script>
+
+<script>
+    function GetPendingSF() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValue();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowSelectedValue() {
+
+        var FromDate = $("#txtSummaryFromDates").val();
+        var ToDate = $("#txtSummaryToDates").val();
+        var FileTypeSF = $("#FileTypeSF").val();
+
+
+        $.ajax({
+            url: '/CustodianJson/GetPendingDet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeSF: ' + JSON.stringify(FileTypeSF) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tblPendinfDet").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblPendinfDet").empty();
+                RepTableDataJsonwopaging($("#tblPendinfDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    };
+    function ReGenerate() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowValue();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowValue() {
+
+        var FromDate = $("#txtSummaryFromDates").val();
+        var ToDate = $("#txtSummaryToDates").val();
+        var FileTypeSF = 'SF Re-Generate';
+
+
+        $.ajax({
+            url: '/CustodianJson/GetPendingDet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeSF: ' + JSON.stringify(FileTypeSF) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblPendinfDet").empty();
+                RepTableDataJsonwopaging($("#tblPendinfDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    };
+    function Unready() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowUnreadyValue();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowUnreadyValue() {
+
+        var FromDate = $("#txtSummaryFromDates").val();
+        var ToDate = $("#txtSummaryToDates").val();
+        var FileTypeSF = 'SF Not Ready';
+
+
+        $.ajax({
+            url: '/CustodianJson/GetPendingDet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeSF: ' + JSON.stringify(FileTypeSF) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tblPendinfDet").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblPendinfDet").empty();
+                RepTableDataJsonwopaging($("#tblPendinfDet"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function CreateJsonMultSF() {
+        debugger;
+        var FileType = document.getElementById("FileTypeSF").value
+        if (FileType == "") {
+            alert("Please enter valid file type");
+            return false;
+        }
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("tblPendinfDet");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                var ConainterNo = row.cells[0].childNodes[0].value;
+
+                if (ConainterNo == checkboxarray[k]) {
+
+
+                    ConainterNo = row.cells[2].innerText;
+
+
+                    var data = { 'FileType': FileType, 'ConainterNo': ConainterNo };
+                    data = JSON.stringify(data);
+                    $.ajax({
+                        url: "/CustodianJson/CreateJsonSFMult",
+                        data: data,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        async: true,
+                        success: function (response) {
+                            debugger
+                            if (response.fileName != "") {
+                                //use window.location.href for redirect to download action for download the file
+                                data = { 'file': response.fileName, 'filePath': response.filePath };
+                                setTimeout(() => { console.log(response.fileName); }, 2000);
+                                document.location = "/CustodianJson/DownloadFileS?FileName=" + response.fileName + '&filePath=' + response.filePath;
+
+                            }
+
+
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                            $("#global-loader").fadeOut("slow");
+
+                        }
+                    });
+
+                }
+
+            }
+
+        }
+
+
+    }
+
+    function GetPendingASF() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedValueASF();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowSelectedValueASF() {
+
+        var FromDate = $("#txtSummaryFromDatesASR").val();
+        var ToDate = $("#txtSummaryToDatesASR").val();
+        var FileTypeASF = $("#FileTypeASF").val();
+        $.ajax({
+            url: '/CustodianJson/GetPendingDetAsf',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeASF: ' + JSON.stringify(FileTypeASF) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+
+                }
+                $("#tblPendinfDetasf").empty();
+                RepTableDataJsonwopaging($("#tblPendinfDetasf"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function UnreadyASF() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedUnreadyASF();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowSelectedUnreadyASF() {
+
+        var FromDate = $("#txtSummaryFromDatesASR").val();
+        var ToDate = $("#txtSummaryToDatesASR").val();
+        var FileTypeASF = 'ASR Not Ready';
+        $.ajax({
+            url: '/CustodianJson/GetPendingDetAsf',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeASF: ' + JSON.stringify(FileTypeASF) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblPendinfDetasf").empty();
+                RepTableDataJsonwopaging($("#tblPendinfDetasf"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+
+    function ReGenerateASF() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowSelectedReGenerateASF();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowSelectedReGenerateASF() {
+
+        var FromDate = $("#txtSummaryFromDatesASR").val();
+        var ToDate = $("#txtSummaryToDatesASR").val();
+        var FileTypeASF = 'ASR Re-Generate';
+        $.ajax({
+            url: '/CustodianJson/GetPendingDetAsf',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeASF: ' + JSON.stringify(FileTypeASF) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblPendinfDetasf").empty();
+                RepTableDataJsonwopaging($("#tblPendinfDetasf"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    };
+    function CreateJsonMultASF() {
+        debugger;
+        var FilterType = '';
+        var FileType = document.getElementById("FileTypeASF").value
+
+        if (FileType == "") {
+            alert("Please enter valid file type");
+            return false;
+        }
+        var checkboxarray = [];
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+
+                checkboxarray.push($(this).val());
+            }
+        });
+
+
+        var tablearray = [];
+        var table = document.getElementById("tblPendinfDetasf");
+        var row;
+        for (var i = 1; i < table.rows.length; i++) {
+
+            row = table.rows[i];
+
+            for (var k = 0; k < checkboxarray.length; k++) {
+
+
+                var ContainerNo = row.cells[0].childNodes[0].value;
+
+                if (ContainerNo == checkboxarray[k]) {
+
+
+                    ContainerNo = row.cells[2].innerText;
+
+
+
+
+                    var data = { 'FileType': FileType, 'ContainerNo': ContainerNo, 'FilterType': FilterType };
+                    data = JSON.stringify(data);
+                    $.ajax({
+                        url: "/CustodianJson/CreateJsonASFMult",
+                        data: data,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        async: true,
+                        success: function (response) {
+                            if (response.fileName != "") {
+                                //use window.location.href for redirect to download action for download the file
+                                data = { 'file': response.fileName, 'filePath': response.filePath };
+                                setTimeout(() => { console.log(response.fileName); }, 2000);
+                                document.location = "/CustodianJson/DownloadFileS?FileName=" + response.fileName + '&filePath=' + response.filePath;
+                            }
+                            $("#global-loader").fadeOut("slow");
+                            //console.log(response);
+                            //$('#divJson').html(response);
+                            //$('#divJson').show();
+                            $("#global-loader").fadeOut("slow");
+
+                        },
+                        error: function (error) {
+                            let str = error.responseText;
+                            var a = str.indexOf("<title>") + 7;
+                            var b = str.indexOf("</title>");
+                            str = str.substring(a, b);
+                            alert("Something went wrong: " + str);
+                            $("#global-loader").fadeOut("slow");
+
+                        }
+                    });
+                }
+            }
+        }
+
+
+    }
+    function LoadData(Category) {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowLoadData(Category);
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowLoadData(Category) {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#txtSummaryFromDatesGererate").val();
+        var ToDate = $("#txtSummaryToDatesGererate").val();
+        //var FileTypeCategory = "";
+
+        //FileTypeCategory.val(Category);
+
+        $.ajax({
+            url: '/CustodianJson/GetPendingListOf',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeCategory: ' + JSON.stringify(Category) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#PendingSpGererate").empty();
+                RepTableDataJson($("#PendingSpGererate"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    };
+    $("#chkIsScan").click(function () {
+
+        var oTableStaticFlow = $('#tblPendinfDetasf').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+    $("#chkIsScanSF").click(function () {
+
+        var oTableStaticFlow = $('#tblPendinfDet').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+
+</script>
+
+<script type="text/javascript">
+
+    function GetExcelFile() {
+
+        window.location = '@Url.Action("GetExcelPendingSFFile", "CustodianJson")?';
+
+
+    }
+
+
+</script>
+<script type="text/javascript">
+
+    function GetExcelFileStatusSF() {
+
+        window.location = '@Url.Action("GetExcelFileStatusSF", "CustodianJson")?';
+
+
+    }
+
+
+</script>
+
+
+<div class=" content-area" id="divListofPendingASRGererate" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">ASR Status Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack9();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="row">
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromDatesGererateASR", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromDatesGererateASR", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryToDatesGererateASR", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryToDatesGererateASR", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="ibox-content  text-right">
+            <button class="btn btn-success" style="margin-top:25px;" title="success" id="btnSearch" type="button" onclick="LoadDataASR('Success');">Success</button>
+            <button class="btn btn-danger" style="margin-top:25px;" title="Failed" id="btnSearch" type="button" onclick="LoadDataASR('Failed');">Failed</button>
+            <button class="btn btn-dark" style="margin-top:25px;" title="Ack Not Received" id="btnSearch" type="button" onclick="LoadDataASR('Ack Not Received');">Ack Not Received</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileStatusASR()"></i></button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblPendingASRGererate"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    function ListOfPendingASRGenerate() {
+        $("#Summary").hide();
+        $("#divListofPendingASRGererate").show();
+    }
+
+    function getBack9() {
+        $("#Summary").show();
+        $("#divListofPendingASRGererate").hide();
+    }
+
+    function LoadDataASR(Categorys) {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowLoadDataASR(Categorys);
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowLoadDataASR(Categorys) {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#txtSummaryFromDatesGererateASR").val();
+        var ToDate = $("#txtSummaryToDatesGererateASR").val();
+
+
+        $.ajax({
+            url: '/CustodianJson/GetPendingListOfASR',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ', FileTypeCategory: ' + JSON.stringify(Categorys) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblPendingASRGererate").empty();
+                RepTableDataJson($("#tblPendingASRGererate"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    }
+
+</script>
+<script type="text/javascript">
+
+    function GetExcelFileStatusASR() {
+
+        window.location = '@Url.Action("GetExcelFileStatusASR", "CustodianJson")?';
+
+
+    }
+
+
+</script>
+<div class=" content-area" id="divSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack10();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryFromShow", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryFromShow", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        @Html.TextBox("txtSummaryShow", null, new { @class = "form-control form_datetime1 ", @id = "txtSummaryShow", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59") })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="form-group">
+                <label class="form-label" style="visibility:hidden">.</label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-success" name="clearProfile" title="Show" id="btnShow" onclick="GetShow()"><i class="fa fa-search"></i></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        @*<button class="btn btn-orange" title="Export To Excel" id="btnSearch" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFileSuccess()"></i></button>*@
+                        <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelShow()"></i></button>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblShow"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    function Summary() {
+        $("#Summary").hide();
+        $("#divSummary").show();
+    }
+
+    function getBack10() {
+        $("#Summary").show();
+        $("#divSummary").hide();
+    }
+    function GetShow() {
+        // alert("before")
+        $("#tracker-loader").fadeIn("fast");
+
+        var delayInMilliseconds = 1000; //1 second
+
+        setTimeout(function () {
+            for (i = 0; i < 4000; i++) {
+                i = i + 0;
+            }
+            ShowGetShow();
+
+        }, delayInMilliseconds);
+
+
+        //$("#tracker-loader").fadeOut("slow");
+    }
+    function ShowGetShow() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#txtSummaryFromShow").val();
+        var ToDate = $("#txtSummaryShow").val();
+
+
+        $.ajax({
+            url: '/CustodianJson/GetSummartGet',
+            type: 'Post',
+            data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ' }',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]") {
+                    alert('No Data found.');
+                    $("#tblShow").empty();
+                    $("#tracker-loader").fadeOut("slow");
+                    return;
+                }
+                $("#tblShow").empty();
+                RepTableDataJson($("#tblShow"), data, "Voucher Details", "VoucherDetails_List");
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+        $("#tracker-loader").fadeOut("slow");
+    }
+
+</script>
+<script type="text/javascript">
+
+    function GetExcelShow() {
+
+        window.location = '@Url.Action("GetExcelGetSummartGet", "CustodianJson")?';
+
+
+    }
+
+
+</script>

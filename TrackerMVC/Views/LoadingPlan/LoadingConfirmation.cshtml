@@ -1,0 +1,233 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.LoadingPlanEntities>
+
+@{
+    ViewBag.Title = "LoadingConfirmation";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class=" content-area overflow-hidden" id="AddItems">
+    <div class="page-header">
+        <h4 class="page-title">
+            Loading Confirmation: @Model.Count()
+        </h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                       
+                       
+                        <div class="col-lg-3 col-sm-12"  id="divTrailerno">
+                            <div class="form-group">
+                                <label class="form-label mandatory">Vehicle No</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtVehicleNo", null, new { @class = "form-control", @id = "txtVehicleNo", name = "txtVehicleNo", autocomplete = "off", placeholder = "Vehicle No.", @maxlength = 100,@readonly=true })
+                                        @Html.Hidden("hdJONO", null, new {  @id = "hdJONO", name = "hdJONO" })
+
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Container No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @id = "txtContainerNo", name = "txtContainerNo", autocomplete = "off", placeholder = "Container No.", @maxlength = 11, @readonly = true })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-4">
+                            <div class="form-group label-floating">
+                                <label class="form-label"> Kalmar No. </label>
+                                @Html.DropDownList("ddlKalmar", (IEnumerable<SelectListItem>)ViewBag.KalmarList, "--Select--", new { @class = "form-control", @id = "ddlKalmar", name = "ddlKalmar", autocomplete = "off" })
+                                @*<select id="ddlKalmar" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>*@
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary  " type="button" id="btnUpdate" onclick="UpdateConfirmation()" name="Add">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                   
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="ContainerList" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:10px"></th>
+                                                <th>Vehicle No.</th>
+                                                <th>Container No.</th>
+                                                <th>Size</th>
+                                                <th>Kalmar No.</th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;">
+                                            
+                                                @foreach (var d in Model)
+                                                {
+                                                <tr>
+                                                    <td><a class="btn btn-sm btn-success" href="#" data-toggle="tooltip" onclick="EditData('@d.ContainerNo',@d.JONo,'@d.TrailerNo',@d.KalmarID)" data-original-title="Edit"><i class="fa fa-edit"></i> </a></td>
+
+                                                    <td>@Html.DisplayFor(m => d.TrailerNo)</td>
+                                                    <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                                    <td>@Html.DisplayFor(m => d.Size)</td>
+                                                    <td>@Html.DisplayFor(m => d.KalmarNo)</td>
+                                                    
+                                                </tr>
+
+                                                }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    
+                </div>
+            </div>
+            <!-- Show the table after click of save button  -->
+            <!--End of save button-->
+        </div>
+        <!-- table-wrapper -->
+    </div>
+    <!-- section-wrapper -->
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ContainerList').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "aoColumnDefs": [
+                     {
+                         'bSortable': false,
+                         'aTargets': [0]
+                     }
+        ]
+        });
+
+    });
+</script>
+<script>
+    
+    function EditData(ContainerNo,JONo,TrailerNo,KalmarID)
+    {
+      //  alert(KalmarID);
+        $("#txtVehicleNo").val(TrailerNo);
+        $("#txtContainerNo").val(ContainerNo);
+        if (KalmarID == 0) {
+            $("#ddlKalmar").val("");
+        }
+        else {
+            $("#ddlKalmar").val(KalmarID);
+        }
+        $("#hdJONO").val(JONo);
+
+    }
+</script>
+<script>
+    function UpdateConfirmation()
+    {
+        var res = validateForSave();
+        //  alert(res)
+        if (res == false) {
+            return false;
+        }
+        var containerNo = $("#txtContainerNo").val();
+        var vehicleNo = $("#txtVehicleNo").val();
+        var kalmarId = $("#ddlKalmar").val();
+        var JONO = $("#hdJONO").val();
+
+        var data1 = { 'containerNo': containerNo, 'vehicleNo': vehicleNo, 'kalmarNo': kalmarId, 'JONO': JONO };
+        var data = JSON.stringify(data1);
+        //  alert(data);
+        $.ajax({
+            url: "/LoadingPlan/SaveLoadingConfirmation",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                // alert("Record saved successfully!");
+                var str = response;
+
+                alert(str);
+                document.location = '@Url.Action("LoadingConfirmation", "LoadingPlan")';
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+</script>
+<script>
+    function validateForSave() {
+        //  alert("hi")
+        var blResult = Boolean;
+        blResult = true;
+        var ddlKalmar = document.getElementById('ddlKalmar').value;
+        var txtVehicleNo = document.getElementById('txtVehicleNo').value;
+        var txtContainerNo = document.getElementById('txtContainerNo').value;
+
+        $("#txtVehicleNo").removeClass("form-control is-invalid state-invalid");
+        $("#txtVehicleNo").addClass("form-control");
+
+        $("#ddlKalmar").removeClass("form-control is-invalid state-invalid");
+        $("#ddlKalmar").addClass("form-control");
+
+        $("#txtContainerNo").removeClass("form-control is-invalid state-invalid");
+        $("#txtContainerNo").addClass("form-control");
+
+        if (txtContainerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtContainerNo").removeClass("form-control is-valid state-valid")
+            $("#txtContainerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (ddlKalmar == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#ddlKalmar").removeClass("form-control is-valid state-valid")
+            $("#ddlKalmar").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+        if (txtVehicleNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtVehicleNo").removeClass("form-control is-valid state-valid")
+            $("#txtVehicleNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) {
+            alert('Please fill the required fields!');
+        }
+        return blResult;
+    }
+</script>

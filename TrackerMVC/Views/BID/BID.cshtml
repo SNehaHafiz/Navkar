@@ -1,0 +1,706 @@
+﻿@{
+    ViewBag.Title = "BID";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+ 
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area" id="divCreate" >
+
+    <div class="page-header">
+        <h4 class="page-title">Bid History Entry</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+   
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGM No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIGMNo", null, new { @class = "form-control ", @id = "txtIGMNo", name = "txtIGMNo", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Item No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtItemNo", null, new { @class = "form-control ", @id = "txtItemNo", name = "txtItemNo", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="form-label">'</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+
+                                        <button id="btnShow" class="btn btn-success btn-xs" ; onclick="return Show();">Show</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">IGM Date </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtIGMDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="divInvoiceDetails">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblInvoiceList">
+                                            <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                                @*<tr>
+                                    <th style="width:1px;color: white;">#</th>
+                                    <th style="width:80px;color: white;">Jo No</th>
+                                    <th style="width:100px;color: white;">Container No</th>
+                                    <th style="width:80px;color: white;">Size</th>
+                                    <th style="width:80px;color: white;">Type</th>
+                                    <th style="width:100px;color: white;">Indate</th>
+
+                                </tr>*@
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Lot No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtlotno", null, new { @class = "form-control ", @id = "txtlotno", name = "txtlotno", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Descriptions</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDescriptions", null, new { @class = "form-control ", @id = "txtDescriptions", name = "txtDescriptions", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">File No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtFileNo", null, new { @class = "form-control ", @id = "txtFileNo", name = "txtFileNo", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcontainerno", null, new { @class = "form-control ", @id = "txtcontainerno", name = "txtcontainerno", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Date on which put for group NOC</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtDatewhich" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Valuation Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtValuationDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Quantity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtQuantity", null, new { @class = "form-control ", @id = "txtQuantity", name = "txtQuantity", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Weight</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtWeight", null, new { @class = "form-control ", @id = "txtWeight", name = "txtWeight", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Value (I) Ascertained</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtValueAscertained", null, new { @class = "form-control ", @id = "txtValueAscertained", name = "txtValueAscertained", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Value (I)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtValueI", null, new { @class = "form-control ", @id = "txtValueI", name = "txtValueI", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Value (II) Ascertained</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtValueIIAscertained", null, new { @class = "form-control ", @id = "txtValueIIAscertained", name = "txtValueIIAscertained", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Value (II)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtValueII", null, new { @class = "form-control ", @id = "txtValueII", name = "txtValueII", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Reserve Ascertained</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReserveAscertained", null, new { @class = "form-control ", @id = "txtReserveAscertained", name = "txtReserveAscertained", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Reserve Price</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtReservePrice", null, new { @class = "form-control ", @id = "txtReservePrice", name = "txtReservePrice", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Number of Auctions in which listed</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtNumberOfAuction", null, new { @class = "form-control ", @id = "txtNumberOfAuction", name = "txtNumberOfAuction", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Auction Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtAuctionDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bid Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBidAmount", null, new { @class = "form-control ", @id = "txtBidAmount", name = "txtBidAmount", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bid Percentage</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBidPercentage", null, new { @class = "form-control ", @id = "txtBidPercentage", name = "txtBidPercentage", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-3 col-sm-3" style="margin-top:20px;">
+                            <div class="form-group">
+
+                                <button id="btnsave" class="btn btn-success btn-xs" onclick="Save()">Save</button>
+                                <input type="button" name="clearProfile" value="Clear" class="btn cursor" title="clear" id="clearValue" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divCreateSummary" style="display:none">
+   
+    <div class=" content-area overflow-hidden">
+        <div class="page-header">
+            <h4 class="page-title">BID History Summary</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <li class="breadcrumb-item">
+                            <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+                        </li>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+
+                                        <div class="col-md-2 col-lg-2">
+                                            <div class="form-group label-floating">
+                                                <label class="form-label">Search On</label>
+                                                @Html.TextBox("txtsearch", null, new { @class = "form-control ", @id = "txtsearch", name = "txtsearch", autocomplete = "on" })
+                                                @*@Html.DropDownList("ddlSearch", new List<SelectListItem>
+                                               { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                   new SelectListItem { Text = "First", Value = "First"},
+                                                   new SelectListItem { Text = "Second", Value = "Second"},
+
+                                                 }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch" })*@
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-22 col-lg-2">
+                                            <div class="form-group label-floating" style="margin-top: 33px;">
+                                                <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="ShowList('ShowList')" type="button">
+                                                    SHOW
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+
+                        @Html.ActionLink("Export To Excel", "ExportToExcelFuelSlipDetailsReport", null, new { @class = "btn btn-primary btn-md" })
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                        <thead>
+                                            @*<tr>
+                                                <th class="wd-15p sorting"></th>
+                                                <th>Category.</th>
+                                                <th>Assess No.</th>
+                                                <th>Work Year.</th>
+                                                <th>Invoice No.</th>
+                                                <th>Invoice Date.</th>
+                                                <th>Grand Total</th>
+                                                <th></th>
+
+                                            </tr>*@
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        function ShowList() {
+            debugger;
+            var search = document.getElementById('txtsearch').value;
+
+            try {
+                var data1 = { 'search': search };
+                data = JSON.stringify(data1);
+                $.ajax({
+                    url: "/BID/BIDSearch",
+                    data: data,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        debugger;
+                        RepTableDataJson($("#reportTable"), response, "BID", "BID")
+                    },
+                    error: function (errormessage) {
+                        alert("error");
+                        alert(errormessage.responseText);
+                    }
+                });
+
+            } catch (ex) {
+
+            }
+        }
+
+        function BackToWorkOrder() {
+            $("#divCreate").show();
+            $("#divCreateSummary").hide();
+        }
+        function OpenWOSummary() {
+            $("#divCreate").hide();
+            $("#divCreateSummary").show();
+        }
+
+    function Save() {
+        debugger;
+        var IGMNo = document.getElementById('txtIGMNo').value;
+        var temNo = document.getElementById('txtItemNo').value;
+        var IGMDate = document.getElementById('txtIGMDate').value;
+        var LotNo = document.getElementById('txtlotno').value;
+        var Descriptions = document.getElementById('txtDescriptions').value;
+        var FileNo = document.getElementById('txtFileNo').value;
+        var ContainerNo = document.getElementById('txtcontainerno').value;
+        var Datewhich = document.getElementById('txtDatewhich').value;
+        var ValuationDate = document.getElementById('txtValuationDate').value;
+        var Quantity = document.getElementById('txtQuantity').value;
+        var Weight = document.getElementById('txtWeight').value;
+        var ValueI = document.getElementById('txtValueI').value;
+        var ValueII = document.getElementById('txtValueII').value;
+        var ReservePrice = document.getElementById('txtReservePrice').value;
+        var NumberOfAuction = document.getElementById('txtNumberOfAuction').value;
+        var AuctionDate = document.getElementById('txtAuctionDate').value;
+        var BidAmount = document.getElementById('txtBidAmount').value;
+        var BidPercentage = document.getElementById('txtBidPercentage').value;
+        var ValueAscertained = document.getElementById('txtValueAscertained').value;
+        var ValueIIAscertained = document.getElementById('txtValueIIAscertained').value;
+        var ReserveAscertained = document.getElementById('txtReserveAscertained').value;
+
+
+
+        var BIDEntities = {};
+        BIDEntities.IGMNo = IGMNo;
+        BIDEntities.ItemNo = temNo;
+        BIDEntities.IGMDate = IGMDate;
+        BIDEntities.LotNo = LotNo;
+        BIDEntities.Descriptions = Descriptions;
+        BIDEntities.FileNo = FileNo;
+        BIDEntities.ContainerNo = ContainerNo;
+        BIDEntities.Datewhich = Datewhich;
+        BIDEntities.ValuationDate = ValuationDate;
+        BIDEntities.Quantity = Quantity;
+        BIDEntities.Weight = Weight;
+        BIDEntities.ValueI = ValueI;
+        BIDEntities.ValueII = ValueII;
+        BIDEntities.ReservePrice = ReservePrice;
+        BIDEntities.NumberOfAuction = NumberOfAuction;
+        BIDEntities.AuctionDate = AuctionDate;
+        BIDEntities.BidAmount = BidAmount;
+        BIDEntities.BidPercentage = BidPercentage;
+        BIDEntities.ValueAscertainedI = ValueAscertained
+        BIDEntities.ValueAscertainedII = ValueIIAscertained
+        BIDEntities.ReserveAscertained = ReserveAscertained
+
+
+   $.ajax({
+       url: "/BID/Save",
+       data: '{BIDEntities: ' + JSON.stringify(BIDEntities) + '}',
+       type: "POST",
+    contentType: "application/json; charset=utf-8",
+       dataType: "json",
+       success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("BID", "BID")';
+},
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+    }
+
+    function Show() {
+        debugger;
+        var IGMNo = document.getElementById('txtIGMNo').value;
+        var temNo = document.getElementById('txtItemNo').value;
+
+        if (IGMNo == "") {
+            document.getElementById("txtIGMNo").style.borderColor = "red";
+            alert('Please Enter Your Igm No!')
+            event.preventDefault();
+            return;
+        }
+
+        if (temNo == "") {
+            document.getElementById("txtItemNo").style.borderColor = "red";
+            alert('Please Enter Your Item No!')
+            event.preventDefault();
+            return;
+        }
+        try {
+            var data1 = { 'IGMNo': IGMNo, 'temNo': temNo};
+            data = JSON.stringify(data1);
+            IGM(IGMNo, temNo)
+            $.ajax({
+                url: "/BID/IgmSearch",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    RepTableDataJson($("#tblInvoiceList"), response, "CreateSearch", "CreateSearch");
+
+                    //var table = $("#tblInvoiceList").dataTable();
+                    //// Get the column API object
+
+                    //table.column(4).visible(false);
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+
+    function IGM(IGMNo, temNo) {
+
+
+        debugger;
+
+        var data1 = { 'IGMNo': IGMNo, 'temNo': temNo };
+        data = JSON.stringify(data1);
+            $.ajax({
+                url: "/BID/GetAssessInvoice",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                // dataType: "json",
+                success: function (data) {
+                    //debugger;
+                    //alert(JSON.stringify(data[0].AssessNo))
+                    //alert(JSON.stringify(data))
+                    $("#txtDescriptions").val(data[0].Descriptions);
+
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+
+            })
+
+
+
+
+
+
+        }
+
+        //$(document).ready(function () {
+        //    $("#tblInvoiceList,#checklist").click(function (e) {
+        //        debugger;
+        //        var TotalContainerNo = "";
+
+        //        $('input[type=checkbox]').each(function (index, value) {
+        //        if (this.checked) {
+        //            var table = document.getElementById("tblInvoiceList");
+        //            for (var i = 1; i < table.rows.length; i++) {
+        //                row = table.rows[i];
+        //                var ContainerNo = row.cells[1].childNodes[0].data;
+
+        //                if (TotalContainerNo == "") {
+        //                    TotalContainerNo = ContainerNo;
+        //                } else {
+        //                    TotalContainerNo = TotalContainerNo + "," + ContainerNo;
+        //                }
+        //            }
+        //        }
+        //        });
+
+        //        $("#txtcontainerno").val(TotalContainerNo);
+        //    });
+        //});
+
+    
+        function ChkAmtValidate(id) {
+            debugger;
+            var Currentindex = id.closest('tr').rowIndex;
+            var TotalContainerNo = "";
+            var checkboxarray = [];
+            var table = document.getElementById("tblInvoiceList");
+
+            $('input[type=checkbox]').each(function () {
+                if (this.checked) {
+                    checkboxarray.push($(this).val());
+                }
+            });
+
+            for (var i = 1; i < table.rows.length; i++) {
+                row = table.rows[i];
+                debugger;
+                for (var k = 0; k < checkboxarray.length; k++) {
+                    debugger;
+                    var ContainerNo = row.cells[1].childNodes[0].data;
+                    if (ContainerNo == checkboxarray[k]) {
+                        if (TotalContainerNo == "") {
+                            TotalContainerNo = ContainerNo;
+                        } else {
+                            TotalContainerNo =TotalContainerNo + "," + ContainerNo;
+                        }
+                        
+                    }
+                }
+            }
+
+            $("#txtcontainerno").val(TotalContainerNo);
+
+        }
+
+        function PrintNotice(IGMNo, ItemNo) {
+            debugger;
+            //var NoticeType = $("#ddlNoticeType").val();
+          
+             
+           
+
+                var data1 = { 'IGMNo': IGMNo, 'ItemNo': ItemNo };
+                data = JSON.stringify(data1);
+
+                $.ajax({
+                    url: '/BID/BIDPrint',
+                    type: 'Post',
+                    data: data,
+                    async: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        //window.print();
+                        var myWindow = window.open("", "MsgWindow1", 'location=yes,height=570,width=800,scrollbars=yes,status=yes');
+                        myWindow.close();
+                        var myWindow = window.open("", "MsgWindow1", 'location=yes,height=570,width=800,scrollbars=yes,status=yes');
+                        myWindow.document.write(response);
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                        $("#tracker-loader").fadeOut("slow");
+                    }
+                });
+           
+          
+        };
+    </script>

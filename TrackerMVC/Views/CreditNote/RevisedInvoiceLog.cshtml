@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewBag.Title = "Revised Invoice Log";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div class="page-header">
+    <h4 class="page-title">Revised Invoice Log</h4>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-sm-6">
+        <div class="form-group">
+            <label class="form-label">From Date</label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @Html.TextBox("FromDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy"), @id = "FromDate" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-3 col-sm-6">
+        <div class="form-group">
+            <label class="form-label">To Date </label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @Html.TextBox("ToDate", null, new { @class = "form-control datePicker", @Value = DateTime.Now.AddDays(1).ToString("dd MMM yyyy"), @id = "ToDate" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-sm-6">
+        <div class="form-group">
+
+            <div class="row gutters-xs">
+                <div class="col" style="margin-top: 27px;">
+                    <button class="btn btn-primary" onclick="getSummary()"><i class="fe fe-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-3 col-sm-6">
+        <div class="form-group">
+
+            <div class="row gutters-xs">
+                <div class="col" style="margin-top: 27px;">
+                    <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-sm-12">
+        <div class="table-responsive">
+            <table id="tblRevisedInvoiceLog" class="table table-bordered text-nowrap w-100" style="width:100%">
+                <thead>
+                    <tr></tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function getSummary() {
+        $("#global-loader").fadeIn();
+        var fromDate = $("#FromDate").val();
+        var toDate = $("#ToDate").val();
+
+        data1 = { 'fromDate': fromDate, 'toDate': toDate };
+        data = JSON.stringify(data1);
+        console.log(data);
+
+        $.ajax({
+            type: 'POST',
+            url: '/CreditNote/GetRevisedInvoiceLogsSummary',
+            data: data,
+
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+
+                console.log(jsonResult);
+                $("#tblRevisedInvoiceLog").empty();
+                BindDataTable($("#tblRevisedInvoiceLog"), jsonResult, "Revised Invoice Log", "RevisedInvoiceLog");
+                $("#global-loader").fadeOut();
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#global-loader").fadeOut();
+            }
+        });
+    }
+
+
+    function BindDataTable(tableName, data, title, fileName) {
+        try {
+            if (tableName == null) {
+                alert("table not exist.");
+            }
+
+            //Check Data Table has if already initialize then need to destroy first!
+            if ($.fn.DataTable.isDataTable(tableName)) {
+                tableName.DataTable().destroy();
+                tableName.empty();
+            }
+
+            var parseJSONResult = jQuery.parseJSON(data);
+
+            if (parseJSONResult != null && parseJSONResult.length > 0) {
+                //Get dynmmic column.
+                var dynamicColumns = [];
+                var i = 0;
+                $.each(parseJSONResult[0], function (key, value) {
+                    var obj = { sTitle: key };
+                    dynamicColumns[i] = obj;
+                    i++;
+                });
+                //fetch all records from JSON result and make row data set.
+                var rowDataSet = [];
+                var i = 0;
+                $.each(parseJSONResult, function (key, value) {
+                    var rowData = [];
+                    var j = 0;
+                    $.each(parseJSONResult[i], function (key, value) {
+                        rowData[j] = value;
+                        j++;
+                    });
+                    rowDataSet[i] = rowData;
+
+                    i++;
+                });
+                tableName.dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": rowDataSet,
+                    "bInfo": true,
+                    "bPaginate": true,
+                    "bFilter": true,
+                    "paging": true,
+                    "showNEntries": true,
+                    "columns": dynamicColumns,
+                    "deferRender": true,
+
+
+                });
+
+
+
+            }
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+
+    function GetExcelFile() {
+          window.location = '@Url.Action("ExporttoExcelRevisedInvoiceLog", "CreditNote")?';
+    }
+</script>

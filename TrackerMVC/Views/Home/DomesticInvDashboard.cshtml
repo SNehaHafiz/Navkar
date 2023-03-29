@@ -1,0 +1,289 @@
+﻿@{
+    ViewBag.Title = "Domestic Dashboard";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+
+    .bg-secondary {
+        background-color: #868e96 !important;
+    }
+
+    .pointer_cursor {
+        cursor: pointer;
+    }
+    /*#tblItemSearch_paginate{
+        margin-right:-20%;
+    }*/
+    .wow:hover {
+        transform: scale(1.03);
+        cursor: pointer;
+        /*background: #E6E6FA;*/
+    }
+
+    .scale {
+        border-radius: 4px
+    }
+
+        .scale:hover {
+            /*//transform: scale(1.05);*/
+            transform: scale(1.12);
+            cursor: pointer;
+        }
+
+    .bg-grad_head {
+        background: linear-gradient(269deg, #32cafe,#867efc);
+    }
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+</style>
+<div id="cute-loader"></div>
+<div class=" content-area" id="divDashboard">
+    <div class="page-header">
+        <h4 class="page-title">Container Stock</h4>
+        <div class="breadcrumb">
+        </div>
+    </div>
+    @*<div class="row">
+            <div class="col-lg-2 col-sm-12">
+                <div class="form-group">
+                    <label class="form-label">From Date</label>
+                    <div class="row gutters-xs">
+                        <div class="col">
+                            @Html.TextBox("TxtFromdate", null, new { @class = "form-control datePickerD", @id = "TxtFromdate", name = "TxtFromdate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-sm-12">
+                <div class="form-group">
+                    <label class="form-label">To Date</label>
+                    <div class="row gutters-xs">
+                        <div class="col">
+                            @Html.TextBox("TxtFromdate", null, new { @class = "form-control datePickerD", @id = "TxtTodate", name = "TxtTodate", autocomplete = "on", @Value = DateTime.Now.ToString("dd MMM yyyy") })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-sm-12">
+                <div class="form-group">
+                    <label class="form-label" style="visibility:hidden">.</label>
+                    <div class="row gutters-xs">
+                        <div class="col">
+                            <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="Show" id="btnShow" onclick="GetSummarydetails()"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    <div id="DashBoardContent">
+        <div class="col-sm-12 col-md-12 card mt-3" style="visibility:visible;">
+            <div class="row mt-2">
+                <div class="col-md-12 col-lg-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                @if (ViewBag.ContainerStockList.Count != 0)
+                                {
+                                    foreach (var st in ViewBag.ContainerStockList)
+                                    {
+                                        <div class="col-lg-3" onclick="getOpenStockDetails(@st.ID,'@st.Title')">
+                                            <div class="card wow zoomIn deptrandomColor" data-wow-duration="1s" data-wow-delay="0.1s">
+                                                <div class="card-body text-center list-icons">
+                                                    <i class="fa fa-truck text-white"></i>
+                                                    <p class="card-text mt-3 mb-3 text-white"><b>@st.Title</b></p>
+                                                    <p class="h1 text-center text-white"> @st.TotalCount </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ModalStockList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-bold" id="lblModalTitleName"> </h4> &nbsp;<label class="bg-primary text-white pl-2 pr-2 pt-1 pb-1 br-7 text-bold" id="stockCount"></label>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="row mt-2">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="">
+                                    <table class="table table-bordered w-100" id="tblStockList">
+                                        <thead class="bg-primary">
+                                            <tr>
+                                                <th class="text-white">Container No</th>
+                                                <th class="text-white">Size</th>
+                                                <th class="text-white">Type</th>
+                                                @*<th class="text-white">Vendor Name</th>
+                                                    <th class="text-white">Purchase Date</th>*@
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div id="divStockView"></div>*@
+<script>var d = new Date();
+    var currMonth = d.getMonth();
+    var currYear = d.getFullYear();
+    var currHour = d.getHours();
+    var currMin = d.getMinutes();
+    var startDate = new Date(currYear, currMonth, 1);
+
+    var colors = []
+    $(document).ready(function () {
+
+        $('#TxtFromdate').datepicker({
+            //startDate: startDate,
+            format: 'dd M yyyy',
+        });
+        $('#TxtFromdate').datepicker("setDate", startDate);
+
+        //GetSummarydetails();
+
+        var colors = ['bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-secondary', 'bg-orange', 'bg-cyan'];
+        Array.prototype.getRandom = function (cut) {
+            var i = Math.floor(Math.random() * this.length);
+            if (cut && i in this) {
+                return this.splice(i, 1)[0];
+            }
+            return this[i];
+        }
+        debugger;
+        $('.deptrandomColor').each(function () {
+            var color = colors.getRandom();
+            $(this).addClass(color);
+            //$(this).css("background", color);
+        });
+    });
+
+    var SummaryList = [];
+    function GetSummarydetails() {
+        debugger
+
+        var isValid = true;
+        var FromDate = $("#TxtFromdate").val();
+        var ToDate = $("#TxtTodate").val();
+
+        if (FromDate == "" || ToDate == "") {
+            alert("Please Select date range");
+            return false;
+        }
+        var date1 = new Date(FromDate);
+        var date2 = new Date(ToDate);
+        var Today = new Date();
+        if (date1 >= date2) {
+            document.getElementById('TxtTodate').style.borderColor = "red";
+
+            alert("To Date should not be less than from date ");
+            return false;
+        } else {
+            document.getElementById('TxtTodate').style.borderColor = "Gainsboro";
+        }
+        if (isValid) {
+            data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+            data = JSON.stringify(data1);
+            $.ajax({
+                type: 'POST',
+                url: '/Home/_ContainerStockDashboard',
+                data: data,
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                //dataType: "json",
+                success: function (response) {
+                    debugger
+                    //$('#divDashboard').hide();
+                    $('#divStockView').html(response);
+                    $('#DashBoardContent').hide();
+                    $('#divStockView').show();
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (errormessage) {
+
+                    alert(errormessage);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+
+
+    }
+
+    var StockList = [];
+    function getOpenStockDetails(deptID, Title) {
+        debugger
+        $("#ModalStockList").modal("show");
+        data1 = { 'DeptID': deptID, 'Title': Title };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetContainerStockList',
+            data: data,
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                StockList = [];
+                StockList = response;
+                $("#lblModalTitleName").html(Title);
+                $("#stockCount").html(StockList.length);
+                $('#tblStockList').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": StockList,
+                    "bPaginate": true,
+                    "bInfo": false,
+                    "paging": true,
+                    order: [],
+                    "searching": true,
+                    "columns": [
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "Type" },
+                        //{ "data": "VendorName" },
+                        //{ "data": "DisplayPurchaseDate" },
+                    ],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [2],
+                        }],
+                    mark: true
+                });
+            },
+            error: function (errormessage) {
+
+                alert(errormessage);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }</script>

@@ -1,0 +1,539 @@
+﻿
+@model TrackerMVCEntities.BusinessEntities.JobOrderMEntities
+@{ ViewBag.Title = "Periodic Customer Mapping";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml"; }
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .required {
+        content: "*";
+        color: red;
+        font: bold;
+        font-size: x-large;
+        padding-bottom: -50px;
+        vertical-align: middle;
+    }
+</style>
+<script type="text/javascript">$(document).ready(function () {
+        $('#ddlProcessesID').SumoSelect();
+        $('#ddlViaWiseProcess').SumoSelect();
+        $('#ddlProcesses').SumoSelect({ selectAll: true });
+        $('#ddlboewiseprocess').SumoSelect({ selectAll: true });
+    });</script>
+<script src="~/js/GetTableJsonPagging.js"></script>
+
+<div id="divReport">
+    <div class="page-header">
+        <h4 class="page-title">Periodic Customer Mapping</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="Showdetails();"><i class="fa fa-file-text"></i></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Customer <span class="required">*</span></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("ddlAgent", null, new { @class = "form-control", @id = "ddlAgent", autocomplete = "off" })
+                                            @Html.EditorFor(model => model.AgentID, new { htmlAttributes = new { @class = "form-control", @id = "AgentID", @type = "hidden" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Delivery Type </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlProcessesID", (IEnumerable<SelectListItem>)ViewBag.ProcessesName, new { @multiple = "multiple", @placeholder = "-- Select Doc Owner --", @class = "form-control", @id = "ddlProcessesID" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Effective From</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtEffectiveFrom", null, new { @class = "form-control form_datetime1 ", @id = "TxtEffectiveFrom", autocomplete = "off", onkeydown = "return false;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Effective Upto</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtEffectiveUpTodate", null, new { @class = "form-control form_datetime1 ", @id = "TxtEffectiveUpTodate", autocomplete = "off", onkeydown = "return false;" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success btn-xs" title="Save" data-toggle="tooltip" data-placement="bottom" id="btnSave" onclick="return Update();"><i class="fa fa-save"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" content-area" id="Divsummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Periodic Customerwise Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtFromdate", null, new { @class = "form-control form_datetime1 ", @id = "TxtFromdate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 00:00"), onkeydown = "return false;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">As on Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("TxtTodate", null, new { @class = "form-control form_datetime1 ", @id = "TxtTodate", autocomplete = "off", @Value = DateTime.Now.ToString("dd MMM yyyy 23:59"), onkeydown = "return false;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden">.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-icon btn-primary" name="clearProfile" title="Show" id="btnShow" onclick="GetSummarydetails()"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <button class="btn btn-orange" id="btnSearch" title="Export To Excel" type="button"><i class="fa fa-file-excel-o" onclick="GetExcelFile()"></i></button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblViewtodayGPdetails"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>function Showdetails() {
+        $("#Divsummary").show();
+        $("#divReport").hide();
+
+    }
+    function getBack() {
+        $("#Divsummary").hide();
+        $("#divReport").show();
+
+    }
+
+    $(document).ready(function () {
+
+        GetSummarydetails();
+    })
+
+
+    $("#ddlAgent").autocomplete({
+        source: function (request, response) {
+            var process = "Customer";
+            // var CFScode = document.getElementById('hdconcode').value;
+
+            $.ajax({
+                url: "/BL/getPartyNameReceipt",
+                data: "{ 'prefixText': '" + request.term + "','Mode': '" + process + "'}",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    //
+                    if (data == "") {
+
+                        alert("Specified line name not found in master.");
+                        $("#AgentID").val('');
+                        return false;
+                    }
+
+
+                    response($.map(data, function (item) {
+                        //
+                        return {
+                            label: item.AGName,
+                            val: item.AGID
+                        };
+                    }));
+
+
+
+
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        },
+        select: function (e, i) {
+            //
+            $("#ddlAgent").val(i.item.label);
+            $("#AgentID").val(i.item.val);
+        },
+        minLength: 1
+    });
+
+
+
+
+    $("#ddlSearchOn").change(function () {
+        var Category = $("#ddlSearchOn").val();
+        if (Category == "Container No") {
+            $("#divContainer").show();
+            $("#divIGMNo").hide();
+            $("#divItemNo").hide();
+            $("#divBL").hide();
+        } else if (Category == "BL No") {
+            $("#divContainer").hide();
+            $("#divBL").show();
+            $("#divIGMNo").hide();
+            $("#divItemNo").hide();
+        } else if (Category == "IGM-Item No") {
+            $("#divContainer").hide();
+            $("#divIGMNo").show();
+            $("#divItemNo").show();
+            $("#divBL").hide();
+        }
+
+
+        else {
+            $("#divContainer").hide();
+            $("#divIGMNo").hide();
+            $("#divItemNo").hide();
+            $("#divBL").hide();
+        }
+    })
+    function getUpdateCustomers() {
+        var Category = $("#ddlSearchOn").val();
+        var searchText1 = "";
+        var searchText2 = "";
+
+        if (Category == "") {
+            alert("Please select search on");
+            return false;
+        }
+        if (Category == "Container No") {
+            searchText1 = $("#txtContainerNo").val();
+            if (searchText1 == '') {
+                alert("Please enter container no.")
+                return false;
+            }
+            if (searchText1.length < 11) {
+                alert("Container no should be 11 digit!");
+                return false;
+            }
+        }
+        if (Category == "BL No") {
+            searchText1 = $("#txtBlnumber").val();
+            if (searchText1 == '') {
+                alert("Please enter Bl no.")
+                return false;
+            }
+        }
+
+        else if (Category == "IGM-Item No") {
+            searchText1 = $("#txtIGMNo").val();
+            searchText2 = $("#txtItemNo").val();
+            if (searchText1 == '' || searchText2 == '') {
+                alert("Please enter igm - item no.")
+                return false;
+            }
+        }
+
+        var data1 = { 'Category': Category, 'searchText1': searchText1, 'searchText2': searchText2 };
+        data = JSON.stringify(data1);
+
+
+
+
+
+        $.ajax({
+            url: '/ImportInvoice/getUpdateCustomerList',
+            type: 'Post',
+            data: data,
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return false;
+                }
+
+                fillTableData($("#tblReport"), data, "List", "List");
+
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                let str = errormessage.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+
+        });
+    }
+
+
+    function Update() {
+        var blResult = true;
+        debugger;
+        var ddlAgent = $("#ddlAgent").val();
+
+        var formData = {};
+        formData.AgID = $("#AgentID").val();
+        formData.Processes = $("#ddlProcessesID option:selected").map(function () { return this.text }).get().join(', ');
+        formData.EffectiveFrom = $("#TxtEffectiveFrom").val();
+        formData.EffectiveUpTodate = $("#TxtEffectiveUpTodate").val();
+
+
+        if (formData.AgID == "" || ddlAgent == "") {
+            $("#ddlAgent").removeClass("is-valid state-valid");
+            $("#ddlAgent").addClass("is-invalid state-invalid");
+            blResult = blResult && false;
+        } else {
+            $("#ddlAgent").removeClass("is-invalid state-invalid");
+        }
+        if (formData.EffectiveFrom == "" ) {
+            $("#TxtEffectiveFrom").removeClass("is-valid state-valid");
+            $("#TxtEffectiveFrom").addClass("is-invalid state-invalid");
+            blResult = blResult && false;
+        } else {
+            $("#TxtEffectiveFrom").removeClass("is-invalid state-invalid");
+        }
+        if (formData.EffectiveUpTodate == "" ) {
+            $("#TxtEffectiveUpTodate").removeClass("is-valid state-valid");
+            $("#TxtEffectiveUpTodate").addClass("is-invalid state-invalid");
+            blResult = blResult && false;
+        } else {
+            $("#TxtEffectiveUpTodate").removeClass("is-invalid state-invalid");
+        }
+
+        if (blResult == false) {
+            alert("Please fill the required fields!");
+            return false;
+        }
+
+        var data1 = {
+            'formData': formData
+        };
+        var data = JSON.stringify(data1);
+        console.log(data)
+
+        $.ajax({
+            url: "/ImportInvoice/UpdatePeriodicCustomerDtls",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.Status == 1) {
+                    alert(data.Message)
+                    window.location = "/ImportInvoice/MappingCustomer"
+                } else if (data.Status == 0) {
+                    alert(data.Message)
+                }
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+
+            error: function (errormessage) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+
+
+    }</script>
+<script>function fillTableData(tableName, data, title, fileName) {
+
+        //Check if table dose not exist then return error message.
+        try {
+            if (tableName == null) {
+                alert("table not exist.");
+            }
+
+            //Check Data Table has if already initialize then need to destroy first!
+            if ($.fn.DataTable.isDataTable(tableName)) {
+                tableName.DataTable().destroy();
+                tableName.empty();
+            }
+
+            var parseJSONResult = jQuery.parseJSON(data);
+
+            if (parseJSONResult != null && parseJSONResult.length > 0) {
+                //Get dynmmic column.
+                var dynamicColumns = [];
+                var i = 0;
+                $.each(parseJSONResult[0], function (key, value) {
+                    var obj = { sTitle: key };
+                    dynamicColumns[i] = obj;
+                    i++;
+                });
+                //fetch all records from JSON result and make row data set.
+                var rowDataSet = [];
+                var i = 0;
+                $.each(parseJSONResult, function (key, value) {
+                    var rowData = [];
+                    var j = 0;
+                    $.each(parseJSONResult[i], function (key, value) {
+                        rowData[j] = value;
+                        j++;
+                    });
+                    rowDataSet[i] = rowData;
+
+                    i++;
+                });
+                tableName.dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": rowDataSet,
+                    "bInfo": false,
+                    "deferRender": true,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": [],
+                    "columns": dynamicColumns,
+                    //"dom": "Bfrtip",
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": title,
+                        "filename": fileName
+                    }]
+                });
+            }
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+    }
+
+    function checkItemcount() {
+
+        var table = $('#example').DataTable();
+
+        if (table.rows().count() == 0) {
+
+            return false;
+        }
+        return true;
+
+    }
+
+    $("input").on('input', function () {
+        $(this).val($(this).val().replace(/[^A-Za-z0-9._/ ]/g, ''));
+    });
+
+    function GetSummarydetails() {
+        $("#tracker-loader").fadeIn("slow");
+        var FromDate = $("#TxtFromdate").val();
+        var ToDate = $("#TxtTodate").val();
+
+        if (Date.parse(FromDate) > Date.parse(ToDate)) {
+            alert("Invalid date range");
+            return;
+        }
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ImportInvoice/GetPeriodicMappingsummary',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (jsonResult) {
+                $("#tblViewtodayGPdetails").empty();
+                RepTableDataJsonwopaging($("#tblViewtodayGPdetails"), jsonResult, "Voucher Details", "VoucherDetails_List");
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+    function GetExcelFile() {
+        window.location = "/ImportInvoice/ExportToExcelGetPeriodicMappingsummary"
+    }
+
+    </script>

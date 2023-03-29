@@ -1,0 +1,924 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.DailyMovementRequestEntities>
+@{
+    ViewBag.Title = "Daily Movement Report";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<link href="~/css/Transporter.css" rel="stylesheet" />
+<div id="divSummary">
+    <div class="page-header">
+        <h4 class="page-title">Daily Movement Report</h4>
+    </div>
+    <div class="row row-cards">
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <img class="arrival_image" src="~/images/truck-trailer.png">
+                            <!-- <i class="mdi mdi-truck-trailer left import_icon arrival"></i> -->
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> Arrival TEUS</p>
+                            <h1 class="counter"><label id="lblarrivalCount"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.50" data-thickness="20" data-color="#9f78ff" id="divarrivalvalue">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+
+                <br />
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="Divarrival">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Process</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in Model)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Process </td>
+
+                                    <td style="text-align:right;">@d.Size20</td>
+                                    <td style="text-align:right;">@d.Size40 </td>
+                                    <td style="text-align:right;">@d.Size45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--Code For Import Delivery-->
+
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <img class="arrival_image" src="~/images/tralier-trucknew.png" style="float:right !important;    height: 30px;  margin-right: 8px;width: 50px;">
+                            <!-- <i class="mdi mdi-truck-trailer left import_icon arrival"></i> -->
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p>Loaded Delivery</p>
+                            <h1 class="counter"><label id="lblimportdelivery"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.50" data-thickness="20" data-color="#F19F21" id="divarrial">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="tblimportdelivery">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Process</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.ImportDeliverList as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Process </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+        <!--Codes By Trailers Location-->
+        <!--bar graph-->
+        <!--Code For Import Stuff Delivery-->
+
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <img class="arrival_image" src="~/images/tralier-truckyellow.jpg" style="float:right !important;    height: 30px;  margin-right: 8px;width: 50px;">
+                            @* <i class="mdi mdi-truck-trailer left import_icon arrival"></i>*@
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> DeStuff Delivery</p>
+                            <h1 class="counter"><label id="lblImportStuff"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.03" data-thickness="20" data-color="#FFCC00">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="divimportdeliverystuff">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Process</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.ImportDestuffList as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Process </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!--Codes By Month Collection-->
+        <!--bar graph-->
+        <div class="col-lg-4 col-sm-12" style="display:none">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            @*  <img class="arrival_image" src="~/images/Cash.png">*@
+                            <i class="fa fa-inr fa-2x" aria-hidden="true" style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i>
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> Month Collection</p>
+                            <h1 class="counter"><lable id="lblmotncollection"></lable></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="1.06" data-thickness="20" data-color="#77CCFF">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="tblmonthCollection">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                @*<th style="color:white;text-align:left;font-weight:bold;">Year</th>
+                                <th style="color:white;text-align:left;font-weight:bold;">Month No</th>*@
+                                <th style="color:white;text-align:right;font-weight:bold;">Month </th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Amount</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.MonthlySummary as List<TrackerMVCEntities.BusinessEntities.MonthlyEntites>)
+                            {
+
+                                <tr>
+                                    @*<td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Year </td>
+
+                                    <td style="text-align:right;">@d.MonthNo</td>*@
+                                    <td style="text-align:right;">@d.MonthName </td>
+                                    <td style="text-align:right;">@d.GetName </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+        <!--Codes By port Pendency-->
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            @*<img class="arrival_image" src="~/images/Cash.png">*@
+                            <i class="fa fa-history fa-2x" aria-hidden="true" style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i>
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> Port Pendency</p>
+                            <h1 class="counter"><label id="lblportpendency"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.10" data-thickness="20" data-color="#77CC45">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="tblshowpendency">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Port</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.PortWisePendency as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Port </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            @*<img class="arrival_image" src="~/images/Cash.png">*@
+                            <i class="fe fe-box fa-2x" aria-hidden="true" style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i>
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p>Inventory</p>
+                            <h1 class="counter"><label id="lblinventory"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.25" data-thickness="20" data-color="#de1f44">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="tblinventory">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Port</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">TotAL</th>
+
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.ImportInventory as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Process </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            @*<img class="arrival_image" src="~/images/truck-trailer.png">*@
+                            <i class="fa fa-file-text fa-2x" aria-hidden="true" style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i>
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> Import Jo In Hand</p>
+                            <h1 class="counter"><label id="lblimportjo"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.38" data-thickness="20" data-color="#EE82EE">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="tblimportjohand">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Port</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.ImportJo as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Port </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            @*<img class="arrival_image" src="~/images/truck-trailer.png">*@
+                            <i class="fa fa-file-text fa-2x" aria-hidden="true" style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i>
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> JO IN Hand Month Wise</p>
+                            <h1 class="counter"><label id="lblJOMONTHWise"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.38" data-thickness="20" data-color="#4CA19C">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="tblJOMONTHWise">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Month</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.JOInHandMonthWise as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Month </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <i class="fa fa-file-text fa-2x" aria-hidden="true" style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i>
+                            @*  <img class="arrival_image" src="~/images/tralier-truckyellow.jpg" style="float:right !important;    height: 30px;  margin-right: 8px;width: 50px;">*@
+                            @* <i class="mdi mdi-truck-trailer left import_icon arrival"></i>*@
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> Job Order Received</p>
+                            <h1 class="counter"><label id="lblJOReceived"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.03" data-thickness="20" data-color="#FAE20C">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="divJOReceived">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Process</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.JOReceived as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Process </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+        <div class="col-lg-4 col-sm-12">
+
+            <div class="card text-center" style="border: 1px solid #9f78ff;" id="importArrivalMainCard">
+                <div>
+                    <div class="inline">
+                        <div>
+                            <i class="fa fa-file-text fa-2x" aria-hidden="true" style="float:left; height:30px;width:50px;color:cornflowerblue; margin-left: 8px;"></i>
+                            @*<img class="arrival_image" src="~/images/tralier-truckyellow.jpg" style="float:right !important;    height: 30px;  margin-right: 8px;width: 50px;">*@
+                            @* <i class="mdi mdi-truck-trailer left import_icon arrival"></i>*@
+                        </div>
+                        <div class="widget-line mt-5 margin_wrap">
+                            <p> In Transit</p>
+                            <h1 class="counter"><label id="lblINTRANSIT"></label></h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mx-auto chart-circle chart-circle-md donutShadow" data-value="0.03" data-thickness="20" data-color="#32E007">
+                    <div class="chart-circle-value fs"><i class="fa fa-random"></i></div>
+                </div>
+                <br />
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap" id="divINTRANSIT">
+                        <thead class="text-white" style="background-color:#7bc144">
+                            <tr>
+                                <th style="color:white;text-align:left;font-weight:bold;">Port</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">20</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">40</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">45</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Total</th>
+                                <th style="color:white;text-align:right;font-weight:bold;">Teus</th>
+
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.INTRANSIT as List<TrackerMVCEntities.BusinessEntities.CustomerWiseLDDReport>)
+                            {
+
+                                <tr>
+                                    <td class="bg-primary text-white" style="text-align:left;padding: 10px 10px 0px 10px; cursor: pointer;">@d.Port </td>
+
+                                    <td style="text-align:right;">@d.T20</td>
+                                    <td style="text-align:right;">@d.T40 </td>
+                                    <td style="text-align:right;">@d.T45 </td>
+                                    <td style="text-align:right;">@d.Total </td>
+                                    <td style="text-align:right;">@d.Teus </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+        <!--Codes By Trailers Location-->
+        <!--bar graph-->
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = document.getElementById("Divarrival");
+        var row;
+
+
+     
+
+        for (var i = 1; i < table.rows.length; i++) {
+            row = table.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[0].innerText;
+            //alert(Size);
+            if (Size == "Current Month") {
+                var Count = row.cells[5].innerText;
+            }
+
+
+        }
+       // alert(Count);
+        var total = Count / 10000;
+        //alert(total);
+        $("#lblarrivalCount").text(Count);
+        //var a = $('#divarrivalvalue').data('value'); //getter
+        //alert(a);
+        //$('#divarrivalvalue').data('value', 1.06);
+      
+
+    
+
+        // Import Delivery
+
+        var table1 = document.getElementById("tblimportdelivery");
+        var row;
+        for (var i = 1; i < table1.rows.length; i++) {
+            row = table1.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[0].innerText;
+            //alert(Size);
+            if (Size == "Current Month") {
+                var Count1 = row.cells[5].innerText;
+            }
+
+
+        }
+        // alert(Count);
+
+        $("#lblimportdelivery").text(Count1);
+
+        // Import Delivery Stuff
+
+        var table1 = document.getElementById("divimportdeliverystuff");
+        var row;
+        for (var i = 1; i < table1.rows.length; i++) {
+            row = table1.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[0].innerText;
+            //alert(Size);
+            if (Size == "Current Month") {
+                var Count2 = row.cells[5].innerText;
+            }
+
+
+        }
+        // alert(Count);
+
+        $("#lblImportStuff").text(Count2);
+
+
+
+
+        // month Collection
+
+        var table1 = document.getElementById("tblmonthCollection");
+        var row;
+        for (var i = 1; i < table1.rows.length; i++) {
+            row = table1.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[0].innerText;
+          // alert(Size);
+            if (Size == "Dec-19") {
+                var Count3 = row.cells[1].innerText;
+            }
+
+
+        }
+        // alert(Count3);
+
+        $("#lblmotncollection").text(Count3);
+
+
+
+
+
+        // Port Pendency
+
+        var table6 = document.getElementById("tblshowpendency");
+        var row;
+
+
+        var COunt6 = 0;
+
+        for (var i = 1; i < table6.rows.length; i++) {
+            row = table6.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[5].innerText;
+           // alert(Size);
+            var size1 = Size;
+            COunt6 = COunt6 + Number(size1);
+            //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+        }
+       // alert(COunt6);
+
+        $("#lblportpendency").text(COunt6);
+
+
+
+
+
+        // Port Pendency
+
+
+        var table7 = document.getElementById("tblinventory");
+        var row;
+
+
+        var COunt8 = 0;
+
+        for (var i = 1; i < table7.rows.length; i++) {
+            row = table7.rows[i];
+
+            var Size = row.cells[0].innerText;
+
+            var size1 = Size;
+            if (Size == "Total") {
+                COunt8 = row.cells[5].innerText;
+            }
+
+
+
+        }
+        // alert(COunt6);
+
+        $("#lblinventory").text(COunt8);
+
+
+
+
+        // Port Pendency
+
+        var table8 = document.getElementById("tblimportjohand");
+        var row;
+
+
+        var COunt9 = 0;
+
+        for (var i = 1; i < table8.rows.length; i++) {
+            row = table8.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[5].innerText;
+            // alert(Size);
+            var size1 = Size;
+            COunt9 = COunt9 + Number(size1);
+            //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+        }
+        // alert(COunt6);
+
+        $("#lblimportjo").text(COunt9);
+
+        //JO In Hand Month Wise
+        var table9 = document.getElementById("tblJOMONTHWise");
+        var row;
+
+
+        var COunt10 = 0;
+
+        for (var i = 1; i < table9.rows.length; i++) {
+            row = table9.rows[i];
+            //var Size = row.cells[6].childNodes[1].value;
+            var Size = row.cells[5].innerText;
+            // alert(Size);
+            var size1 = Size;
+            COunt10 = COunt10 + Number(Size);
+            //TotTEUS = Number(TotTEUS) + Number(size);
+
+            //alert(COunt10);
+        }
+        // alert(COunt6);
+
+        $("#lblJOMONTHWise").text(COunt10);
+
+
+        //for JO Received
+        var table10 = document.getElementById("divJOReceived");
+        var row;
+
+        for (var i = 1; i < table10.rows.length; i++) {
+            row = table10.rows[i];           
+            var Size = row.cells[0].innerText;          
+            if (Size == "Current Month") {
+                var Count11 = row.cells[5].innerText;
+            }
+        }       
+        var total = Count11 / 10000;       
+        $("#lblJOReceived").text(Count11);
+
+        //For In Transit
+        var table11 = document.getElementById("divINTRANSIT");
+        var row;
+        var Count12 = 0;
+        for (var i = 1; i < table11.rows.length; i++) {
+            row = table11.rows[i];
+            var Size = row.cells[5].innerText;          
+            var size1 = Size;
+            Count12 = Count12 + Number(size1);
+        }
+        //var total = Count12 / 10000;
+        $("#lblINTRANSIT").text(Count12);
+
+
+    });
+</script>
+
+
+
+

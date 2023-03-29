@@ -1,0 +1,1217 @@
+﻿
+@{
+    ViewBag.Title = "Track Container";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #9f78ff;
+        border-color: #9f78ff;
+    }
+
+    .btn-primarys {
+        color: #fff;
+        background-color: #fdb901;
+        border-color: #fdb901;
+    }
+
+    .btn-All {
+        color: #fff;
+        background-color: #1354da;
+        border-color: #1354da;
+    }
+
+    .bg-primarySearch {
+        background-color: #88D317 !important;
+    }
+
+    .btn-JoArrival {
+        color: #fff;
+        background-color: #9f78ff;
+        border-color: #9f78ff;
+    }
+
+    .btn-Timeline {
+        color: #fff;
+        background-color: #868e96;
+        border-color: #868e96;
+    }
+
+    .btn-IgmDeatls {
+        color: #fff;
+        background-color: #5ed84f;
+        border-color: #5ed84f;
+    }
+
+    .btn-HoldDetals {
+        color: #fff;
+        background-color: #fa626b;
+        border-color: #fa626b;
+    }
+
+    .btn-GatePass {
+        color: #fff;
+        background-color: #28afd0;
+        border-color: #28afd0;
+    }
+</style>
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/js/datatablewihtoutfilter.js"></script>
+<div class=" content-area overflow-hidden" id="divtrackhistory">
+    <div class="page-header">
+        <h4 class="page-title">Track Container History</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> Container No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtContainerNo", null, new { @class = "form-control", @Value = @ViewBag.ImportSearchdetails, @id = "txtContainerNo", style = "text-transform: uppercase;font-weight: bold", maxlength = 11, Placeholder = "Full / Partial Container No." })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <button class="btn btn-primary" id="btnSearch" title="Show" onclick="Show()" type="button"><i class="fe fe-search"></i></button>
+                                        @*<input type="button" value="Search" class="btn btn-primary" onclick="Show()" />*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-wrap" id="example9" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Sr No.</th>
+                                            <th>Activity</th>
+                                            <th>JO No.</th>
+                                            <th>Container No.</th>
+                                            <th>Size/Type</th>
+                                            <th>Activity Date</th>
+                                            <th>Line Name</th>
+                                            <th>Do validity</th>
+                                            <th></th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" style="display:none" id="divshowimportsearch">
+    <div class="page-header">
+        <h4 class="page-title">Import Search</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Container No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtContainer", null, new { @class = "form-control joNo", @id = "txtContainer", name = "txtContainer", autocomplete = "on", @readonly = "readonly" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">JO No</label>
+                                    <div class="row gutters-xs">
+
+                                        @Html.TextBox("TxtJoNo", null, new { @class = "form-control joNo", @id = "TxtJoNo", name = "TxtJoNo", autocomplete = "on", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="padding-top:26px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-primary" type="button" id="btnSearch" title="Search" name="Search" onclick="ShowIGMDetails()"><i class="fe fe-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="padding-top:26px;margin-left:290px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-All" type="button" id="btnSearch" title="All" onclick="All()"><i class="fa fa-globe"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-JoArrival" type="button" id="btnSearch" title="Jo Details" onclick="JoDetails()"><i class="fa fa-pencil"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-Timeline" type="button" id="btnSearch" title="Time Line" onclick="TimeLine()"><i class="fa fa-history"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-IgmDeatls" type="button" id="btnSearch" title="IGM Details" onclick="igmdetails()"><i class="fa fa-th-list"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-HoldDetals" type="button" id="btnSearch" title="Hold Details" onclick="holdetails()"><i class="fa fa-window-close" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-primarys" type="button" id="btnSearch" title="Invoice Details" onclick="InvoiceDetails()"><i class="fa fa-rupee"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="padding-top:26px;margin-left:10px">
+
+                                <div class="row gutters-xs">
+                                    <div class="col">
+
+                                        <button class="btn btn-GatePass" type="button" id="btnSearch" title="Gate Pass" onclick="Gatepass()"><i class="fa fa-car"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-1" style="margin-top:25px;">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @*@Html.ActionLink("Export To Excel", "CHAExportToExcelLineSummary", null, new { @class = "btn btn-primary btn-md" })*@
+                                            @*<i class="fa fa-file-excel-o" aria-hidden="true"></i>*@
+                                            @*<i class="fa fa-file-excel-o"style="font-size:40px;background:#9f78ff;margin-left:200px;" type="button" data-toggle="tooltip" data-placement="bottom" title="Export To Excel" ,data-original-title="Export To Excel"></i>*@
+                                            @*<button class="btn btn-primary" id="btnShow" style="background:#9f78ff;margin-left:200px;" type="button" onclick="ShowPOSummary()"><i class="fa fa-file-excel-o" style="font-size: 1rem;"></i></button>*@
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div>
+                            <div class="col-lg-3 col-sm-12">
+                                <label id="lblason" style="background-color:yellow;color:blue;display:none;font-size:0.875rem;font-weight: 600;"></label>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7" id="divJoArrival">
+                <div class="card">
+                    <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                        <h3 class="card-title text-white">Basic Details</h3>
+                        <div class="card-options ">
+                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        </div>
+                    </div>
+                    <div class="row" style="">
+                        <div class="col-sm-12 col-md-6 col-lg-6 table-responsive">
+
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                <tbody>
+
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Job Order</strong></td>
+                                        <td><label id="txtCurrentStatus" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Size | Type </strong></td>
+                                        <td><label id="txtSize" style="font-weight: bold"></label></td>
+
+                                    </tr>
+                                    @*<tr>
+                                            <td class="text-white btn-primary" style="width:100px"><strong>ISO Code</strong></td>
+
+                                        </tr>*@
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Cargo Type</strong></td>
+                                        <td><label id="txtCargoType" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Class/UN No</strong></td>
+                                        <td><label id="txtClassUNNo" style="font-weight: bold"></label></td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Scan Type</strong></td>
+                                        <td><label id="txtScanType" style="font-weight: bold"></label></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:150px"><strong>Shipping Line Name</strong></td>
+                                        <td><label id="TXTShippingLineName" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td class="text-white btn-primary" style="width:150px"><strong>Consignee</strong></td>
+                                        <td><label id="txtconssing" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:150px"><strong>Customer Name</strong></td>
+                                        <td><label id="txtCustomerName" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:150px"><strong>CHA Name</strong></td>
+                                        <td><label id="txtCHAName" style="font-weight: bold"></label></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Gate In Remarks</strong></td>
+                                        <td><label id="txtGateInRemarks" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Transporter Name</strong></td>
+                                        <td><label id="txtTransporterName" style="font-weight: bold"></label></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6 table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>JO Type</strong></td>
+                                        <td><label id="txtJOType" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Vessel Details</strong></td>
+                                        <td><label id="txtVesselName" style="font-weight: bold"></label></td>
+                                    </tr>
+
+                                    <tr style="display:none">
+                                        <td class="text-white btn-primary" style="width:100px"><strong>JO Date</strong></td>
+                                        <td><label id="txtJODate" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Berthing Date</strong></td>
+                                        <td><label id="txtBerthingDate" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Discharge Date & Time</strong></td>
+                                        <td><label id="txtDischargeTime" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Arrival Date & Time</strong></td>
+                                        <td><label id="txtArrivalTime" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Location</strong></td>
+                                        <td><label id="txtLocation" style="font-weight: bold"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>FCL/LCL</strong></td>
+                                        <td><label id="txtFCLLCL" style="font-weight: bold"></label></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Transport Mode</strong></td>
+                                        <td><label id="txtTransportMode" style="font-weight: bold"></label></td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Gate IN Vehicle No</strong></td>
+                                        <td><label id="txtGateINVehicleNo" style="font-weight: bold"></label></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Trailer Type</strong></td>
+                                        <td><label id="txtTrailerType" style="font-weight: bold"></label></td>
+                                    </tr>
+
+
+                                    <tr style="display:none">
+                                        <td class="text-white btn-primary" style="width:100px"><strong>Port Name</strong></td>
+                                        <td><label id="txtPortName" style="font-weight: bold"></label></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-5 col-lg-5" id="divTimeline">
+                <div class="card">
+                    <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                        <h3 class="card-title text-white">Timeline</h3>
+                        <div class="card-options ">
+                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="timelineImport"></div>
+                    </div>
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+
+        </div>
+        <div class="card" id="divdivigmdetails">
+            <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">IGM Details</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="row mt-3">
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-wrap" id="example1">
+                            <thead>
+
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card" id="divHold">
+            <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">Hold Details</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="row mt-3">
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-wrap" id="example2"></table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card" id="divInvoicedetails">
+            <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">Invoice Details</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="row mt-3">
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-wrap" id="TblInvoiceDetails"></table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card" id="divGatePass">
+            <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                <h3 class="card-title text-white">Gate Pass Details</h3>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+
+            <div class="row" style="">
+                <div class="col-sm-12 col-md-4 col-lg-4 table-responsive">
+
+                    <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                        <tbody>
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Scanning GP Date</strong></td>
+                                <td><label id="txtScanningGPDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Seal Cutting Date & Time</strong></td>
+                                <td><label id="txtSealCuttingDateTime" style="font-weight: bold"></label></td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Custom Examine(%)</strong></td>
+                                <td><label id="txtCustomExamine" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Delivery Type</strong></td>
+                                <td><label id="DeliveryType" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>BOE NO</strong></td>
+                                <td><label id="TxtBOENo" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>OOC NO</strong></td>
+                                <td><label id="txtOOCNO" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Final Out Date & Time</strong></td>
+                                <td><label id="txtFinalOutDateTime" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Empty Gate Pass No</strong></td>
+                                <td><label id="txtEmptyGatePassNo" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Auction First Notice Date</strong></td>
+                                <td><label id="txtAuctionFirstDate" style="font-weight: bold"></label></td>
+                            </tr>
+
+
+
+
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-4 table-responsive">
+                    <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                        <tbody>
+
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Scanning Gate In Date</strong></td>
+                                <td><label id="txtScanningINGateDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>SSR No</strong></td>
+                                <td><label id="txtSSRNo" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Weighment Slip No</strong></td>
+                                <td><label id="txtWeighmentSlipNo" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Gate Pass No</strong></td>
+                                <td><label id="txtGatePasNo" style="font-weight: bold"></label></td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>BOE Date & TIme</strong></td>
+                                <td><label id="TxtBOEDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>OOC Date</strong></td>
+                                <td><label id="txtOOCDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Out Vehicle No</strong></td>
+                                <td><label id="txtOutVehicleNo" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Empty Gate Pass Date & Time</strong></td>
+                                <td><label id="txtEmptyGatePassDateTime" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Auction Second Notice No</strong></td>
+                                <td><label id="txtAuctionSecondNo" style="font-weight: bold"></label></td>
+                            </tr>
+
+
+
+
+
+
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-4 table-responsive">
+
+                    <table class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                        <tbody>
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:100px"><strong>Scanning Location</strong></td>
+                                <td><label id="txtScanningLocation" style="font-weight: bold"></label></td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>SSR Date & Time</strong></td>
+                                <td><label id="txtSSRDateTime" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Weighment Slip Date</strong></td>
+                                <td><label id="txtWeighmentSlipDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Gate Pass Date & Time</strong></td>
+                                <td><label id="txtGatePassDateTime" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>DO Valid Date & Time</strong></td>
+                                <td><label id="TxtDoValidDate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>DO Date</strong></td>
+                                <td><label id="txtDODate" style="font-weight: bold"></label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Empty Yard</strong></td>
+                                <td><label id="txtEmptyYard" style="font-weight: bold"></label></td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Auction First Notice No</strong></td>
+                                <td><label id="txtAuctionFirstno" style="font-weight: bold"></label></td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-white btn-primary" style="width:150px"><strong>Auction Second Notice Date</strong></td>
+                                <td><label id="txtAuctionSecondtDate" style="font-weight: bold"></label></td>
+                            </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example9').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [5]
+                }
+            ]
+        });
+    });
+
+</script>
+<script>
+    function All() {
+        $("#divJoArrival").show();
+        $("#divTimeline").show();
+        $("#divdivigmdetails").show();
+        $("#divHold").show();
+        $("#divInvoicedetails").show();
+        $("#divGatePass").show();
+    }
+    function JoDetails() {
+        $("#divJoArrival").show();
+        $("#divTimeline").hide();
+        $("#divdivigmdetails").hide();
+        $("#divHold").hide();
+        $("#divInvoicedetails").hide();
+        $("#divGatePass").hide();
+
+
+    }
+    function TimeLine() {
+        $("#divJoArrival").hide();
+        $("#divTimeline").show();
+        $("#divdivigmdetails").hide();
+        $("#divHold").hide();
+        $("#divInvoicedetails").hide();
+        $("#divGatePass").hide();
+
+
+    }
+    function igmdetails() {
+        $("#divJoArrival").hide();
+        $("#divTimeline").hide();
+        $("#divdivigmdetails").show();
+        $("#divHold").hide();
+        $("#divInvoicedetails").hide();
+        $("#divGatePass").hide();
+
+
+    }
+    function holdetails() {
+        $("#divJoArrival").hide();
+        $("#divTimeline").hide();
+        $("#divdivigmdetails").hide();
+        $("#divHold").show();
+        $("#divInvoicedetails").hide();
+        $("#divGatePass").hide();
+
+
+    }
+    function InvoiceDetails() {
+        $("#divJoArrival").hide();
+        $("#divTimeline").hide();
+        $("#divdivigmdetails").hide();
+        $("#divHold").hide();
+        $("#divInvoicedetails").show();
+        $("#divGatePass").hide();
+
+
+    }
+    function Gatepass() {
+        $("#divJoArrival").hide();
+        $("#divTimeline").hide();
+        $("#divdivigmdetails").hide();
+        $("#divHold").hide();
+        $("#divInvoicedetails").hide();
+        $("#divGatePass").show();
+
+
+    }
+</script>
+<script>
+    function ShowVendorWiseCategory() {
+        $("#ViewCategoryWise").hide();
+        $("#PortWise").hide();
+        $("#ViewVendorWise").show();
+        $("#NoData").hide();
+        $("#btnVendorWiseCategory").addClass("active");
+        $("#btnCategoryWiseVendor").removeClass("active");
+        $("#btnPortWise").removeClass("active");
+
+    }
+    function ShowCategoryWiseVendor() {
+        $("#ViewCategoryWise").show();
+        $("#PortWise").hide();
+        $("#ViewVendorWise").hide();
+        $("#NoData").hide();
+        $("#btnVendorWiseCategory").removeClass("active");
+        $("#btnCategoryWiseVendor").addClass("active");
+        $("#btnPortWise").removeClass("active");
+
+    }
+    function ShowPortListVendor() {
+        $("#ViewCategoryWise").hide();
+        $("#PortWise").show();
+        $("#ViewVendorWise").hide();
+        $("#NoData").hide();
+
+        $("#btnVendorWiseCategory").removeClass("active");
+        $("#btnCategoryWiseVendor").removeClass("active");
+        $("#btnPortWise").addClass("active")
+    }
+
+    function Show() {
+        // alert("hi");
+        var txtContainerNo = $("#txtContainerNo").val();
+        // alert(txtAsonDate)
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        var data1 = JSON.stringify({
+            'ContainerNo': txtContainerNo
+
+        });
+
+
+        //  alert(data1);
+        $.ajax({
+
+            url: '/Report/getContainerSearchList',
+            type: 'Post',
+            data: data1,
+
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                // alert(JSON.stringify(data))
+                $('#example9').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": data,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+
+                    "columns": [
+
+                        { "data": "srno" },
+                        { "data": "Activity" },
+                        { "data": "JONo" },
+                        { "data": "ContainerNo" },
+                        { "data": "sizeType" },
+                        { "data": "InDate" },
+                        { "data": "Line" },
+                        { "data": "validityDate" },
+                        {
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+
+                                    data = "<button type=\"button\" class=\"btn btn-icon btn-primary  removebutton \" name=\"removebutton\" style=\"height:35px;\" onclick=\"ShowImportDetails('" + row.ContainerNo + "','" + row.JONo + "')\"><i class=\"fa fa-eye\" style=\"font-size: 16px;\"></i></button>"
+
+                                    // data = '<a  onclick="EditJO(' + data + ')"  href="#" class="btn btn-sm btn-info" title="Edit" ><i class="fa fa-edit"></i></a>';
+                                }
+
+                                return data;
+                            }
+
+
+                        },
+
+
+
+
+                    ],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [5]
+                        }
+                    ]
+                });
+
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+
+
+        });
+    }
+
+
+    //function importsearch(ContainerNo, JONo) {
+
+    //    alert(ContainerNo);
+    //    alert(JONo);
+    //}
+
+
+    function getBack() {
+        $("#divtrackhistory").show();
+        $("#divshowimportsearch").hide();
+    }
+</script>
+
+<script>
+
+    function validate() {
+        // alert("hifg");
+
+        var txtContainerNo = document.getElementById('txtContainerNo').value;
+
+        var blResult = Boolean;
+        blResult = true;
+        $("#txtContainerNo").removeClass("form-control is-invalid state-invalid")
+        $("#txtContainerNo").addClass("form-control")
+
+
+        if (txtContainerNo == "") {
+            //  document.getElementById('ContainerNo').style.borderColor = "red"
+            $("#txtContainerNo").removeClass("form-control is-valid state-valid")
+            $("#txtContainerNo").addClass("form-control is-invalid state-invalid")
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+    //$('#btnRemoveCSS').click(function () {
+
+</script>
+
+
+
+<script>
+    function ShowImportDetails(ContainerNo, Jono) {
+
+        $("#divshowimportsearch").show();
+        $("#divtrackhistory").hide();
+        $("#txtContainer").val(ContainerNo);
+        $("#TxtJoNo").val(Jono);
+        var data = { 'ContainerNo': ContainerNo, 'Jono': Jono };
+        var data1 = JSON.stringify(data);
+        $.ajax({
+            url: "/Report/ajaxImportSearchlistdetails",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+
+
+                $("#txtCurrentStatus").text(data.ImportList.CurrentStatus);
+                $("#txtBerthingDate").text(data.ImportList.BirthingDate);
+                $("#txtSize").text(data.ImportList.Size);
+                $("#txtDischargeTime").text(data.ImportList.DischargeDateTime);
+                $("#txtISOCode").text(data.ImportList.iSOCode);
+                $("#txtArrivalTime").text(data.ImportList.INDate);
+                $("#txtCargoType").text(data.ImportList.CargoType);
+                $("#txtJOType").text(data.ImportList.joType);
+                $("#txtClassUNNo").text(data.ImportList.ClassUnNo);
+                $("#datePicker").text(data.ImportList.TrainArrivedDate);
+
+                $("#txtVesselName").text(data.ImportList.VesselName);
+                $("#TXTShippingLineName").text(data.ImportList.SLName);
+                $("#txtScanType").text(data.ImportList.ScanType);
+                //$("#txtViaNo").text(data.ImportList.VesselNames);
+                $("#txtCFSCode").text(data.ImportList.CFSCode);
+                $("#txtPortName").text(data.ImportList.PortID);
+                $("#txtTransportMode").text(data.ImportList.Transport_Type);
+                $("#txtFCLLCL").text(data.ImportList.FL);
+                //$("#txtVehicleNo").val(data.IGMData.ViaNo);
+                $("#txtJODate").text(data.ImportList.JOdate);
+                $("#txtTransporter").text(data.ImportList.transname);
+                $("#txtcontainertype").text(data.ImportList.ContainerType);
+                $("#txtGateInRemarks").text(data.ImportList.GateinRemarks);
+                $("#txtGateINVehicleNo").text(data.ImportList.vehicleno);
+                $("#txtCHAName").text(data.ImportList.CHAName);
+                $("#txtCustomerName").text(data.ImportList.CustomerName);
+
+
+                $("#txtScanningGPDate").text(data.ImportList.ScanningGPDate);
+                $("#txtSealCuttingDateTime").text(data.ImportList.SealCuttingDateTime);
+                $("#txtCustomExamine").text(data.ImportList.CustomExamine);
+                $("#DeliveryType").text(data.ImportList.Location);
+                $("#txtOOCNO").text(data.ImportList.OOCNO);
+                $("#txtFinalOutDateTime").text(data.ImportList.Location);
+                $("#txtEmptyGatePassNo").text(data.ImportList.EmptyGatePassNo);
+                $("#txtAuctionFirstDate").text(data.ImportList.AucFirstDate);
+                $("#txtScanningINGateDate").text(data.ImportList.ScanningGateInDate);
+                $("#txtSSRNo").text(data.ImportList.SSRNo);
+                $("#txtWeighmentSlipNo").text(data.ImportList.WeighmentSlipNo);
+                $("#txtGatePasNo").text(data.ImportList.GatePassNo);
+                $("#txtScanningLocation").text(data.ImportList.ScanningLocation);
+                $("#txtOOCDate").text(data.ImportList.OOCDate);
+                $("#txtOutVehicleNo").text(data.ImportList.Location);
+                $("#txtEmptyGatePassDateTime").text(data.ImportList.EmptyGatePassDateTime);
+                $("#txtAuctionSecondNo").text(data.ImportList.AucSeconNO);
+                $("#TxtBOEDate").text(data.ImportList.BOEDateTIme);
+                $("#txtSSRDateTime").text(data.ImportList.SSRDateTime);
+                $("#txtWeighmentSlipDate").text(data.ImportList.WeighmentSlipDate);
+                $("#txtGatePassDateTime").text(data.ImportList.GatePassDateTime);
+                $("#TxtDoValidDate").text(data.ImportList.DOValidDateTime);
+                $("#txtDODate").text(data.ImportList.DODate);
+                $("#txtEmptyYard").text(data.ImportList.EmptyYard);
+                $("#txtAuctionFirstno").text(data.ImportList.Location);
+                $("#txtAuctionSecondtDate").text(data.ImportList.aucSecondDate);
+                //$("#txtEIRTime").text(data.ImportList.EIRDate);
+                $("#TxtBOENo").text(data.ImportList.BOENO);
+
+
+                getfataBonddis(ContainerNo, Jono);
+                getfataBo(ContainerNo, Jono);
+                getfataIn(ContainerNo, Jono);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+
+        $.ajax({
+            url: "/Report/ImportTimeline",
+            data: data1,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $("#timelineImport").html(response);
+                $("#timelineImport").show();
+            },
+            error: function (error) {
+                $("#global-loader").fadeOut("slow");
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        });
+
+    }
+
+
+
+    function getfataBonddis(ContainerNo, Jono) {
+        //alert('hii')
+
+
+
+        var data1 = { 'ContainerNo': ContainerNo, 'Jono': Jono };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetIGMDeatails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+
+                $("#example1").empty();
+                RepTableDataJsonSearchFilter($("#example1"), data, "ContaineWiseSeach", "ContaineWiseSeach");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        })
+    }
+
+    function getfataIn(ContainerNo, Jono) {
+        //alert('hii')
+
+
+
+        var data1 = { 'ContainerNo': ContainerNo, 'Jono': Jono };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetIGMInvoiceDeatails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                $("#TblInvoiceDetails").empty();
+
+                RepTableDataJsonSearchFilter($("#TblInvoiceDetails"), data, "ContaineWiseSeach", "ContaineWiseSeach");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        })
+    }
+    function GetjoNo() {
+
+        $('.joNo').on('blur', function (e) {
+            var ContainerNo3 = $("#txtContainerNo").val()
+            var data1 = { 'ContainerNo3': ContainerNo3 };
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                url: "/Report/ajaxJoNoList",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    var select = $("#TxtJoNo");
+
+                    select.empty();
+                    select.append($('<option/>', {
+                        value: 0,
+                        text: "--Select--"
+                    }));
+
+                    $.each(data, function (data, value) {
+
+                        select.append($("<option></option>").html(value.JONo));
+                    })
+
+
+                },
+                error: function (error) {
+                    let str = error.responseText;
+                    var a = str.indexOf("<title>") + 7;
+                    var b = str.indexOf("</title>");
+                    str = str.substring(a, b);
+                    alert("Something went wrong: " + str);
+                }
+            });
+
+        });
+    }
+    function getfataBo(ContainerNo, Jono) {
+        //alert('hii')
+
+
+
+        var data1 = { 'ContainerNo': ContainerNo, 'Jono': Jono };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Report/GetIGMHoldDeatails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                $("#example2").empty();
+
+                RepTableDataJsonSearchFilter($("#example2"), data, "ContaineWiseSeach", "ContaineWiseSeach");
+
+                $("#tracker-loader").fadeOut("slow");
+
+
+            },
+            error: function (error) {
+                let str = error.responseText;
+                var a = str.indexOf("<title>") + 7;
+                var b = str.indexOf("</title>");
+                str = str.substring(a, b);
+                alert("Something went wrong: " + str);
+            }
+        })
+    }
+
+
+</script>
+
+
+
+
+<div class=" content-area" style="display:none" id="divshowimportsearch">
+    <div class="page-header">
+        <h4 class="page-title">Empty Search</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div>
+
+         
+        <div class="row">
+
+    
+            <div class="col-sm-12 col-md-5 col-lg-5" id="divTimeline">
+                <div class="card">
+                    <div class="card-header bg-primarySearch br-tr-7 br-tl-7">
+                        <h3 class="card-title text-white">Timeline</h3>
+                        <div class="card-options ">
+                            <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="timelineImport"></div>
+                    </div>
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+ 
+    </div>
+</div>
+
+

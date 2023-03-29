@@ -1,0 +1,460 @@
+﻿
+@{
+    ViewBag.Title = "Truck Bill Charges waived off";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<style>
+
+    td {
+        text-align: center;
+    }
+</style>
+<style>
+
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+</style>
+
+<div class=" content-area overflow-hidden" id="divCreate">
+    <script src="~/js/GetTableJson.js"></script>
+    <div class=" content-area overflow-hidden" id="divCreate">
+        <div class="page-header">
+            <h4 class="page-title">Make Warai Charges Waived Off</h4>
+            <li class="breadcrumb-item">
+                @*<a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>*@
+            </li>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="form-horizontal">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Search By</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                                        { new SelectListItem { Text = "--Select--", Value = ""},
+                                        new SelectListItem { Text = "SB Number", Value = "SB Number"},
+                                        new SelectListItem { Text = "Vehicle No", Value = "Vehicle No"},
+
+
+
+                                          }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch", onchange = "OnSearchChange()" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12" id="divIGMNo" style="display:none">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">SB No</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.TextBox("txtsbno", null, new { @class = "form-control", @id = "txtsbno", name = "txtIGMNo", autocomplete = "off", placeholder = "SB No" })
+                                                        @*<select id="ddlContainerNo" class="form-control" onchange="GetTotalPkgsContainerWise()">
+                                                                <option value="">--Select--</option>
+                                                            </select>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-sm-12" id="divContainerNo" style="display:none">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">Vehicle No</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        @Html.TextBox("txtvehicleno", null, new { @class = "form-control", @id = "txtvehicleno", name = "txtvehicleno", autocomplete = "off", placeholder = "Vehicle No", @maxlength = 11 })
+                                                        @*<select id="ddlContainerNo" class="form-control" onchange="GetTotalPkgsContainerWise()">
+                                                                <option value="">--Select--</option>
+                                                            </select>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-1 col-sm-12">
+                                            <div class="form-group" style="padding-top:25px">
+
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <button class="btn btn-primary" type="button" id="btnSearch" name="Search" onclick="Fetch()">Show</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+
+
+
+                                                <th style="width:80px;color: white;text-align:center"><input type="checkbox" id="flowcheckall" value="" />Select All</th>
+
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">SR No.</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">GP No.</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">In Date</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">Vehicle No</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">SB No</th>
+                                                <th class="wd-15p sorting" style="width:80px;color: white;text-align:center">SB Entry ID</th>
+
+
+
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-success" onclick="Update()" title="Update"><b>Update</b></button>
+                                    <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function Fetch() {
+        debugger;
+        var Category = document.getElementById('ddlSearch').value;
+
+        var Search = "";
+
+        if (Category == "SB Number") {
+
+            Search = $("#txtsbno").val();
+        }
+        if (Category == "Vehicle No") {
+            Search = $("#txtvehicleno").val();
+        }
+
+
+
+
+
+
+
+        var data1 = { 'Category': Category, 'Search': Search };
+
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetExportTruckDetailsGrid',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+
+                            "data": "EntryID",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.EntryID + '">';
+                                return data;
+
+                            }
+                        },
+
+                        { "data": "EntryID" },
+                        { "data": "GPNo" },
+                        { "data": "EntryDate" },
+                        { "data": "TruckNO" },
+                        { "data": "SBNo" },
+                        { "data": "SBEntryID" },
+
+
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
+
+
+
+<script>
+    function cleartextboxes() {
+        document.location = '@Url.Action("TruckBillChargeswaivedoff", "ModifyModule")';
+    }
+</script>
+
+<script>
+    function Update() {
+        debugger;
+
+
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        var r = confirm("Are you sure for waived off of vehicles?");
+        if (r == true) {
+
+
+            var itemcount = checkItemcount();
+            if (itemcount == false) {
+                alert("No Record Found To cancel");
+            }
+            else {
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+
+                        var EntryID = row.cells[1].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (EntryID == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                         //   alert("hiiii");
+                            row = table.rows[i];
+
+                            EntryID = row.cells[1].innerText;
+                            GPNo = row.cells[2].innerText;
+                            TruckNO = row.cells[4].innerText;
+                            SBNo = row.cells[5].innerText;
+                            SBEntryID = row.cells[6].innerText;
+                            tablearray.push({
+                                'EntryID': EntryID, 'GPNo': GPNo, 'TruckNO': TruckNO, 'SBNo': SBNo, 'SBEntryID': SBEntryID
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+            }//else part end
+            var data1 = {
+                'Debitdata': tablearray, 'Remarks': Remarks
+            };
+
+            if (tablearray.length == 0) {
+                alert("Please select record to proceed");
+                return false;
+            }
+            var data = JSON.stringify(data1);
+           // alert(data);
+            $.ajax({
+                url: "/ModifyModule/MakeWaivedOffInvoice",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("TruckBillChargeswaivedoff", "ModifyModule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }//end of main called function
+
+        //Check Checkbox selected count
+        function checkItemcount() {
+            var table = $('#example1').DataTable();
+            if (table.rows().count() == 0) {
+                return false;
+            }
+            return true;
+        }
+    }
+</script>
+<script>
+    $("#flowcheckall").click(function () {
+
+        var oTableStaticFlow = $('#example1').DataTable();
+
+
+        var cells = oTableStaticFlow.column(0).nodes(), // Cells from 1st column
+            state = this.checked;
+
+        for (var i = 0; i < cells.length; i += 1) {
+            cells[i].querySelector("input[type='checkbox']").checked = state;
+        }
+    });
+</script>
+
+
+<script>
+    function OnSearchChange() {
+        var ddlSearch = $("#ddlSearch").val();
+
+
+        $("#txtvehicleno").val("");
+        $("#txtsbno").val("");
+
+
+        if (ddlSearch != "") {
+            if (ddlSearch == "SB Number") {
+                $("#divIGMNo").show();
+
+                $("#divContainerNo").hide();
+
+            }
+            else if (ddlSearch == "Vehicle No") {
+                $("#divIGMNo").hide();
+
+                $("#divContainerNo").show();
+
+            }
+
+        }
+        else {
+            $("#divIGMNo").show();
+
+            $("#divContainerNo").hide();
+
+
+        }
+    }
+
+</script>
+
+<script>
+    //get details in text box
+    function Fetch2() {
+        debugger;
+
+        var Category = document.getElementById('ddlSearch').value;
+
+        var Search = "";
+
+        if (Category == "SB Number") {
+
+            Search = $("#txtsbno").val();
+        }
+        if (Category == "Vehicle No") {
+            Search = $("#txtvehicleno").val();
+        }
+
+
+
+
+
+
+
+        var data1 = { 'Category': Category, 'Search': Search };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/ShowStuffingRequestDetC',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $('#ddlcustomer').val(data[0].AGName);
+                $('#InDate').val(data[0].EntryDate);
+
+                if (data != "") {
+                    Fetch1();
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

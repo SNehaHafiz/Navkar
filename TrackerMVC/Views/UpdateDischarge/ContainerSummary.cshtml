@@ -1,0 +1,420 @@
+﻿
+@{
+    ViewBag.Title = "Custom Examine";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class="content-area overflow-hidden" id="divDriver">
+    <div>
+        <div class="page-header">
+            <h4 class="page-title">Container Details</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Container No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtContainerno" type="text" class="form-control" placeholder="Container No"  style="text-transform:uppercase"/>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" style="width:60PX" id="btnSearch" type="button" onclick="showContainerList()"><i class="fe fe-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Jo No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtJoNo", null, new { @class = "form-control", @id = "txtJoNo", @name = "txtJoNo", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Line Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtLine", null, new { @class = "form-control", @id = "txtLine", @name = "txtLine", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">In Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtIndate", null, new { @class = "form-control", @id = "txtIndate", @name = "txtIndate", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSize", null, new { @class = "form-control", @id = "txtSize", @name = "txtSize", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Type</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txttype", null, new { @class = "form-control", @id = "txttype", @name = "txttype", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Examine (%)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtExamine", null, new { @class = "form-control", @id = "txtExamine", @name = "txtExamine", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 col-xs-4">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="CheckCustomValidate();">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+
+
+<div class=" content-area overflow-hidden" id="viewSummary" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Custom Examination Details</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>JO No.</th>
+                                            <th>Container No.</th>
+                                            <th>Size</th>
+                                            <th>Container Type</th>
+                                            <th>RMS Percent</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            "dom": 'Bfrtip',
+            "buttons": [{
+                "extend": 'excel',
+                "title": 'CustomExamine',
+                "filename": 'CustomExamine_List'
+
+            }
+            ]
+        });
+
+
+
+    });
+</script>
+
+
+
+
+<script type="text/javascript">
+    function showContainerList() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        var ContainerNO = document.getElementById('txtContainerno').value;
+
+        var data1 = { 'ContainerNO': ContainerNO.trim() };
+        var data = JSON.stringify(data1);
+
+       
+
+
+        $.ajax({
+            url: "/UpdateDischarge/AjaxGetContainerList",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (data) {
+              
+              
+                $("#txtJoNo").val(data[0].JONO);
+                $("#txtLine").val(data[0].ShippingLine)
+                $("#txtIndate").val(data[0].INDate)
+                $("#txtSize").val(data[0].Size);
+                $("#txttype").val(data[0].ContainerType);
+              
+              
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+
+
+    function AddContainersDetails() {
+        var containerNo = document.getElementById('txtContainerno').value;
+        var jono          = document.getElementById('txtJoNo').value;
+        var shippingline  = document.getElementById('txtLine').value;
+        var Indate        = document.getElementById('txtIndate').value;
+        var size          = document.getElementById('txtSize').value;
+        var type          = document.getElementById('txttype').value;
+        var Examine       = document.getElementById('txtExamine').value;
+
+
+        var data1 = { 'containerNo': containerNo, 'jono': jono, 'shippingline': shippingline, 'Indate': Indate, 'size': size, 'type': type, 'Examine': Examine }
+        var data = JSON.stringify(data1);
+        //alert(data);
+
+        $.ajax({
+            url: "/UpdateDischarge/Ajaxinsertcontainer",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+                //$("#txtJoNo").val(data[0].JONO);
+                //$("#txtLine").val(data[0].ShippingLine)
+                //$("#txtIndate").val(data[0].INDate)
+                //$("#txtSize").val(data[0].Size);
+                //$("#txttype").val(data[0].ContainerType);
+
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("ContainerSummary", "UpdateDischarge")';
+    }
+</script >
+
+        
+
+
+<script type="text/javascript">
+
+
+    function CheckCustomValidate() {
+        var containerNo1 = document.getElementById('txtContainerno').value;
+        var jono1 = document.getElementById('txtJoNo').value;
+
+        data1 = { 'jono1': jono1, 'containerNo1': containerNo1 }
+        data = JSON.stringify(data1);
+       
+        $.ajax({
+            url: "/UpdateDischarge/CheckCustomValidate",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+               
+                if (data == 1) {
+                    alert("Record already exists!");
+
+                     document.getElementById('txtContainerno').value ="";
+                     document.getElementById('txtJoNo').value = "";
+                     document.getElementById('txtLine').value = "";
+                     document.getElementById('txtIndate').value = "";
+                     document.getElementById('txtSize').value = "";
+                     document.getElementById('txttype').value = "";
+                     document.getElementById('txtExamine').value = "";
+
+
+                }else {
+                    AddContainersDetails();
+                }
+               
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    
+
+
+    function ViewSummary() {
+
+        $("#divDriver").hide();
+        $("#viewSummary").show();
+        $.ajax({
+            type: 'POST',
+            url: '/UpdateDischarge/AjaxGetCustomExamine',
+            //data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ',SearchCriteria: ' + JSON.stringify(SearchCriteria) + ',SearchText: ' + JSON.stringify(SearchText) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+               // alert(JSON.stringify(data));
+                $('#example2').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                        { "data": "JONO" },
+                        { "data": "ContainerNO" },
+                        { "data": "Size" },
+                        { "data": "ContainerType" },
+                        { "data": "RMSPerc" }
+                      
+                      
+                    ], "dom": 'Bfrtip',
+
+                    "buttons": [{
+                        "extend": 'excel',
+                        "title": 'CustomExamine',
+                        "filename": 'CustomExamine_List'
+
+                    }
+                    ]
+                });
+               
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+
+    function getBack() {
+        document.location = '@Url.Action("ContainerSummary", "UpdateDischarge")';
+    }
+</script>
+
+<script>
+    function validate() {
+
+        var txtContainerno = document.getElementById('txtContainerno').value;
+      
+
+
+
+        document.getElementById("txtContainerno").style.borderColor = "gainsboro";
+     
+
+        var blResult = Boolean;
+        blResult = true;
+
+
+        if (txtContainerno == "") {
+          
+            document.getElementById("txtContainerno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+       
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+

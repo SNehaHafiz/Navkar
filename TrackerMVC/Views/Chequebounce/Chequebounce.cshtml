@@ -1,0 +1,811 @@
+﻿
+@{
+    ViewBag.Title = "Chequebounce";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+
+<div class=" content-area" id="divCreate" >
+    <div class="page-header">
+        <h4 class="page-title">Cheque Bounce</h4>
+        <li class="breadcrumb-item">
+            <a onclick="OpenWOSummary();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-file-text" data-placement="bottom" title="Open Work Order Summary"></i> </a>
+        </li>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry ID</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtEntryID", null, new { @class = "form-control ", @id = "txtEntryID", name = "txtEntryID", autocomplete = "on", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtEntryDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="row">
+
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cheque No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchequeNo", null, new { @class = "form-control ", @id = "txtchequeNo", name = "txtchequeNo", autocomplete = "on", onchange = "ViaChngs()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" id="divPendingReceipt">
+                                <div class="form-group">
+                                    <label class="form-label">Receipt No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <select id="txtReceiptNo" class="form-control" onblur="GetGstnoID()">
+                                                <option value="">--All--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+
+                        </div>
+     
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity </label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtActivity", null, new { @class = "form-control ", @id = "txtActivity", name = "txtActivity", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cheque Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtchequeAmount", null, new { @class = "form-control ", @id = "txtchequeAmount", name = "txtchequeAmount", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cheque Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtDateCheque" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            
+                         
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cheque Return Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtChequeReturnDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Bank Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtBankName", null, new { @class = "form-control ", @id = "txtBankName", name = "txtBankName", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                     
+                            <div class="col-lg-4 col-sm-12">
+
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Contact Person Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtContactperson", null, new { @class = "form-control ", @id = "txtContactperson", name = "txtContactperson", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Contact No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtContactno", null, new { @class = "form-control ", @id = "txtContactno", name = "txtContactno", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+
+ 
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtRemarks", null, new { @class = "form-control ", @id = "txtRemarks", name = "txtRemarks", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+
+                        
+
+                        
+
+                        <div class="col-lg-3 col-sm-3" style="margin-top:20px;">
+                            <div class="form-group">
+
+
+                                <button id="btnsave" class="btn btn-success btn-xs" onclick="Save()">Save</button>
+                                <input type="button" name="clearProfile" value="Clear" class="btn cursor" title="clear" id="clearValue" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" content-area" id="divCreateSummary" style="display:none">
+
+    <div class=" content-area overflow-hidden">
+        <div class="page-header">
+            <h4 class="page-title">List Of Opne Cheque Bounce Summary</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+
+                        <li class="breadcrumb-item">
+                            <a onclick="BackToWorkOrder();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+                        </li>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <div class="input-group">
+                                @* <input type="text" class="form-control" placeholder="Search for...">*@
+                                <span class="input-group-append " id="tabPurpose">
+                                    <button class="btn btn-primary active" id="import" style="text-transform: uppercase;" type="button" onclick="ShowOpen()">Open</button>
+                                    <button class="btn btn-primary" id="export" style="text-transform: uppercase;" type="button" onclick="showclose()">Close </button>
+                                    <label id="selectedImportORExport" class="display_none"></label>
+                                    @*<span class="text-center user-semi-title text-dark">@ViewBag["Userid"].ToString()</span>*@
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row" id="divshow" style="display:none">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <div class="row gutters-xs">
+
+                                        <div class="col-lg-3 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label mandatory">As On</label>
+                                                <div class="row gutters-xs">
+                                                    <div class="col">
+                                                        <input ID="txtFromDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-22 col-lg-2">
+                                            <div class="form-group label-floating" style="margin-top: 33px;">
+                                                <button class=" btn btn-primary" style="margin-top: -7px" id="btnSearch" onclick="ShowList('ShowList')" type="button">
+                                                    SHOW
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+
+                        @*@Html.ActionLink("Export To Excel", "ExportToExcelFuelSlipDetailsReport", null, new { @class = "btn btn-primary btn-md" })*@
+                        <div class="row" style="display:none" id="divgrids">
+                            <div class="col-md-12 col-lg-12">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                                        <thead>
+                                            @*<tr>
+                                <th class="wd-15p sorting"></th>
+                                <th>Category.</th>
+                                <th>Assess No.</th>
+                                <th>Work Year.</th>
+                                <th>Invoice No.</th>
+                                <th>Invoice Date.</th>
+                                <th>Grand Total</th>
+                                <th></th>
+
+                            </tr>*@
+                                        </thead>
+                                        <tbody style="box-sizing :border-box;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="divshow1" style="display:none">
+                            <div class="row" style="display:none" id="divfrom">
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("txtFromDates", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden"> '</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive" style="display:none" id="divgrid">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                    <thead>
+                                        @*<tr>
+                            <th class="wd-15p sorting"></th>
+                            <th>Category.</th>
+                            <th>Assess No.</th>
+                            <th>Work Year.</th>
+                            <th>Invoice No.</th>
+                            <th>Invoice Date.</th>
+                            <th>Grand Total</th>
+                            <th></th>
+
+                        </tr>*@
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                            <!-- table-wrapper -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function BackToWorkOrder() {
+        $("#divCreate").show();
+        $("#divCreateSummary").hide();
+    }
+    function OpenWOSummary() {
+        $("#divCreate").hide();
+        $("#divCreateSummary").show();
+    }
+
+    function ShowOpen() {
+        $('#divshow').show();
+        $('#divshow1').hide();
+        $('#divfrom').hide();
+        $('#divgrid').hide();
+        $('#divgrids').show();
+   
+
+
+    }
+
+    function showclose() {
+        debugger;
+        $('#divshow1').show();
+        $('#divshow').hide();
+        $('#divfrom').show();
+        $('#divgrid').show();
+        $('#divgrids').hide();
+
+    }
+
+    function Save() {
+        debugger;
+         
+        var ENTRYDATE = document.getElementById('txtEntryDate').value;
+        var CHEQUENO = document.getElementById('txtchequeNo').value;
+        var RECEIPTNO = document.getElementById('txtReceiptNo').value;
+        var ACTIVITY = document.getElementById('txtActivity').value;
+        var CHEQUE_AMOUNT = document.getElementById('txtchequeAmount').value;
+        var CHEQUEDATE = document.getElementById('txtDateCheque').value;
+        var CHEQUE_RETURNDATE = document.getElementById('txtChequeReturnDate').value;
+        var BANKNAME = document.getElementById('txtBankName').value;
+        var CONTACTPERSONNAME = document.getElementById('txtContactperson').value;
+        var CONTACTNO = document.getElementById('txtContactno').value;
+        var REMARKS = document.getElementById('txtRemarks').value;
+    
+        var Chequebounce = {};
+        Chequebounce.ENTRYDATE = ENTRYDATE;
+        Chequebounce.CHEQUENO = CHEQUENO;
+        Chequebounce.RECEIPTNO = RECEIPTNO;
+        Chequebounce.ACTIVITY = ACTIVITY;
+        Chequebounce.CHEQUE_AMOUNT = CHEQUE_AMOUNT;
+        Chequebounce.CHEQUEDATE = CHEQUEDATE;
+        Chequebounce.CHEQUE_RETURNDATE = CHEQUE_RETURNDATE;
+        Chequebounce.BANKNAME = BANKNAME;
+        Chequebounce.CONTACTPERSONNAME = CONTACTPERSONNAME;
+        Chequebounce.CONTACTNO = CONTACTNO;
+        Chequebounce.REMARKS = REMARKS;
+   $.ajax({
+       url: "/Chequebounce/Save",
+       data: '{Chequebounce: ' + JSON.stringify(Chequebounce) + '}',
+       type: "POST",
+    contentType: "application/json; charset=utf-8",
+       dataType: "json",
+       success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("Chequebounce", "Chequebounce")';
+},
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+    }
+
+    function ViaChngs() {
+
+
+        var CHEQUENO = document.getElementById('txtchequeNo').value;
+        var data1 = { 'CHEQUENO': CHEQUENO };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/Chequebounce/GetAssessInvoice",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (response) {
+
+                if (response == "") {
+                    alert("Specified cheque no not found. Cannot proceed!");
+                    $("#txtReceiptNo").val('');
+                    $("#txtActivity").val('');
+                    $("#txtchequeAmount").val('');
+
+                    $("#txtBankName").val('');
+                    return false;
+                }
+                //$('#txtReceiptNo').attr('disabled', true);
+                $('#txtActivity').attr('disabled', true);
+                $('#txtchequeAmount').attr('disabled', true);
+                $('#txtBankName').attr('disabled', true);
+
+                //$("#txtReceiptNo").val(data[0].RECEIPTNO);
+                //$("#txtActivity").val(data[0].ACTIVITY);
+                //$("#txtchequeAmount").val(data[0].CHEQUE_AMOUNT);
+
+                //$("#txtBankName").val(data[0].BANKNAME);
+                $("#txtReceiptNo").empty();
+                $("#txtReceiptNo").append($("<option></option>").val('').html('--Select--'));
+                $.each(response, function (index, value) {
+
+                    var ReceiptAmtNo = value.RECEIPTNO + '~' + value.CHEQUE_AMOUNT;
+                    $("#txtReceiptNo").append($("<option></option>").val(value.RECEIPTNO).html(value.RECEIPTNO));
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        })
+
+
+    }
+
+    function GetGstnoID() {
+
+
+        var ReceiptNo = document.getElementById('txtReceiptNo').value;
+        var data1 = { 'CHEQUENO': ReceiptNo };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/Chequebounce/GetAssessReciept",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            // dataType: "json",
+            success: function (data) {
+                if (data == "") {
+                    
+                
+                    $("#txtActivity").val('');
+                    $("#txtchequeAmount").val('');
+
+                    $("#txtBankName").val('');
+                    return false;
+                }
+
+                //$('#txtReceiptNo').attr('disabled', true);
+                $('#txtActivity').attr('disabled', true);
+                $('#txtchequeAmount').attr('disabled', true);
+                $('#txtBankName').attr('disabled', true);
+
+                //$("#txtReceiptNo").val(data[0].RECEIPTNO);
+                $("#txtActivity").val(data[0].ACTIVITY);
+                $("#txtchequeAmount").val(data[0].CHEQUE_AMOUNT);
+
+                $("#txtBankName").val(data[0].BANKNAME);
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+
+        })
+
+
+    }
+
+    function ShowList() {
+        debugger;
+        $('#divgrid').hide();
+        $('#divgrids').show();
+        var ason = $("#txtFromDate").val();
+
+        try {
+            var data1 = { 'ason': ason };
+            data = JSON.stringify(data1);
+            $.ajax({
+                url: "/Chequebounce/Search",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    debugger;
+                    RepTableDataJson($("#reportTable"), response, "Chequebounce", "Chequebounce")
+                },
+                error: function (errormessage) {
+                    alert("error");
+                    alert(errormessage.responseText);
+                }
+            });
+
+        } catch (ex) {
+
+        }
+    }
+
+    function Show() {
+        $('#divshow').hide();
+        $('#divshow1').show();
+        $('#divfrom').show();
+        $('#divgrid').show();
+        $('#divgrids').hide();
+        debugger;
+        var FromDate = $("#txtFromDates").val();
+        var ToDate = $("#txtToDate").val()
+        var data1 = { 'FromDate': FromDate, 'ToDate': ToDate };
+        data = JSON.stringify(data1);
+        $.ajax({
+            url: "/Chequebounce/SearchClosed",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(jsonResult)
+                $("#example1").empty();
+                RepTableDataJson($("#example1"), data, "Chequebounce", "Chequebounce")
+                //  alert(jsonResult)
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+
+    }
+</script>
+
+
+<div class=" content-area" id="divClosed" style="display:none" >
+    <div class="page-header">
+        <h4 class="page-title">Payment Received Entry</h4>
+        <li class="breadcrumb-item">
+            <a onclick="BackToWork();" class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-placement="bottom" title="Add Work Order"></i> </a>
+        </li>
+    </div> 
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Entry ID</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtEntryIDs", null, new { @class = "form-control ", @id = "txtEntryIDs", name = "txtEntryIDs", autocomplete = "on", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Payment Mode</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlPaymentMode", (IEnumerable<SelectListItem>)ViewBag.Customer, "--Select--", new { @class = "form-control", @id = "ddlPaymentMode", name = "ddlPaymentMode", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mode No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtModeNo", null, new { @class = "form-control ", @id = "txtModeNo", name = "txtModeNo", autocomplete = "on", onchange = "ViaChngs()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+
+
+                        </div>
+
+                         
+
+                        <div class="row">
+                          
+
+
+
+
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mode Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input ID="txtModeDate" type="datetime-local" value="@ViewBag.Date" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Mode Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtModeAmount", null, new { @class = "form-control ", @id = "txtModeAmount", name = "txtModeAmount", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+ 
+                        </div>
+                        <div class="row">
+                             
+
+
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Payment Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtPaymentRemarks", null, new { @class = "form-control ", @id = "txtPaymentRemarks", name = "txtPaymentRemarks", autocomplete = "on" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-lg-3 col-sm-3" style="margin-top:20px;">
+                            <div class="form-group">
+
+
+                                <button id="btnsave" class="btn btn-success btn-xs" onclick="SavePayment()">Save</button>
+                                <input type="button" name="clearProfile" value="Clear" class="btn cursor" title="clear" id="clearValue" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function CheckVelid() {
+        debugger;
+      
+
+        var EntryID = document.getElementById('txtEntryIDs').value;
+        var PaymentMode = document.getElementById('ddlPaymentMode').value;
+        var ModeNo = document.getElementById('txtModeNo').value;
+        var ModeDate = document.getElementById('txtModeDate').value;
+        var ModeAmount = document.getElementById('txtModeAmount').value;
+         var Remarks = document.getElementById('txtPaymentRemarks').value;
+  
+    
+        var Chequebounce = {};
+        Chequebounce.EntryID = EntryID;
+        Chequebounce.paymentMode = PaymentMode;
+        Chequebounce.ModeNo = ModeNo;
+        Chequebounce.Modedate = ModeDate;
+        Chequebounce.ModeAmount = ModeAmount;
+        Chequebounce.REMARKS = Remarks;
+   $.ajax({
+       url: "/Chequebounce/Update",
+       data: '{Chequebounce: ' + JSON.stringify(Chequebounce) + '}',
+       type: "POST",
+    contentType: "application/json; charset=utf-8",
+       dataType: "json",
+       success: function (result) {
+alert('Record saved successfully')
+window.location.href = '@Url.Action("Chequebounce", "Chequebounce")';
+},
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+    }
+    function BackToWork() {
+        $("#divCreateSummary").show();
+        $("#divClosed").hide();
+    }
+
+    function Select(EntryID) {
+        debugger;
+        $("#divClosed").show();
+        $("#divCreateSummary").hide();
+        $("#txtEntryIDs").val(EntryID);
+    }
+
+    function SavePayment() {
+        debugger;
+
+        var ModeNo = document.getElementById('txtModeNo').value;
+         
+        var data1 = { 'ModeNo': ModeNo };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            url: '/Chequebounce/WithReason',
+            type: 'Post',
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data != "") {
+                    alert(data);
+                    return false;
+                }
+                else {
+                    CheckVelid();
+                }
+                
+                
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+
+    }
+</script>

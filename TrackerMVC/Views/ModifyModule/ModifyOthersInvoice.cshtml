@@ -1,0 +1,595 @@
+﻿
+@{
+    ViewBag.Title = "ModifyOthersInvoice";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<style>
+    .hiderow {
+        display: none;
+    }
+</style>
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Modify Other Invoice Details</h4>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Invoice No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtinvoiceno", null, new { @class = "form-control", @id = "txtinvoiceno", name = "txtinvoiceno", autocomplete = "off", placeholder = "Invoice No" })
+                                            @*<select id="ddlContainerNo" class="form-control" onchange="GetTotalPkgsContainerWise()">
+                                                    <option value="">--Select--</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12" id="divContainerNo">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Work Year</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtworkyear", null, new { @class = "form-control", @id = "txtworkyear", name = "txtworkyear", autocomplete = "off", placeholder = "Work Year", maxlength = 11, @readonly = "readonly" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group" style="padding-top:25px">
+
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" id="Showbtn" name="Search" onclick="Fetch1()">Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Party Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcustomer", null, new { @class = "form-control", @id = "txtcustomer", name = "txtcustomer", autocomplete = "off", placeholder = "Party Name", @readonly = "readonly" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cargo Desc</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtcargodesc", null, new { @class = "form-control", @id = "txtcargodesc", name = "txtcargodesc", autocomplete = "off", placeholder = "Cargo Desc" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <div>
+                                    @*<label class="form-label">Details </label>*@
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap mt-lg-5" id="example1" style="width:100%">
+                                        <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                            <tr>
+
+                                                <th style="width:1px;color: white;text-align:center">Select</th>
+                                                <th style="width:80px;color: white;text-align:center">Sr No</th>
+                                                <th style="width:80px;color: white;text-align:center">Assess No</th>
+                                                <th style="width:80px;color: white;text-align:center">Work Year</th>
+                                                <th style="width:80px;color: white;text-align:center">Account Head</th>
+                                                <th style="width:80px;color: white;text-align:center">Container No</th>
+                                                <th style="width:80px;color: white;text-align:center">Vehicle No</th>
+                                                <th style="width:80px;color: white;text-align:center">From Location</th>
+                                                <th style="width:80px;color: white;text-align:center">To Location</th>
+                                                <th style="width:80px;color: white;text-align:center">Transporter</th>
+                                                <th style="width:80px;color: white;text-align:center">Invoice Remarks</th>
+                                                <th class="hiderow" style="width:10px;color: white;text-align:center">#</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-success" onclick="Update()" title="Update" id="Update"><b>Update</b></button>
+                                            <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="cleartextboxes();" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        debugger;
+        WorkYear();
+    });
+</script>
+<script>
+    //get details in text box
+    function WorkYear() {
+        debugger;
+        data = JSON.stringify();
+        $.ajax({
+            type: 'GET',
+            url: '/ModifyModule/WorkYearMaster',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+
+                $('#txtworkyear').val(data[0].WorkYear);
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+<script>
+    //get details in text box
+    function Fetch1() {
+        debugger;
+
+        debugger;
+        var InvoiceNo = document.getElementById('txtinvoiceno').value;
+        var WorkYear = document.getElementById('txtworkyear').value;
+
+        var data1 = { 'InvoiceNo': InvoiceNo, 'WorkYear': WorkYear };
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetOtherMainDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (data == "") {
+                    alert("No data found")
+                    return false;
+                }
+                $('#txtcustomer').val(data[0].PartyName);
+                $('#txtcargodesc').val(data[0].cargodesc);
+                $('#txtindate').val(data[0].isack);
+                $('#txtlock').val(data[0].isinvlocked);
+                $('#txtcancel').val(data[0].Iscancel);
+
+                var ACK = data[0].isack;
+                var INV = data[0].isinvlocked;
+                var Can = data[0].Iscancel;
+                if (ACK == 1) {
+                    alert("ACK done cannot modify");
+                    cleartextboxes();
+                }
+                //else if (INV == 1) {
+                //    alert("invoice locked cannot modify");
+                //    cleartextboxes();
+                //}
+                else if (Can == 1) {
+                    alert("Invoice cancelled cannot modify");
+                    cleartextboxes();
+                }
+
+                else {
+                    Fetch();
+                }
+
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+      var EquipmentL = [];
+
+    EquipmentLs = @Html.Raw(Json.Encode(@ViewBag.Location));
+    EquipmentL = JSON.parse(EquipmentLs);
+
+
+</script>
+
+<script type="text/javascript">
+    var ItemData = [];
+    //$(document).ready(function () {
+    //    Fetch();
+    //});
+
+    function Fetch() {
+        debugger;
+        var InvoiceNo = document.getElementById('txtinvoiceno').value;
+        var WorkYear = document.getElementById('txtworkyear').value;
+
+        var data1 = { 'InvoiceNo': InvoiceNo, 'WorkYear': WorkYear };
+
+        data = JSON.stringify(data1);
+        //  alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GETOTHERMODIFYDETAILS',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                ItemData = data;
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+
+                    return;
+                }
+
+                $('#example1').dataTable({
+
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+
+                        {
+
+                            "data": "Series",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  check value="' + row.Series + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "Series" },
+                        { "data": "AssessNo" },
+                        { "data": "WorkYear" },
+                        { "data": "AccountName" },
+
+
+                        {
+                            "data": "ContainerNo",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:200px\" id=\"txtcontainerno_" + row.Series + "\" value=\"" + row.ContainerNo + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "VehicleNo",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:200px\" id=\"VehicleNo_" + row.Series + "\" value=\"" + row.VehicleNo + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        //end
+
+
+                        {
+                            "data": "FromID",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<select  class="form-control" id="FromID_' + row.Series + '"  style="width:180px">'
+                                for (j = 0; j < EquipmentL.length; j++) {
+                                    if (row.FromID == EquipmentL[j].LocationID) {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '" selected> ' + EquipmentL[j].Location + '</option>'
+                                    } else {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '"> ' + EquipmentL[j].Location + '</option>'
+                                    }
+
+                                }
+
+                                data += '</selected>';
+                                return data;
+
+                            }
+
+                        },
+
+                        {
+                            "data": "ToID",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<select  class="form-control" id="ToID_' + row.Series + '"  style="width:180px">'
+                                for (j = 0; j < EquipmentL.length; j++) {
+                                    if (row.ToID == EquipmentL[j].LocationID) {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '" selected> ' + EquipmentL[j].Location + '</option>'
+                                    } else {
+                                        data += '<option value="' + EquipmentL[j].LocationID + '"> ' + EquipmentL[j].Location + '</option>'
+                                    }
+
+                                }
+
+                                data += '</selected>';
+                                return data;
+
+                            }
+
+                        },
+                        { "data": "TransName" },
+
+                        {
+                            "data": "narration",
+                            "render": function (data, type, row, meta) {
+                                data = "<input class=\"form-control\" style=\"width:800px\" id=\"txtnarration_" + row.Series + "\" value=\"" + row.narration + "\"  autocomplete=\"off\"/>";
+                                return data;
+                            }
+                        },
+                        { "data": "C2", "className": "hiderow" }
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
+
+
+
+<script>
+    function Update() {
+        debugger;
+        $("#tracker-loader").fadeIn("slow");
+        var Remarks = $("#txtremarks").val();
+        var CargoDesc = $("#txtcargodesc").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+        var r = confirm("Are you sure to update invoice details?");
+        if (r == true) {
+
+
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+
+                        var Series = row.cells[1].innerText;
+
+                        // insert with checked condition and declare all details
+                        if (Series == checkboxarray[k]) {// take any unique or distinct value as in sp check boxs
+                            row = table.rows[i];
+                            var isValid = true;
+
+                            Series = row.cells[1].innerText;
+                            AssessNo = row.cells[2].innerText;
+                            WorkYear = row.cells[3].innerText;
+                            C2 = row.cells[11].innerText;
+
+
+                            ContainerNo = $("#txtcontainerno_" + (k + 1)).val();
+
+                            if (ContainerNo == 0) {
+                                isValid = isValid && false;
+                                $("#txtcontainerno_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#txtcontainerno_").removeClass("is-invalid state-invalid");
+                            }
+
+                            VehicleNo = $("#VehicleNo_" + (k + 1)).val();
+                            if (VehicleNo == "") {
+                                isValid = isValid && false;
+                                $("#VehicleNo_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#VehicleNo_").removeClass("is-invalid state-invalid");
+                            }
+
+
+                            FromID = $("#FromID_" + (k + 1)).val();
+                            ToID = $("#ToID_" + (k + 1)).val();
+
+                            narration = $("#txtnarration_" + (k + 1)).val();
+
+                            if (narration == 0) {
+                                isValid = isValid && false;
+                                $("#txtnarration_").addClass("is-invalid state-invalid");
+                            } else {
+                                $("#txtnarration_").removeClass("is-invalid state-invalid");
+                            }
+
+                            if (isValid == false) {
+                                alert("Please fill all required field");
+                                $("#global-loader").fadeOut("slow");
+                                return;
+                            }
+                            tablearray.push({
+                                'AssessNo': AssessNo, 'WorkYear': WorkYear, 'ContainerNo': ContainerNo,
+                                'VehicleNo': VehicleNo, 'FromID': FromID, 'ToID': ToID, 'narration': narration, 'C2': C2
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+
+        }
+        var data1 = {
+            'Debitdata': tablearray, 'Remarks': Remarks, 'CargoDesc': CargoDesc
+        };
+        if (tablearray.length == 0) {
+            alert("Please select record for update");
+            return false;
+        }
+               var data = JSON.stringify(data1);
+              alert(data);
+                  $.ajax({
+                      url: "/ModifyModule/UpdateOtherInvoicedetails",
+               data: data,
+            type: "POST",
+     contentType: "application/json; charset=utf-8",
+        dataType: "json",
+             success: function (response) {
+
+                $("#global-loader").fadeOut("slow");
+
+                 {
+                     alert(response);
+                    document.location = '@Url.Action("ModifyOthersInvoice", "ModifyModule")';
+                }
+
+            },
+           error: function (errormessage) {
+                       alert(errormessage.responseText);
+                            }
+           });
+    }//end of main called function
+
+
+
+</script>
+
+<script type="text/javascript">
+
+
+    function cleartextboxes() {
+        //clear text box and dropdownlist
+                         document.location = '@Url.Action("ModifyOthersInvoice", "ModifyModule")';
+    }
+</script>
+
+
+
+@*<script>
+        $(document).ready(function () {
+
+
+            $("#Update").click(function () {
+                debugger;
+                var aData = [];
+                $("#example1 tbody tr").each(function () {
+                    var currentRow = $(this);
+
+                    var col1d = currentRow.find("td:eq(1)").text();
+                    var col2d = currentRow.find("td:eq(2)").text();
+                    var col3d = currentRow.find("td:eq(3)").text();
+                    var col4d = currentRow.find("td:eq(5)").text();
+                    var col5d = currentRow.find("td:eq(6)").text();
+
+                    var obj = {};
+                    obj.col1 = col1d;
+                    obj.col2 = col2d;
+                    obj.col3 = col3d;
+                    obj.col4 = col4d;
+                    obj.col5 = col5d;
+
+                    if (currentRow.find(".checklist").is(":checked")) {
+                        aData.push(obj);
+                    }
+
+
+                });
+                var data = { 'Data': aData }
+                console.log(data);
+            });
+        });
+    </script>*@

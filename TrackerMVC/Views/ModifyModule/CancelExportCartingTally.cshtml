@@ -1,0 +1,319 @@
+﻿
+@{
+    ViewBag.Title = "Cancel Export Carting Tally";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+
+<style>
+    .hiderow {
+        display: none;
+    }
+</style>
+
+<style>
+    .table thead th, .text-wrap table thead th {
+        background-color: #9f78ff;
+        color: white;
+        text-align: center;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        color: black;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+        text-align: center;
+    }
+</style>
+
+<div class="page-header">
+    <h4 class="page-title">Cancel Export Carting Tally</h4>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-lg-3 col-sm-8">
+                        <div class="form-group">
+                            <label class="form-label">SB No.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtsbno", null, new { @class = "form-control ", @id = "txtsbno", Placeholder = "SB No", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-1 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-primary" type="button" name="Add" onclick="fetch(); "><i class="fa fa-check"></i></button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Agency Name</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.DropDownList("ddlcustomer", (IEnumerable<SelectListItem>)ViewBag.CustomerList, "--Select--", new { @class = "form-control", @id = "ddlcustomer", name = "ddlcustomer", autocomplete = "off", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <div>
+                            @*<label class="form-label">Details </label>*@
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                                    <tr>
+
+                                        <th style="width:1px;color: white;text-align:center">Select</th>
+                                        <th style="width:1px;color: white;text-align:center">Sr No</th>
+                                        <th style="width:80px;color: white;text-align:center">CartingID</th>
+                                        <th style="width:80px;color: white;text-align:center">Carting Date</th>
+                                        <th style="width:80px;color: white;text-align:center">Vehicle No.</th>
+                                        <th style="width:80px;color: white;text-align:center">Carting Qty</th>
+                                        <th style="width:1px;color: white;text-align:center">SB No</th>
+                                        <th class="hiderow" style="width:1px;color: white;text-align:center">Sr No</th>
+
+
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">Cancel Remarks</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @Html.TextBox("txtremarks", null, new { @class = "form-control ", @id = "txtremarks", autocomplete = "off", Placeholder = "Remarks" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" style="visibility:hidden">.</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    <button class="btn btn-danger " type="button" id="savedetails" onclick="Update();">Cancel</button>
+                                    <button type="button" class="btn btn-icon btn-gray" name="clearProfile" title="clear" id="btnclearValue">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function Update() {
+        debugger;
+        
+        var Remarks = $("#txtremarks").val();
+        var isValid = true;
+
+
+
+        if (Remarks == "") {
+            isValid = isValid && false;
+            $("#txtremarks").addClass("is-invalid state-invalid");
+        } else {
+            $("#txtremarks").removeClass("is-invalid state-invalid");
+        }
+
+        if (isValid == false) {
+            alert("Please enter remarks");
+            $("#tracker-loader").fadeOut("slow");
+            return;
+        }
+
+
+        var r = confirm("Are you sure want to cancel ?");
+        if (r == true) {
+            $("#tracker-loader").fadeIn("slow");
+
+                var checkboxarray = [];
+                $('input[type=checkbox]').each(function () {
+                    if (this.checked) {
+                        checkboxarray.push($(this).val());
+                    }
+                });
+                //selected values will go in this tablearray
+                var tablearray = [];
+                var table = document.getElementById("example1");
+                var row;
+                for (var i = 1; i < table.rows.length; i++) {
+                    row = table.rows[i];
+                    for (var k = 0; k < checkboxarray.length; k++) {
+
+                        //insert rows with which values has to pick
+                        var Cancel = row.cells[1].innerText;
+                        //var ContainerNo = row.cells[3].innerText;
+
+
+                        // insert with checked condition and declare all details
+                        if (Cancel == checkboxarray[k]) {
+                            row = table.rows[i];
+                            SrNo = row.cells[7].innerText;
+                            CartingID = row.cells[2].innerText;
+                            VehicleNo = row.cells[4].innerText;
+                            SBNo = row.cells[6].innerText;
+                            
+                            tablearray.push({
+                                'SrNo': SrNo, 'CartingID': CartingID, 'VehicleNo': VehicleNo, 'SBNo': SBNo
+                            })
+                        }//
+                    }//end k loop
+                }//end i loops
+
+            var data1 = {
+                'Debitdata': tablearray, 'Remarks': Remarks
+            };
+            var data = JSON.stringify(data1);
+            alert(data);
+            $.ajax({
+                url: "/ModifyModule/CancelCartingTally",
+                data: data,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("CancelExportCartingTally", "modifymodule")';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }//end of main called function
+    }
+    //Check Checkbox selected count
+
+</script>
+
+
+<script>
+    
+    function Fetching() {
+        debugger;
+        var SBNo = $("#txtsbno").val().trim();
+         alert(SBNo);
+        var data1 = { 'SBNo': SBNo };
+
+        data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/GetCartingTallyGridCancel',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+
+                if (data == "0" || data == "[]" || data == "") {
+                    alert('No record found.');
+                    return;
+                }
+
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    "bFilter": true,
+                    "paging": false,
+                    "order": false,
+                    "aaData": data,
+                    "columns": [
+                        //Declare Entity Name
+                        {
+
+                            "data": "Cancel",
+                            "render": function (data, type, row, meta) {
+
+                                data = '<input type=\"checkbox\" name=\"checklist[]\" class=\"checklist\" id=\"checklist\"  checked value="' + row.Cancel + '">';
+                                return data;
+
+                            }
+                        },
+                        { "data": "Cancel" },
+                        { "data": "CartingID" },
+                        { "data": "EntryDate" },
+                        { "data": "VehicleNo" },
+                        { "data": "DeclQty" },
+                        { "data": "SBNo" },
+                        { "data": "SrNo", "className": "hiderow" }
+
+                    ]
+                });
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+
+<script>
+
+    function fetch() {
+        debugger;
+
+        var Sbno = $("#txtsbno").val().trim();
+        var data1 = { "Sbno": Sbno };
+        var data = JSON.stringify(data1);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/FetchSBDetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $('#ddlcustomer').val(data[0].AGID);
+                Fetching();
+               
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+      
+    }
+   
+</script>

@@ -1,0 +1,35 @@
+public List<EN.ContainerDetails> GetTEUSCalculation(string TrainNo)
+        {
+            List<EN.ContainerDetails> PortsDL = new List<EN.ContainerDetails>();
+            DataTable PortsDT = new DataTable();
+            PortsDT = TrackerManager.GetTEUSCalculation(TrainNo);
+            if (PortsDT != null)
+            {
+                foreach (DataRow row in PortsDT.Rows)
+                {
+                    EN.ContainerDetails PortsList = new EN.ContainerDetails();
+                    PortsList.Message = Convert.ToString(row["validations"]);
+                    
+                    PortsDL.Add(PortsList);
+                }
+            }
+            return PortsDL;
+        }
+
+        public List<EN.ContainerDetails> CheckDuplicateContainer(string ContainerNo)
+        {
+            List<EN.ContainerDetails> PortsDL = new List<EN.ContainerDetails>();
+            DataTable PortsDT = new DataTable();
+            PortsDT = TrackerManager.CheckDuplicateContainer(ContainerNo);
+            if (PortsDT != null)
+            {
+                foreach (DataRow row in PortsDT.Rows)
+                {
+                    EN.ContainerDetails PortsList = new EN.ContainerDetails();
+                    PortsList.Message = Convert.ToString(row["alert"]);
+
+                    PortsDL.Add(PortsList);
+                }
+            }
+            return PortsDL;
+        }

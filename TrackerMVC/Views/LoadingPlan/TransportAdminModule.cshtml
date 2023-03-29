@@ -1,0 +1,1036 @@
+﻿
+@{
+    ViewBag.Title = "Transport Admin Module";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<script src="~/js/GetTableJson.js"></script>
+
+<div class="content-area overflow-hidden" id="divDriver">
+   
+        <div class="page-header">
+            <h4 class="page-title">Transport Admin Module</h4>
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="row gutters-xs">
+                    <div class="col">
+                        <button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummary();"><i class="fa fa-file-text"></i></button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Voucher No</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="txtVoucherno" type="text" class="form-control" placeholder="Voucher No" style="text-transform:uppercase" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label"> IN/OUT</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlInOutSearch", new List<SelectListItem>
+                                                         { new SelectListItem { Text = "--Select--", Value = ""},
+                                                           new SelectListItem { Text = "I", Value = "I"},
+                                                           new SelectListItem { Text = "O", Value = "O"},
+                                                           new SelectListItem { Text = "E", Value = "E"},
+                                                           }, new { @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="visibility:hidden">.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <button class="btn btn-primary" style="width:60PX" id="btnSearch" type="button" onclick="showContainerList()"><i class="fe fe-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12" style="margin-left:-130px;">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Voucher Date</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input id="TxtVoucherDate" type="text" class="form-control" placeholder="Voucher Date" style="text-transform:uppercase" disabled />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Trailer No.</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTrailerno", null, new { @class = "form-control", @id = "txtTrailerno", @name = "txtTrailerno", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Driver Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtDrivername", null, new { @class = "form-control", @id = "txtDrivername", @name = "txtDrivername", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Transporter</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTransporter", null, new { @class = "form-control", @id = "txtTransporter", @name = "txtTransporter", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">From Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtFromLocation", null, new { @class = "form-control", @id = "txtFromLocation", @name = "txtFromLocation", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">To Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtTolocation", null, new { @class = "form-control", @id = "txtTolocation", @name = "txtTolocation", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Slip Number</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtSlipnumber", null, new { @class = "form-control", @id = "txtSlipnumber", @name = "txtSlipnumber", autocomplete = "off", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="divfuel">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Fuel</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtFuel", null, new { @class = "form-control", @id = "txtFuel", @name = "txtFuel", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Adj Fuel</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtadjFuel", null, new { @class = "form-control", @id = "txtadjFuel", @name = "txtadjFuel", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Amount(Cash)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtamountcash", null, new { @class = "form-control", @id = "txtamountcash", @name = "txtamountcash", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Fastag Amount</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("TxtFastagamount", null, new { @class = "form-control", @id = "TxtFastagamount", @name = "TxtFastagamount", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Amount(Bank)</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextBox("txtAmountbank", null, new { @class = "form-control", @id = "txtAmountbank", @name = "txtAmountbank", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                       
+                        <div class="row" id="divLoction">
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">From Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("DDlFromLocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "DDlFromLocation", name = "DDlFromLocation", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">To Location</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlTolocation", (IEnumerable<SelectListItem>)ViewBag.Location, "--Select--", new { @class = "form-control", @id = "ddlTolocation", name = "ddlTolocation", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Activity</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlActivity", (IEnumerable<SelectListItem>)ViewBag.Activity, "--Select--", new { @class = "form-control", @id = "ddlActivity", name = "ddlActivity", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Driver Name</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("ddlDriver", (IEnumerable<SelectListItem>)ViewBag.Drivers, "--Select--", new { @class = "form-control", @id = "ddlDriver", name = "ddlDriver", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Size</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.DropDownList("containerCount", (IEnumerable<SelectListItem>)ViewBag.MovCount, "--Select--", new { @class = "form-control", @id = "containerCount", name = "containerCount", autocomplete = "off" })
+                                            
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      
+                        <div class="row" id="divUpdateRemarks">
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="table-responsive">
+                                    <label class="form-label mandatory" style="visibility:hidden">Remarks</label>
+                                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblcontainerdetas">
+                                        <thead>
+                                            <tr>
+                                                <th class="wd-15p sorting" style="width:5px">Sr No.</th>
+                                                <th class="wd-15p sorting">Container no</th>
+                                                <th class="wd-15p sorting" style="width:5px">Size</th>
+                                                <th class="wd-15p sorting" style="width:5px">Autoid</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextArea("txtUpdateRemarks", null, new { @class = "form-control", @id = "txtUpdateRemarks", @name = "txtUpdateRemarks", autocomplete = "off", @rows = "4" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divcancelremakrs" style="display:none">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label mandatory">Cancel Remarks</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            @Html.TextArea("txtCancelRemarks", null, new { @class = "form-control", @id = "txtCancelRemarks", @name = "txtCancelRemarks", autocomplete = "off", @rows = "4" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-12">
+                                <button class="btn btn-success btn-xs" id="btnSaveDriver" onclick="UpdateVoucherDetails();">Save</button>
+                                <button class="btn btn-danger btn-xs" id="divcancel" onclick="Cancel();">Cancel</button>
+                                <button class="btn btn-danger btn-xs" id="divcancelvouhcer" onclick="CancelVoucherDetails();" style="display:none">Cancel</button>
+                                <button class="btn btn-info btn-xs" id="btnCancelVoucher" onclick="ISfuelPrint();">Reprint Fuel</button>
+                                <button class="btn btn-primary btn-xs" id="btnCancelVoucher" onclick="ISVoucherPrint();">Reprint Voucher</button>
+                                <button class="btn btn-secondary btn-xs" id="btnGenerateFuelSlip" onclick="GenerateFuelSlip();">Generate Fuel Slip</button>
+                                <button class="btn btn-warning btn-xs" id="btnGenerateVoucher" onclick="GenerateDriver();">Change Driver</button>
+                                <button class="btn btn-primary btn-xs" id="btnGenerateVoucher" onclick="ChangeSize();">Change Size</button>
+                                <button type="button" class="btn btn-icon btn-gray" onclick="Clear()" name="clearProfile" title="clear" id="clearValue"><i class="fa fa-undo"></i></button>
+
+                            </div>
+                        </div>
+                    </div>
+</div>
+            </div>
+        </div>
+</div>
+
+<div class=" content-area" id="divUpdatedTranspoter" style="display:none">
+    <div class="page-header">
+        <h4 class="page-title">Transport Admin Summary</h4>
+        <div class="ibox-content  text-right">
+            <a onclick="getBack();" class="btn btn-primary btn-success" style="color:white;align-content:center;"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Back"></i>  </a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">From Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("FromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-1).ToString("dd MMM yyyy 08:00") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label"> To Date</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                @Html.TextBox("ToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy 07:59") })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" style="visibility:hidden">.</label>
+                                        <div class="row gutters-xs">
+                                            <div class="col">
+                                                <input type="button" id="btnShow" value="Show" class="btn btn-primary" onclick="ShowModifiedData()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelTransport", null, new { @class = "btn btn-primary btn-md" })
+
+                    <div class="row">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tblcontainerdetas').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "paging": false,
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function showContainerList() {
+
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        var VoucherNo = document.getElementById('txtVoucherno').value;
+        var ActivityType = document.getElementById('ddlInOutSearch').value;
+
+        var data1 = { 'VoucherNo': VoucherNo.trim(), 'ActivityType': ActivityType};
+        var data = JSON.stringify(data1);
+
+
+
+
+        $.ajax({
+            url: "/LoadingPlan/AjaxGetVoucherEditDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (data) {
+
+              
+                $("#txtTrailerno").val(data[0].TrailerNo);
+                $("#txtDrivername").val(data[0].Drivername)
+                $("#txtTransporter").val(data[0].Transpoter)
+                $("#txtSlipnumber").val(data[0].SlipNo);
+                $("#txtFromLocation").val(data[0].FromLocation);
+                $("#txtTolocation").val(data[0].ToLocation);
+                $("#ddlTOlocation").val(data[0].LocationID);
+                $("#txtFuel").val(data[0].Fuel);
+                $("#txtAmountbank").val(data[0].AmountBank);
+                $("#txtamountcash").val(data[0].AmountCash);
+                $("#txtUpdateRemarks").val(data[0].remarks);
+                $("#ddlDriver").val(data[0].Driverid);
+                $("#DDlFromLocation").val(data[0].FromLocationIDd);
+                $("#ddlTolocation").val(data[0].TOLocationIDd);
+                $("#ddlActivity").val(data[0].ActivityAutoid);
+                $("#TxtFastagamount").val(data[0].Fastagamount);
+                $("#txtadjFuel").val(data[0].AdjustmentsFuel);
+                $("#containerCount").val(data[0].Count);
+                $("#TxtVoucherDate").val(data[0].VoucherDate);
+                GetContainerdetails(VoucherNo, ActivityType);
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+
+    }
+
+
+
+    function UpdateVoucherDetails() {
+        var res = validateUpdate();
+        if (res == false) {
+            return false;
+        }
+        var Fuel = document.getElementById('txtFuel').value;
+        var AountBank = document.getElementById('txtAmountbank').value;
+        var AmountCash = document.getElementById('txtamountcash').value;
+        var VoucherNo = document.getElementById('txtVoucherno').value;
+        var ActivityType = document.getElementById('ddlInOutSearch').value;
+        var Fuelslipvali = document.getElementById('txtSlipnumber').value;
+        var Remarks = document.getElementById('txtUpdateRemarks').value;
+        var fromlocationID = document.getElementById('DDlFromLocation').value;
+        var ToLocationID = document.getElementById('ddlTolocation').value;
+        var ActivityID = document.getElementById('ddlActivity').value;
+        var FastagAmount = document.getElementById('TxtFastagamount').value;
+        var adjFuel = document.getElementById('txtadjFuel').value;
+        //if (Fuelslipvali == "") {
+        //    alert("Slip Number is missing cannot modified!")
+        //    return false;
+        //}
+
+
+
+        var table1 = $('#tblcontainerdetas').DataTable();
+
+        if (table1.rows().count() > 0) {
+
+            var tablearray = [];
+            var table = document.getElementById("tblcontainerdetas");
+            var row;
+            for (var i = 1; i < table.rows.length; i++) {
+
+                row = table.rows[i];
+                ContainerNo = row.cells[1].childNodes[0].value;
+                AutoID = row.cells[3].innerText;
+                if (ContainerNo != "") {
+                    tablearray.push({ 'ContainerNo': ContainerNo, 'AutoID': AutoID })
+                }
+            }
+        }
+
+        var data1 = {
+            'VoucherNo': VoucherNo, 'Fuel': Fuel, 'AountBank': AountBank, 'AmountCash': AmountCash, 'ActivityType': ActivityType, 'Remarks': Remarks,
+            'fromlocationID': fromlocationID, 'ToLocationID': ToLocationID, 'ActivityID': ActivityID,
+            'FastagAmount': FastagAmount, 'adjFuel': adjFuel, 'Containerdetails': tablearray
+        };
+        var data = JSON.stringify(data1);
+ 
+       
+        $.ajax({
+            url: "/LoadingPlan/AjaxUpdateVoucherDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+    }
+
+    function Cancel() {
+        $("#divfuel").hide();
+        $("#divamountcash").hide();
+        $("#divamountbank").hide();
+        $("#divLoction").hide();
+        $("#divcancelremakrs").show();
+        $("#divcancelvouhcer").show();
+        $("#divcancel").hide();
+        $("#divINOUT").hide();
+        $("#divUpdateRemarks").hide();
+    }
+
+    function CancelVoucherDetails() {
+
+        var res = validateCancel();
+        if (res == false) {
+            return false;
+        }
+        var VoucherNo = document.getElementById('txtVoucherno').value;
+        var CancelRemarks = document.getElementById('txtCancelRemarks').value;
+
+        var data1 = { 'VoucherNo': VoucherNo.trim(), 'CancelRemarks': CancelRemarks};
+        var data = JSON.stringify(data1);
+      //  alert(data);
+        $.ajax({
+            url: "/LoadingPlan/AjaxCancelVoucherDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+
+    }
+
+    function Clear() {
+        document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+    }
+
+
+    function ISfuelPrint() {
+             var res = validateUpdate();
+        if (res == false) {
+            return false;
+        }
+
+        var VoucherNo = document.getElementById('txtVoucherno').value;
+        var ActivityType = document.getElementById('ddlInOutSearch').value;
+        var Remarks = document.getElementById('txtUpdateRemarks').value;
+        var data1 = { 'VoucherNo': VoucherNo,  'ActivityType': ActivityType, 'Remarks': Remarks}
+        var data = JSON.stringify(data1);
+      // alert(data);
+
+        $.ajax({
+            url: "/LoadingPlan/ISprintSave",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+    }
+
+
+
+
+    function ISVoucherPrint() {
+             var res = validateUpdate();
+        if (res == false) {
+            return false;
+        }
+
+        var VoucherNo = document.getElementById('txtVoucherno').value;
+        var ActivityType = document.getElementById('ddlInOutSearch').value;
+        var Remarks = document.getElementById('txtUpdateRemarks').value;
+        var data1 = { 'VoucherNo': VoucherNo,  'ActivityType': ActivityType, 'Remarks': Remarks}
+        var data = JSON.stringify(data1);
+      // alert(data);
+
+        $.ajax({
+            url: "/LoadingPlan/ISprintVoucherSave",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                alert(data);
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+        document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+    }
+</script>
+<script>
+    function ViewSummary() {
+        $("#divDriver").hide();
+        $("#divUpdatedTranspoter").show();
+    }
+    function getBack() {
+        $("#divDriver").show();
+        $("#divUpdatedTranspoter").hide();
+    }
+
+    function ShowModifiedData() {
+     $("#tracker-loader").fadeIn("slow");
+            var FromDate = $("#FromDate").val();
+            var ToDate = $("#ToDate").val();
+
+        data1 = {'FromDate': FromDate, 'ToDate': ToDate };
+            data = JSON.stringify(data1);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/LoadingPlan/AjaxGetupdatedVoucherDetails',
+            data: data,
+            // data: "",
+            contentType: "application/json; charset=utf-8",
+           dataType: "json",
+            async: true,
+            success: function (data) {
+                $("#example1").empty();
+            RepTableDataJson($("#example1"), data, "Transport Admin Module", "TransportAdmin_List");
+            $("#tracker-loader").fadeOut("slow");
+        },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            $("#tracker-loader").fadeOut("slow");
+        }
+    });
+}
+</script>
+
+
+<script>
+    function validate() {
+
+        var txtVoucherno = document.getElementById('txtVoucherno').value;
+       var txtActivityType = document.getElementById('ddlInOutSearch').value;
+        document.getElementById("txtVoucherno").style.borderColor = "gainsboro";
+        var blResult = Boolean;
+        blResult = true;
+        if (txtVoucherno == "") {
+
+            document.getElementById("txtVoucherno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (txtActivityType == "") {
+
+            document.getElementById("ddlInOutSearch").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+    function validateUpdate() {
+
+        var txtVoucherno = document.getElementById('txtVoucherno').value;
+        var txtActivityType = document.getElementById('txtUpdateRemarks').value;
+        document.getElementById("txtVoucherno").style.borderColor = "gainsboro";
+        document.getElementById("txtUpdateRemarks").style.borderColor = "gainsboro";
+        var blResult = Boolean;
+        blResult = true;
+        if (txtVoucherno == "") {
+
+            document.getElementById("txtVoucherno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (txtActivityType == "") {
+
+            document.getElementById("txtUpdateRemarks").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+
+    function validateCancel() {
+
+        var txtVoucherno1 = document.getElementById('txtVoucherno').value;
+        var cancelremakrs = document.getElementById('txtCancelRemarks').value;
+        document.getElementById("txtVoucherno").style.borderColor = "gainsboro";
+        document.getElementById("txtCancelRemarks").style.borderColor = "gainsboro";
+        var blResult = Boolean;
+        blResult = true;
+        if (txtVoucherno1 == "") {
+
+            document.getElementById("txtVoucherno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (cancelremakrs == "") {
+
+            document.getElementById("txtCancelRemarks").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+
+
+    function validateGenerateFuelSLip() {
+
+        var txtVoucherno = document.getElementById('txtVoucherno').value;
+        var txtActivityType = document.getElementById('ddlInOutSearch').value;
+        var tztFuelValidate = document.getElementById('txtFuel').value;
+        var txtamountvalidate = document.getElementById('txtAmountbank').value;
+        document.getElementById("txtVoucherno").style.borderColor = "gainsboro";
+        document.getElementById("ddlInOutSearch").style.borderColor = "gainsboro";
+        document.getElementById("txtFuel").style.borderColor = "gainsboro";
+        document.getElementById("txtAmountbank").style.borderColor = "gainsboro";
+        var blResult = Boolean;
+        blResult = true;
+        if (txtVoucherno == "") {
+
+            document.getElementById("txtVoucherno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (txtActivityType == "") {
+
+            document.getElementById("ddlInOutSearch").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (tztFuelValidate == "") {
+
+            document.getElementById("txtFuel").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (txtamountvalidate == "") {
+
+            document.getElementById("txtAmountbank").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+
+
+    function validateChangeDriver() {
+
+        var txtVoucherno = document.getElementById('txtVoucherno').value;
+        var txtActivityType = document.getElementById('ddlInOutSearch').value;
+        var TxtDrivertype = document.getElementById('ddlDriver').value;
+    
+        document.getElementById("txtVoucherno").style.borderColor = "gainsboro";
+        document.getElementById("ddlInOutSearch").style.borderColor = "gainsboro";
+        document.getElementById("ddlDriver").style.borderColor = "gainsboro";
+      
+        var blResult = Boolean;
+        blResult = true;
+        if (txtVoucherno == "") {
+
+            document.getElementById("txtVoucherno").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (txtActivityType == "") {
+
+            document.getElementById("ddlInOutSearch").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+        if (TxtDrivertype == "") {
+
+            document.getElementById("ddlDriver").style.borderColor = "red";
+            blResult = blResult && false;
+        }
+
+        if (blResult == false) { alert('Please fill the required fields!'); }
+        return blResult;
+
+    };
+</script>
+
+
+<script>
+    function GenerateFuelSlip() {
+        var res = validateGenerateFuelSLip();
+        if (res == false) {
+            return false;
+        }
+        $("#tracker-loader").fadeIn("slow");
+        var TextFuel = document.getElementById('txtFuel').value;
+        var TextAountBank = document.getElementById('txtAmountbank').value;
+        var TextAmountCash = document.getElementById('txtamountcash').value;
+        var TextVoucherNo = document.getElementById('txtVoucherno').value;
+        var TextActivityType = document.getElementById('ddlInOutSearch').value;
+        var TextFuelslipvali = document.getElementById('txtSlipnumber').value;
+        var TextRemarks = document.getElementById('txtUpdateRemarks').value;
+        var TextTolocation = document.getElementById('DDlFromLocation').value;
+        var TextFromLocation = document.getElementById('ddlTolocation').value;
+        var TextDriverName = document.getElementById('ddlDriver').value;
+        var Transporter = document.getElementById('txtTransporter').value;
+
+        if (TextFuel > 0 && TextFuelslipvali == "") {
+            var data1 = {
+                'Fuel': TextFuel, 'AountBank': TextAountBank, 'AmountCash': TextAmountCash, 'VoucherNo': TextVoucherNo,
+                'ActivityType': TextActivityType, 'Fuelslipvali': TextFuelslipvali, 'Remarks': TextRemarks, 'Tolocation': TextTolocation,
+                'FromLocation': TextFromLocation, 'DriverName': TextDriverName, 'Transporter': Transporter
+            }
+            var data = JSON.stringify(data1);
+
+            $.ajax({
+                type: 'POST',
+                url: '/LoadingPlan/GenerateFuelSlip',
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+        }
+        else {
+            alert("Please fill correct details!")
+        }
+
+      
+        
+    }
+
+
+    function GenerateDriver() {
+      
+        var res = validateChangeDriver();
+            if (res == false) {
+                return false;
+            }
+        $("#tracker-loader").fadeIn("slow");
+        var TextFuel = document.getElementById('txtFuel').value;
+        var TextAountBank = document.getElementById('txtAmountbank').value;
+        var TextAmountCash = document.getElementById('txtamountcash').value;
+        var TextVoucherNo = document.getElementById('txtVoucherno').value;
+        var TextActivityType = document.getElementById('ddlInOutSearch').value;
+        var TextFuelslipvali = document.getElementById('txtSlipnumber').value;
+        var TextRemarks = document.getElementById('txtUpdateRemarks').value;
+        var TextTolocation = $("#DDlFromLocation").val();
+        var TextFromLocation = $("#ddlTolocation").val();
+        var TextDriverName = $("#ddlDriver option:selected").val();
+     
+
+        var data1 = {
+            'Fuel': TextFuel, 'AountBank': TextAountBank, 'AmountCash': TextAmountCash, 'VoucherNo': TextVoucherNo,
+            'ActivityType': TextActivityType, 'Fuelslipvali': TextFuelslipvali, 'Remarks': TextRemarks, 'Tolocation': TextTolocation,
+            'FromLocation': TextFromLocation, 'DriverName': TextDriverName
+        }
+        var data = JSON.stringify(data1);
+       
+        $.ajax({
+            type: 'POST',
+            url: '/LoadingPlan/ChangeDriver',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                  alert(data);
+                    document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+    function ChangeSize() {
+      
+       
+        $("#tracker-loader").fadeIn("slow");
+        
+         var InOutSearch = document.getElementById('ddlInOutSearch').value;
+        var TextVoucherNo = document.getElementById('txtVoucherno').value;
+         var containerCount = document.getElementById('containerCount').value;
+     
+
+        var data1 = {
+             'VoucherNo': TextVoucherNo,
+            'ActivityType': InOutSearch, 'containerCount': containerCount 
+        }
+        var data = JSON.stringify(data1);
+       
+        $.ajax({
+            type: 'POST',
+            url: '/LoadingPlan/ChangeSize',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                  alert(data);
+                    document.location = '@Url.Action("TransportAdminModule", "LoadingPlan")';
+                $("#tracker-loader").fadeOut("slow");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function GetContainerdetails(VoucherNo, ActivityType) {
+
+
+        var data1 = { 'VoucherNo': VoucherNo, 'ActivityType': ActivityType };
+        var data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/LoadingPlan/AjaxGetContainerdetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (data) {
+
+                if (data[0].ContainerNo == "") {
+
+                } else {
+                    $('#tblcontainerdetas').dataTable({
+                        "destroy": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        "bFilter": false,
+                        "paging": false,
+                        "bInfo": false,
+                        "aaData": data,
+                        "columns": [
+
+                            { "data": "SRNo" },
+                            {
+                                "data": "data",
+                                "render": function (data, type, row, meta) {
+
+                                    data = '<input type=\"text\" name=\"ContainerNo[]\" class=\" form-control ContainerNo\" id=\"ContainerNo\"  value="' + row.ContainerNo + '">';
+                                    return data;
+                                }
+                            },
+                            {
+                                "data": "data",
+                                "render": function (data, type, row, meta) {
+
+                                    data = '<input type=\"text\" name=\"ContainerNo[]\" class=\" form-control ContainerNo\" id=\"Size\"  value="' + row.Size + '">';
+                                    return data;
+                                }
+                            },
+
+                            
+                            { "data": "AutoID" },
+                        ],
+                    })
+                }
+
+
+
+
+
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>

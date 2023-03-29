@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewBag.Title = "Excess Amount Adjustment";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+<div class=" content-area overflow-hidden" id="divCreate">
+
+    <div class="page-header">
+        <h4 class="page-title">Excess Amount Adjustment</h4>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Receipt No.</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtreceipt", null, new { @class = "form-control ", @id = "txtreceipt", Placeholder = "Receipt No", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Amount</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtamount", null, new { @class = "form-control ", @id = "txtamount", Placeholder = "Amount", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @*<input type="submit" id="Save" name="save" value="Save" class="btn btn-success" />*@
+                                        <button id="btnSave" class="btn btn-success btn-xs" onclick="return Save();">Update</button>
+                                        @*<input type="button" name="clear" value="Clear" class="btn btn-default" title="clear" id="clearValue" />*@
+                                        <input type="button" name="clear" value="Clear" class="btn btn-outline-dark" title="clear" onclick="Clear();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Save() {
+        debugger;
+        var element = {};
+        element.ReceiptNo = $("#txtreceipt").val().trim();
+
+         element.Amount = $("#txtamount").val().trim();
+
+
+
+        if (element.ReceiptNo == "") {
+            document.getElementById('txtreceipt').style.borderColor = "red";
+            alert("Please Enter Receipt No. !")
+
+            return false;
+        }
+
+
+
+        if (element.Amount == "") {
+            document.getElementById('txtamount').style.borderColor = "red";
+            alert("Please Enter Amount !")
+
+            return false;
+        }
+
+
+        var data1 = { "Master": element };
+        var data = JSON.stringify(data1);
+     //   alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/ModifyModule/UpdateExcessAmt',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                alert(response.ResponseMessage);
+                Clear();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>
+
+<script>
+    function Clear() {
+    document.location = '@Url.Action("ExcessAmountAdjustment", "ModifyModule")';
+    }
+</script>
+

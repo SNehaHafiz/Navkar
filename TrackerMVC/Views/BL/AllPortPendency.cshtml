@@ -1,0 +1,157 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.PortPendancyEntities>
+
+@{
+    ViewBag.Title = "AllPortPendency";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/js/GetTableJson.js"></script>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">
+            Port Pendancy
+        </h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12 pull-right">
+                            <div class="form-group" style="padding-top:25px">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a onclick="portpendency();" class="btn btn-secondary" style="color:white;align-content:center;"><i class="fa fa-refresh" data-placement="bottom" title="Refresh"></i>  </a></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelPortPendency", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-hover tbl-cart text-nowrap" style="width:100%">
+                                    @*<thead>
+                                        <tr>
+                                            <th style="width:1px"></th>
+                                            <th style="width:7px">Vessel Name</th>
+                                            <th style="width:3px">Via No</th>
+                                            <th style="width:3px">ETA</th>
+                                            <th style="width:3px">AGING</th>
+                                            <th style="width:3px">TERMINAL</th>
+                                            <th style="width:3px">Discharge Date</th>
+                                            <th style="width:3px">HBL Number</th>
+                                            <th style="width:3px">BL Number</th>
+                                            <th style="width:3px">IGM No</th>
+                                            <th style="width:3px">Item No</th>
+                                            <th style="width:3px">BL Received Date</th>
+                                            <th style="width:3px">B/L Entry date</th>
+                                            <th style="width:3px">Shipping Line</th>
+                                            <th style="width:3px">Container No.</th>
+                                            <th style="width:3px">Size</th>
+                                            <th style="width:3px">Teus</th>
+                                            <th style="width:3px">Type</th>
+                                            <th style="width:3px">Importer Name</th>
+                                            <th style="width:3px">CHA Name</th>
+                                            <th style="width:3px">Haulage Type</th>
+                                            <th style="width:3px">Commodity</th>
+                                            <th style="width:3px">Mode Of Transport</th>
+                                            <th style="width:3px">Scan Type</th>
+                                            <th style="width:3px">Remarks</th>
+                                            <th style="width:3px">SMTP Date</th>
+                                            <th style="width:3px">Out Date From Port</th>
+                                            <th style="width:3px">In Transit</th>
+                                        </tr>
+                                    </thead>*@
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        portpendency()       
+    });
+</script>
+<script type="text/javascript">
+    function portpendency() {
+        $.ajax({
+            type: 'POST',
+            url: '/BL/PortPendency2',
+            //data: '{FromDate: ' + JSON.stringify(FromDate) + ', ToDate: ' + JSON.stringify(ToDate) + ',DeliveryType: ' + JSON.stringify(DeliveryType) + ',For: ' + JSON.stringify(For) + ',PortID: ' + JSON.stringify(PortID) + ',LineID: ' + JSON.stringify(LineID) + '}',
+            //data: JSON.stringify(formData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                debugger;
+                RepTableDataJson($('#example1'), data.ContainerData, 'Port Pendency', 'PortPendencyReport');
+
+                var TotTEUS1 = data.Issuedata.Total20;
+                var TotTEUS2 = data.Issuedata.Total40;
+                var TotTEUS3 = data.Issuedata.Total45;
+                var TotTEUS = 0;
+
+
+                TotTEUS = TotTEUS1 + TotTEUS2 * 2 + TotTEUS3 * 2
+                
+                $("#lbltwenty").text(TotTEUS1);
+                $("#lblforty").text(TotTEUS2);
+                $("#lblfortyfive").text(TotTEUS3);
+                $("#lblTotal").text(TotTEUS);
+
+                $("#divTEUS").show();
+                $("#divTEUS1").show();
+                $("#divTEUS2").show();
+                $("#divTEUS3").show();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>

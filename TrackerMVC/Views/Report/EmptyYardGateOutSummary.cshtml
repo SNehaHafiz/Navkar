@@ -1,0 +1,356 @@
+﻿
+@{
+    ViewBag.Title = "Empty Yard Gate Out Summary";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="tracker-loader"></div>
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">Empty Yard Gate Out Summary</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> From Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtFromDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.AddDays(-7).ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> To Date</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtToDate", null, new { @class = "form-control form_datetime1", @Value = DateTime.Now.ToString("dd MMM yyyy HH:mm") })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"> Search Criteria</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.DropDownList("ddlSearch", new List<SelectListItem>
+                                            { new SelectListItem { Text = "--Select--", Value = "0"},
+                                                new SelectListItem { Text = "ALL", Value = "ALL"},
+                                                new SelectListItem { Text = "Customer", Value = "Customer"},
+                                              new SelectListItem { Text = "Shipping Line", Value = "Shipping Line"},
+                                              }, new { @class = "form-control", autocomplete = "off", @id = "ddlSearch" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        @Html.TextBox("txtName", null, new { @class = "form-control", @id = "txtName", name = "txtName" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <input type="button" value="Show" class="btn btn-primary" onclick="Show()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ActionLink("Export To Excel", "ExportToExcelEmptyYardGateOutSummary", null, new { @class = "btn btn-primary btn-md" })
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr No.</th>
+                                            <th>gp no</th>
+                                            <th>Container No</th>
+                                            <th>Size</th>
+                                            <th>Container Type</th>
+                                            <th>ISO Code</th>
+                                            <th>tare weight</th>
+                                            <th>status type</th>
+                                            <th>In Date</th>
+                                            <th>Out Date</th>
+                                            <th>OUT Time</th>
+                                            <th>Dwell Days</th>
+                                            <th>SL Name</th>
+                                            <th>Trailer Name</th>
+                                            <th>Transporter</th>
+                                            <th>Location</th>
+                                            <th>Source</th>
+                                            <th>booking no</th>
+                                            <th>Seal No</th>
+                                            <th>Shipper Name</th>
+                                            <th>pod</th>
+                                            <th>Transport Mode</th>
+                                            <th>Train No</th>
+                                            <th>Remarks</th>
+
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-12">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover tbl-cart text-nowrap" id="reportTable" style="width:100%">
+                        <thead>
+
+                        </thead>
+                        <tbody style="box-sizing :border-box;">
+
+
+                            @*@foreach (var d in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(m => d.SrNo)</td>
+                                    <td>@Html.DisplayFor(m => d.JONo)</td>
+                                    <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                    <td>@Html.DisplayFor(m => d.SealNo)</td>
+                                    <td>@Html.DisplayFor(m => d.TruckNo)</td>
+                                    <td>@Html.DisplayFor(m => d.EIRNo)</td>
+                                    <td>@Html.DisplayFor(m => d.EIRDate)</td>
+                                    <td>@Html.DisplayFor(m => d.InDate)</td>
+                                    <td>@Html.DisplayFor(m => d.AddedBy)</td>
+
+                                </tr>
+
+
+                            }*@
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#example1').DataTable({
+            "bLengthChange": false,
+            "bInfo": false,
+            "bPaginate": false,
+            //"bFilter": false,
+            "paging": false,
+            //"dom": 'Bfrtip',
+            //"buttons": [{
+            //    "extend": 'excel',
+            //    "title": 'Empty Yard Gate Out Summary',
+            //    "filename": 'Empty Yard Gate Out Summary_List'
+
+            //}
+            //]
+        });
+
+
+
+
+    });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+    $(window).on("load", function (e) {
+        $("#tracker-loader").fadeOut("slow");
+    })
+</script>
+
+<script type="text/javascript">
+
+    function Show() {
+        $("#tracker-loader").fadeIn("fast");
+        var fromdate = $("#txtFromDate").val();
+        var TOdate = $("#txtToDate").val();
+        var Search = $("#ddlSearch").val();
+        var name = $("#txtName").val();
+
+        data1 = { 'fromdate': fromdate, 'TOdate': TOdate, 'Search': Search, 'name': name };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            url: "/Report/AjaxGetEmptyGateOutDetails",
+            data: data,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#example1').dataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "bPaginate": false,
+                    //"bFilter": false,
+                    "paging": false,
+                    "aaData": data,
+                    "columns": [
+                        { "data": "SrNo" },
+                        { "data": "gpno" },
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "ContainerType" },
+                        { "data": "ISOCode" },
+                        { "data": "tareweight" },
+                        { "data": "statustype" },
+                        { "data": "InDate" },
+                        { "data": "OutDate" },
+                        { "data": "OUTTime" },
+                        { "data": "DwellDays" },
+                        { "data": "SLName" },
+                        { "data": "TrailerName" },
+                        { "data": "Transporter" },
+                        { "data": "Location" },
+                        { "data": "Source" },
+                        { "data": "bookingno" },
+                        { "data": "SealNo" },
+                        { "data": "ShipperName" },
+                        { "data": "pod" },
+                        { "data": "TransportMode" },
+                        { "data": "TrainNo" },
+                        { "data": "Remarks" }
+
+                    ],
+                    //"dom": 'Bfrtip',
+
+                    //"buttons": [{
+                    //    "extend": 'excel',
+                    //    "title": 'Empty Yard Gate Out Summary',
+                    //    "filename": 'Empty Yard Gate Out Summary_List'
+
+                    //}
+                    //]
+                });
+
+                try {
+                    var table = document.getElementById("example1");
+                    var row;
+
+
+                    var TotTEUS1 = 0;
+                    var TotTEUS2 = 0;
+                    var TotTEUS3 = 0;
+                    var TotTEUS = 0;
+
+                    for (var i = 1; i < table.rows.length; i++) {
+                        row = table.rows[i];
+                        //var Size = row.cells[6].childNodes[1].value;
+                        var Size = row.cells[3].innerText;
+
+                        //alert(Size)
+
+                        if (Size == 20) {
+                            TotTEUS1 = Number(TotTEUS1) + 1;
+                        }
+                        if (Size == 40) {
+                            TotTEUS2 = Number(TotTEUS2) + 2;
+                        }
+                        if (Size == 45) {
+                            TotTEUS3 = Number(TotTEUS3) + 2;
+                        }
+                        //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+                    }
+                    TotTEUS = TotTEUS1 + TotTEUS2 + TotTEUS3
+                    // alert(TotTEUS);
+                    $("#lbltwenty").text(TotTEUS1);
+                    $("#lblforty").text(TotTEUS2);
+                    $("#lblfortyfive").text(TotTEUS3);
+                    $("#lblTotal").text(TotTEUS);
+
+                    $("#divTEUS").show();
+                    $("#divTEUS1").show();
+                    $("#divTEUS2").show();
+                    $("#divTEUS3").show();
+                } catch (ex) {
+                    $("#tracker-loader").fadeOut("slow");
+                }
+
+                
+                $("#tracker-loader").fadeOut("slow");
+
+            },
+            error: function (errormessage) {
+                alert("error");
+                alert(errormessage.responseText);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+</script>

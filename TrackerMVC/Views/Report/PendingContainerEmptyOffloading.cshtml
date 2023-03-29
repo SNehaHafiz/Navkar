@@ -1,0 +1,197 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.PendingContainerForEmptyOffLoading>
+
+@{
+    /**/
+
+    ViewBag.Title = "PendingContainerEmptyOffloading";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+
+
+<div class=" content-area overflow-hidden">
+    <div class="page-header">
+        <h4 class="page-title">
+            Pending Container For Empty OffLoading : <lable>@Model.Count()</lable>
+
+        </h4>
+       
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12" id="divTEUS" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 20 :</span> <label id="lbltwenty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-sm-12" id="divTEUS1" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 40 :</span> <label id="lblforty" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS2" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> 45 :</span> <label id="lblfortyfive" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-12" id="divTEUS3" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label" style="visibility:hidden"> '</label>
+                                <div class="row gutters-xs">
+                                    <div class="col">
+                                        <span style="font-weight: bold"> TEUS :</span>   <label id="lblTotal" style="font-weight: bold"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example1" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:1px">Sr No.</th>
+                                            <th>Container No.</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Line Name</th>
+                                            <th>Do Validity</th>
+                                            <th>BL Number</th>
+                                            <th>Vehicle No.</th>
+                                            <th>Out Date</th>
+                                            <th>Document Received Date</th>
+                                            <th>CHA Name</th>
+                                            <th>Importer Name</th>
+                                            <th>In Date</th>
+                                            <th>Offloading Location</th>
+                                            <th>Delivery type</th>
+                                            <th>remarks</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+                                        <tr>
+                                            <td>@Html.DisplayFor(m => d.SrNo)</td>
+                                            <td>@Html.DisplayFor(m => d.ContainerNo)</td>
+                                            <td>@Html.DisplayFor(m => d.Size)</td>
+                                            <td>@Html.DisplayFor(m => d.Type)</td>
+                                            <td>@Html.DisplayFor(m => d.SLName)</td>
+                                            <td>@Html.DisplayFor(m => d.DoValiddate)</td>
+                                            <td>@Html.DisplayFor(m => d.BLNumber)</td>
+                                            <td>@Html.DisplayFor(m => d.VehicleNo)</td>
+                                            <td>@Html.DisplayFor(m => d.OutDate)</td>
+                                            <td>@Html.DisplayFor(m => d.DocReceivedDate)</td>
+                                            <td>@Html.DisplayFor(m => d.CHAName)</td>
+                                            <td>@Html.DisplayFor(m => d.ImporterName)</td>
+                                            <td>@Html.DisplayFor(m => d.InDate)</td>
+                                            <td>@Html.DisplayFor(m => d.OffloadingLocation)</td>
+                                            <td>@Html.DisplayFor(m => d.Deliverytype)</td>
+                                            <td>@Html.DisplayFor(m => d.Deliverytype)</td>
+                                        </tr>
+
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('#example1').DataTable({
+                "bLengthChange": false,
+                "bInfo": true,
+                "bPaginate": false,
+                "bFilter": true,
+                "retrieve": false,
+                "paging": false,
+                "dom": 'Bfrtip',
+                "buttons": [{
+                    "extend": 'excel',
+                    "title": 'PendingContainerForEmptyOffloading',
+                    "filename": 'PendingContainerEmptyOffloading_List'
+
+                }
+                ]
+            });
+            var table = document.getElementById("example1");
+            var row;
+
+
+            var TotTEUS1 = 0;
+            var TotTEUS2 = 0;
+            var TotTEUS3 = 0;
+            var TotTEUS = 0;
+
+            for (var i = 1; i < table.rows.length; i++) {
+                row = table.rows[i];
+                var Size = row.cells[2].innerText;
+
+                //  alert(Size)
+
+                if (Size == 20) {
+                    TotTEUS1 = Number(TotTEUS1) + 1;
+                }
+                if (Size == 40) {
+                    TotTEUS2 = Number(TotTEUS2) + 2;
+                }
+                if (Size == 45) {
+                    TotTEUS3 = Number(TotTEUS3) + 2;
+                }
+                //TotTEUS = Number(TotTEUS) + Number(size);
+
+
+            }
+          
+            TotTEUS = TotTEUS1 + TotTEUS2 + TotTEUS3
+            //alert(TotTEUS);
+            $("#lbltwenty").text(TotTEUS1);
+            $("#lblforty").text(TotTEUS2);
+            $("#lblfortyfive").text(TotTEUS3);
+            $("#lblTotal").text(TotTEUS);
+
+            $("#divTEUS").show();
+            $("#divTEUS1").show();
+            $("#divTEUS2").show();
+            $("#divTEUS3").show();
+
+
+
+        });
+</script>

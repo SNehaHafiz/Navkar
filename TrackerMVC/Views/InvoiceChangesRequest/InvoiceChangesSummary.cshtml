@@ -1,0 +1,299 @@
+﻿<div>
+    @model IEnumerable<TrackerMVCEntities.BusinessEntities.InvoiceChangesRequestEntities>
+
+    <div class="page-header">
+        <h4 class="page-title">Pending Request for Invoice changes</h4>
+        <div class="form-group">
+            <label class="form-label"></label>
+            <div class="row gutters-xs">
+                <div class="col">
+                    @*<button type="button" class="btn btn-icon btn-orange" name="gst" title="GST" id="gst"><i class="fa fa-google"></i></button>*@
+                    @*<button type="button" class="btn btn-icon btn-teal" name="summarylist" title="Summary list" id="summarylist" onclick="ViewSummaryTrolley();"><i class="fa fa-file-text"></i></button>*@
+                    <a onclick="window.location = '@Url.Action("InvoiceChangesRequest", "InvoiceChangesRequest")' " class="btn btn-primary btn-success text-right" style="align-content:center;color:white"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Add Invoce"></i> </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="example2" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="visibility:hidden"></th>
+                                            <th style="visibility:hidden"></th>
+                                            <th>Activity</th>
+                                            <th>Invoice No</th>
+                                            <th>Invoice Date</th>
+                                            <th>Billed To</th>
+                                            <th>Requested By</th>
+                                            <th>Requested On</th>
+                                            <th>Request Remarks</th>
+                                            <th>Pending Since(Hrs)</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;">
+                                        @foreach (var d in Model)
+                                        {
+
+                                            <tr>
+                                                @*<td><a class="btn btn-sm btn-info" onclick="ApprovedInvoice('@d.AssessNo')" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Approve"><i class="fa fa-check"></i></a></td>*@
+                                                <td><button class="btn btn-danger" onclick="cancelInvoice('@d.AssessNo')" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Cancel"><i class="fa fa-times"></i></button></td>
+                                                <td><a class="btn  btn-secondary" onclick="ViewInvoice('@d.AssessNo')" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="View Document"><i class="fa fa-paperclip"></i></a></td>
+                                                <td>@Html.DisplayFor(m => d.Criteria)</td>
+                                                <td>@Html.DisplayFor(m => d.AssessNo)</td>
+                                                <td>@Html.DisplayFor(m => d.InvoiceDate)</td>
+                                                <td>@Html.DisplayFor(m => d.BillTo)</td>
+                                                <td>@Html.DisplayFor(m => d.RequestBy)</td>
+                                                <td>@Html.DisplayFor(m => d.Requeston)</td>
+                                                <td>@Html.DisplayFor(m => d.Remarks)</td>
+                                                <td>@Html.DisplayFor(m => d.Dwell)</td>
+
+                                            </tr>
+
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("DownLoadFile", "InvoiceChangesRequest", FormMethod.Post))
+{
+    <input type="hidden" id="hfFileId" name="id" />
+    <input type="submit" id="btnDownload" value="Download" style="display:none" />
+}
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id='myModalContent'>
+            <div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="example-Modal3"> Attachments </h5><label id="MSNoFile" style="visibility:hidden"></label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="divAttach">
+                    <form id="myForm">
+                        @*<div class="form-group" id="divFileUpload">
+                            <input type="file" id="fileJOAttachment" name="postedFile" />
+                            <input type="Button" id="btnUpload" value="Upload" class="btn btn-primary" />
+                        </div>*@
+                        <div class="form-group">
+                            <div class="table-responsive">
+                                <table id="JOAttachment1" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-15p sorting">File Name</th>
+                                            <th style="width:15px"></th>
+                                            @*<th style="width:15px"></th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody style="box-sizing :border-box;"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                @*<div class="modal-footer">
+                    <button type="button" id="btnDone" value="Done" class="btn btn-info pull-right" data-dismiss="modal" aria-label="Close">Done</button>
+                </div>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example2').DataTable({
+
+        });
+
+
+
+    });
+</script>
+<script>
+
+    function ViewInvoice(InvoiceNo) {
+        debugger;
+        var runningno=1
+        var fileData = new FormData();
+   
+        fileData.append('InvoiceNo', InvoiceNo );
+        runningno++;
+        $.ajax({
+            url: '/InvoiceChangesRequest/DownLoadFilesIR',
+            type: "POST",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            data: fileData,
+            success: function (Data) {
+                $("#global-loader").fadeOut("slow");
+                debugger;
+               
+                
+                table = Data;
+           
+
+                $('#JOAttachment1').dataTable({
+                    "bLengthChange": false,
+                    "bInfo": false,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "paging": false,
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": table,
+                    "columns": [
+                        { "data": "DocFileName" },
+                        {
+                            "data": "FilePath",
+                            "render": function (data, type, row, meta) {
+                                if (type === 'display') {
+                                    data = '<a   onclick="DownloadAttachment(' + row.RunningID + ')"  href="#" class="btn btn-primary"  title="Download"><i class="fa fa-download"></i></a>';
+                                }
+                                return data;
+                            }
+                        },
+                        //{
+                        //    "data": "ContentType",
+                        //    "render": function (data, type, row, meta) {
+                        //        if (type === 'display') {
+                        //            data = '<a   onclick="DeleteAttachment(' + row.RunningID + ')"  href="#" class="btn btn-danger removebutton"  title="Download"><i class="fa fa-trash-o"></i></a>';
+                        //        }
+                        //        return data;
+                        //    }
+                        //}
+                    ]
+                });
+                CountRows();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+                console.log(errormessage.responseText)
+                $("#global-loader").fadeOut("slow");
+            }
+
+
+        });
+        $('#myModal').modal('show');
+       
+        $("#fileJOAttachment").val('');
+    }
+
+  
+    function cancelInvoice(AssessNo) {
+        var r = confirm("Are you sure want to cancel this entry?");
+        if (r == true) {
+
+
+            var data = JSON.stringify({
+                'AssessNo': AssessNo
+            });
+
+            $.ajax({
+
+                type: "POST",
+                url: "/InvoiceChangesRequest/cancelInvoiceNo",
+                data: data,
+              contentType: "application/json; charset=utf-8",
+             dataType: "json",
+              success: function (result) {
+                if (result !="")
+
+                {
+                    alert('Record cancelled successfully.');
+                    window.location.href = '@Url.Action("InvoiceChangesRequest", "InvoiceChangesRequest")';
+                }
+
+
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+        }
+
+
+
+    }
+</script>
+<script>
+
+    function ApprovedInvoice(AssessNo) {
+        var r = confirm("Are you sure want to Approve this entry?");
+        if (r == true) {
+
+
+            var data = JSON.stringify({
+                'AssessNo': AssessNo
+            });
+
+            $.ajax({
+
+                type: "POST",
+                url: "/InvoiceChangesRequest/ApprovedInvoice",
+                data: data,
+              contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+        if(JSON.stringify(result)=="")
+
+        {
+            alert('Record Approve successfully.');
+            window.location.href = '@Url.Action("InvoiceChangesRequest", "InvoiceChangesRequest")';
+        }
+
+
+    },
+    error: function (errormessage) {
+    alert(errormessage.responseText);
+    }
+    });
+        }
+
+
+
+    }
+    function DownloadAttachment(runningNo) {
+        var no = runningno;
+        var docname, Filepath, contentType;
+        for (i = 0; i < table.length; i++) {
+            if (table[i].RunningID == no) {
+                docname = table[i].DocFileName;
+                Filepath = table[i].FilePath;
+                contentType = table[i].ContentType;
+            }
+        }
+        var id = 0;
+        var data = { 'DocName': docname, 'Filepath': Filepath, 'ContentType': contentType }
+        data = JSON.stringify(data);
+        $.ajax({
+            url: '/InvoiceChangesRequest/StoreFileDataInTemp',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+
+            data: data,
+            success: function (Data) {
+                id = Data;
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+        $("#hfFileId").val(id);
+        $("#btnDownload")[0].click();
+    }
+</script>

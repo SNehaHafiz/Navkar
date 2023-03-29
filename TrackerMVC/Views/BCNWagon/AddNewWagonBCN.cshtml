@@ -1,0 +1,223 @@
+﻿@model IEnumerable<TrackerMVCEntities.BusinessEntities.SaveUpdateMovementEntities>
+<style>
+    .scrolling-table-container {
+        overflow: auto;
+        height: 600px;
+    }
+</style>
+<div class="modal-content">
+    <div class="modal-header pd-x-20">
+        <h6 class="modal-title">Add New Wagon/Truck Details</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body pd-20">
+        <div class="card-body hero-feature">
+            <div class="row">
+                <div class="col-lg-3 col-xs-12">
+                    <div class="form-group">
+                        <label class="custom-switch">
+                            <input type="checkbox" name="custom-switch-checkbox" checked id="chkIsActiveEdit" class="custom-switch-input">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="custom-switch-description">Is Replace?</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12" id="divNewWagonNoL">
+                    <div class="form-group">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <label class="form-label">Wagon No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-12" id="divNewWagonNo">
+                    <div class="form-group">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <input type="text" id="txtOldWagonNo" class="form-control" placeholder="Wagon/Truck No" autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover tbl-cart text-nowrap" id="tblAddWagonMappingList">
+                    <thead style="background-color: #8969eb;text-align: center;font-family: monospace;">
+                        <tr>
+                            <th style="width:1px;color: white;">Wagon/Truck No</th>
+                            <th style="width:80px;color: white;">Wagon Pkgs</th>
+                            <th style="width:100px;color: white;">Wagon Weight</th>
+                            <th style="width:100px;color: white;">Container No</th>
+                            <th style="width:80px;color: white;">Stuff Pkgs</th>
+                            <th style="width:80px;color: white;">Stuff Wt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" id="txtNewWagonNo" class="form-control" placeholder="Wagon/Truck No" autocomplete="off" />
+                            </td>
+                            <td>
+                                <input type="text" id="txtWagonPkgs" class="form-control" placeholder="Wagon Pkgs" autocomplete="off" />
+                            </td>
+                            <td>
+                                <input type="text" id="txtWagonWT" class="form-control" placeholder="Wagon WT" autocomplete="off" />
+                            </td>
+                            <td>
+                                <input type="text" id="txtContainerNo" class="form-control" placeholder="Container No" autocomplete="off" />
+                            </td>
+                            <td>
+                                <input type="text" id="txtStuffPkgs" class="form-control" placeholder="Stuff Pkgs" autocomplete="off" />
+                            </td>
+                            <td>
+                                <input type="text" id="txtStuffWT" class="form-control" placeholder="Stuff WT" autocomplete="off" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer pd-20">
+        <input type="Button" id="btnAddNewDet" value="Add" class="btn btn-primary" />
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#chkIsActiveEdit").change(function () {
+            //debugger;
+            var isChecked = $("#chkIsActiveEdit");
+            if (isChecked[0].checked == true) {
+                $("#divNewWagonNoL").show();
+                $("#divNewWagonNo").show();
+            }
+            else {
+                $("#divNewWagonNoL").hide();
+                $("#divNewWagonNo").hide();
+            }
+        });
+
+        $("#btnAddNewDet").click(function () {
+            debugger;
+
+            if (Validation_Show() == false) {
+                return false;
+            }
+
+            var isChecked =false ;
+
+            if ($("#chkIsActiveEdit")[0].checked == true) {
+                isChecked = true;
+            }
+
+            if (isChecked == true) {
+                if ($("#txtOldWagonNo").val() == "") {
+                    alert("Please enter Wagon Name which you want to replace it");
+                    $("#txtOldWagonNo").focus();
+                    return false;
+                }
+            }
+
+            var data1 = { 'TrainNo': $("#TrainNo").val(), 'WagonRRNo': $("#RRWagonContNo").val(), 'WagonNo': $("#txtNewWagonNo").val(), 'WagonPkgs': $("#txtWagonPkgs").val(), 'WagonWt': $("#txtWagonWT").val(), 'ContainerNo': $("#txtContainerNo").val(), 'StuffPkgs': $("#txtStuffPkgs").val(), 'StuffWt': $("#txtStuffWT").val(), 'OldWagonNo': $("#txtOldWagonNo").val(), 'IsReplace': isChecked };
+            data = JSON.stringify(data1);
+
+            $.ajax({
+                url: '/BCNWagon/ShowBCNWagonMapping',
+                type: 'Post',
+                data: data,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    debugger;
+                    if (data.Message.indexOf("Successfully") != -1) {
+                        alert(data.Message);
+                        window.location = "/BCNWagon/BCNWagonMapping";
+                    }
+                    else {
+                        alert(data.Message);
+                    }
+                   
+                    $("#tracker-loader").fadeOut("slow");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                    $("#tracker-loader").fadeOut("slow");
+                }
+            });
+            $("#tracker-loader").fadeOut("slow");
+        });
+    });
+
+
+    function Validation_Show() {
+        var result = true;
+
+        if ($("#TrainNo").val() == "") {
+            alert("Please enter Train No.");
+            $("#TrainNo").focus();
+            result = false;
+            return result;
+        }
+
+        if ($("#RRWagonContNo").val() == "") {
+            alert("Please enter RR No.");
+            $("#RRWagonContNo").focus();
+            result = false;
+            return result;
+        }
+
+        if ($("#txtNewWagonNo").val() == "") {
+            alert("Please enter Wagon No.");
+            $("#txtNewWagonNo").focus();
+            result = false;
+            return result;
+        }
+
+        if ($("#txtWagonPkgs").val() == "") {
+            alert("Please enter Wagon pkgs.");
+            $("#txtWagonPkgs").focus();
+            result = false;
+            return result;
+        }
+
+        if ($("#txtWagonWT").val() == "") {
+            alert("Please enter Wagon Wt.");
+            $("#txtWagonWT").focus();
+            result = false;
+            return result;
+        }
+
+        if ($("#txtContainerNo").val() == "") {
+            alert("Please enter Container No.");
+            $("#txtContainerNo").focus();
+            result = false;
+            return result;
+        }
+    }
+
+
+    
+
+    //$(document).ready(function () {
+    //    $('#tblAddWagonMappingList').dataTable({
+    //        "bLengthChange": false,
+    //        "bInfo": false,
+    //        "bPaginate": false,
+    //        // "bFilter": false,
+    //        "paging": true,
+    //        "order": [],
+    //        "aoColumnDefs": [
+    //            {
+    //                'bSortable': false,
+    //                'aTargets': [0]
+    //            }
+
+    //        ]
+    //    })
+    //});
+</script>

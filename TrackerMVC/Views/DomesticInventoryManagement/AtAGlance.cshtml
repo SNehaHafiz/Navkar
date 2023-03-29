@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewBag.Title = "AtAGlance";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div id="atAGlanceList">
+    <div class="page-header">
+        <h4 class="page-title">
+            At A Glance <label class="bg-primary text-white br-7 pl-3 pr-3" id="containerCount">@*@ViewBag.ContainerList.Count*@</label>
+
+        </h4>
+        <div id="btnExcel" title="Export To Excel" type="button"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            @*<div id="btnExcel" title="Export To Excel" type="button"></div>*@
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover text-nowrap" id="tblAtAGlance" style="width:100%">
+                                    <thead class="bg-primary">
+                                        <tr>
+                                            <th class="text-white">Sr No</th>
+                                            <th class="text-white">Container No</th>
+                                            <th class="text-white">Size</th>
+                                            <th class="text-white">Type</th>
+                                            <th class="text-white">With Dept</th>
+                                        </tr>
+                                    </thead>
+                                    @*<tbody>
+                                            @if (ViewBag.ContainerList.Count != 0)
+                                            {
+                                                foreach (var st in ViewBag.ContainerList)
+                                                {
+                                                    <tr>
+                                                        <th class="">@st.SrNo</th>
+                                                        <th class="">@st.ContainerNo</th>
+                                                        <th class="">@st.Size</th>
+                                                        <th class="">@st.Type</th>
+                                                        <th class="">@st.DeptName</th>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        GetSummarydetails();
+    });
+    var SummaryList = [];
+
+    function GetSummarydetails() {
+        var FromDate = new Date();
+        var ToDate = new Date();
+        var Type = "ALL";
+
+        data1 = { 'FromDate': FromDate, 'ToDate': ToDate, 'Type': Type };
+        data = JSON.stringify(data1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/DomesticInventoryManagement/GetSummarydetails',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                debugger
+                SummaryList = [];
+                SummaryList = response;
+                $("#containerCount").html(response.length);
+                $('#tblAtAGlance').DataTable({
+                    "destroy": true,
+                    "bLengthChange": false,
+                    "aaData": SummaryList,
+                    "bPaginate": true,
+                    "bInfo": false,
+                    "paging": true,
+                    order: [],
+                    "searching": true,
+                    "columns": [
+                        { "data" : "SrNo" },
+                        { "data": "ContainerNo" },
+                        { "data": "Size" },
+                        { "data": "Type" },
+                        { "data": "DeptName" },
+                    ],
+                    "aoColumnDefs": [
+                        {
+                            'bSortable': false,
+                            'aTargets': [4],
+                        }],
+                    mark: true
+                });
+                var table = $('#tblAtAGlance').DataTable();
+
+                table = $('#tblAtAGlance').DataTable();
+                var buttons = new $.fn.dataTable.Buttons(table, {
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel-o"></i>',
+                            titleAttr: 'Excel',
+                            className: 'btn btn_excel'
+                        }
+                    ]
+                }).container().appendTo($('#btnExcel'));
+            },
+            error: function (errormessage) {
+
+                alert(errormessage);
+                $("#tracker-loader").fadeOut("slow");
+            }
+        });
+    }
+
+</script>
